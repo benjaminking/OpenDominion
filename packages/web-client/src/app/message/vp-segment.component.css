@@ -1,0 +1,34 @@
+.vp-segment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.small .vp-image-wrapper img {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+.medium .vp-image-wrapper img {
+  height: 5.8cqh;
+  width: 5.8cqh;
+  font-size: 4.7cqh;
+}
+
+.large .text-segment {
+  font-family: 'CardNumbers';
+  font-size: 15cqh;
+}
+
+.large .vp-image-wrapper img {
+  height: 16cqh;
+}
+
+.xlarge .text-segment {
+  font-family: 'CardNumbers';
+  font-size: 22cqh;
+}
+
+.xlarge .vp-image-wrapper img {
+  height: 23cqh;
+}

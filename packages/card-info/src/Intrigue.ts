@@ -1,0 +1,267 @@
+import { CardInfo, CardType, Expansion } from '@dominion/common';
+
+export const intrigue: CardInfo[] = [
+  {
+    name: 'Baron',
+    text: "+1 Buy\n\nYou may discard an Estate\nfor +$4. If you don't,\ngain an Estate.",
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Bridge',
+    text: '+1 Buy\n+$1\n\nThis turn, cards (everywhere)\ncost $1 less.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Conspirator',
+    text: "+$2\n\nIf you've played 3 or more\nActions this turn (counting\nthis), +1 Card and\n+1 Action.",
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Courtier',
+    text: 'Reveal a card from your hand.\nFor each type it has (Action,\nAttack, etc.), choose one:\n+1 Action; or +1 Buy; or\n+$3; or gain a Gold. The\nchoices must be different.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Courtyard',
+    text: '+3 Cards\n\nPut a card from your hand\nonto your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Diplomat',
+    text: '+2 Cards\nIf you have 5 or fewer cards in hand\n(after drawing), +2 Actions.\n-\nWhen another player plays an\nAttack card, you may first reveal this\nfrom a hand of 5 or more cards, to draw\n2 cards then discard 3.',
+    font_size: 'small',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.REACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Duke',
+    text: 'Worth 1VP per Duchy\nyou have.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.VICTORY],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Farm',
+    text: '$2\n-\n2VP',
+    font_size: 'medium',
+    cost: {
+      coins: 6,
+    },
+    production: {
+      coins: 2,
+    },
+    types: [CardType.ACTION, CardType.VICTORY],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Ironworks',
+    text: 'Gain a card costing up to $4.\nIf the gained card is an…\n\nAction card, +1 Action\nTreasure card, +$1\nVictory card, +1 Card',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Lurker',
+    text: '+1 Action\n\nChoose one: Trash an Action\ncard from the Supply; or gain\nan Action card from the trash.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Masquerade',
+    text: '+2 Cards\n\nEach player with any cards in\nhand passes one to the next\nsuch player to their left, at\nonce. Then you may trash a\ncard from your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Mill',
+    text: '+1 Card\n+1 Action\nYou may discard 2 cards.\nIf you do, +$2.\n-\n1VP',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.VICTORY],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Mining Village',
+    text: '+1 Card\n+2 Actions\n\nYou may trash this for +$2.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Minion',
+    text: '+1 Action\n\nChoose one: +$2; or discard\nyour hand, +4 Cards, and\neach other player with at least\n5 cards in hand discards their\nhand and draws 4 cards.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Nobles',
+    text: 'Choose one: +3 Cards;\nor +2 Actions.\n-\n2VP',
+    font_size: 'medium',
+    cost: {
+      coins: 6,
+    },
+    types: [CardType.ACTION, CardType.VICTORY],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Patrol',
+    text: '+3 Cards\n\nReveal the top 4 cards of your\ndeck. Put the Victory cards and\nCurses into your hand. Put the\nrest back in any order.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Pawn',
+    text: 'Choose two: +1 Card;\n+1 Action; +1 Buy; +$1.\nThe choices must be different.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Replace',
+    text: "Trash a card from your hand.\nGain a card costing up to $2\nmore than it. If the gained\ncard is an Action or Treasure,\nput it onto your deck; if it's a\nVictory card, each other player\ngains a Curse.",
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Secret Passage',
+    text: '+2 Cards\n+1 Action\n\nTake a card from your hand and\nput it anywhere in your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Shanty Town',
+    text: '+2 Actions\n\nReveal your hand. If you have\nno Action cards in hand,\n+2 Cards.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Steward',
+    text: 'Choose one: +2 Cards; or\n+$2; or trash 2 cards from\nyour hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Swindler',
+    text: '+$2\n\nEach other player trashes the\ntop card of their deck and gains\na card with the same cost that\nyou choose.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Torturer',
+    text: "+3 Cards\n\nEach other player either\ndiscards 2 cards or gains a\nCurse to their hand, their\nchoice. (They may pick an\noption they can't do.)",
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Trading Post',
+    text: 'Trash 2 cards from your hand.\nIf you did, gain a Silver\nto your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Upgrade',
+    text: '+1 Card\n+1 Action\n\nTrash a card from your hand.\nGain a card costing exactly\n$1 more than it.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+  {
+    name: 'Wishing Well',
+    text: '+1 Card\n+1 Action\n\nName a card, then reveal the\ntop card of your deck. If you\nnamed it, put it into your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.INTRIGUE,
+  },
+];

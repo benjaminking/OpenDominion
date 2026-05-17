@@ -1,0 +1,48 @@
+<div
+  class="pile"
+  [class.kingdom-pile]="isKingdom()"
+  [class.non-kingdom-pile]="!isKingdom()"
+  [class.non-supply-pile]="!isSupply()"
+  [class.panel-action]="isAction() && !isTreasure() && !isReaction()"
+  [class.panel-treasure]="isTreasure() && !isAction() && !isReaction()"
+  [class.panel-victory]="isVictory()"
+  [class.panel-curse]="isCurse()"
+  [class.panel-action-treasure]="isAction() && isTreasure()"
+  [class.panel-duration]="isDuration() && !isTreasure() && !isReaction()"
+  [class.panel-duration-reaction]="isDuration() && isReaction()"
+  [class.panel-duration-treasure]="isDuration() && isTreasure()"
+  [class.panel-reaction]="isReaction() && !isTreasure() && !isDuration()"
+  [class.panel-treasure-reaction]="isTreasure() && isReaction()"
+  [class.panel-victory-action]="isVictory() && isAction() && !isDuration()"
+  [class.panel-victory-treasure]="isVictory() && isTreasure()"
+  [ngClass]="{ selectable: isSelectable() }"
+  (click)="selectPile()"
+>
+  @if ((isSupply() && isKingdom()) || !isSupply()) {
+    <div class="pile-information">
+      <span class="card-name">{{ name() }}</span>
+    </div>
+  }
+  <div class="image-container">
+    @if (isBasicPile()) {
+      <!-- Basic piles use transparency, hence a .png is used. -->
+      <img class="card-image" [src]="'/' + cardAssetDirectory() + '/' + fileName() + '_65px.png'" />
+    } @else {
+      <img class="card-image" [src]="'/' + cardAssetDirectory() + '/' + fileName() + '_65px.jpg'" />
+    }
+    <img
+      class="overlay select-overlay"
+      [ngClass]="{ enabled: isSelectable() }"
+      [src]="'/' + cardAssetDirectory() + '/select_overlay.png'"
+    />
+    <img
+      class="overlay empty-overlay"
+      [ngClass]="{ enabled: isEmpty() }"
+      [src]="'/' + cardAssetDirectory() + '/empty_overlay.png'"
+    />
+    <div class="card-cost-image">
+      <coin [text]="costSymbol()" [size]="'xxlarge'"></coin>
+    </div>
+    <div class="pile-count">{{ count() }}</div>
+  </div>
+</div>

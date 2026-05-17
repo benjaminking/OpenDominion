@@ -1,0 +1,15 @@
+export enum CardType {
+  ACTION = 'Action',
+  ATTACK = 'Attack',
+  CURSE = 'Curse',
+  TREASURE = 'Treasure',
+  VICTORY = 'Victory',
+  REACTION = 'Reaction',
+  DURATION = 'Duration',
+  REWARD = 'Reward',
+  LOOTER = 'Looter',
+  COMMAND = 'Command',
+  RUINS = 'Ruins',
+  KNIGHT = 'Knight',
+  SHELTER = 'Shelter',
+}

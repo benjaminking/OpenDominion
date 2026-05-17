@@ -1,0 +1,167 @@
+/*
+Overlay colors:
+treasure: #fada41
+victory: #88b964
+duration: #dd7700
+reaction: #3797ca
+curse: #aa65bf
+shelter: #fa5f3b
+reserve: #d9be87
+*/
+
+.card {
+  container-name: card;
+  container-type: size;
+  width: 170px;
+  height: 258px;
+  isolation: isolate;
+}
+
+.portrait-card {
+  position: relative;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+.portrait-card-full {
+  position: relative;
+  width: 100cqw;
+  height: 100cqh;
+}
+
+.full-card-template {
+  position: absolute;
+  width: 100cqw;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.card-template {
+  position: absolute;
+  width: 100cqw;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.card-name {
+  position: absolute;
+  width: 86cqw;
+  height: 6.8cqh;
+  top: 3.25cqh;
+  left: 6.9cqw;
+  text-align: center;
+  font-family: 'CardTitle';
+  font-size: 5cqh;
+  color: black;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-types {
+  position: absolute;
+  width: 84cqw;
+  top: 89.4cqh;
+  left: 8cqw;
+  text-align: center;
+  font-family: 'CardTitle';
+  color: black;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-types .card-text.large {
+  font-size: 4cqh;
+  height: 6cqh;
+}
+
+.card-types .card-text.medium {
+  font-size: 3.3cqh;
+  height: 5cqh;
+}
+
+.card-types .card-text.small {
+  font-size: 2.7cqh;
+  height: 4cqh;
+}
+
+.card-art {
+  position: absolute;
+  width: 91cqw;
+  top: 11.8cqh;
+  left: 4.5cqw;
+  z-index: 1;
+}
+
+.portrait-card-full .card-art {
+  clip-path: inset(0 0 5px 0);
+}
+
+.type-overlay {
+  position: absolute;
+  width: 100cqw;
+  top: 0;
+  left: 0;
+  z-index: 3;
+}
+
+.portrait-card-full .card-text-container {
+  position: absolute;
+  top: 11.5cqh;
+  left: 4.8cqw;
+  width: 90cqw;
+  height: 30cqh;
+  font-family: 'CardText';
+  font-size: 15cqh;
+  color: black;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.portrait-card .card-text-container {
+  position: absolute;
+  top: 54cqh;
+  left: 4.8cqw;
+  width: 90cqw;
+  height: 34cqh;
+  font-family: 'CardText';
+  font-size: 4.5cqh;
+  color: black;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-text {
+  text-align: center;
+}
+
+.cost {
+  position: absolute;
+  top: 87.5cqh;
+  left: 2cqw;
+  z-index: 3;
+}
+
+.production {
+  position: absolute;
+  z-index: 3;
+}
+
+.production.left {
+  top: 1.5cqh;
+  left: 2cqw;
+}
+
+.production.right {
+  top: 1.5cqh;
+  left: 83cqw;
+}

@@ -1,0 +1,62 @@
+.card-group {
+  max-width: 170px;
+}
+
+.deck-area .card-group img {
+  max-height: 30%;
+  height: 256px;
+}
+
+.standard-card-group {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.standard-card-group img {
+  max-width: 160px;
+}
+
+.card-counts {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.card-count {
+  background-color: #aa4444;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 3px 7px;
+}
+
+.selected-card-count {
+  background-color: #4444aa;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 3px 7px;
+}
+
+.card-display {
+  /*display: flex;
+    max-width: 600px;*/
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18px, 180px));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(18px, 180px);
+  padding-right: 90px;
+}
+
+.staggered card-group:nth-child(3n + 2) {
+  top: 25px;
+  position: relative;
+}
+
+.staggered card-group:nth-child(3n + 3) {
+  top: 50px;
+  position: relative;
+}

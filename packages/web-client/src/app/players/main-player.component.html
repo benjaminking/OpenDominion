@@ -1,0 +1,20 @@
+<div class="player-line-container me">
+  <div class="player-line">
+    <div class="deck-and-discard display-stat">
+      <div class="deck">
+        <img src="/images/card_back.png" />
+        <div class="card-count">{{ deckSize() }}</div>
+      </div>
+      <div class="discard">
+        @if (topDiscard()) {
+          <img src="/images/{{ topDiscard().name }}.jpg" />
+        } @else {
+          <div class="empty-discard"></div>
+        }
+      </div>
+    </div>
+    <div class="rotated-name-holder display-stat">
+      <div class="rotated-name">{{ name() }}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,269 @@
+import { CardInfo, CardType, Expansion, Mechanic } from '@dominion/common';
+
+export const prosperity: CardInfo[] = [
+  {
+    name: 'Anvil',
+    text: '$1\n\nYou may discard a Treasure to\ngain a card costing up to $4.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    production: {
+      coins: 1,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Watchtower',
+    text: 'Draw until you have\n6 cards in hand.\n-\nWhen you gain a card, you may\nreveal this from your hand to\neither trash that card or put it\nonto your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION, CardType.REACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Bishop',
+    text: '+$1\n+1 VP\nTrash a card from your hand.\n+1 VP per $2 it costs (round\ndown). Each other player may\ntrash a card from their hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+    mechanics: [Mechanic.VP_CHIPS],
+  },
+  {
+    name: 'Clerk',
+    text: '+$2\nEach other player with 5 or\nmore cards in hand puts one\nonto their deck.\n-\nAt the start of your turn, you\nmay play this from your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.REACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Investment',
+    text: 'Trash a card from your hand.\nChoose one: +$1; or trash this\nto reveal your hand for +1 VP\nper differently named Treasure\nthere.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    production: {
+      is_variable: true,
+    },
+    types: [CardType.ACTION, CardType.REACTION],
+    expansion: Expansion.PROSPERITY,
+    mechanics: [Mechanic.VP_CHIPS],
+  },
+  {
+    name: 'Monument',
+    text: '+$2\n+1 VP',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+    mechanics: [Mechanic.VP_CHIPS],
+  },
+  {
+    name: 'Quarry',
+    text: '$1\n\nThis turn,\nActions cost $2 less.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    production: {
+      coins: 1,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Tiara',
+    text: '+1 Buy\n\nThis turn, when you gain a\ncard, you may put it\nonto your deck.\n\nYou may play a Treasure from\nyour hand twice.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: "Worker's Village",
+    text: '+1 Card\n+2 Actions\n+1 Buy',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Charlatan',
+    text: '+$3\nEach other player gains a Curse.In games using this, Curse is\nalso a Treasure worth $1.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'City',
+    text: '+1 Card\n+2 Actions\n\nIf there are one or more\nempty Supply piles, +1 Card.\nIf there are two or more,\n+1 Buy and +$1',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Collection',
+    text: '$2\n+1 Buy\nThis turn, when you gain an\nAction card, +1 VP.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+    mechanics: [Mechanic.VP_CHIPS],
+  },
+  {
+    name: 'Crystal Ball',
+    text: "$1\nLook at the top card of your\ndeck. You may trash it, discard\nit, or, if it's an Action or\nTreasure, play it.",
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Magnate',
+    text: 'Reveal your hand.\n+1 Card per Treasure in it.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Mint',
+    text: 'You may reveal a Treasure\ncard from your hand. Gain a\ncopy of it.\n-\nWhen you gain this, trash all\nnon-Duration Treasures you\nhave in play.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Rabble',
+    text: '+3 Cards\n\nEach other player reveals\nthe top 3 cards of their deck,\ndiscards the revealed Actions and\nTreasures, and puts the rest\nback in any order they choose.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Vault',
+    text: '+2 Cards\n\nDiscard any number of cards\nfor +$1 each.\n\nEach other player may discard\n2 cards, to draw a card.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'War Chest',
+    text: "The player to your left names a\ncard. Gain a card costing up to\n$5 that hasn't been named for\nWar Chest this turn.",
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Grand Market',
+    text: '+1 Card\n+1 Action\n+1 Buy\n+$2.\n-\nYou can’t buy this if you\nhave any Coppers in play.',
+    font_size: 'medium',
+    cost: {
+      coins: 6,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Hoard',
+    text: '$2\nThis turn, when you gain a\nVictory card, if you bought\nit, gain a Gold.',
+    font_size: 'medium',
+    cost: {
+      coins: 6,
+      has_asterisk: true,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Bank',
+    text: '+$1 per Treasure card you\nhave in play (counting this).',
+    font_size: 'medium',
+    cost: {
+      coins: 7,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Expand',
+    text: 'Trash a card from your hand.\nGain a card costing up to $3\nmore than it.',
+    font_size: 'medium',
+    cost: {
+      coins: 7,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Forge',
+    text: 'Trash any number of cards\nfrom your hand. Gain a card\nwith cost exactly equal to the\ntotal cost in $ of the\ntrashed cards.',
+    font_size: 'medium',
+    cost: {
+      coins: 7,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: "King's Court",
+    text: 'You may play an Action card\nfrom your hand three times.',
+    font_size: 'medium',
+    cost: {
+      coins: 7,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+  {
+    name: 'Peddler',
+    text: "+1 Card\n+1 Action\n+$1\n-\nDuring a player's Buy phase,\nthis costs $2 less per Action\ncard they have in play.",
+    font_size: 'medium',
+    cost: {
+      coins: 8,
+      has_asterisk: true,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.PROSPERITY,
+  },
+];

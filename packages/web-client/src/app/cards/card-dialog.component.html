@@ -1,0 +1,5 @@
+<div class="card-dialog" [ngClass]="{ enabled: visible() }">
+  <div class="title">{{ title() }}</div>
+  <button class="close-button" (click)="close()" alt="Close">&times;</button>
+  <card-display [cards]="cards()" [grouped]="grouped()" [sorted]="sorted()" [staggered]="staggered()"></card-display>
+</div>

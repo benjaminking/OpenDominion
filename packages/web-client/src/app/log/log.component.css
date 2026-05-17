@@ -1,0 +1,58 @@
+:host {
+  grid-area: log;
+  background-color: rgba(255, 255, 255, 0.75);
+  z-index: 1;
+  font-family: Arial, sans-serif;
+}
+
+.log {
+  overflow: auto;
+  height: 100vh;
+}
+
+.log-message {
+  display: flex;
+}
+
+.name {
+  margin-right: 5px;
+  border-radius: 5px;
+  padding: 2px;
+}
+
+.name.player1 {
+  background-color: #00c2fc;
+}
+
+.name.player2 {
+  background-color: #fc9000;
+}
+
+.name.player3 {
+  background-color: #00fc03;
+}
+
+.name.player4 {
+  background-color: #fc0303;
+}
+
+.name.player5 {
+  background-color: #fceb03;
+}
+
+.name.player6 {
+  background-color: #a503fc;
+}
+
+.message {
+  padding: 2px;
+}
+
+.turn-start-message {
+  border-bottom: solid 2px black;
+  margin-top: 15px;
+}
+
+.bottom-spacer {
+  height: 25px;
+}

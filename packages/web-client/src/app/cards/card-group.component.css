@@ -1,0 +1,85 @@
+.card-group {
+  max-width: 170px;
+}
+
+.deck-area .card-group img {
+  max-height: 30%;
+  height: 256px;
+}
+
+.standard-card-group {
+  position: relative;
+  top: 0;
+  left: 0;
+  border: solid 5px;
+  border-radius: 10px;
+  border-color: rgba(255, 255, 255, 0);
+  width: 170px;
+}
+
+.standard-card-group img {
+  max-width: 160px;
+}
+
+.card-counts {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  flex-direction: row-reverse;
+  z-index: 10;
+}
+
+.card-count {
+  background-color: #aa4444;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 3px 7px;
+}
+
+.selected-card-count {
+  background-color: #4444aa;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 3px 7px;
+}
+
+.selectable {
+  cursor: pointer;
+}
+
+.selectable.select-play,
+.selectable.select-gain {
+  border-color: rgba(50, 200, 50, 0.5);
+}
+
+.selectable.select-play-alt {
+  border-color: rgba(100, 255, 100, 0.5);
+}
+
+.selectable.select-trash {
+  border-color: rgba(200, 50, 50, 0.5);
+}
+
+.selectable.select-exile {
+  border-color: rgba(252, 83, 131, 0.5);
+}
+
+.selectable.select-discard {
+  border-color: rgba(252, 120, 83, 0.5);
+}
+
+.selectable.select-topdeck,
+.selectable.select-bottomdeck {
+  border-color: rgba(250, 212, 20, 0.5);
+}
+
+.selectable.select-draw {
+  border-color: rgba(20, 127, 250, 0.5);
+}
+
+.selectable.select-other {
+  border-color: rgba(200, 250, 242, 0.5);
+}

@@ -1,0 +1,31 @@
+<div class="settings-toggle" (click)="toggleSettings()">
+  <span class="material-icons">settings</span>
+</div>
+@if (isSettingsPanelOpen()) {
+  <div class="settings-dialog">
+    <div class="setting-group">
+      <div class="setting-group-title">Art Type</div>
+      <!-- a radio button group for selecting art type -->
+      <div class="setting">
+        <input
+          type="radio"
+          id="official-art-type"
+          name="art-type"
+          value="official"
+          [checked]="settingsService.usingOfficialArt()"
+          (change)="settingsService.useOfficialArt()"
+        />
+        <label for="official-art-type">Official</label>
+        <input
+          type="radio"
+          id="unofficial-art-type"
+          name="art-type"
+          value="unofficial"
+          [checked]="!settingsService.usingOfficialArt()"
+          (change)="settingsService.useUnofficialArt()"
+        />
+        <label for="unofficial-art-type">Unofficial</label>
+      </div>
+    </div>
+  </div>
+}

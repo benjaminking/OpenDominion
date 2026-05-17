@@ -1,0 +1,38 @@
+<div #logScroller class="log">
+  @for (logMessage of logMessages(); track logMessage.orderIndex) {
+    @if (logMessage.type === 'TURN_START') {
+      <div class="turn-start-message">
+        {{ logMessage.name }}
+        @for (segment of logMessage.message; track segment) {
+          {{ segment.text }}
+        }
+      </div>
+    } @else {
+      <div class="log-message">
+        <div
+          class="name"
+          [ngClass]="{
+            player1: playerIndices().get(logMessage.name) === 0,
+            player2: playerIndices().get(logMessage.name) === 1,
+            player3: playerIndices().get(logMessage.name) === 2,
+            player4: playerIndices().get(logMessage.name) === 3,
+            player5: playerIndices().get(logMessage.name) === 4,
+            player6: playerIndices().get(logMessage.name) === 5,
+          }"
+        >
+          {{ logMessage.name }}
+        </div>
+        <div class="message">
+          @for (segment of logMessage.message; track segment.id) {
+            @if (segment.card !== undefined) {
+              <card-segment [text]="segment.text" [card]="segment.card"></card-segment>
+            } @else {
+              <span class="text-segment">{{ segment.text }}</span>
+            }
+          }
+        </div>
+      </div>
+    }
+  }
+  <div class="bottom-spacer"></div>
+</div>

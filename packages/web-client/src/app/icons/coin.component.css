@@ -1,0 +1,135 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coin-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.coin-text-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.coin-label {
+  font-family: 'CardNumbers';
+  z-index: 1;
+}
+
+.coin-image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* small */
+.coin-image-wrapper.small {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+.small .coin-text-wrapper {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+.small .coin-label {
+  font-size: 3.8cqh;
+  height: 3.8cqh;
+}
+
+.coin-image-wrapper.small img {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+/* medium */
+.coin-image-wrapper.medium {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+.medium .coin-text-wrapper {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+.medium .coin-label {
+  font-size: 4.7cqh;
+  height: 5cqh;
+}
+
+.coin-image-wrapper.medium img {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+/* large */
+.coin-image-wrapper.large {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+.large .coin-text-wrapper {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+.large .coin-label {
+  font-size: 9cqh;
+  height: 9cqh;
+}
+
+.coin-image-wrapper.large img {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+/* xlarge */
+.coin-image-wrapper.xlarge {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+.xlarge .coin-text-wrapper {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+.xlarge .coin-label {
+  font-size: 22cqh;
+  height: 22cqh;
+}
+
+.coin-image-wrapper.xlarge img {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+/* xxlarge */
+.coin-image-wrapper.xxlarge {
+  height: 40cqh;
+  width: 40cqh;
+}
+
+.xxlarge .coin-text-wrapper {
+  height: 40cqh;
+  width: 40cqh;
+}
+
+.xxlarge .coin-label {
+  font-size: 40cqh;
+  height: 40cqh;
+}
+
+.coin-image-wrapper.xxlarge img {
+  height: 40cqh;
+  width: 40cqh;
+}

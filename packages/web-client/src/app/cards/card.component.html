@@ -1,0 +1,85 @@
+<div class="card">
+  @if (layoutType() === LayoutType.PORTRAIT_FULL) {
+    <div class="portrait-card-full">
+      <img class="full-card-template" src="/card_assets/card_template_full.png" />
+      <div class="card-name">
+        <div class="card-text">{{ metadata().name }}</div>
+      </div>
+      <div class="card-types">
+        <div class="card-text" [ngClass]="typesSize()">{{ typesStr() }}</div>
+      </div>
+      <img class="card-art" [src]="cardAssetDirectory() + '/' + fileName() + '.png'" />
+      @if (overlayType() === OverlayType.VICTORY) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/victory_overlay_full.png'" />
+      } @else if (overlayType() === OverlayType.TREASURE) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/treasure_overlay_full.png'" />
+      } @else if (overlayType() === OverlayType.CURSE) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/curse_overlay_full.png'" />
+      } @else if (overlayType() === OverlayType.TREASURE_CURSE) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/treasure_curse_overlay_full.png'" />
+      }
+      <div class="card-text-container">
+        <div class="card-text">
+          <segmented-message [text]="cardInfo().text" [size]="'xlarge'"></segmented-message>
+        </div>
+      </div>
+      <div class="cost">
+        <coin [text]="costSymbol()" [size]="'large'"></coin>
+      </div>
+      @if (cardInfo().production !== undefined) {
+        <div class="production left">
+          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+        </div>
+        <div class="production right">
+          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+        </div>
+      }
+    </div>
+  } @else if (layoutType() === LayoutType.PORTRAIT) {
+    <div class="portrait-card">
+      <img class="card-template" src="/card_assets/card_template.png" />
+      <div class="card-name">
+        <div class="card-text">
+          {{ metadata().name }}
+        </div>
+      </div>
+      <div class="card-types">
+        <div class="card-text" [ngClass]="typesSize()">{{ typesStr() }}</div>
+      </div>
+      <img class="card-art" [src]="cardAssetDirectory() + '/' + fileName() + '_155px.jpg'" />
+      @if (overlayType() === OverlayType.VICTORY) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/victory_overlay.png'" />
+      } @else if (overlayType() === OverlayType.TREASURE) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/treasure_overlay.png'" />
+      } @else if (overlayType() === OverlayType.REACTION) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/reaction_overlay.png'" />
+      } @else if (overlayType() === OverlayType.DURATION) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/duration_overlay.png'" />
+      } @else if (overlayType() === OverlayType.ACTION_VICTORY) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/action_victory_overlay.png'" />
+      } @else if (overlayType() === OverlayType.TREASURE_VICTORY) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/treasure_victory_overlay.png'" />
+      } @else if (overlayType() === OverlayType.TREASURE_DURATION) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/treasure_duration_overlay.png'" />
+      } @else if (overlayType() === OverlayType.DURATION_REACTION) {
+        <img class="type-overlay" [src]="cardAssetDirectory() + '/duration_reaction_overlay.png'" />
+      }
+      <div class="card-text-container">
+        <div class="card-text">
+          <segmented-message [text]="cardInfo().text" [size]="cardInfo().font_size"></segmented-message>
+        </div>
+      </div>
+      <div class="cost">
+        <coin [text]="costSymbol()" [size]="'large'"></coin>
+      </div>
+      @if (cardInfo().production !== undefined) {
+        <div class="production left">
+          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+        </div>
+        <div class="production right">
+          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+        </div>
+      }
+    </div>
+  }
+</div>

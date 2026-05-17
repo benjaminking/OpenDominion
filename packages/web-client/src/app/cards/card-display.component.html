@@ -1,0 +1,5 @@
+<div class="card-display" [ngClass]="{ staggered: staggered() }">
+  @for (cardGroup of cardGroups(); track cardGroup.name) {
+    <card-group [cards]="cardGroup.cards" [count]="cardGroup.numCards"></card-group>
+  }
+</div>

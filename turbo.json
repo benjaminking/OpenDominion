@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["src/**", "package.json", "tsconfig.json", "tsup.config.js", "angular.json", "tsconfig.app.json"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": true,
+      "persistent": false
+    },
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
+    "check-types": {
+      "dependsOn": ["topo"]
+    },
+    "lint": {}
+  }
+}

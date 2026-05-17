@@ -1,0 +1,26 @@
+<div class="opponent">
+  <div class="player-line-container other">
+    <div class="player-line">
+      <div class="rotated-name-holder display-stat">
+        <div class="rotated-name">{{ name() }}</div>
+      </div>
+      <div class="hand-size-display">
+        <img src="/images/hand_size.png" />
+        <div class="area-label hand-size-label">&times; {{ handSize() }}</div>
+      </div>
+      <div class="deck-and-discard display-stat">
+        <div class="deck">
+          <img src="/images/card_back.png" />
+          <div class="card-count">{{ deckSize() }}</div>
+        </div>
+        <div class="discard">
+          @if (topDiscard()) {
+            <img src="/images/{{ topDiscard().name }}.jpg" />
+          } @else {
+            <div class="empty-discard"></div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+:host {
+  grid-area: mainplayer;
+}
+
+.shared {
+  position: relative;
+  height: 100%;
+}
+
+.trash-icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+.trash-icon img {
+  height: 75px;
+}

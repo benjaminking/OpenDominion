@@ -1,0 +1,40 @@
+.settings-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid black;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.setting-group {
+  border: solid 1px #ccc;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.setting-group-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.setting input[type='radio'] {
+  margin-right: 10px;
+}
+
+.settings-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  z-index: 1001;
+}

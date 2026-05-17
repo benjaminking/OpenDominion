@@ -1,0 +1,24 @@
+<div id="game-container">
+  <div class="background-filter"></div>
+  <div class="opponent-area">
+    @for (opponentName of opponentNames(); track opponentName) {
+      <opponent [name]="opponentName"></opponent>
+    }
+  </div>
+  <hand [name]="mainPlayerName()"></hand>
+  <main-player [name]="mainPlayerName()"></main-player>
+  <play-area [playerNames]="allPlayerNames()" [currentPlayerName]="currentPlayerName()"></play-area>
+  <controls
+    [mainPlayerName]="mainPlayerName()"
+    [playerNames]="allPlayerNames()"
+    [currentPlayerName]="currentPlayerName()"
+  ></controls>
+  <shared></shared>
+  <decision-dialog></decision-dialog>
+  <settings></settings>
+
+  <piles></piles>
+  <log [playerNames]="allPlayerNames()"></log>
+</div>
+
+<router-outlet />

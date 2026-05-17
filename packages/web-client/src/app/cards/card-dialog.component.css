@@ -1,0 +1,41 @@
+.card-dialog {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-height: 350px;
+  min-width: 600px;
+  border: solid 2px black;
+  border-radius: 15px;
+}
+
+.enabled {
+  display: block;
+}
+
+.title {
+  text-align: center;
+  color: #eee;
+  font-family: Arial, sans-serif;
+  font-size: 26px;
+}
+
+button.close-button {
+  font-size: 30px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+
+button.close-button:hover,
+button.close-button:focus {
+  color: #eee;
+}

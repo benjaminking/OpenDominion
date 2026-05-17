@@ -1,0 +1,178 @@
+:host {
+  grid-area: mainplayer;
+}
+
+.player-line {
+  background-color: yellow;
+  min-height: 40px;
+  min-width: 250px;
+  z-index: 1;
+}
+
+.player-line.me {
+  /*grid-column-start: pile-end;
+    grid-column-end: right;
+    grid-row-start: deck-end;
+    grid-row-end: bottom;*/
+  grid-area: player-line-me;
+}
+
+#in-play-area {
+  min-width: 350px;
+  min-height: 350px;
+  /*grid-column-start: pile-end;
+    grid-column-end: right;
+    grid-row-start: main-start;
+    grid-row-end: main-end;*/
+  grid-area: main;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+#deck-area {
+  min-width: 350px;
+  min-height: 120px;
+  /*grid-column-start: pile-end;
+    grid-column-end: right;
+    grid-row-start: main-end;
+    grid-row-end: deck-end;*/
+  grid-area: hand;
+  z-index: 1;
+}
+
+.card-display {
+  /*display: flex;
+    max-width: 600px;*/
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18px, 180px));
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(18px, 180px);
+  padding-right: 90px;
+}
+
+#in-play-area card-group:nth-child(3n + 2) {
+  top: 25px;
+  position: relative;
+}
+
+#in-play-area card-group:nth-child(3n + 3) {
+  top: 50px;
+  position: relative;
+}
+
+.player-line-container {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap-reverse;
+}
+
+.player-line-container.me {
+  flex-direction: row;
+}
+
+.player-line-container.me .player-line {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.player-line {
+  background-color: rgba(0, 0, 0, 0.8);
+  border: solid 1px rgb(0, 0, 0);
+  min-height: 75px;
+  vertical-align: middle;
+  display: flex;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.display-stat {
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.area-label {
+  font-family: Ubuntu;
+  color: white;
+  font-variant: small-caps;
+  font-size: 18px;
+  width: 50px;
+}
+
+.deck-and-discard {
+  position: relative;
+  width: 115px;
+}
+
+.deck {
+  position: relative;
+  display: inline-block;
+  background-color: rgba(70, 63, 37, 0.7);
+  border-radius: 5px;
+  margin-right: 3px;
+}
+
+.discard {
+  position: relative;
+  display: inline-block;
+  border-radius: 5px;
+  margin-right: 3px;
+}
+
+.deck-and-discard img {
+  height: 75px;
+  vertical-align: middle;
+}
+
+.rotated-name-holder {
+  width: 75px;
+  height: 75px;
+  margin-left: -50px;
+}
+
+.rotated-name {
+  font-family: Ubuntu;
+  color: white;
+  font-variant: small-caps;
+  font-size: 18px;
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  word-break: break-all;
+  vertical-align: middle;
+  text-align: center;
+  width: 75px;
+  height: 75px;
+}
+
+.hand-size-label {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.hand-size-display img {
+  display: inline-block;
+  height: 70px;
+  vertical-align: middle;
+}
+
+.card-count {
+  background-color: #aa4444;
+  color: white;
+  font-weight: bold;
+  font-size: 9pt;
+  padding: 1px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 4;
+}
+
+.empty-discard {
+  background-color: rgba(70, 63, 37, 0.7);
+  border-radius: 5px;
+  width: 49px;
+  height: 75px;
+}

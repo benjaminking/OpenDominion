@@ -1,0 +1,95 @@
+<div class="statistics">
+  <span class="statistic" id="coin_counter">
+    @if (currentPlayerCoins() <= 20) {
+      <img src="images/coin{{ currentPlayerCoins() }}_large.png" />
+    } @else {
+      <span ng-show="gameState.coins > 20">{{ currentPlayerCoins() }}</span>
+    }
+    <!-- <img src="images/coinp_large.png" ng-repeat="p in game.range(gameState.potions)" /> -->
+  </span>
+  <span class="statistic" id="action_counter">, {{ currentPlayerActions() }} actions</span>
+  <span class="statistic" id="buy_counter">, {{ currentPlayerBuys() }} buys</span>
+</div>
+<div class="status">{{ status() }}</div>
+
+<div class="button-area">
+  @if (isMainPlayersTurn()) {
+    <button id="end_turn" [disabled]="!canEndTurn()" (click)="endTurn()">end turn</button>
+
+    @if (canPlaySimpleTreasures()) {
+      <button id="play_treasures" (click)="makeSimpleTreasureChoice()">
+        +
+        @if (simpleTreasureCoins() <= 20) {
+          <img src="images/coin{{ simpleTreasureCoins() }}.png" />
+        } @else {
+          <div>{{ '$' + simpleTreasureCoins() }}</div>
+        }
+        <!-- <img ng-repeat="p in game.range(game.getBasicTreasurePotions())" src="images/coinp.png" /> -->
+      </button>
+    }
+
+    @if (isActionPhase()) {
+      <button (click)="endActionPhase()">end action phase</button>
+    }
+
+    @if (isBuyPhase() || isTreasurePhase()) {
+      <button (click)="endBuyPhase()">end buy phase</button>
+    }
+  }
+
+  @if (isInMultiSelection()) {
+    <button [disabled]="!isCorrectNumberOfCardsSelected()" (click)="completeSelection()">Done Selecting</button>
+
+    <button (click)="undoSelection()">Undo Selection</button>
+  }
+
+  <!--  <button
+    ng-show="game.pileSelectionFrame.selectionCanEnd"
+    ng-disabled="gameState.waitingForResponse || !game.pileSelectionFrame.selectionCanEnd"
+    ng-click="game.pileSelectionFrame.endSelectionFunction()"
+  >
+    Done Selecting
+  </button>
+-->
+
+  <!--
+  <button
+    ng-show="gameState.coffers && !gameState.hasBoughtInPhase && gameState.turnPhase === 'buy'"
+    ng-disabled="!game.cardSelectionFrame.isActionFrame && !game.cardSelectionFrame.isBuyFrame && !game.cardSelectionFrame.isNightFrame"
+    ng-click="game.coffersButtonPress()"
+  >
+    Spend Coffers
+  </button>
+
+  <button
+    ng-show="gameState.villagers > 0 && gameState.turnPhase === 'action'"
+    ng-disabled="gameState.waitingForResponse || !game.cardSelectionFrame.isActionFrame"
+    ng-click="game.villagersButtonPress()"
+  >
+    Spend Villager
+  </button>
+
+  <button
+    ng-if="gameState.firstWay"
+    ng-disabled="!game.hasActionCardInHand() || gameState.waitingForResponse || !game.cardSelectionFrame.isActionFrame"
+    ng-click="game.useFirstWay()"
+  >
+    {{ gameState.firstWayName }}
+  </button>
+
+  <button
+    ng-if="gameState.secondWay"
+    ng-disabled="!game.hasActionCardInHand() || gameState.waitingForResponse || !game.cardSelectionFrame.isActionFrame"
+    ng-click="game.useSecondWay()"
+  >
+    {{ gameState.secondWayName }}
+  </button>
+
+  <button
+    ng-show="gameState.debt > 0 && gameState.coins > 0 && gameState.turnPhase === 'buy'"
+    ng-disabled="gameState.waitingForResponse || !game.cardSelectionFrame.isActionFrame && !game.cardSelectionFrame.isBuyFrame && !game.cardSelectionFrame.isNightFrame"
+    ng-click="game.debtButtonPress()"
+  >
+    Pay Off Debt
+  </button>
+--></div>

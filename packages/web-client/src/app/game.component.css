@@ -1,0 +1,160 @@
+#game-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background: url('/images/castle.jpg') no-repeat center center fixed;
+  background-size: cover;
+
+  margin: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: [left] 235px [pile-end] auto [log-start] minmax(100px, 250px) [right];
+  grid-template-rows: [top] 80px [main-start] auto [main-end] 120px [controls-end] 255px [deck-end] 80px [bottom];
+  grid-template-areas:
+    'piles opponents log'
+    'piles inplay log'
+    'piles controls log'
+    'piles hand log'
+    'piles mainplayer log';
+  overflow: hidden;
+}
+
+.background-filter {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: contrast(0.65) blur(1px);
+  z-index: 0;
+}
+
+.opponent-area {
+  grid-area: opponents;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.side-bar {
+  z-index: 1;
+  grid-area: log;
+  display: flex;
+  flex-direction: column;
+}
+
+.vp-tracker {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  font-size: 14px;
+}
+
+.vp-tracker table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.score-box {
+  padding-left: 2px;
+  padding-right: 2px;
+  border-radius: 5px;
+  width: calc(100% - 4px);
+  margin-top: 10px;
+}
+
+.score-box.me .name {
+  min-width: 75px;
+  padding: 2px;
+  width: 75%;
+}
+
+.score-box.me {
+  background-color: #ffcc99;
+  border: solid 1px #ff9933;
+}
+
+.score-box.me .name {
+  border-right: solid 1px #ff9933;
+}
+
+.score-box.other {
+  background-color: #88bbdf;
+  border: solid 1px #0077bf;
+}
+
+.score-box.other .name {
+  border-right: solid 1px #0077bf;
+}
+
+.score-box .score {
+  padding: 2px;
+}
+
+.log-area {
+  border: solid 1px #aaa;
+  overflow: auto;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  font-size: 12pt;
+  min-height: 60%;
+  flex-grow: 5;
+}
+
+.log-message {
+  margin: 0 4px;
+}
+
+.log-message .name {
+  padding: 0 2px;
+  border-radius: 5px;
+}
+
+.log-message.me .name {
+  background-color: #ffcc99;
+}
+
+.log-message.other .name {
+  background-color: #88bbdf;
+}
+
+.turn {
+  padding: 0 2px;
+  width: calc(100% - 12px);
+  margin-top: 10px;
+  margin-bottom: 4px;
+  border-bottom: solid 1px rgb(150, 150, 150);
+}
+
+.chat-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbox {
+  font-size: 10pt;
+  overflow: auto;
+  padding: 0;
+  border: solid 1px #aaa;
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  flex-grow: 1;
+}
+
+.chat-input {
+  max-height: 25px;
+  padding: 0;
+}
+
+.chat-input input {
+  width: 100%;
+}
+
+.chat-input button {
+  display: none;
+}

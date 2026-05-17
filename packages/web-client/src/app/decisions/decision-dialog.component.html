@@ -1,0 +1,34 @@
+<div class="decision-dialog" [ngClass]="{ enabled: isDialogChoiceActive() }">
+  @if (isChooseOne()) {
+    <div class="prompt">{{ prompt() }}</div>
+    @for (choice of chooseOneOptions(); track choice.name) {
+      <button class="dialog-option" (click)="selectOption(choice)">{{ choice.name }}</button>
+    }
+  } @else if (isChooseMultiple()) {
+    <div class="prompt">{{ prompt() }}</div>
+    @for (choice of chooseMultipleOptions(); track choice.name) {
+      <label>
+        <input type="checkbox" [checked]="choice.selected" (change)="onCheckboxChange(choice.name, $event)" />
+        <span class="checked-option-name">{{ choice.name }}</span>
+      </label>
+    }
+    <button type="submit" [disabled]="!areCorrectNumberOfBoxesChecked()" (click)="submitOptions()">Done</button>
+  } @else if (isChooseEffect()) {
+    <div class="prompt">{{ prompt() }} You must choose one of the following:</div>
+    @for (mandatoryEffect of mandatoryEffects(); track mandatoryEffect.effectId) {
+      <button class="dialog-option" (click)="selectEffect(mandatoryEffect)">{{ mandatoryEffect.effectName }}</button>
+    }
+    @if (hasOptionalEffects()) {
+      <div class="prompt">You may choose one of the following:</div>
+      @for (optionalEffect of optionalEffects(); track optionalEffect.effectId) {
+        <button class="dialog-option" (click)="selectEffect(optionalEffect)">{{ optionalEffect.effectName }}</button>
+      }
+    }
+  } @else {
+    <!-- Choose Extra Turn -->
+    <div class="prompt">Choose an extra turn to have happen next:</div>
+    @for (extraTurn of extraTurns(); track extraTurn.name) {
+      <button class="dialog-option" (click)="selectExtraTurn(extraTurn)">{{ extraTurn.name }}</button>
+    }
+  }
+</div>

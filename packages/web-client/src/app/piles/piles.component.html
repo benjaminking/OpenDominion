@@ -1,0 +1,54 @@
+<div class="piles-top-container">
+  <div class="pile-group-container">
+    <div class="pile-group kingdom-pile-group">
+      @for (pile of kingdomPiles(); track pile.name) {
+        <pile
+          [name]="pile.name"
+          [cost]="pile.cost"
+          [count]="pile.size"
+          [topCard]="pile.topCard"
+          [categories]="pile.categories"
+          [types]="pile.types"
+        ></pile>
+      }
+    </div>
+  </div>
+  <div class="pile-group-container">
+    <div class="pile-group non-supply-pile-group">
+      @for (pile of nonSupplyPiles(); track pile.name) {
+        <pile
+          [name]="pile.name"
+          [cost]="pile.cost"
+          [count]="pile.size"
+          [topCard]="pile.topCard"
+          [categories]="pile.categories"
+          [types]="pile.types"
+        ></pile>
+      }
+    </div>
+    <div class="pile-group victory-pile-group">
+      @for (pile of victoryPiles(); track pile.name) {
+        <pile
+          [name]="pile.name"
+          [cost]="pile.cost"
+          [count]="pile.size"
+          [topCard]="pile.topCard"
+          [categories]="pile.categories"
+          [types]="pile.types"
+        ></pile>
+      }
+    </div>
+    <div class="pile-group treasure-pile-group extra-piles">
+      @for (pile of treasurePiles(); track pile.name) {
+        <pile
+          [name]="pile.name"
+          [cost]="pile.cost"
+          [count]="pile.size"
+          [topCard]="pile.topCard"
+          [categories]="pile.categories"
+          [types]="pile.types"
+        ></pile>
+      }
+    </div>
+  </div>
+</div>

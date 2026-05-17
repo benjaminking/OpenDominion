@@ -1,0 +1,78 @@
+import { Client } from '@dominion/client-common';
+import { DecisionService, LogMessage } from '@dominion/common';
+
+import { Game } from '../Game';
+import { BotStatistics } from './BotStatistics';
+import { InstructionExecutor } from './InstructionExecutor';
+import { PlayerCards } from './PlayerCards';
+import { PlayerEffects } from './PlayerEffects';
+import { Statistics } from './Statistics';
+
+export class Player {
+  private readonly ownedCards: PlayerCards;
+  private readonly effects: PlayerEffects = new PlayerEffects();
+  private readonly instructionExecutor: InstructionExecutor;
+  private readonly statistics: Statistics;
+  private readonly botStatistics: BotStatistics;
+
+  constructor(
+    private readonly name: string,
+    private readonly game: Game,
+    private readonly client: Client,
+    private readonly isBot = false,
+  ) {
+    this.ownedCards = new PlayerCards(this);
+    this.instructionExecutor = new InstructionExecutor(this.game.getGameState(), this);
+    this.statistics = new Statistics(this);
+    this.botStatistics = new BotStatistics(this, game.getMessageBroadcaster());
+  }
+
+  public communicateInitialState(): void {
+    this.statistics.communicateInitialState();
+    this.ownedCards.communicateInitialState();
+  }
+
+  public isBotPlayer(): boolean {
+    return this.isBot;
+  }
+
+  public getGame(): Game {
+    return this.game;
+  }
+
+  public getOwnedCards(): PlayerCards {
+    return this.ownedCards;
+  }
+
+  public getEffects(): PlayerEffects {
+    return this.effects;
+  }
+
+  public getStatistics(): Statistics {
+    return this.statistics;
+  }
+
+  public getBotStatistics(): BotStatistics {
+    return this.botStatistics;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getDecisionService(): DecisionService {
+    return this.client.getDecisionService();
+  }
+
+  public getInstructionExecutor(): InstructionExecutor {
+    return this.instructionExecutor;
+  }
+
+  public transmitLogMessage(logMessage: LogMessage): void {
+    this.client.sendLogMessage(logMessage);
+  }
+
+  public getClient(): Client {
+    return this.client;
+  }
+}

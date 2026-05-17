@@ -1,0 +1,110 @@
+.card-segment {
+  border-radius: 3px;
+  padding: 1px;
+}
+
+.small {
+  font-size: 3.6cqh;
+}
+
+.medium {
+  font-size: 4.5cqh;
+}
+
+.segment-curse {
+  background-color: rgba(114, 55, 135, 0.68);
+  border: solid 1px rgba(90, 40, 100, 1);
+}
+
+.segment-victory {
+  background-color: rgba(126, 175, 83, 0.68);
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.segment-action {
+  background-color: rgba(221, 221, 221, 0.68);
+  border: solid 1px rgba(100, 100, 100, 1);
+}
+
+.segment-reaction {
+  background-color: rgba(51, 153, 255, 0.68);
+  border: solid 1px rgba(25, 76, 128, 1);
+  color: white;
+}
+
+.segment-reserve {
+  background-color: rgba(204, 191, 121, 0.68);
+  border: solid 1px rgba(102, 95, 60, 1);
+}
+
+.segment-ruin {
+  background-color: rgba(153, 108, 49, 0.68);
+  border: solid 1px rgba(75, 55, 25, 1);
+  color: white;
+}
+
+.segment-treasure {
+  background-color: rgba(251, 223, 97, 0.68);
+  border: solid 1px rgba(150, 131, 65, 1);
+}
+
+.segment-duration {
+  background-color: rgba(221, 119, 0, 0.68);
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.segment-night {
+  background-color: rgba(110, 110, 110, 0.68);
+  border: solid 1px rgba(55, 55, 55, 1);
+  color: white;
+}
+
+.segment-victory-treasure {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(126, 175, 83, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.segment-victory-action {
+  background: linear-gradient(rgba(221, 221, 221, 0.68), rgba(126, 175, 83, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.segment-reserve-victory {
+  background: linear-gradient(rgba(204, 191, 121, 0.68), rgba(126, 175, 83, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.segment-treasure-reserve {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(204, 191, 121, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.segment-treasure-reaction {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(51, 153, 255, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.segment-action-treasure {
+  background: linear-gradient(rgba(221, 221, 221, 0.68), rgba(251, 223, 97, 0.68));
+  border: solid 1px rgba(55, 55, 55, 1);
+}
+
+.segment-night-action {
+  background: linear-gradient(rgba(221, 221, 221, 0.68), rgba(110, 110, 110, 0.68));
+  border: solid 1px rgba(55, 55, 55, 1);
+}
+
+.segment-night-duration {
+  background: linear-gradient(rgba(221, 119, 0, 0.68), rgba(110, 110, 110, 0.68));
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.segment-duration-reaction {
+  background: linear-gradient(rgba(221, 119, 0, 0.68), rgba(51, 153, 255, 0.68));
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.segment-duration-treasure {
+  background: linear-gradient(rgba(221, 119, 0, 0.68), rgba(251, 223, 97, 0.68));
+  border: solid 1px rgba(110, 60, 0, 1);
+}

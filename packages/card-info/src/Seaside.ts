@@ -1,0 +1,277 @@
+import { CardInfo, CardType, Expansion } from '@dominion/common';
+
+export const seaside: CardInfo[] = [
+  {
+    name: 'Astrolabe',
+    text: 'Now and at the start of your\nnext turn:\n$1\n+1 Buy',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    production: {
+      coins: 1,
+    },
+    types: [CardType.TREASURE, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Bazaar',
+    text: '+1 Card\n+2 Actions\n+$1',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Blockade',
+    text: "Gain a card costing up to\n$4, setting it aside.\nAt the start of your next turn,\nput it into your hand. While\nit's set aside, when another\nplayer gains a copy of it on\ntheir turn, they gain a Curse.",
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Caravan',
+    text: '+1 Card\n+1 Action\n\nAt the start of your next\nturn, +1 Card.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Corsair',
+    text: '+$2\n\nAt the start of your next turn,\n+1 Card. Until then, each other\nplayer trashes the first Silver or\nGold they play each turn.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Cutpurse',
+    text: '+$2\n\nEach other player discards\na Copper (or reveals\na hand with no Copper).',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Fishing Village',
+    text: '+2 Actions\n+$1\n\nAt the start of your next turn:\n+1 Action and +$1.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Haven',
+    text: '+1 Card\n+1 Action\n\nSet aside a card from your hand\nface down (under this).\nAt the start of your next turn,\nput it into your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Island',
+    text: 'Put this and a card from your\nhand onto your Island mat.\n-\n2 VP',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.VICTORY],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Lighthouse',
+    text: "+1 Action\n+$1\n\nAt the start of your next turn,\n+$1. Until then, when another\nplayer plays an Attack card, it\ndoesn't affect you.",
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Lookout',
+    text: '+1 Action\n\nLook at the top 3 cards of\nyour deck. Trash one of them.\nDiscard one of them.\nPut the other one back on\ntop of your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Merchant Ship',
+    text: 'Now and at the start\nof your next turn: +$2.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Monkey',
+    text: 'Until your next turn, when the\nplayer to your right gains a card,\n+1 Card.\n\nAt the start of your next turn,\n+1 Card.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Native Village',
+    text: '+2 Actions\nChoose one: Put the top card of\nyour deck face down on your\nNative Village mat (you may\nlook at those cards at any time);\nor put all the cards from your\nmat into your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Outpost',
+    text: 'You only draw 3 cards\nfor your next hand.\n\nTake an extra turn after this one\n(but not a 3rd turn in a row).',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Pirate',
+    text: 'At the start of your next turn,\ngain a Treasure costing up to\n$6 to your hand.\n-\nWhen any player gains a\nTreasure, you may play this\nfrom your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION, CardType.REACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Sailor',
+    text: '+1 Action\nOnce this turn, when you gain a\nDuration card, you may play it.\n\nAt the start of your next turn,\n+$2 and you may trash a card\nfrom your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Salvager',
+    text: '+1 Buy\n\nTrash a card from your hand.\n+$1 per $1 it costs.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Sea Chart',
+    text: '+1 Card\n+1 Action\n\nReveal the top card of your\ndeck. If you have a copy of it in\nplay, put it into your hand.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Sea Witch',
+    text: '+2 Cards\n\nEach other player\ngains a Curse.\n\nAt the start of your next turn,\n+2 Cards, then discard 2 cards.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Smugglers',
+    text: 'Gain a copy of a card\ncosting up to $6 that the\nplayer to your right gained\non their last turn.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Tactician',
+    text: 'If you have at least one card in\nhand: Discard your hand, and\nat the start of your next turn,\n+5 Cards, +1 Action,\nand +1 Buy.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Tide Pools',
+    text: '+3 Cards\n+1 Action\n\nAt the start of your next turn,\ndiscard 2 cards.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Treasure Map',
+    text: 'Trash this and a Treasure Map\nfrom your hand. If you trashed\ntwo Treasure Maps, gain 4\nGolds onto your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Treasury',
+    text: "+1 Card\n+1 Action\n+$1\n-\nWhen you discard this from play,\nif you didn't gain any Victory\ncards in your Buy phase this turn,\nyou may put this onto your deck.",
+    font_size: 'small',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Warehouse',
+    text: '+3 Cards\n+1 Action\n\nDiscard 3 cards.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.SEASIDE,
+  },
+  {
+    name: 'Wharf',
+    text: 'Now and at the start\nof your next turn:\n+2 Cards and +1 Buy.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.DURATION],
+    expansion: Expansion.SEASIDE,
+  },
+];

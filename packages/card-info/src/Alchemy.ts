@@ -1,0 +1,123 @@
+import { CardInfo, CardType, Expansion, Mechanic } from '@dominion/common';
+
+export const alchemy: CardInfo[] = [
+  {
+    name: 'Vineyard',
+    text: 'Worth 1 VP per 3 Action\ncards you have (round down).',
+    font_size: 'medium',
+    cost: {
+      coins: 0,
+      potions: 1,
+    },
+    types: [CardType.VICTORY],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'Herbalist',
+    text: '+1 Buy\n+$1\nOnce this turn, when you\ndiscard a Treasure from play,\nyou may put it onto your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+  },
+  {
+    name: 'Apothecary',
+    text: '+1 Card\n+1 Action\nReveal the top 4 cards of\nyour deck. Put the Coppers\nand Potions into your hand.\nPut the rest back in any order.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+      potions: 1,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'Scrying Pool',
+    text: '+1 Action\nEach player (including you) reveals\nthe top card of their deck and either\ndiscards it or puts it back, your\nchoice. Then reveal cards from your\ndeck until revealing one that isn’t\nan Action. Put all of those revealed\n cards into your hand.',
+    font_size: 'small',
+    cost: {
+      coins: 2,
+      potions: 1,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'University',
+    text: '+2 Actions\nYou may gain an Action card\ncosting up to $5.',
+    font_size: 'medium',
+    cost: {
+      coins: 2,
+      potions: 1,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'Alchemist',
+    text: '+2 Cards\n+1 Action\nAt the start of Clean-up\nthis turn, if you have a\nPotion in play, you may put\nthis onto your deck.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+      potions: 1,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'Familiar',
+    text: '+1 Card\n+1 Action\n\nEach other player gains\na Curse.',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+      potions: 1,
+    },
+    types: [CardType.ACTION, CardType.ATTACK],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: "Philosopher's Stone",
+    text: 'Count your deck and\ndiscard pile.\n+$1 per 5 cards total between\nthem (round down).',
+    font_size: 'medium',
+    cost: {
+      coins: 3,
+      potions: 1,
+    },
+    production: {
+      is_variable: true,
+    },
+    types: [CardType.TREASURE],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'Golem',
+    text: 'Reveal cards from your deck\nuntil you reveal 2 Action\ncards other than Golems.\nDiscard the other cards, then\nplay the Action cards in\neither order.',
+    font_size: 'medium',
+    cost: {
+      coins: 4,
+      potions: 1,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+  },
+  {
+    name: 'Apprentice',
+    text: '+1 Action\n\nTrash a card from your hand.\n+1 Card per $1 it costs.\n+2 Cards if it has P in its cost.',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+  },
+];

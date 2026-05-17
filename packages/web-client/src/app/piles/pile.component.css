@@ -1,0 +1,321 @@
+.image-container {
+  position: relative;
+  height: 49px;
+  width: 65px;
+  display: block;
+  vertical-align: middle;
+}
+
+.image-container img.card-image {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 49px;
+  width: 65px;
+  z-index: 1;
+}
+
+.image-container img.overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 49px;
+  width: 65px;
+  z-index: 2;
+  visibility: hidden;
+}
+
+.image-container img.overlay.enabled {
+  visibility: visible;
+}
+
+.image-container .select-overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 49px;
+  width: 65px;
+  z-index: 3;
+}
+
+.image-container .empty-overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 49px;
+  width: 65px;
+  z-index: 3;
+}
+
+.image-container .card-cost-image {
+  position: absolute;
+  z-index: 4;
+  left: 0px;
+  bottom: 0px;
+  height: 16px;
+}
+
+.card-cost-image img {
+  padding: 0px;
+  margin: 0px;
+}
+
+.kingdom-pile {
+  padding: 5px;
+  font-size: 9pt;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  width: 145px;
+  height: 48px;
+  container-name: pile;
+  container-type: size;
+}
+
+.kingdom-pile .card-name {
+  width: 70px;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+.kingdom-pile.has-trait {
+  margin-top: 23px;
+}
+
+.kingdom-pile .image-container {
+  margin-left: 5px;
+}
+
+.non-supply-pile {
+  padding: 2px;
+  font-size: 9pt;
+  text-align: center;
+  width: 64px;
+  height: 46px;
+  container-name: pile;
+  container-type: size;
+}
+
+.non-supply-pile .card-name {
+  width: 65px;
+  word-wrap: break-word;
+}
+
+.non-kingdom-pile {
+  padding: 2px;
+  font-size: 9pt;
+  text-align: center;
+  width: 64px;
+  height: 46px;
+  container-name: pile;
+  container-type: size;
+}
+
+.non-kindgom-pile .card-name {
+  width: 65px;
+  word-wrap: break-word;
+}
+
+.pile-information {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pile-count {
+  background-color: #aa4444;
+  color: white;
+  font-weight: bold;
+  font-size: 9pt;
+  padding: 1px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 4;
+}
+
+.pile {
+  border-radius: 5px;
+  transition: background 0.25s linear;
+}
+
+.pile.selectable {
+  cursor: pointer;
+}
+
+.panel-curse {
+  background-color: rgba(114, 55, 135, 0.68);
+  border: solid 1px rgba(90, 40, 100, 1);
+}
+
+.panel-curse:hover {
+  background-color: rgba(114, 55, 135, 1);
+}
+
+.panel-victory {
+  background-color: rgba(126, 175, 83, 0.68);
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.panel-victory:hover {
+  background-color: rgba(126, 175, 83, 1);
+}
+
+.panel-action {
+  background-color: rgba(221, 221, 221, 0.68);
+  border: solid 1px rgba(100, 100, 100, 1);
+}
+
+.panel-action:hover {
+  background-color: rgba(200, 200, 200, 1);
+}
+
+.panel-reaction {
+  background-color: rgba(51, 153, 255, 0.68);
+  border: solid 1px rgba(25, 76, 128, 1);
+  color: white;
+}
+
+.panel-reaction:hover {
+  background-color: rgba(51, 153, 255, 1);
+  color: white;
+}
+
+.panel-reserve {
+  background-color: rgba(204, 191, 121, 0.68);
+  border: solid 1px rgba(102, 95, 60, 1);
+}
+
+.panel-reserve:hover {
+  background-color: rgba(204, 191, 121, 1);
+}
+
+.panel-ruin {
+  background-color: rgba(153, 108, 49, 0.68);
+  border: solid 1px rgba(75, 55, 25, 1);
+  color: white;
+}
+
+.panel-ruin:hover {
+  background-color: rgba(153, 108, 49, 1);
+}
+
+.panel-treasure {
+  background-color: rgba(251, 223, 97, 0.68);
+  border: solid 1px rgba(150, 131, 65, 1);
+}
+
+.panel-treasure:hover {
+  background-color: rgba(251, 223, 97, 1);
+}
+
+.panel-duration {
+  background-color: rgba(221, 119, 0, 0.68);
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.panel-duration:hover {
+  background-color: rgba(221, 119, 0, 1);
+}
+
+.panel-night {
+  background-color: rgba(110, 110, 110, 0.68);
+  border: solid 1px rgba(55, 55, 55, 1);
+  color: white;
+}
+
+.panel-night:hover {
+  background-color: rgba(110, 110, 110, 1);
+}
+
+.panel-victory-treasure {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(126, 175, 83, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.panel-victory-treasure:hover {
+  background: linear-gradient(rgba(251, 223, 97, 1), rgba(126, 175, 83, 1));
+}
+
+.panel-victory-action {
+  background: linear-gradient(rgba(221, 221, 221, 0.68), rgba(126, 175, 83, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.panel-victory-action:hover {
+  background: linear-gradient(rgba(221, 221, 221, 1), rgba(126, 175, 83, 1));
+}
+
+.panel-reserve-victory {
+  background: linear-gradient(rgba(204, 191, 121, 0.68), rgba(126, 175, 83, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.panel-reserve-victory:hover {
+  background: linear-gradient(rgba(204, 191, 121, 1), rgba(126, 175, 83, 1));
+}
+
+.panel-treasure-reserve {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(204, 191, 121, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.panel-treasure-reserve:hover {
+  background: linear-gradient(rgba(251, 223, 97, 1), rgba(204, 191, 121, 1));
+}
+
+.panel-treasure-reaction {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(51, 153, 255, 0.68));
+  border: solid 1px rgba(62, 87, 41, 1);
+}
+
+.panel-treasure-reaction:hover {
+  background: linear-gradient(rgba(251, 223, 97, 1), rgba(51, 153, 255, 1));
+}
+
+.panel-action-treasure {
+  background: linear-gradient(rgba(221, 221, 221, 0.68), rgba(251, 223, 97, 0.68));
+  border: solid 1px rgba(55, 55, 55, 1);
+}
+
+.panel-action-treasure:hover {
+  background: linear-gradient(rgba(221, 221, 221, 1), rgba(251, 223, 97, 1));
+  border-radius: 5px;
+}
+
+.panel-night-action {
+  background: linear-gradient(rgba(221, 221, 221, 0.68), rgba(110, 110, 110, 0.68));
+  border: solid 1px rgba(55, 55, 55, 1);
+}
+
+.panel-night-action:hover {
+  background: linear-gradient(rgba(221, 221, 221, 1), rgba(110, 110, 110, 1));
+}
+
+.panel-night-duration {
+  background: linear-gradient(rgba(221, 119, 0, 0.68), rgba(110, 110, 110, 0.68));
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.panel-night-duration:hover {
+  background: linear-gradient(rgba(221, 119, 0, 1), rgba(110, 110, 110, 1));
+}
+
+.panel-duration-reaction {
+  background: linear-gradient(rgba(221, 119, 0, 0.68), rgba(51, 153, 255, 0.68));
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.panel-duration-reaction:hover {
+  background: linear-gradient(rgba(221, 119, 0, 1), rgba(51, 153, 255, 1));
+}
+
+.panel-duration-treasure {
+  background: linear-gradient(rgba(221, 119, 0, 0.68), rgba(251, 223, 97, 0.68));
+  border: solid 1px rgba(110, 60, 0, 1);
+}
+
+.panel-duration-treasure:hover {
+  background: linear-gradient(rgba(221, 119, 0, 1), rgba(251, 223, 97, 1));
+}

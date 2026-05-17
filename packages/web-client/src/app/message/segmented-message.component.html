@@ -1,0 +1,21 @@
+<div class="segmented-message">
+  @for (segment of segments(); track segment.id) {
+    @if (segment.type === MessageSegmentType.CARD) {
+      <card-segment [text]="segment.text" [card]="segment.card" [size]="segment.size"></card-segment>
+    } @else if (segment.type === MessageSegmentType.BOLD) {
+      <bold-segment [text]="segment.text" [size]="segment.size"></bold-segment>
+    } @else if (segment.type === MessageSegmentType.COIN) {
+      <coin [text]="segment.text" [size]="segment.size"></coin>
+    } @else if (segment.type === MessageSegmentType.VP) {
+      <vp-segment [text]="segment.text" [size]="segment.size"></vp-segment>
+    } @else if (segment.type === MessageSegmentType.ORDINARY) {
+      <text-segment [text]="segment.text" [size]="segment.size"></text-segment>
+    } @else if (segment.type === MessageSegmentType.LINE_BREAK) {
+      <line-break-segment></line-break-segment>
+    } @else if (segment.type === MessageSegmentType.HORIZONTAL_LINE) {
+      <horizontal-line-segment></horizontal-line-segment>
+    } @else if (segment.type === MessageSegmentType.PARAGRAPH_BREAK) {
+      <paragraph-break-segment></paragraph-break-segment>
+    }
+  }
+</div>

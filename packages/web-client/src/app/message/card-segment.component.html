@@ -1,0 +1,16 @@
+<span
+  class="card-segment"
+  [class.segment-action]="isAction() && !isTreasure() && !isReaction()"
+  [class.segment-treasure]="isTreasure() && !isAction() && !isReaction()"
+  [class.segment-victory]="isVictory()"
+  [class.segment-curse]="isCurse()"
+  [class.segment-action-treasure]="isAction() && isTreasure()"
+  [class.segment-duration]="isDuration() && !isTreasure() && !isReaction()"
+  [class.segment-duration-reaction]="isDuration() && isReaction()"
+  [class.segment-duration-treasure]="isDuration() && isTreasure()"
+  [class.segment-reaction]="isReaction() && !isTreasure() && !isDuration()"
+  [class.segment-treasure-reaction]="isTreasure() && isReaction()"
+  [class.segment-victory-action]="isVictory() && isAction() && !isDuration()"
+  [class.segment-victory-treasure]="isVictory() && isTreasure()"
+  >{{ text() }}</span
+>
