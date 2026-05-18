@@ -5,3 +5,7 @@ dist/
 coverage/
 packages/web-client/.angular/
 packages/game-server/dominion_assets.tgz
+packages/game-server/assets/images
+packages/game-server/assets/official_card_assets
+packages/game-server/copyright_free_assets
+packages/game-server/copyrighted_assets
