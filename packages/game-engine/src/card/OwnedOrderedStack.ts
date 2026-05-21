@@ -16,6 +16,6 @@ export class OwnedOrderedStack extends OrderedStack {
   }
 
   protected broadcastValue(): void {
-    this.gameMessageBroadcaster.updateSharedCards(this.location, this.privacyType, this);
+    this.gameMessageBroadcaster.updatePlayerCards(this.owner, this.location, this.privacyType, this);
   }
 }

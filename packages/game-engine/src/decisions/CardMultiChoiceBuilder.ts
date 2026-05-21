@@ -1,5 +1,6 @@
 import { CardChoice, CardLocation, CardSelectionPurpose, DecisionService } from '@dominion/common';
 
+import { ChoiceType } from '../../../common/dist/index.cjs';
 import { CardCollection } from '../card/CardCollection';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
@@ -16,10 +17,8 @@ export class CardMultiChoiceBuilder {
   private areaEligibility: Set<CardLocation> = new Set<CardLocation>();
   private cardEligibility: CardEligibilityFunction = anyCard;
   private isFromSet = false;
-  private isFromSupply = false;
   private set: CardCollection = CardCollection.emptyCollection();
   private numSelectedEligibility: NumSelectedEligibilityFunction = anyNumber;
-  private additionalOptions: string[] = [];
 
   private readonly ie: InstructionExecutor;
   private readonly decisionService: DecisionService;
@@ -50,10 +49,8 @@ export class CardMultiChoiceBuilder {
     return this;
   }
 
-  public from(location: CardLocation | 'supply' | CardCollection): this {
-    if (location === 'supply') {
-      this.isFromSupply = true;
-    } else if (location instanceof CardCollection) {
+  public from(location: CardLocation | CardCollection): this {
+    if (location instanceof CardCollection) {
       this.isFromSet = true;
       this.set = location;
     } else if (Array.isArray(location)) {
@@ -75,13 +72,20 @@ export class CardMultiChoiceBuilder {
     return this;
   }
 
-  public alsoAllow(options: string[]): this {
-    this.additionalOptions = options;
-    return this;
-  }
-
   public async choose(): Promise<CardCollection> {
-    const choices: CardChoice[] = this.ie.getEligibleCardChoices(this.areaEligibility, this.cardEligibility);
+    let choices: CardChoice[];
+    if (this.isFromSet) {
+      choices = this.set
+        .asCardArray()
+        .filter((card) => this.cardEligibility.matches(card))
+        .map((card) => ({
+          type: ChoiceType.Card,
+          card: card.getMetadata(),
+          name: card.getName(),
+        }));
+    } else {
+      choices = this.ie.getEligibleCardChoices(this.areaEligibility, this.cardEligibility);
+    }
 
     const choice = await wrapWithWaitingStatus(this.messageBroadcaster, this.player, () =>
       this.decisionService.chooseCards(

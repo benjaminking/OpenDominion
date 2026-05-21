@@ -68,9 +68,6 @@ export class CardChoiceBuilder {
     } else if (location instanceof CardCollection) {
       this.isFromSet = true;
       this.set = location;
-    } else if (Array.isArray(location)) {
-      this.isFromSet = true;
-      this.set = CardCollection.fromCards(location);
     } else {
       this.areaEligibility.add(location);
     }
@@ -96,8 +93,50 @@ export class CardChoiceBuilder {
     if (this.isFromSupply) {
       return this.chooseFromSupply();
     }
+    if (this.isFromSet) {
+      return this.chooseFromSet();
+    }
 
     return this.chooseFromOtherLocations();
+  }
+
+  private async chooseFromSet(): Promise<Card | NoneChoice | ImpossibleChoice> {
+    const possibleChoices: CardChoice[] = this.set
+      .asCardArray()
+      .filter((card) => this.cardEligibility.matches(card))
+      .map((card) => ({
+        type: ChoiceType.Card,
+        card: card.getMetadata(),
+        name: card.getName(),
+      }));
+
+    if (possibleChoices.length === 0 && this.noneOption) {
+      return { type: ChoiceType.None };
+    } else if (possibleChoices.length === 0) {
+      return {
+        type: ChoiceType.Impossible,
+      } as ImpossibleChoice;
+    }
+
+    const choice = await wrapWithWaitingStatus(this.messageBroadcaster, this.player, () =>
+      this.decisionService.chooseCard(
+        this.prompt,
+        this.selectionType,
+        this.name,
+        possibleChoices,
+        this.noneOption ? { type: ChoiceType.None } : undefined,
+      ),
+    );
+
+    if (isCardChoice(choice)) {
+      const card = this.ie.getCardByMetadata(choice.card);
+      if (card !== undefined) {
+        return card;
+      } else {
+        throw new Error('Decision service returned an invalid card');
+      }
+    }
+    return choice;
   }
 
   private async chooseFromSupply(): Promise<Card | NoneChoice | ImpossibleChoice> {

@@ -7,7 +7,9 @@
     "start": "ng serve dominion-web-client",
     "build": "ng build --configuration production",
     "build:dev": "ng build",
-    "test": "ng test"
+    "test": "vitest run -c vitest.config.mjs",
+    "test:watch": "vitest -c vitest.config.mjs",
+    "test:ng": "ng test"
   },
   "dependencies": {
     "@angular/animations": "^21.0.0",

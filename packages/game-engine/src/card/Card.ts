@@ -163,15 +163,16 @@ export class Card {
   }
 
   public getMetadata(): CardMetadata {
+    const currentCost = this.getCost();
     return {
       name: this._properName,
       id: this._id,
       location: this._location,
       types: Array.from(this._types),
       cost: {
-        coins: this._cost.coins,
-        potions: this._cost.potions,
-        debt: this._cost.debt,
+        coins: currentCost.coins,
+        potions: currentCost.potions,
+        debt: currentCost.debt,
       },
     };
   }

@@ -39,9 +39,15 @@ export class BotStatistics {
     }
 
     this.countInDeck.set(card.getName(), this.countInDeck.get(card.getName())! - 1);
+    if (this.countInDeck.get(card.getName())! <= 0) {
+      this.countInDeck.delete(card.getName());
+    }
 
     for (const type of card.getTypes()) {
       this.typeCountInDeck.set(type, this.typeCountInDeck.get(type)! - 1);
+      if (this.typeCountInDeck.get(type)! <= 0) {
+        this.typeCountInDeck.delete(type);
+      }
     }
 
     this.coinsInDeck -= card.getCoins();
@@ -55,14 +61,14 @@ export class BotStatistics {
 
   public getCountInDeck(cardName: string): number {
     if (this.countInDeck.has(cardName)) {
-      return this.countInDeck.get(cardName);
+      return this.countInDeck.get(cardName)!;
     }
     return 0;
   }
 
   public getTypeCountInDeck(cardType: CardType): number {
     if (this.typeCountInDeck.has(cardType)) {
-      return this.typeCountInDeck.get(cardType);
+      return this.typeCountInDeck.get(cardType)!;
     }
     return 0;
   }*/

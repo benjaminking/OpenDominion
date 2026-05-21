@@ -24,7 +24,7 @@ export class Swindler extends KingdomCard {
     if (trashedCard === undefined) {
       return;
     }
-    const cardToGain = attackingPlayer
+    const cardToGain = await attackingPlayer
       .getInstructionExecutor()
       .chooseCard('Choose a card costing exactly ' + trashedCard.getCost().toString() + ' to have your opponent gain')
       .from(CardSelectionLocation.SUPPLY)

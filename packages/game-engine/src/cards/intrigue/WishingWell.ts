@@ -15,7 +15,7 @@ export class WishingWell extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(1);
     ie.addActions(1);
-    const cardGuess = ie
+    const cardGuess = await ie
       .chooseCard('Guess what your top card is.')
       .from(CardSelectionLocation.ALL_CARDS)
       .to(CardSelectionPurpose.DRAW)

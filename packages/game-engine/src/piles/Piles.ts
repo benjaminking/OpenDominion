@@ -104,7 +104,7 @@ export class Piles {
   }
 
   public isSupplyPile(pileName: string): boolean {
-    return pileName in this.supplyPiles;
+    return this.supplyPiles.hasPile(pileName);
   }
 
   public getEligibleCardChoicesToBuy(coins: number): CardChoice[] {
@@ -124,7 +124,7 @@ export class Piles {
     const numProvincesToEnd = this.supplyPiles.getPileByName('Province')!.size();
 
     let pileLengths: number[] = [];
-    for (const pileName in this.supplyPiles.pileNames) {
+    for (const pileName of this.supplyPiles.pileNames) {
       pileLengths.push(this.supplyPiles.getPileByName(pileName)!.size());
     }
     pileLengths = pileLengths.sort((a, b) => a - b);

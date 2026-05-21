@@ -10,8 +10,9 @@ export function wrapWithWaitingStatus<T>(
   wrappedFunction: () => T,
 ): T {
   messageBroadcaster.sendStatus(new PlayerNameStatus('Waiting for %p...', targetPlayer), StatusAction.PUSH);
-  const returnValue: T = wrappedFunction();
-  messageBroadcaster.sendStatus(new PlayerNameStatus('', targetPlayer), StatusAction.POP);
-
-  return returnValue;
+  try {
+    return wrappedFunction();
+  } finally {
+    messageBroadcaster.sendStatus(new PlayerNameStatus('', targetPlayer), StatusAction.POP);
+  }
 }

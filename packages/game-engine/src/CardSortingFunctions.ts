@@ -6,7 +6,7 @@ export interface CardSortingFunction {
 
 export class TreasureCoinSortingFunction implements CardSortingFunction {
   public order(cardA: Card, cardB: Card): number {
-    return cardA.getCoins() - cardB.getCoins();
+    return cardB.getCoins() - cardA.getCoins();
   }
 }
 
@@ -17,8 +17,8 @@ export class NameSortingFunction implements CardSortingFunction {
 }
 
 function nameScore(card: Card): number {
-  const SECOND_LETTER_WEIGHT = 676;
-  const FIRST_LETTER_WEIGHT = 26;
+  const FIRST_LETTER_WEIGHT = 676;
+  const SECOND_LETTER_WEIGHT = 26;
 
   let val = 0;
   val +=

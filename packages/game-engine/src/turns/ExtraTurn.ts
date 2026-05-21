@@ -25,7 +25,7 @@ export class ExtraTurn {
     return choice.type === ChoiceType.ExtraTurn && (choice as ExtraTurnChoice).card.id === this.initiator.getId();
   }
 
-  public doOwnersMatch(otherExtraTurn: ExtraTurn): boolean {
+  public doInitiatorsMatch(otherExtraTurn: ExtraTurn): boolean {
     return this.initiator.getName() === otherExtraTurn.initiator.getName();
   }
 

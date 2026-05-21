@@ -9,4 +9,11 @@ export default [
     },
   },
   ...library,
+  {
+    files: ['test/**/*.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/require-await': 'off',
+    },
+  },
 ];

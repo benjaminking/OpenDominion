@@ -29,6 +29,9 @@ export class StartingDeckConfigurationBuilder {
       cardNamesWithCounts.push(new CardNameWithCount(heirloomName, 1));
     }
 
+    if (this.heirloomNames.length > 7) {
+      throw new Error('Cannot have more than 7 heirlooms in starting deck');
+    }
     cardNamesWithCounts.push(new CardNameWithCount('Copper', 7 - this.heirloomNames.length));
 
     return new StartingDeckConfiguration(cardNamesWithCounts);

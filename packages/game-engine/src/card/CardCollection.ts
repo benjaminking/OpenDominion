@@ -1,5 +1,4 @@
 import { CardMetadata } from '@dominion/common';
-import { AnonymousCard } from '@dominion/common';
 
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { CardSortingFunction } from '../CardSortingFunctions';
@@ -28,7 +27,7 @@ export class CardCollection implements Iterable<Card> {
   }
 
   public isEmpty(): boolean {
-    return this.cards.length > 0;
+    return this.cards.length === 0;
   }
 
   private changeListeners: ChangeListener[] = [];
@@ -121,7 +120,9 @@ export class CardCollection implements Iterable<Card> {
   }
 
   public removeCards(toRemove: CardCollection): CardCollection {
-    this.cards = this.cards.filter((card) => !toRemove.cards.includes(card));
+    this.cards = this.cards.filter(
+      (card) => !toRemove.cards.some((toRemoveCard) => toRemoveCard.getId() === card.getId()),
+    );
     this.triggerChangeListeners();
     return toRemove;
   }
@@ -223,22 +224,6 @@ export class CardCollection implements Iterable<Card> {
     return this.cards.map((x) => x.getName());
   }
 
-  public toAnonymizedArray(): AnonymousCard[] {
-    const anonymizedCards: AnonymousCard[] = [];
-    for (const _ of this.cards) {
-      anonymizedCards.push({});
-    }
-    return anonymizedCards;
-  }
-
-  public toPartiallyAnonymizedArray(): AnonymousCard[] {
-    const partiallyAnonymizedCards: (CardMetadata | AnonymousCard)[] = [this.cards[0]];
-    for (let k = 1; k < this.cards.length; ++k) {
-      partiallyAnonymizedCards.push({});
-    }
-    return partiallyAnonymizedCards;
-  }
-
   public print(): string {
     if (this.size() === 0) {
       return 'no cards';
@@ -256,7 +241,7 @@ export class CardCollection implements Iterable<Card> {
       }
 
       if (cardCounts.get(cardName) === 1) {
-        cardStr += 'a ';
+        cardStr += 'a ' + cardName;
       } else {
         cardStr += cardCounts.get(cardName)!.toFixed() + ' ' + cardName + (cardCounts.get(cardName)! > 1 ? 's' : '');
       }

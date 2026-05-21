@@ -35,7 +35,7 @@ class OnceThisTurnEffectExpiration extends EffectExpiration {
   }
 
   public hasExpired(): boolean {
-    return !this.hasBeenUsed && !this.hasTurnEnded;
+    return this.hasBeenUsed || this.hasTurnEnded;
   }
 }
 
@@ -55,7 +55,7 @@ class RestOfTurnEffectExpiration extends EffectExpiration {
   }
 
   public hasExpired(): boolean {
-    return !this.hasTurnEnded;
+    return this.hasTurnEnded;
   }
 }
 
@@ -80,7 +80,7 @@ class StartOfPlayersNextTurnEffectExpiration extends EffectExpiration {
   }
 
   public hasExpired(): boolean {
-    return !this.hasNextTurnStarted;
+    return this.hasNextTurnStarted;
   }
 }
 

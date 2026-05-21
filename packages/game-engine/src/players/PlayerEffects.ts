@@ -83,7 +83,7 @@ export class PlayerEffects {
   }
 
   public removeExtraTurnFromQueue(extraTurn: ExtraTurn): void {
-    const indexOfExtraTurn: number = this.extraTurns.findIndex((et: ExtraTurn) => et.doOwnersMatch(extraTurn));
+    const indexOfExtraTurn: number = this.extraTurns.findIndex((et: ExtraTurn) => et.doInitiatorsMatch(extraTurn));
     if (indexOfExtraTurn >= 0) {
       this.extraTurns.splice(indexOfExtraTurn, 1);
     }

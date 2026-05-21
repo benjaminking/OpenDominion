@@ -11,6 +11,9 @@ export class Randomizers {
   }
 
   public getProportionFromExpansion(expansion: Expansion): number {
+    if (this.randomizers.length === 0) {
+      return 0;
+    }
     return this.randomizers.filter((card) => card.isFromExpansion(expansion)).length / this.randomizers.length;
   }
 
