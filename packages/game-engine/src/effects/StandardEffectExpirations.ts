@@ -84,6 +84,31 @@ class StartOfPlayersNextTurnEffectExpiration extends EffectExpiration {
   }
 }
 
+class EndOfPlayersNextTurnEffectExpiration extends EffectExpiration {
+  private hasNextTurnEnded = false;
+  private targetPlayer: Player;
+  private currentTurn: Turn;
+
+  public constructor(player: Player, currentTurn: Turn) {
+    super();
+    this.targetPlayer = player;
+    this.currentTurn = currentTurn;
+  }
+
+  public registerEndOfPlayersTurn(player: Player, turn: Turn): void {
+    if (
+      this.targetPlayer.getName() === player.getName() &&
+      turn.getUnofficialNumber() > this.currentTurn.getUnofficialNumber()
+    ) {
+      this.hasNextTurnEnded = true;
+    }
+  }
+
+  public hasExpired(): boolean {
+    return this.hasNextTurnEnded;
+  }
+}
+
 class NoEffectExpiration extends EffectExpiration {
   public hasExpired(): boolean {
     return false;
@@ -91,6 +116,7 @@ class NoEffectExpiration extends EffectExpiration {
 }
 
 export {
+  EndOfPlayersNextTurnEffectExpiration,
   NoEffectExpiration,
   OnceThisTurnEffectExpiration,
   OneTimeEffectExpirtation,

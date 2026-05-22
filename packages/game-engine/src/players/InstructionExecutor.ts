@@ -26,6 +26,7 @@ import { Effect } from '../effects/Effect';
 import { EffectExpiration } from '../effects/EffectExpiration';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import {
+  EndOfPlayersNextTurnEffectExpiration,
   OnceThisTurnEffectExpiration,
   StartOfPlayersNextTurnEffectExpiration,
 } from '../effects/StandardEffectExpirations';
@@ -850,6 +851,10 @@ export class InstructionExecutor {
 
   public createStartOfPlayersNextTurnEffectExpiration(player: Player): EffectExpiration {
     return new StartOfPlayersNextTurnEffectExpiration(player, this.sharedGameState.getCurrentTurn());
+  }
+
+  public createEndOfMyNextTurnEffectExpiration(): EffectExpiration {
+    return new EndOfPlayersNextTurnEffectExpiration(this.player, this.sharedGameState.getCurrentTurn());
   }
 
   public getEligibleSupplyChoices(cardEligibilityFunction: CardEligibilityFunction): CardChoice[] {

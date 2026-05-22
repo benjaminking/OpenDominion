@@ -67,7 +67,7 @@ export class SegmentedMessageComponent {
         this.size() === 'medium' &&
         (segments[index].type === MessageSegmentType.COIN || segments[index].type === MessageSegmentType.VP)
       ) {
-        sizedSegments.push({ ...segments[index], size: 'xlarge' });
+        sizedSegments.push({ ...segments[index], size: 'large' });
         continue;
       }
 

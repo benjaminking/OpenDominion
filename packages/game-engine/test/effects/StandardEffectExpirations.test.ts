@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  EndOfPlayersNextTurnEffectExpiration,
   NoEffectExpiration,
   OnceThisTurnEffectExpiration,
   RestOfTurnEffectExpiration,
@@ -64,6 +65,24 @@ describe('StandardEffectExpirations', () => {
     expect(expiration.hasExpired()).toBe(false);
 
     expiration.registerStartOfPlayersTurn(alice, new Turn(alice, 2, 2));
+    expect(expiration.hasExpired()).toBe(true);
+  });
+
+  it('expires end-of-players-next-turn effects when that players next unofficial turn ends', () => {
+    const alice = createPlayer('Alice');
+    const bob = createPlayer('Bob');
+    const currentTurn = new Turn(alice, 1, 1);
+    const expiration = new EndOfPlayersNextTurnEffectExpiration(alice, currentTurn);
+
+    expect(expiration.hasExpired()).toBe(false);
+
+    expiration.registerEndOfPlayersTurn(bob, new Turn(bob, 1, 2));
+    expect(expiration.hasExpired()).toBe(false);
+
+    expiration.registerEndOfPlayersTurn(alice, new Turn(alice, 1, 1));
+    expect(expiration.hasExpired()).toBe(false);
+
+    expiration.registerEndOfPlayersTurn(alice, new Turn(alice, 2, 2));
     expect(expiration.hasExpired()).toBe(true);
   });
 

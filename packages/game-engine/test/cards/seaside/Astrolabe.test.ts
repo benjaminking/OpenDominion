@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { Astrolabe } from '../../../src/cards/seaside/Astrolabe';
+import { EndOfPlayersNextTurnEffectExpiration } from '../../../src/effects/StandardEffectExpirations';
 import { createCardHarness } from '../testHarness';
 
 describe('Astrolabe', () => {
@@ -17,5 +18,8 @@ describe('Astrolabe', () => {
     await new Astrolabe(testHarness.sharedGameState).play(testHarness.executor);
 
     expect(testHarness.effects.addEffect).toHaveBeenCalledTimes(1);
+    expect(testHarness.effects.addEffect.mock.calls[0][0].getExpiration()).toBeInstanceOf(
+      EndOfPlayersNextTurnEffectExpiration,
+    );
   });
 });

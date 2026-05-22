@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Curse } from '../../../src/cards/basic_cards/Curse';
 import { SeaWitch } from '../../../src/cards/seaside/SeaWitch';
+import { EndOfPlayersNextTurnEffectExpiration } from '../../../src/effects/StandardEffectExpirations';
 import { createCardHarness } from '../testHarness';
 
 describe('SeaWitch', () => {
@@ -18,6 +19,9 @@ describe('SeaWitch', () => {
 
     expect(testHarness.hand.size()).toBe(2);
     expect(testHarness.effects.addEffect).toHaveBeenCalledTimes(1);
+    expect(testHarness.effects.addEffect.mock.calls[0][0].getExpiration()).toBeInstanceOf(
+      EndOfPlayersNextTurnEffectExpiration,
+    );
   });
 
   it('curseAttack causes target player to gain a Curse to their discard', async () => {

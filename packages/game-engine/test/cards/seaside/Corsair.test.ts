@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { Corsair } from '../../../src/cards/seaside/Corsair';
+import { EndOfPlayersNextTurnEffectExpiration } from '../../../src/effects/StandardEffectExpirations';
 import { createCardHarness } from '../testHarness';
 
 describe('Corsair', () => {
@@ -10,6 +11,9 @@ describe('Corsair', () => {
 
     expect(testHarness.stats.coins).toBe(2);
     expect(testHarness.effects.addEffect).toHaveBeenCalled();
+    expect(testHarness.effects.addEffect.mock.calls[0][0].getExpiration()).toBeInstanceOf(
+      EndOfPlayersNextTurnEffectExpiration,
+    );
   });
 
   it('treasureTrashAttack registers an effect on the target player', async () => {

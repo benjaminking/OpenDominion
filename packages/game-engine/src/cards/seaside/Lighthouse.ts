@@ -22,6 +22,7 @@ export class Lighthouse extends KingdomCard {
         .from(this)
         .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)
         .onTurn(ie.createNextTurnEligibilityFunction())
+        .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
           new EffectAction(async (ie: InstructionExecutor, _targetCard: Card) => {

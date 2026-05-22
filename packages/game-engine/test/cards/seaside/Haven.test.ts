@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Haven } from '../../../src/cards/seaside/Haven';
+import { EndOfPlayersNextTurnEffectExpiration } from '../../../src/effects/StandardEffectExpirations';
 import { createCardHarness } from '../testHarness';
 
 describe('Haven', () => {
@@ -17,5 +18,8 @@ describe('Haven', () => {
     // card moved from hand to set-aside
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.effects.addEffect).toHaveBeenCalledTimes(1);
+    expect(testHarness.effects.addEffect.mock.calls[0][0].getExpiration()).toBeInstanceOf(
+      EndOfPlayersNextTurnEffectExpiration,
+    );
   });
 });

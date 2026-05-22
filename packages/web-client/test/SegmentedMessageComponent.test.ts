@@ -11,7 +11,7 @@ function createSegment(id: number, type: MessageSegmentType, text: string): Mess
 }
 
 describe('SegmentedMessageComponent', () => {
-  it('promotes isolated coin and vp segments to xlarge for medium text size', () => {
+  it('promotes isolated coin and vp segments to large for medium text size', () => {
     const injector = Injector.create({ providers: [] });
     const component = runInInjectionContext(injector, () => new SegmentedMessageComponent());
 
@@ -26,8 +26,8 @@ describe('SegmentedMessageComponent', () => {
       createSegment(7, MessageSegmentType.ORDINARY, 'Footer'),
     ]);
 
-    expect(sizedSegments[2].size).toBe('xlarge');
-    expect(sizedSegments[4].size).toBe('xlarge');
+    expect(sizedSegments[2].size).toBe('large');
+    expect(sizedSegments[4].size).toBe('large');
     expect(sizedSegments[0].size).toBe('medium');
     expect(sizedSegments[6].size).toBe('medium');
   });

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Tactician } from '../../../src/cards/seaside/Tactician';
+import { EndOfPlayersNextTurnEffectExpiration } from '../../../src/effects/StandardEffectExpirations';
 import { createCardHarness } from '../testHarness';
 
 describe('Tactician', () => {
@@ -16,6 +17,9 @@ describe('Tactician', () => {
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.discard.size()).toBe(1);
     expect(testHarness.effects.addEffect).toHaveBeenCalledTimes(1);
+    expect(testHarness.effects.addEffect.mock.calls[0][0].getExpiration()).toBeInstanceOf(
+      EndOfPlayersNextTurnEffectExpiration,
+    );
   });
 
   it('does not register an effect when hand is empty', async () => {

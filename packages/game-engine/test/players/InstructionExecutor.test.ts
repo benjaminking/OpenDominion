@@ -9,6 +9,7 @@ import { CardPlayOptions } from '../../src/CardPlayOptions';
 import { Effect } from '../../src/effects/Effect';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import {
+  EndOfPlayersNextTurnEffectExpiration,
   OnceThisTurnEffectExpiration,
   StartOfPlayersNextTurnEffectExpiration,
 } from '../../src/effects/StandardEffectExpirations';
@@ -254,6 +255,7 @@ describe('InstructionExecutor', () => {
     expect(executor.createThisTurnEligibilityFunction()).toBeInstanceOf(ThisTurnEligibility);
     expect(executor.createNextTurnEligibilityFunction()).toBeInstanceOf(NextTurnEligibility);
     expect(executor.createOnceThisTurnEffectExpiration()).toBeInstanceOf(OnceThisTurnEffectExpiration);
+    expect(executor.createEndOfMyNextTurnEffectExpiration()).toBeInstanceOf(EndOfPlayersNextTurnEffectExpiration);
     expect(executor.createStartOfMyNextTurnEffectExpiration()).toBeInstanceOf(StartOfPlayersNextTurnEffectExpiration);
     expect(executor.createStartOfPlayersNextTurnEffectExpiration(player)).toBeInstanceOf(
       StartOfPlayersNextTurnEffectExpiration,

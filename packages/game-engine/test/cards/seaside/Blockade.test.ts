@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Blockade } from '../../../src/cards/seaside/Blockade';
+import { EndOfPlayersNextTurnEffectExpiration } from '../../../src/effects/StandardEffectExpirations';
 import { createCardHarness } from '../testHarness';
 
 describe('Blockade', () => {
@@ -16,6 +17,9 @@ describe('Blockade', () => {
 
     expect(testHarness.sharedTrash.size()).toBe(0);
     expect(testHarness.effects.addEffect).toHaveBeenCalled();
+    expect(testHarness.effects.addEffect.mock.calls[0][0].getExpiration()).toBeInstanceOf(
+      EndOfPlayersNextTurnEffectExpiration,
+    );
   });
 
   it('attack callback registers a curse-gain effect on the target player', async () => {
