@@ -405,6 +405,7 @@ export class InstructionExecutor {
       .choose();
 
     if (cardChoice instanceof Card) {
+      this.removeCardFromLocation(cardChoice, cardChoice.getLocation());
       this.topDeckCardFromSet(cardChoice, topCards, true);
       if (topCards.size() > 0) {
         return this.topDeckCardsFromRevealedSet(topCards);
@@ -487,6 +488,9 @@ export class InstructionExecutor {
     cards: CardCollection,
   ): Promise<CardCollection> {
     cards.removeCards(discardedCards);
+    for (const card of discardedCards) {
+      this.removeCardFromLocation(card, card.getLocation());
+    }
     return this.discardCards(discardedCards, CardLocation.REVEAL_LIMBO);
   }
 
@@ -537,12 +541,16 @@ export class InstructionExecutor {
 
   public async trashCardFromSet(card: Card, set: CardCollection): Promise<Card | undefined> {
     set.removeCard(card);
+    this.removeCardFromLocation(card, card.getLocation());
     return this.trashCard(card);
   }
 
   public async trashCardsFromSet(cards: CardCollection, set: CardCollection): Promise<CardCollection> {
     if (cards.size() > 0) {
       set.removeCards(cards);
+      for (const card of cards) {
+        this.removeCardFromLocation(card, card.getLocation());
+      }
       return this.trashCards(cards);
     }
     return new CardCollection();
@@ -932,5 +940,9 @@ export class InstructionExecutor {
 
   public setNumCardsToDrawInCleanup(numCardsToDrawInCleanup: number): void {
     this.player.getStatistics().setNumCardsToDrawInCleanup(numCardsToDrawInCleanup);
+  }
+
+  public forceFullBroadcastOfDiscard(): void {
+    this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
 }

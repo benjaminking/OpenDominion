@@ -1,10 +1,12 @@
 import '@angular/compiler';
-import { Injector, runInInjectionContext } from '@angular/core';
+import { Injector, runInInjectionContext, signal, type Signal, type WritableSignal } from '@angular/core';
 import { CardLocation, CardType, type CardMetadata } from '@dominion/common';
 import { describe, expect, it } from 'vitest';
 
 import { MessageDecoderService } from '../src/app/message-decoder.service';
 import { SharedComponent } from '../src/app/shared/shared.component';
+import { ViewVisibilityService } from '../src/app/view-visibility.service';
+import { ViewName } from '../src/app/view-names';
 
 function createCard(name: string, id: string): CardMetadata {
   return {
@@ -27,11 +29,32 @@ class FakeMessageDecoderService {
   }
 }
 
+class FakeViewVisibilityService {
+  private readonly visibilityByViewName: Record<ViewName, WritableSignal<boolean>> = {
+    [ViewName.REVEALED_LIMBO]: signal(false),
+    [ViewName.SET_ASIDE]: signal(false),
+    [ViewName.TRASH]: signal(false),
+    [ViewName.DISCARD]: signal(false),
+  };
+
+  getViewVisibilitySignal(viewName: ViewName): Signal<boolean> {
+    return this.visibilityByViewName[viewName];
+  }
+
+  toggleViewByName(viewName: ViewName): void {
+    this.visibilityByViewName[viewName].set(!this.visibilityByViewName[viewName]());
+  }
+}
+
 describe('SharedComponent', () => {
   it('subscribes to trash updates and toggles trash visibility', () => {
     const decoder = new FakeMessageDecoderService();
+    const viewVisibilityService = new FakeViewVisibilityService();
     const injector = Injector.create({
-      providers: [{ provide: MessageDecoderService, useValue: decoder }],
+      providers: [
+        { provide: MessageDecoderService, useValue: decoder },
+        { provide: ViewVisibilityService, useValue: viewVisibilityService },
+      ],
     });
     const component = runInInjectionContext(injector, () => new SharedComponent());
     const copper = createCard('Copper', 'copper-1');
@@ -41,12 +64,13 @@ describe('SharedComponent', () => {
     decoder.sharedCardsCallback?.({ cards: [copper, silver] });
 
     expect(component.trash()).toEqual([copper, silver]);
-    expect(component.isTrashVisible).toBe(false);
+    expect(component.trashViewName).toBe(ViewName.TRASH);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.TRASH)()).toBe(false);
 
     component.toggleTrashVisibility();
-    expect(component.isTrashVisible).toBe(true);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.TRASH)()).toBe(true);
 
     component.toggleTrashVisibility();
-    expect(component.isTrashVisible).toBe(false);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.TRASH)()).toBe(false);
   });
 });

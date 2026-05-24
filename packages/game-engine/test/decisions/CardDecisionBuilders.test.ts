@@ -56,6 +56,7 @@ const createBuilderContext = (name = 'Alice') => {
     getCardByMetadata: vi.fn(),
     getCardsByMetadata: vi.fn(),
     getAllExtraCards: vi.fn(() => CardCollection.emptyCollection()),
+    forceFullBroadcastOfDiscard: vi.fn(),
   } as unknown as InstructionExecutor;
   const decisionService = {
     chooseCard: vi.fn(),
@@ -187,6 +188,65 @@ describe('CardChoiceBuilder', () => {
     await expect(new CardChoiceBuilder(player).from(CardSelectionLocation.SUPPLY).choose()).rejects.toThrow(
       'Decision service returned an invalid card',
     );
+  });
+
+  it('auto-selects a single eligible card when choosing from a set and none is not allowed', async () => {
+    const { decisionService, instructionExecutor, player } = createBuilderContext();
+    const selectedCard = createCard({ name: 'Border Village' });
+    selectedCard.setId('border-village-1');
+    selectedCard.setLocation(CardLocation.REVEAL_LIMBO);
+    const sourceSet = CardCollection.fromCards([selectedCard]);
+
+    vi.mocked(instructionExecutor.getCardByMetadata).mockReturnValue(selectedCard);
+
+    const chosenCard = await new CardChoiceBuilder(player).from(sourceSet).choose();
+
+    expect(chosenCard).toBe(selectedCard);
+    expect(decisionService.chooseCard).not.toHaveBeenCalled();
+  });
+
+  it('auto-selects when all eligible cards in a set share the same name and none is not allowed', async () => {
+    const { decisionService, instructionExecutor, player } = createBuilderContext();
+    const firstSilver = createCard({ name: 'Silver', types: [CardType.TREASURE] });
+    const secondSilver = createCard({ name: 'Silver', types: [CardType.TREASURE] });
+    firstSilver.setId('silver-1');
+    secondSilver.setId('silver-2');
+    firstSilver.setLocation(CardLocation.REVEAL_LIMBO);
+    secondSilver.setLocation(CardLocation.REVEAL_LIMBO);
+    const sourceSet = CardCollection.fromCards([firstSilver, secondSilver]);
+
+    vi.mocked(instructionExecutor.getCardByMetadata).mockImplementation((metadata) =>
+      metadata.id === firstSilver.getId() ? firstSilver : secondSilver,
+    );
+
+    const chosenCard = await new CardChoiceBuilder(player).from(sourceSet).choose();
+
+    expect(chosenCard).toBe(firstSilver);
+    expect(decisionService.chooseCard).not.toHaveBeenCalled();
+  });
+
+  it('forces a full discard broadcast before prompting for choices from discard', async () => {
+    const { decisionService, instructionExecutor, player } = createBuilderContext();
+    const discardCard = createCard({ name: 'Silver', types: [CardType.TREASURE] });
+    discardCard.setId('silver-discard-1');
+    discardCard.setLocation(CardLocation.DISCARD);
+    const discardChoices: CardChoice[] = [
+      {
+        type: ChoiceType.Card,
+        card: discardCard.getMetadata(),
+      },
+    ];
+    vi.mocked(instructionExecutor.getEligibleCardChoices).mockReturnValue(discardChoices);
+    vi.mocked(decisionService.chooseCard).mockResolvedValue(discardChoices[0]);
+    vi.mocked(instructionExecutor.getCardByMetadata).mockReturnValue(discardCard);
+
+    const chosenCard = await new CardChoiceBuilder(player)
+      .from(CardLocation.DISCARD)
+      .whereCardIs(new CardEligibilityFunction(() => true))
+      .choose();
+
+    expect(chosenCard).toBe(discardCard);
+    expect(instructionExecutor.forceFullBroadcastOfDiscard).toHaveBeenCalledTimes(1);
   });
 });
 

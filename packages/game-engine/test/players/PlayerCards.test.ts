@@ -18,6 +18,7 @@ import { CardCollection } from '../../src/card/CardCollection';
 import { Cost } from '../../src/card/Cost';
 import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
+import { PrivacyType } from '../../src/card/PrivacyType';
 import { PlayerCards } from '../../src/players/PlayerCards';
 import { SharedGameState } from '../../src/SharedGameState';
 
@@ -86,6 +87,7 @@ const createPlayerCards = () => {
     cards,
     gameState,
     logger,
+    broadcaster,
     botStatistics,
     statistics,
   };
@@ -313,5 +315,19 @@ describe('PlayerCards', () => {
       { ...inPlayCard.getMetadata(), id: 'missing-id' },
     ]);
     expect(combined.size()).toBe(2);
+  });
+
+  it('can force a full discard broadcast with opponent-visible size privacy', () => {
+    const { cards, broadcaster } = createPlayerCards();
+    cards.addCardToDiscard(createCard('Copper', 'discard-0', CardType.TREASURE));
+
+    cards.forceFullBroadcastOfDiscard();
+
+    expect((broadcaster.updatePlayerCards as ReturnType<typeof vi.fn>).mock.calls).toContainEqual([
+      expect.anything(),
+      CardLocation.DISCARD,
+      PrivacyType.SIZE_VISIBLE_TO_OPPONENTS,
+      cards.getDiscard(),
+    ]);
   });
 });

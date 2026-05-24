@@ -1,4 +1,4 @@
-import { Injector, runInInjectionContext } from '@angular/core';
+import { Injector, runInInjectionContext, signal, type Signal, type WritableSignal } from '@angular/core';
 import {
   CardLocation,
   CardSelectionPurpose,
@@ -14,6 +14,25 @@ import { isActionPhaseDecision, isChooseCardsDecision, isTreasurePhaseDecision }
 import { DecisionType } from '../src/app/decisions/DecisionType';
 import { MessageDecoderService } from '../src/app/message-decoder.service';
 import { MessageWriterService } from '../src/app/message-writer.service';
+import { ViewVisibilityService } from '../src/app/view-visibility.service';
+import { ViewName } from '../src/app/view-names';
+
+class FakeViewVisibilityService {
+  private readonly visibilityByViewName: Record<ViewName, WritableSignal<boolean>> = {
+    [ViewName.REVEALED_LIMBO]: signal(false),
+    [ViewName.SET_ASIDE]: signal(false),
+    [ViewName.TRASH]: signal(false),
+    [ViewName.DISCARD]: signal(false),
+  };
+
+  getViewVisibilitySignal(viewName: ViewName): Signal<boolean> {
+    return this.visibilityByViewName[viewName];
+  }
+
+  toggleViewByName(viewName: ViewName): void {
+    this.visibilityByViewName[viewName].set(!this.visibilityByViewName[viewName]());
+  }
+}
 
 function createCard(name: string, id: string): CardMetadata {
   return {
@@ -111,16 +130,18 @@ function createService() {
   const writer = {
     sendChoice: vi.fn(),
   };
+  const viewVisibilityService = new FakeViewVisibilityService();
   const injector = Injector.create({
     providers: [
       { provide: MessageDecoderService, useValue: decoder },
       { provide: MessageWriterService, useValue: writer },
+      { provide: ViewVisibilityService, useValue: viewVisibilityService },
     ],
   });
 
   const service = runInInjectionContext(injector, () => new DecisionManagerService());
 
-  return { service, decoder, writer };
+  return { service, decoder, writer, viewVisibilityService };
 }
 
 describe('DecisionManagerService', () => {
@@ -260,5 +281,38 @@ describe('DecisionManagerService', () => {
       expect([...decision.eligibleCardIds]).toEqual(['silver-1', 'gold-1']);
       expect(decision.simpleTreasuresChoice).toEqual({ type: ChoiceType.SimpleTreasures });
     }
+  });
+
+  it('opens special location views when choose-card decisions target those locations', () => {
+    const { decoder, service, viewVisibilityService } = createService();
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Choose a revealed card',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [createCardChoice({ ...createCard('Imp', 'imp-1'), location: CardLocation.REVEAL_LIMBO })],
+    });
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.REVEALED_LIMBO)()).toBe(true);
+    expect(service.currentDecision()?.type).toBe(DecisionType.CHOOSE_CARD);
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Choose from set aside',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [createCardChoice({ ...createCard('Horse', 'horse-1'), location: CardLocation.SET_ASIDE })],
+    });
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.SET_ASIDE)()).toBe(true);
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Choose from trash',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [createCardChoice({ ...createCard('Copper', 'copper-1'), location: CardLocation.TRASH })],
+    });
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.TRASH)()).toBe(true);
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Choose from discard',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [createCardChoice({ ...createCard('Silver', 'silver-1'), location: CardLocation.DISCARD })],
+    });
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.DISCARD)()).toBe(true);
   });
 });

@@ -3,6 +3,7 @@ import { MessageDecoderService } from '../message-decoder.service';
 
 import {
   CardChoice,
+  CardLocation,
   CardMetadata,
   CardSelectionPurpose,
   ChoiceType,
@@ -29,16 +30,19 @@ import {
 import { DecisionType } from './DecisionType';
 import { MessageWriterService } from '../message-writer.service';
 import { MultiNamedChoice } from '@dominion/common';
+import { ViewName } from '../view-names';
+import { ViewVisibilityService } from '../view-visibility.service';
 
 @Injectable({ providedIn: 'root' })
 export class DecisionManagerService {
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
   private readonly webSocketMessageWriter = inject(MessageWriterService);
+  private readonly viewVisibilityService = inject(ViewVisibilityService);
   private selectedCards: CardMetadata[] = [];
   private resetSubscribers: Array<() => void> = [];
 
   private decisionStack: WritableSignal<Decision[]> = signal([]);
-  currentDecision: Signal<Decision> = computed(() => {
+  currentDecision: Signal<Decision | undefined> = computed(() => {
     const decisionStack = this.decisionStack();
     return this.decisionStack().length > 0 ? this.decisionStack()[this.decisionStack().length - 1] : undefined;
   });
@@ -63,6 +67,7 @@ export class DecisionManagerService {
     cardChoices: CardChoice[];
     noneChoice?: NoneChoice;
   }): void {
+    this.enableNecessaryViewsForCardChoices(chooseCardContent.cardChoices);
     this.addNewDecision({
       ...chooseCardContent,
       type: DecisionType.CHOOSE_CARD,
@@ -168,6 +173,20 @@ export class DecisionManagerService {
       eligibleCardIds.add(cardChoice.card.id);
     }
     return eligibleCardIds;
+  }
+
+  private enableNecessaryViewsForCardChoices(cardChoices: CardChoice[]): void {
+    for (const cardChoice of cardChoices) {
+      if (cardChoice.card.location === CardLocation.REVEAL_LIMBO) {
+        this.viewVisibilityService.toggleViewByName(ViewName.REVEALED_LIMBO);
+      } else if (cardChoice.card.location === CardLocation.SET_ASIDE) {
+        this.viewVisibilityService.toggleViewByName(ViewName.SET_ASIDE);
+      } else if (cardChoice.card.location === CardLocation.TRASH) {
+        this.viewVisibilityService.toggleViewByName(ViewName.TRASH);
+      } else if (cardChoice.card.location === CardLocation.DISCARD) {
+        this.viewVisibilityService.toggleViewByName(ViewName.DISCARD);
+      }
+    }
   }
 
   public resolveDecisionWithCard(card: CardMetadata): void {

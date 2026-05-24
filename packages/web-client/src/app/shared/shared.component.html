@@ -2,11 +2,5 @@
   <div class="trash-icon" (click)="toggleTrashVisibility()">
     <img src="images/trash.jpg" />
   </div>
-  <card-dialog
-    title="Trash"
-    [cards]="trash()"
-    [(visible)]="isTrashVisible"
-    [grouped]="true"
-    [sorted]="true"
-  ></card-dialog>
+  <card-dialog title="Trash" [cards]="trash()" [name]="trashViewName" [grouped]="true" [sorted]="true"></card-dialog>
 </div>

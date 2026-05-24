@@ -49,7 +49,7 @@ reserve: #d9be87
   position: absolute;
   width: 86cqw;
   height: 6.8cqh;
-  top: 3.25cqh;
+  top: 3.5cqh;
   left: 6.9cqw;
   text-align: center;
   font-family: 'CardTitle';
@@ -63,9 +63,9 @@ reserve: #d9be87
 
 .card-types {
   position: absolute;
-  width: 84cqw;
-  top: 89.4cqh;
-  left: 8cqw;
+  width: 86cqw;
+  top: 90.5cqh;
+  left: 10cqw;
   text-align: center;
   font-family: 'CardTitle';
   color: black;

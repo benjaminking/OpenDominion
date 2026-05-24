@@ -176,3 +176,28 @@
   width: 49px;
   height: 75px;
 }
+
+.card-area-toggle {
+  border: solid 1px white;
+  border-radius: 10px;
+  height: 75px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100px;
+  text-align: center;
+  position: relative;
+}
+
+.pile-count {
+  background-color: #aa4444;
+  color: white;
+  font-weight: bold;
+  font-size: 9pt;
+  padding: 1px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 4;
+}

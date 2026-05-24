@@ -8,6 +8,6 @@ import { Player } from './Player';
 // TODO: add stacks here, so that we can have multiple sets of revealed cards
 export class Limbo extends OwnedUnorderedCardCollection {
   constructor(owner: Player, gameMessageBroadcaster: GameMessageBroadcaster) {
-    super(owner, CardLocation.SET_ASIDE, gameMessageBroadcaster, PrivacyType.SIZE_VISIBLE_TO_OPPONENTS);
+    super(owner, CardLocation.REVEAL_LIMBO, gameMessageBroadcaster, PrivacyType.SIZE_VISIBLE_TO_OPPONENTS);
   }
 }

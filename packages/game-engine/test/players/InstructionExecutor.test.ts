@@ -217,6 +217,9 @@ const createHarness = () => {
 describe('InstructionExecutor', () => {
   it('forwards stats, lookup, and eligibility helpers', () => {
     const { executor, player, ownedCards, statistics, sharedGameState, sharedExtraCards } = createHarness();
+    const forceDiscardBroadcastSpy = vi
+      .spyOn(ownedCards, 'forceFullBroadcastOfDiscard')
+      .mockImplementation(() => undefined);
     const handCard = createCard('Village', 'hand-0');
     const playedCard = createCard('Smithy', 'played-0');
     const gainedCard = createCard('Copper', 'gained-0', CardType.TREASURE);
@@ -262,11 +265,13 @@ describe('InstructionExecutor', () => {
     );
     expect(executor.getAllExtraCards()).toBe(sharedExtraCards);
     executor.setNumCardsToDrawInCleanup(2);
+    executor.forceFullBroadcastOfDiscard();
 
     expect(statistics.addActions).toHaveBeenCalledWith(2);
     expect(statistics.addBuys).toHaveBeenCalledWith(3);
     expect(statistics.addVP).toHaveBeenCalledWith(4);
     expect(statistics.setNumCardsToDrawInCleanup).toHaveBeenCalledWith(2);
+    expect(forceDiscardBroadcastSpy).toHaveBeenCalledTimes(1);
   });
 
   it('plays cards from hand and simple treasures through the owned card zones', async () => {

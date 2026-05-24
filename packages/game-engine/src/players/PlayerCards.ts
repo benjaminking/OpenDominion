@@ -3,14 +3,15 @@ import { CardLocation, CardMetadata } from '@dominion/common';
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
+import { PrivacyType } from '../card/PrivacyType';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import { Logger } from '../logging/Logger';
 import { ServerLogMessage } from '../logging/ServerLogMessage';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
-import { canBeDiscardedInCleanup, isActionCard } from '../StandardCardEligibilityFunctions';
 import { StartingDeckConfiguration } from '../setup/StartingDeckConfiguration';
+import { canBeDiscardedInCleanup, isActionCard } from '../StandardCardEligibilityFunctions';
 import { Deck } from './Deck';
 import { Discard } from './Discard';
 import { Hand } from './Hand';
@@ -440,5 +441,9 @@ export class PlayerCards {
       }
     }
     return cards;
+  }
+
+  forceFullBroadcastOfDiscard(): void {
+    this.discard.forceBroadcastWithPrivacyType(PrivacyType.SIZE_VISIBLE_TO_OPPONENTS);
   }
 }

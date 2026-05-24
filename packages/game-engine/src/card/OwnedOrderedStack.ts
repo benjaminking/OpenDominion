@@ -18,4 +18,8 @@ export class OwnedOrderedStack extends OrderedStack {
   protected broadcastValue(): void {
     this.gameMessageBroadcaster.updatePlayerCards(this.owner, this.location, this.privacyType, this);
   }
+
+  public forceBroadcastWithPrivacyType(privacyType: PrivacyType): void {
+    this.gameMessageBroadcaster.updatePlayerCards(this.owner, this.location, privacyType, this);
+  }
 }

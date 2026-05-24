@@ -244,6 +244,22 @@ describe('Shared stack wrappers', () => {
     expect(broadcaster.updateSharedCards).not.toHaveBeenCalled();
   });
 
+  it('OwnedOrderedStack can force a broadcast with an override privacy mode', () => {
+    const broadcaster = createBroadcaster();
+    const owner = createPlayer();
+    const stack = new OwnedOrderedStack(owner, CardLocation.DISCARD, broadcaster, PrivacyType.TOP_CARD_VISIBLE_TO_ALL);
+
+    stack.addCard(createCard('Copper', 'copper-id'));
+    stack.forceBroadcastWithPrivacyType(PrivacyType.SIZE_VISIBLE_TO_OPPONENTS);
+
+    expect((broadcaster.updatePlayerCards as ReturnType<typeof vi.fn>).mock.calls).toContainEqual([
+      owner,
+      CardLocation.DISCARD,
+      PrivacyType.SIZE_VISIBLE_TO_OPPONENTS,
+      stack,
+    ]);
+  });
+
   it('OwnedUnorderedCardCollection broadcasts player-card updates for owned areas', () => {
     const broadcaster = createBroadcaster();
     const owner = createPlayer();

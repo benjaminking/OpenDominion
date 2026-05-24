@@ -13,8 +13,27 @@
         }
       </div>
     </div>
+    <div class="reveal-limbo-toggle card-area-toggle display-stat" (click)="toggleRevealedCardsViewer()">
+      Revealed Cards
+      <div class="pile-count">{{ limbo().length }}</div>
+    </div>
+    <div class="set-aside-toggle card-area-toggle display-stat" (click)="toggleSetAsideCardsViewer()">
+      Set Aside Cards
+      <div class="pile-count">{{ setAside().length }}</div>
+    </div>
     <div class="rotated-name-holder display-stat">
       <div class="rotated-name">{{ name() }}</div>
     </div>
   </div>
 </div>
+<card-dialog title="Revealed Cards" [cards]="limbo()" [name]="revealedCardsViewName"></card-dialog>
+<card-dialog
+  title="Set-aside Cards"
+  [cards]="setAside()"
+  [name]="setAsideCardsViewName"
+  [grouped]="true"
+  [sorted]="true"
+></card-dialog>
+<!-- TODO: when we're choosing a card from the discard, this should act like a toggle
+           in case the user closes the dialog-->
+<card-dialog title="Discard" [cards]="discard()" [name]="discardViewName"></card-dialog>

@@ -118,6 +118,17 @@ export class CardChoiceBuilder {
       } as ImpossibleChoice;
     }
 
+    if (possibleChoices.length === 1 && !this.noneOption) {
+      const card = this.ie.getCardByMetadata(possibleChoices[0].card);
+      return card!;
+    }
+
+    // if all cards have the same name, automatically select the first one
+    if (possibleChoices.every((choice) => choice.card.name === possibleChoices[0].card.name) && !this.noneOption) {
+      const card = this.ie.getCardByMetadata(possibleChoices[0].card);
+      return card!;
+    }
+
     const choice = await wrapWithWaitingStatus(this.messageBroadcaster, this.player, () =>
       this.decisionService.chooseCard(
         this.prompt,
@@ -171,6 +182,8 @@ export class CardChoiceBuilder {
   }
 
   private async chooseFromOtherLocations(): Promise<Card | NoneChoice | ImpossibleChoice> {
+    this.sendSpecialLocationUpdatesIfNecessary();
+
     const possibleChoices: CardChoice[] = this.ie.getEligibleCardChoices(this.areaEligibility, this.cardEligibility);
 
     if (possibleChoices.length === 0 && this.noneOption) {
@@ -194,5 +207,11 @@ export class CardChoiceBuilder {
       }
     }
     return choice;
+  }
+
+  private sendSpecialLocationUpdatesIfNecessary(): void {
+    if (this.areaEligibility.has(CardLocation.DISCARD)) {
+      this.ie.forceFullBroadcastOfDiscard();
+    }
   }
 }

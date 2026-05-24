@@ -3,6 +3,8 @@ import { CardMetadata } from '../../../../common/dist/card/CardMetadata';
 import { MessageDecoderService } from '../message-decoder.service';
 import { CardLocation } from '@dominion/common';
 import { CardDialogComponent } from '../cards/card-dialog.component';
+import { ViewName } from '../view-names';
+import { ViewVisibilityService } from '../view-visibility.service';
 
 @Component({
   selector: 'shared',
@@ -12,8 +14,9 @@ import { CardDialogComponent } from '../cards/card-dialog.component';
 })
 export class SharedComponent implements OnInit {
   trash = signal<CardMetadata[]>([]);
-  isTrashVisible: boolean = false;
+  trashViewName = ViewName.TRASH;
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
+  private readonly viewVisibilityService = inject(ViewVisibilityService);
 
   ngOnInit(): void {
     this.webSocketMessageDecoder.subscribeToSharedCardsUpdate(
@@ -25,6 +28,6 @@ export class SharedComponent implements OnInit {
   }
 
   toggleTrashVisibility(): void {
-    this.isTrashVisible = !this.isTrashVisible;
+    this.viewVisibilityService.toggleViewByName(ViewName.TRASH);
   }
 }

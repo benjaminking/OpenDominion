@@ -2,16 +2,21 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { CardMetadata } from '../../../../common/dist/card/CardMetadata';
 import { MessageDecoderService } from '../message-decoder.service';
 import { CardLocation, NumberType } from '@dominion/common';
+import { ViewVisibilityService } from '../view-visibility.service';
+import { ViewName } from '../view-names';
+import { CardDialogComponent } from '../cards/card-dialog.component';
 
 @Component({
   selector: 'main-player',
   templateUrl: './main-player.component.html',
   styleUrls: ['./main-player.component.css'],
+  imports: [CardDialogComponent],
 })
 export class MainPlayerComponent {
   name = input<string>('');
   deckSize = signal<number>(0);
   topDiscard = signal<CardMetadata | undefined>(undefined);
+  discard = signal<CardMetadata[]>([]);
   setAside = signal<CardMetadata[]>([]);
   limbo = signal<CardMetadata[]>([]);
 
@@ -20,7 +25,12 @@ export class MainPlayerComponent {
   coins = signal<number>(0);
   score = signal<number>(0);
 
+  revealedCardsViewName = ViewName.REVEALED_LIMBO;
+  setAsideCardsViewName = ViewName.SET_ASIDE;
+  discardViewName = ViewName.DISCARD;
+
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
+  private readonly viewVisibilityService = inject(ViewVisibilityService);
 
   constructor() {
     effect(() => {
@@ -34,6 +44,12 @@ export class MainPlayerComponent {
         { owner: this.name(), location: CardLocation.DISCARD },
         (topCardContent: { topCard: CardMetadata | undefined }) => {
           this.topDiscard.set(topCardContent.topCard);
+        },
+      );
+      this.webSocketMessageDecoder.subscribeToCardsUpdate(
+        { owner: this.name(), location: CardLocation.DISCARD },
+        (cardsContent: { cards: CardMetadata[] }) => {
+          this.discard.set(cardsContent.cards);
         },
       );
       this.webSocketMessageDecoder.subscribeToCardsUpdate(
@@ -74,5 +90,13 @@ export class MainPlayerComponent {
         },
       );
     });
+  }
+
+  toggleRevealedCardsViewer(): void {
+    this.viewVisibilityService.toggleViewByName(ViewName.REVEALED_LIMBO);
+  }
+
+  toggleSetAsideCardsViewer(): void {
+    this.viewVisibilityService.toggleViewByName(ViewName.SET_ASIDE);
   }
 }

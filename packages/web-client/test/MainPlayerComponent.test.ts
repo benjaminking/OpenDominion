@@ -1,11 +1,30 @@
 import '@angular/compiler';
-import { runInInjectionContext } from '@angular/core';
+import { runInInjectionContext, signal, type Signal, type WritableSignal } from '@angular/core';
 import { CardLocation, CardType, NumberType, type CardMetadata } from '@dominion/common';
 import { describe, expect, it } from 'vitest';
 
 import { MessageDecoderService } from '../src/app/message-decoder.service';
 import { MainPlayerComponent } from '../src/app/players/main-player.component';
+import { ViewVisibilityService } from '../src/app/view-visibility.service';
+import { ViewName } from '../src/app/view-names';
 import { createAngularTestInjector, setInputSignalValue } from './angular-test-utils';
+
+class FakeViewVisibilityService {
+  private readonly visibilityByViewName: Record<ViewName, WritableSignal<boolean>> = {
+    [ViewName.REVEALED_LIMBO]: signal(false),
+    [ViewName.SET_ASIDE]: signal(false),
+    [ViewName.TRASH]: signal(false),
+    [ViewName.DISCARD]: signal(false),
+  };
+
+  getViewVisibilitySignal(viewName: ViewName): Signal<boolean> {
+    return this.visibilityByViewName[viewName];
+  }
+
+  toggleViewByName(viewName: ViewName): void {
+    this.visibilityByViewName[viewName].set(!this.visibilityByViewName[viewName]());
+  }
+}
 
 function createCard(name: string, id: string, location: CardLocation): CardMetadata {
   return {
@@ -71,8 +90,10 @@ class FakeMessageDecoderService {
 describe('MainPlayerComponent', () => {
   it('updates card zones and statistics for the named main player', () => {
     const decoder = new FakeMessageDecoderService();
+    const viewVisibilityService = new FakeViewVisibilityService();
     const { injector, effectScheduler } = createAngularTestInjector([
       { provide: MessageDecoderService, useValue: decoder },
+      { provide: ViewVisibilityService, useValue: viewVisibilityService },
     ]);
     const component = runInInjectionContext(injector, () => new MainPlayerComponent());
     const duchy = createCard('Duchy', 'duchy-1', CardLocation.DISCARD);
