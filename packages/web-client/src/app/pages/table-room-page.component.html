@@ -151,7 +151,7 @@
                 <span class="chat-text">{{ msg.text }}</span>
               </div>
             }
-            @if (chatMessages().length === 0) {
+            @if (!hasChatMessages()) {
               <p class="muted chat-empty">No messages yet.</p>
             }
           </div>
@@ -165,7 +165,7 @@
               (ngModelChange)="chatInput.set($event)"
               (keydown.enter)="sendChatMessage()"
             />
-            <button type="button" (click)="sendChatMessage()" [disabled]="!chatInput().trim()">Send</button>
+            <button type="button" (click)="sendChatMessage()" [disabled]="!canSendChatMessage()">Send</button>
           </div>
         </article>
 
@@ -198,7 +198,7 @@
                     }
                   </div>
                 }
-                @if (selectedCards().length === 0) {
+                @if (!hasSelectedCards()) {
                   <span class="muted">No cards selected</span>
                 }
               </div>
@@ -213,7 +213,7 @@
                     (blur)="hideSuggestions()"
                     autocomplete="off"
                   />
-                  @if (cardSuggestions().length > 0) {
+                  @if (hasCardSuggestions()) {
                     <ul class="card-suggestions">
                       @for (name of cardSuggestions(); track name) {
                         <li (mousedown)="addCard(name)">{{ name }}</li>
@@ -303,8 +303,8 @@
                 }
               } @else {
                 <p class="muted">{{ rematchProposedByName() || 'A player' }} proposed a rematch.</p>
-                <p class="muted">Accepted: {{ acceptedRematchNames().join(', ') || 'None yet' }}</p>
-                <p class="muted">Waiting on: {{ pendingRematchNames().join(', ') || 'Nobody' }}</p>
+                <p class="muted">Accepted: {{ acceptedRematchNamesDisplay() }}</p>
+                <p class="muted">Waiting on: {{ pendingRematchNamesDisplay() }}</p>
                 @if (canAcceptRematch()) {
                   <button type="button" class="start" (click)="acceptRematch()">Accept Rematch</button>
                 } @else if (hasCurrentUserAcceptedRematch()) {

@@ -569,6 +569,30 @@ export class TableRoomPageComponent implements OnInit, OnDestroy {
     this.chatInput.set('');
   }
 
+  public hasChatMessages(): boolean {
+    return this.chatMessages().length > 0;
+  }
+
+  public canSendChatMessage(): boolean {
+    return this.chatInput().trim().length > 0;
+  }
+
+  public hasSelectedCards(): boolean {
+    return this.selectedCards().length > 0;
+  }
+
+  public hasCardSuggestions(): boolean {
+    return this.cardSuggestions().length > 0;
+  }
+
+  public acceptedRematchNamesDisplay(): string {
+    return this.acceptedRematchNames().join(', ') || 'None yet';
+  }
+
+  public pendingRematchNamesDisplay(): string {
+    return this.pendingRematchNames().join(', ') || 'Nobody';
+  }
+
   private scrollChatToBottom(): void {
     setTimeout(() => {
       const el = this.chatMessagesRef?.nativeElement;
