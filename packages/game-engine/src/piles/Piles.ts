@@ -115,7 +115,7 @@ export class Piles {
       choices.push({
         type: ChoiceType.Card,
         card: topCard.getMetadata(),
-      } as CardChoice);
+      });
     }
     return choices;
   }
@@ -134,8 +134,8 @@ export class Piles {
   }
 
   public areGameEndingConditionsMet(): boolean {
-    //return this.supplyPiles.getPileByName('Province')!.isEmpty() || this.numEmptySupplyPiles >= 3;
-    return (this.supplyPiles.getPileByName('Province')?.size() ?? 0) < 8 || this.numEmptySupplyPiles >= 3;
+    return this.supplyPiles.getPileByName('Province')!.isEmpty() || this.numEmptySupplyPiles >= 3;
+    //return (this.supplyPiles.getPileByName('Province')?.size() ?? 0) < 8 || this.numEmptySupplyPiles >= 3;
   }
 
   public communicateInitialState(): void {
