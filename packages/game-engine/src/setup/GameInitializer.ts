@@ -10,6 +10,11 @@ import { KingdomChooser } from './KingdomChooser';
 import { Randomizers } from './Randomizers';
 import { StartingDeckConfigurationBuilder } from './StartingDeckConfigurationBuilder';
 
+export interface GameInitializerOptions {
+  useColoniesPlatinum?: boolean;
+  useShelters?: boolean;
+}
+
 export class GameInitializer {
   private static readonly DEFAULT_COPPER_PILE_SIZE: number = 56;
   private static readonly DEFAULT_SILVER_PILE_SIZE: number = 40;
@@ -27,6 +32,7 @@ export class GameInitializer {
   public constructor(
     private readonly players: PlayerSpecification[],
     private readonly requiredCardNames: string[],
+    private readonly options: GameInitializerOptions = {},
   ) {
     this.game = new Game(this.players);
     this.game.choosePlayerOrder();
@@ -199,6 +205,9 @@ export class GameInitializer {
   }
 
   private arePlatinumAndColonyRequired(randomizers: Randomizers): boolean {
+    if (typeof this.options.useColoniesPlatinum === 'boolean') {
+      return this.options.useColoniesPlatinum;
+    }
     return Math.random() < randomizers.getProportionFromExpansion(Expansion.PROSPERITY);
   }
 
@@ -226,6 +235,9 @@ export class GameInitializer {
   }
 
   private areSheltersRequired(randomizers: Randomizers): boolean {
+    if (typeof this.options.useShelters === 'boolean') {
+      return this.options.useShelters;
+    }
     return Math.random() < randomizers.getProportionFromExpansion(Expansion.DARK_AGES);
   }
 

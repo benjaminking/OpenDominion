@@ -89,7 +89,10 @@ export class GameRuntimeService {
     // Preserve connections so we can broadcast the game result when the game ends.
     this.activeGameConnections[table.id] = new Map(tableConnections);
 
-    const gameInitializer: GameInitializer = new GameInitializer(playerSpecs, table.requiredCardNames);
+    const gameInitializer: GameInitializer = new GameInitializer(playerSpecs, table.requiredCardNames, {
+      useColoniesPlatinum: table.useColoniesPlatinum,
+      useShelters: table.useShelters,
+    });
     void Promise.resolve(gameInitializer.runGame())
       .then((result: GameResult) => {
         this.broadcastGameResult(table.id, result);

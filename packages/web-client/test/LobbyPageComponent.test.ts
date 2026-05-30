@@ -19,6 +19,8 @@ function makeTable(overrides: Partial<TableView> = {}): TableView {
     status: 'OPEN',
     maxPlayers: 2,
     requiredCardNames: [],
+    useColoniesPlatinum: false,
+    useShelters: false,
     seats: [],
     closedSeatIndexes: [],
     createdAt: '2026-05-01T00:00:00.000Z',
@@ -93,6 +95,8 @@ describe('LobbyPageComponent', () => {
         status: 'OPEN' as const,
         maxPlayers: 4,
         requiredCardNames: ['Village'],
+        useColoniesPlatinum: false,
+        useShelters: false,
         seats: [],
         closedSeatIndexes: [],
         createdAt: '2026-05-25T00:00:00.000Z',
@@ -196,9 +200,7 @@ describe('LobbyPageComponent', () => {
 
   it('returns true when the user occupies a seat in any loaded table', () => {
     const { component } = createComponent();
-    component.tables.set([
-      makeTable({ seats: [{ seatIndex: 0, userId: 'user-2', username: 'bob', isBot: false }] }),
-    ]);
+    component.tables.set([makeTable({ seats: [{ seatIndex: 0, userId: 'user-2', username: 'bob', isBot: false }] })]);
 
     expect(component.isUserInTable('user-2')).toBe(true);
     expect(component.isUserInTable('user-3')).toBe(false);

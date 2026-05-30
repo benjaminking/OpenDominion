@@ -36,6 +36,8 @@ export interface TableView {
   status: 'OPEN' | 'IN_GAME' | 'CLOSED';
   maxPlayers: number;
   requiredCardNames: string[];
+  useColoniesPlatinum: boolean;
+  useShelters: boolean;
   seats: TableSeat[];
   closedSeatIndexes: number[];
   rematch?: {
@@ -120,7 +122,13 @@ export class TableApiService {
 
   public updateTableSettings(
     tableId: string,
-    payload: { name?: string; maxPlayers?: number; requiredCardNames?: string[] },
+    payload: {
+      name?: string;
+      maxPlayers?: number;
+      requiredCardNames?: string[];
+      useColoniesPlatinum?: boolean;
+      useShelters?: boolean;
+    },
   ): Observable<{ table: TableView }> {
     return this.httpClient
       .patch<{ table: TableView }>(`${this.apiBaseUrl}/${tableId}`, payload, {

@@ -30,6 +30,8 @@ interface ChatEntry {
 })
 export class TableRoomPageComponent implements OnInit, OnDestroy {
   public static readonly AVAILABLE_BOTS = ['MilitiaBMBot', 'SmithyBMBot'] as const;
+  private static readonly COLONY_PLATINUM_PREVIEW_CARDS = ['Colony', 'Platinum'] as const;
+  private static readonly SHELTERS_PREVIEW_CARDS = ['Necropolis', 'Hovel', 'Overgrown Estate'] as const;
 
   public readonly table = signal<TableView | null>(null);
   public readonly gameResult = signal<GameResult | null>(null);
@@ -294,6 +296,32 @@ export class TableRoomPageComponent implements OnInit, OnDestroy {
     this.saveCards();
   }
 
+  public colonyPlatinumPreviewCards(): CardMetadata[] {
+    return this.buildPreviewMetadata(TableRoomPageComponent.COLONY_PLATINUM_PREVIEW_CARDS);
+  }
+
+  public sheltersPreviewCards(): CardMetadata[] {
+    return this.buildPreviewMetadata(TableRoomPageComponent.SHELTERS_PREVIEW_CARDS);
+  }
+
+  public updateUseColoniesPlatinum(enabled: boolean): void {
+    this.tableApiService.updateTableSettings(this.tableId, { useColoniesPlatinum: enabled }).subscribe({
+      next: ({ table }) => this.applyTable(table),
+      error: (errorResponse: { error?: { error?: string } }) => {
+        this.errorMessage.set(errorResponse.error?.error ?? 'Failed to update Colonies/Platinum setting.');
+      },
+    });
+  }
+
+  public updateUseShelters(enabled: boolean): void {
+    this.tableApiService.updateTableSettings(this.tableId, { useShelters: enabled }).subscribe({
+      next: ({ table }) => this.applyTable(table),
+      error: (errorResponse: { error?: { error?: string } }) => {
+        this.errorMessage.set(errorResponse.error?.error ?? 'Failed to update Shelters setting.');
+      },
+    });
+  }
+
   public cardMetadataFor(name: string): CardMetadata {
     const info = CardInfoLookup.lookUpCardInfo(name);
     return { name, id: name, location: CardLocation.PILE, types: info.types, cost: info.cost };
@@ -306,6 +334,18 @@ export class TableRoomPageComponent implements OnInit, OnDestroy {
         this.errorMessage.set(errorResponse.error?.error ?? 'Failed to update cards.');
       },
     });
+  }
+
+  private buildPreviewMetadata(cardNames: readonly string[]): CardMetadata[] {
+    return cardNames
+      .map((name) => {
+        try {
+          return this.cardMetadataFor(name);
+        } catch {
+          return null;
+        }
+      })
+      .filter((metadata): metadata is CardMetadata => metadata !== null);
   }
 
   // ── Seats ─────────────────────────────────────────────────────────────────
@@ -475,16 +515,16 @@ export class TableRoomPageComponent implements OnInit, OnDestroy {
   public acceptedRematchNames(): string[] {
     if (!this.table()) return [];
     const accepted = new Set(this.rematchAcceptedUserIds());
-    return this.table()!.seats
-      .filter((seat) => !seat.isBot && !!seat.userId && accepted.has(seat.userId))
+    return this.table()!
+      .seats.filter((seat) => !seat.isBot && !!seat.userId && accepted.has(seat.userId))
       .map((seat) => seat.username);
   }
 
   public pendingRematchNames(): string[] {
     if (!this.table()) return [];
     const accepted = new Set(this.rematchAcceptedUserIds());
-    return this.table()!.seats
-      .filter((seat) => !seat.isBot && !!seat.userId && !accepted.has(seat.userId))
+    return this.table()!
+      .seats.filter((seat) => !seat.isBot && !!seat.userId && !accepted.has(seat.userId))
       .map((seat) => seat.username);
   }
 
@@ -553,7 +593,10 @@ export class TableRoomPageComponent implements OnInit, OnDestroy {
     // polled OPEN response arriving after the start-game POST already set IN_GAME).
     const statusRank: Record<string, number> = { OPEN: 0, IN_GAME: 1, CLOSED: 2 };
     const isRematchResetTransition = previousStatus === 'CLOSED' && table.status === 'OPEN';
-    if (!isRematchResetTransition && (statusRank[table.status] ?? 0) < (statusRank[this.table()?.status ?? 'OPEN'] ?? 0)) {
+    if (
+      !isRematchResetTransition &&
+      (statusRank[table.status] ?? 0) < (statusRank[this.table()?.status ?? 'OPEN'] ?? 0)
+    ) {
       return;
     }
 

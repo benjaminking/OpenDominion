@@ -19,6 +19,8 @@ function makeTable(overrides: Partial<TableView> = {}): TableView {
     status: 'OPEN',
     maxPlayers: 2,
     requiredCardNames: [],
+    useColoniesPlatinum: false,
+    useShelters: false,
     seats: [],
     closedSeatIndexes: [],
     createdAt: '2026-05-01T00:00:00.000Z',

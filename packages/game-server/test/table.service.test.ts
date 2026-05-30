@@ -22,6 +22,8 @@ function createTableDocument(overrides: Record<string, unknown> = {}) {
     status: 'OPEN',
     maxPlayers: 4,
     requiredCardNames: ['Village'],
+    useColoniesPlatinum: false,
+    useShelters: false,
     closedSeatIndexes: [],
     rematchProposedByUserId: undefined,
     rematchAcceptedUserIds: [],
@@ -72,6 +74,8 @@ describe('TableService', () => {
       status: 'OPEN',
       maxPlayers: 4,
       requiredCardNames: ['Village', 'Smithy'],
+      useColoniesPlatinum: false,
+      useShelters: false,
       closedSeatIndexes: [],
       rematchAcceptedUserIds: [],
       rematchUnavailable: false,
@@ -189,7 +193,9 @@ describe('TableService', () => {
 
     expect(withSecondBot.requiredCardNames).toEqual(['Village', 'Militia', 'Smithy']);
 
-    const militiaSeatIndex = withSecondBot.seats.find((seat) => seat.isBot && seat.username === 'MilitiaBMBot')?.seatIndex;
+    const militiaSeatIndex = withSecondBot.seats.find(
+      (seat) => seat.isBot && seat.username === 'MilitiaBMBot',
+    )?.seatIndex;
     expect(militiaSeatIndex).toBeDefined();
     if (militiaSeatIndex === undefined) {
       throw new Error('Militia bot seat missing in test setup');

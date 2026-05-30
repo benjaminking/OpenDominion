@@ -183,6 +183,8 @@ describe('game-server index', () => {
       status: 'OPEN',
       maxPlayers: 3,
       requiredCardNames: ['Village'],
+      useColoniesPlatinum: false,
+      useShelters: false,
       seats: [{ seatIndex: 0, userId: 'alice', username: 'alice', isBot: false }],
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -272,9 +274,7 @@ describe('game-server index', () => {
     await connectionHandler?.(aliceWs, { url: '/?accessToken=alice-token', headers: { host: 'localhost' } });
     await connectionHandler?.(bobWs, { url: '/?accessToken=bob-token', headers: { host: 'localhost' } });
 
-    const aliceMessageHandler = aliceWs.on.mock.calls.find((c) => c[0] === 'message')?.[1] as (
-      raw: Buffer,
-    ) => void;
+    const aliceMessageHandler = aliceWs.on.mock.calls.find((c) => c[0] === 'message')?.[1] as (raw: Buffer) => void;
     aliceMessageHandler(
       Buffer.from(JSON.stringify({ type: 'dm', content: { recipientUserId: 'bob-id', text: 'Hello bob!' } })),
     );
@@ -312,9 +312,7 @@ describe('game-server index', () => {
     bobCloseHandler();
 
     // Alice sends DM to the now-disconnected Bob
-    const aliceMessageHandler = aliceWs.on.mock.calls.find((c) => c[0] === 'message')?.[1] as (
-      raw: Buffer,
-    ) => void;
+    const aliceMessageHandler = aliceWs.on.mock.calls.find((c) => c[0] === 'message')?.[1] as (raw: Buffer) => void;
     aliceMessageHandler(
       Buffer.from(JSON.stringify({ type: 'dm', content: { recipientUserId: 'bob-id', text: 'Hello?' } })),
     );
@@ -331,9 +329,7 @@ describe('game-server index', () => {
     const aliceWs = { on: vi.fn(), send: vi.fn(), close: vi.fn(), readyState: 1 };
     await connectionHandler?.(aliceWs, { url: '/?accessToken=alice-token', headers: { host: 'localhost' } });
 
-    const aliceMessageHandler = aliceWs.on.mock.calls.find((c) => c[0] === 'message')?.[1] as (
-      raw: Buffer,
-    ) => void;
+    const aliceMessageHandler = aliceWs.on.mock.calls.find((c) => c[0] === 'message')?.[1] as (raw: Buffer) => void;
 
     // Empty text (whitespace only)
     aliceMessageHandler(
@@ -368,6 +364,8 @@ describe('game-server index', () => {
       status: 'OPEN',
       maxPlayers: 2,
       requiredCardNames: [],
+      useColoniesPlatinum: false,
+      useShelters: false,
       seats: [{ seatIndex: 0, userId: 'alice', username: 'alice', isBot: false }],
       createdAt: new Date(),
       updatedAt: new Date(),

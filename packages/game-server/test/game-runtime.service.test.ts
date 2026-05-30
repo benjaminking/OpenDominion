@@ -6,10 +6,16 @@ const { gameInitializerMock, gameInitializerInstances, playerSpecificationMock, 
   vi.hoisted(() => {
     const gameInitializerInstancesLocal: Array<{ runGame: ReturnType<typeof vi.fn> }> = [];
     return {
-      gameInitializerMock: vi.fn(function (this: object, players: unknown[], requiredCardNames: string[]) {
+      gameInitializerMock: vi.fn(function (
+        this: object,
+        players: unknown[],
+        requiredCardNames: string[],
+        options?: { useColoniesPlatinum?: boolean; useShelters?: boolean },
+      ) {
         const instance = {
           players,
           requiredCardNames,
+          options,
           runGame: vi.fn(),
         };
         gameInitializerInstancesLocal.push(instance);
@@ -73,6 +79,8 @@ describe('GameRuntimeService', () => {
       status: 'OPEN',
       maxPlayers: 3,
       requiredCardNames: ['Village'],
+      useColoniesPlatinum: false,
+      useShelters: false,
       rematch: {
         acceptedUserIds: [],
         unavailable: false,
@@ -89,7 +97,10 @@ describe('GameRuntimeService', () => {
     expect(service.canStartTable(table)).toBe(true);
     service.startTableGame(table);
 
-    expect(gameInitializerMock).toHaveBeenCalledWith(expect.any(Array), ['Village']);
+    expect(gameInitializerMock).toHaveBeenCalledWith(expect.any(Array), ['Village'], {
+      useColoniesPlatinum: false,
+      useShelters: false,
+    });
     expect(webClientMock).toHaveBeenCalledWith(aliceSocket);
     expect(webClientMock).toHaveBeenCalledWith(bobSocket);
     expect(botClientMock).toHaveBeenCalledTimes(1);
@@ -121,6 +132,8 @@ describe('GameRuntimeService', () => {
       status: 'OPEN',
       maxPlayers: 2,
       requiredCardNames: [],
+      useColoniesPlatinum: false,
+      useShelters: false,
       rematch: {
         acceptedUserIds: [],
         unavailable: false,
@@ -134,10 +147,16 @@ describe('GameRuntimeService', () => {
     };
 
     const result: GameResult = { playerResults: [] };
-    gameInitializerMock.mockImplementationOnce(function (this: object, players: unknown[], requiredCardNames: string[]) {
+    gameInitializerMock.mockImplementationOnce(function (
+      this: object,
+      players: unknown[],
+      requiredCardNames: string[],
+      options?: { useColoniesPlatinum?: boolean; useShelters?: boolean },
+    ) {
       const instance = {
         players,
         requiredCardNames,
+        options,
         runGame: vi.fn().mockResolvedValue(result),
       };
       gameInitializerInstances.push(instance);
@@ -175,11 +194,14 @@ describe('GameRuntimeService', () => {
     it('sends a JSON-encoded message to all open connections for a table', () => {
       const service = new GameRuntimeService();
       const aliceSocket = { on: vi.fn(), send: vi.fn(), readyState: 1 }; // OPEN
-      const bobSocket = { on: vi.fn(), send: vi.fn(), readyState: 1 };   // OPEN
+      const bobSocket = { on: vi.fn(), send: vi.fn(), readyState: 1 }; // OPEN
       service.registerWaitingConnection('table-1', 'alice', aliceSocket as never);
       service.registerWaitingConnection('table-1', 'bob', bobSocket as never);
 
-      service.broadcastToTable('table-1', { type: 'chat', content: { username: 'alice', text: 'hello', timestamp: 1 } });
+      service.broadcastToTable('table-1', {
+        type: 'chat',
+        content: { username: 'alice', text: 'hello', timestamp: 1 },
+      });
 
       const expected = JSON.stringify({ type: 'chat', content: { username: 'alice', text: 'hello', timestamp: 1 } });
       expect(aliceSocket.send).toHaveBeenCalledWith(expected);
@@ -188,7 +210,7 @@ describe('GameRuntimeService', () => {
 
     it('skips connections whose socket is not in the OPEN state', () => {
       const service = new GameRuntimeService();
-      const openSocket = { on: vi.fn(), send: vi.fn(), readyState: 1 };   // OPEN
+      const openSocket = { on: vi.fn(), send: vi.fn(), readyState: 1 }; // OPEN
       const closedSocket = { on: vi.fn(), send: vi.fn(), readyState: 3 }; // CLOSED
       service.registerWaitingConnection('table-1', 'alice', openSocket as never);
       service.registerWaitingConnection('table-1', 'bob', closedSocket as never);

@@ -177,45 +177,100 @@
             <p class="muted">Only the table owner can change settings.</p>
           }
 
-          <!-- Required cards -->
-          <div class="cards-section">
-            <p class="field-label">Required Cards</p>
+          <div class="kingdom-setup-row">
+            <!-- Required cards -->
+            <div class="cards-section required-cards-section">
+              <p class="field-label">Required Cards</p>
 
-            <div class="required-card-grid">
-              @for (card of selectedCards(); track card) {
-                <div class="required-card-slot">
-                  <card [metadata]="cardMetadataFor(card)"></card>
-                  @if (isOwner() && table()!.status === 'OPEN') {
-                    <button class="card-remove-btn" type="button" (click)="removeCard(card)" title="Remove {{ card }}">
-                      ×
-                    </button>
+              <div class="required-card-grid">
+                @for (card of selectedCards(); track card) {
+                  <div class="required-card-slot">
+                    <card [metadata]="cardMetadataFor(card)"></card>
+                    @if (isOwner() && table()!.status === 'OPEN') {
+                      <button
+                        class="card-remove-btn"
+                        type="button"
+                        (click)="removeCard(card)"
+                        title="Remove {{ card }}"
+                      >
+                        ×
+                      </button>
+                    }
+                  </div>
+                }
+                @if (selectedCards().length === 0) {
+                  <span class="muted">No cards selected</span>
+                }
+              </div>
+
+              @if (isOwner() && table()!.status === 'OPEN') {
+                <div class="card-search-wrapper">
+                  <input
+                    type="text"
+                    placeholder="Search for a card…"
+                    [ngModel]="cardSearchInput()"
+                    (ngModelChange)="updateCardSearch($event)"
+                    (blur)="hideSuggestions()"
+                    autocomplete="off"
+                  />
+                  @if (cardSuggestions().length > 0) {
+                    <ul class="card-suggestions">
+                      @for (name of cardSuggestions(); track name) {
+                        <li (mousedown)="addCard(name)">{{ name }}</li>
+                      }
+                    </ul>
                   }
                 </div>
               }
-              @if (selectedCards().length === 0) {
-                <span class="muted">No cards selected</span>
-              }
             </div>
 
-            @if (isOwner() && table()!.status === 'OPEN') {
-              <div class="card-search-wrapper">
-                <input
-                  type="text"
-                  placeholder="Search for a card…"
-                  [ngModel]="cardSearchInput()"
-                  (ngModelChange)="updateCardSearch($event)"
-                  (blur)="hideSuggestions()"
-                  autocomplete="off"
-                />
-                @if (cardSuggestions().length > 0) {
-                  <ul class="card-suggestions">
-                    @for (name of cardSuggestions(); track name) {
-                      <li (mousedown)="addCard(name)">{{ name }}</li>
+            <div class="cards-section kingdom-options-section">
+              <div class="kingdom-option-block">
+                <label class="kingdom-option-row">
+                  <span>Use Colonies/Platinum</span>
+                  <input
+                    class="toggle-input"
+                    type="checkbox"
+                    [ngModel]="table()!.useColoniesPlatinum"
+                    (ngModelChange)="updateUseColoniesPlatinum($event)"
+                    [disabled]="!isOwner() || table()!.status !== 'OPEN'"
+                  />
+                  <span class="toggle-switch" aria-hidden="true"></span>
+                </label>
+                @if (table()!.useColoniesPlatinum) {
+                  <div class="optional-card-grid">
+                    @for (metadata of colonyPlatinumPreviewCards(); track metadata.name) {
+                      <div class="required-card-slot optional-card-slot">
+                        <card [metadata]="metadata"></card>
+                      </div>
                     }
-                  </ul>
+                  </div>
                 }
               </div>
-            }
+
+              <div class="kingdom-option-block">
+                <label class="kingdom-option-row">
+                  <span>Use Shelters</span>
+                  <input
+                    class="toggle-input"
+                    type="checkbox"
+                    [ngModel]="table()!.useShelters"
+                    (ngModelChange)="updateUseShelters($event)"
+                    [disabled]="!isOwner() || table()!.status !== 'OPEN'"
+                  />
+                  <span class="toggle-switch" aria-hidden="true"></span>
+                </label>
+                @if (table()!.useShelters) {
+                  <div class="optional-card-grid">
+                    @for (metadata of sheltersPreviewCards(); track metadata.name) {
+                      <div class="required-card-slot optional-card-slot">
+                        <card [metadata]="metadata"></card>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
           </div>
 
           @if (isOwner() && table()!.status === 'OPEN') {

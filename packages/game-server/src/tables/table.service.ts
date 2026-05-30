@@ -14,12 +14,16 @@ const createTableSchema = z.object({
   name: z.string().trim().min(3).max(64),
   maxPlayers: z.number().int().min(2).max(6).default(2),
   requiredCardNames: z.array(z.string().trim().min(1).max(64)).max(20).default([]),
+  useColoniesPlatinum: z.boolean().default(false),
+  useShelters: z.boolean().default(false),
 });
 
 const updateTableSettingsSchema = z.object({
   name: z.string().trim().min(3).max(64).optional(),
   maxPlayers: z.number().int().min(2).max(6).optional(),
   requiredCardNames: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
+  useColoniesPlatinum: z.boolean().optional(),
+  useShelters: z.boolean().optional(),
 });
 
 const joinTableSchema = z.object({
@@ -56,6 +60,8 @@ export type TableView = {
   status: 'OPEN' | 'IN_GAME' | 'CLOSED';
   maxPlayers: number;
   requiredCardNames: string[];
+  useColoniesPlatinum: boolean;
+  useShelters: boolean;
   seats: TableSeat[];
   closedSeatIndexes: number[];
   rematch: {
@@ -194,6 +200,8 @@ function tableToView(table: TableDocument): TableView {
     status: table.status,
     maxPlayers: table.maxPlayers,
     requiredCardNames: [...table.requiredCardNames],
+    useColoniesPlatinum: table.useColoniesPlatinum ?? false,
+    useShelters: table.useShelters ?? false,
     seats: table.seats.map((seat) => ({
       seatIndex: seat.seatIndex,
       userId: seat.userId,
@@ -230,6 +238,8 @@ export class TableService {
       status: 'OPEN',
       maxPlayers: parsed.maxPlayers,
       requiredCardNames: normalizeRequiredCardNames(parsed.requiredCardNames),
+      useColoniesPlatinum: parsed.useColoniesPlatinum,
+      useShelters: parsed.useShelters,
       seats: [initialSeat],
       closedSeatIndexes: [],
       rematchAcceptedUserIds: [],
@@ -365,6 +375,14 @@ export class TableService {
 
     if (parsed.requiredCardNames) {
       table.requiredCardNames = normalizeRequiredCardNames(parsed.requiredCardNames);
+    }
+
+    if (typeof parsed.useColoniesPlatinum === 'boolean') {
+      table.useColoniesPlatinum = parsed.useColoniesPlatinum;
+    }
+
+    if (typeof parsed.useShelters === 'boolean') {
+      table.useShelters = parsed.useShelters;
     }
 
     ensureOwnerAtSeatZero(table);
@@ -571,9 +589,7 @@ export class TableService {
     }
 
     const humans: TableSeat[] = humanSeats(table);
-    const allAccepted = humans.every((seat) =>
-      !!seat.userId && table.rematchAcceptedUserIds.includes(seat.userId),
-    );
+    const allAccepted = humans.every((seat) => !!seat.userId && table.rematchAcceptedUserIds.includes(seat.userId));
 
     if (allAccepted) {
       table.status = 'OPEN';
@@ -609,9 +625,7 @@ export class TableService {
     }
 
     const humans: TableSeat[] = humanSeats(table);
-    const allAccepted = humans.every((seat) =>
-      !!seat.userId && table.rematchAcceptedUserIds.includes(seat.userId),
-    );
+    const allAccepted = humans.every((seat) => !!seat.userId && table.rematchAcceptedUserIds.includes(seat.userId));
 
     if (allAccepted) {
       table.status = 'OPEN';

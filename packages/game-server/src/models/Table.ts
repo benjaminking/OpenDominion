@@ -16,6 +16,8 @@ export interface TableEntity {
   status: TableStatus;
   maxPlayers: number;
   requiredCardNames: string[];
+  useColoniesPlatinum: boolean;
+  useShelters: boolean;
   seats: TableSeat[];
   closedSeatIndexes: number[];
   rematchProposedByUserId?: string;
@@ -84,6 +86,16 @@ const tableSchema: Schema<TableEntity> = new Schema<TableEntity>(
       type: [String],
       required: true,
       default: [],
+    },
+    useColoniesPlatinum: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    useShelters: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     seats: {
       type: [tableSeatSchema],
