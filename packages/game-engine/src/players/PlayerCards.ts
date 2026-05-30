@@ -1,4 +1,4 @@
-import { CardLocation, CardMetadata } from '@dominion/common';
+import { CardLocation, CardMetadata, CardScoringElement, ScoringElementType } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
@@ -296,6 +296,36 @@ export class PlayerCards {
         this.discard.addCard(card);
       }
     }
+  }
+
+  public getCardScoringElements(): CardScoringElement[] {
+    const scoringElements: CardScoringElement[] = [];
+    const allCardGroups = this.getCardGroupsForScoring();
+
+    const cardsByName = new Map<string, CardCollection>();
+    for (const group of allCardGroups) {
+      for (const card of group) {
+        const name = card.getName();
+        if (!cardsByName.has(name)) {
+          cardsByName.set(name, new CardCollection());
+        }
+        cardsByName.get(name)!.addCard(card);
+      }
+    }
+
+    for (const cardName of cardsByName.keys()) {
+      const cardCollection = cardsByName.get(cardName)!;
+      const totalPoints = cardCollection.totalScore(allCardGroups);
+      if (totalPoints !== 0) {
+        scoringElements.push({
+          type: ScoringElementType.CARD,
+          cardName,
+          count: cardCollection.size(),
+          totalPoints,
+        });
+      }
+    }
+    return scoringElements;
   }
 
   public calculatePoints() {

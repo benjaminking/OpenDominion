@@ -11,7 +11,7 @@ export class OpponentComponent {
   name = input<string>('');
   handSize = signal<number>(0);
   deckSize = signal<number>(0);
-  topDiscard = signal<CardMetadata | null>(null);
+  topDiscard = signal<CardMetadata | undefined>(undefined);
   setAsideSize = signal<number>(0);
   limboSize = signal<number>(0);
 
@@ -38,7 +38,7 @@ export class OpponentComponent {
       );
       this.webSocketMessageDecoder.subscribeToTopCardUpdate(
         { owner: this.name(), location: CardLocation.DISCARD },
-        (topCardContent: { topCard: CardMetadata | null }) => {
+        (topCardContent: { topCard: CardMetadata | undefined }) => {
           this.topDiscard.set(topCardContent.topCard);
         },
       );

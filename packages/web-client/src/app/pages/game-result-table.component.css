@@ -1,0 +1,181 @@
+.result-section {
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.result-heading {
+  margin: 0 0 1.25rem;
+  font-size: 1.4rem;
+  color: #f5c542;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+.result-players {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.player-result-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.player-result-card.outcome-win {
+  border-color: rgba(100, 220, 120, 0.45);
+  background: rgba(100, 220, 120, 0.07);
+}
+
+.player-result-card.outcome-loss {
+  border-color: rgba(220, 80, 80, 0.3);
+}
+
+.player-result-card.outcome-tie {
+  border-color: rgba(200, 200, 100, 0.35);
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+}
+
+.player-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  flex: 1 1 auto;
+  color: #e8d8b0;
+}
+
+.outcome-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.18em 0.55em;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.outcome-badge.outcome-win {
+  background: rgba(80, 200, 100, 0.25);
+  color: #7ee89a;
+  border: 1px solid rgba(80, 200, 100, 0.4);
+}
+
+.outcome-badge.outcome-loss {
+  background: rgba(200, 60, 60, 0.2);
+  color: #e07070;
+  border: 1px solid rgba(200, 60, 60, 0.35);
+}
+
+.outcome-badge.outcome-tie {
+  background: rgba(200, 180, 60, 0.2);
+  color: #d4c060;
+  border: 1px solid rgba(200, 180, 60, 0.35);
+}
+
+.outcome-badge.outcome-forfeit {
+  background: rgba(150, 150, 150, 0.2);
+  color: #aaa;
+  border: 1px solid rgba(150, 150, 150, 0.3);
+}
+
+.score-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #f5c542;
+  margin-left: auto;
+}
+
+.turns-label {
+  font-size: 0.8rem;
+  color: #aaa;
+  white-space: nowrap;
+}
+
+.score-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.score-element {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 80px;
+}
+
+.score-element-graphic {
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scale the card component down to thumbnail size */
+.score-element-graphic card {
+  transform: scale(0.38);
+  transform-origin: top center;
+  display: block;
+  height: 80px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.vp-chip-graphic {
+  height: 80px;
+}
+
+.vp-chip-icon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-top: 10px;
+}
+
+.landscape-graphic {
+  height: 80px;
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.score-element-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  text-align: center;
+}
+
+.element-name {
+  font-size: 0.7rem;
+  color: #ccc;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.element-count {
+  font-size: 0.7rem;
+  color: #aaa;
+}
+
+.element-points {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f5c542;
+}

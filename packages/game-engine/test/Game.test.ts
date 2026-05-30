@@ -8,12 +8,14 @@ const sharedGameStateModule = vi.hoisted(() => {
     communicateInitialState: ReturnType<typeof vi.fn>;
     prepareForStartOfGame: ReturnType<typeof vi.fn>;
     startGame: ReturnType<typeof vi.fn>;
+    getGameResult: ReturnType<typeof vi.fn>;
   }[] = [];
   const SharedGameState = vi.fn(function MockSharedGameState() {
     const instance = {
       communicateInitialState: vi.fn(),
       prepareForStartOfGame: vi.fn(async () => undefined),
       startGame: vi.fn(async () => undefined),
+      getGameResult: vi.fn(() => ({ playerResults: [] })),
     };
     instances.push(instance);
     return instance;
@@ -96,8 +98,9 @@ describe('Game', () => {
     vi.spyOn(gameState, 'startGame').mockImplementation(async () => {
       callOrder.push('start');
     });
+    vi.spyOn(gameState, 'getGameResult').mockReturnValue({ playerResults: [] });
 
-    await game.startGame();
+    await game.runGame();
 
     expect(callOrder).toEqual(['prepare', 'resume', 'state-communicate', 'players-communicate', 'start']);
   });

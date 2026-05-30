@@ -97,12 +97,14 @@ const addKingdomPileMock = vi.fn();
 
 const choosePlayerOrderMock = vi.fn();
 const startGameMock = vi.fn(async () => undefined);
+const runGameMock = vi.fn(async () => ({ playerResults: [] }));
 
 vi.mock('../../src/Game', () => ({
   Game: vi.fn(function MockGame() {
     return {
       choosePlayerOrder: choosePlayerOrderMock,
       startGame: startGameMock,
+      runGame: runGameMock,
       getGameState: () => ({
         piles: {
           addBasicTreasurePile: addBasicTreasurePileMock,
@@ -140,6 +142,7 @@ describe('GameInitializer', () => {
     addKingdomPileMock.mockClear();
     choosePlayerOrderMock.mockClear();
     startGameMock.mockClear();
+    runGameMock.mockClear();
     createPileMock.mockClear();
     useSheltersMock.mockClear();
     buildDeckConfigMock.mockClear();
@@ -156,7 +159,9 @@ describe('GameInitializer', () => {
       calculatePoints: vi.fn(),
       initialize: vi.fn(),
     };
-    playersState.push({ getOwnedCards: () => playerOneOwned }, { getOwnedCards: () => playerTwoOwned });
+    const playerOneMock = { calculateScore: vi.fn(), getOwnedCards: () => playerOneOwned };
+    const playerTwoMock = { calculateScore: vi.fn(), getOwnedCards: () => playerTwoOwned };
+    playersState.push(playerOneMock, playerTwoMock);
 
     randomizersState.cards = [createRandomizer('Village')];
 
@@ -167,8 +172,8 @@ describe('GameInitializer', () => {
     expect(addKingdomPileMock).toHaveBeenCalledTimes(1);
     expect(addBasicTreasurePileMock).toHaveBeenCalledTimes(3);
     expect(addBasicVictoryPileMock).toHaveBeenCalledTimes(4);
-    expect(playerOneOwned.calculatePoints).toHaveBeenCalledTimes(1);
-    expect(playerTwoOwned.calculatePoints).toHaveBeenCalledTimes(1);
+    expect(playerOneMock.calculateScore).toHaveBeenCalledTimes(1);
+    expect(playerTwoMock.calculateScore).toHaveBeenCalledTimes(1);
     expect(playerOneOwned.initialize).toHaveBeenCalledWith({ id: 'deck-config' });
     expect(playerTwoOwned.initialize).toHaveBeenCalledWith({ id: 'deck-config' });
   });
@@ -178,7 +183,7 @@ describe('GameInitializer', () => {
       calculatePoints: vi.fn(),
       initialize: vi.fn(),
     };
-    playersState.push({ getOwnedCards: () => owned }, { getOwnedCards: () => owned }, { getOwnedCards: () => owned });
+    playersState.push({ calculateScore: vi.fn(), getOwnedCards: () => owned }, { calculateScore: vi.fn(), getOwnedCards: () => owned }, { calculateScore: vi.fn(), getOwnedCards: () => owned });
     randomizersState.cards = [createRandomizer('Duchy', true)];
 
     new GameInitializer(specs(3), []);
@@ -197,7 +202,7 @@ describe('GameInitializer', () => {
       calculatePoints: vi.fn(),
       initialize: vi.fn(),
     };
-    playersState.push({ getOwnedCards: () => owned }, { getOwnedCards: () => owned });
+    playersState.push({ calculateScore: vi.fn(), getOwnedCards: () => owned }, { calculateScore: vi.fn(), getOwnedCards: () => owned });
     randomizersState.cards = [createRandomizer('Market')];
     randomizersState.prosperityProportion = 1;
     randomizersState.darkAgesProportion = 1;
@@ -213,8 +218,9 @@ describe('GameInitializer', () => {
     randomSpy.mockRestore();
   });
 
-  it('delegates startGame to the underlying game instance', async () => {
+  it('delegates runGame to the underlying game instance', async () => {
     playersState.push({
+      calculateScore: vi.fn(),
       getOwnedCards: () => ({
         calculatePoints: vi.fn(),
         initialize: vi.fn(),
@@ -223,8 +229,8 @@ describe('GameInitializer', () => {
     randomizersState.cards = [];
     const initializer = new GameInitializer(specs(1), []);
 
-    await initializer.startGame();
+    await initializer.runGame();
 
-    expect(startGameMock).toHaveBeenCalledTimes(1);
+    expect(runGameMock).toHaveBeenCalledTimes(1);
   });
 });

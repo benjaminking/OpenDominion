@@ -5,6 +5,7 @@ import {
   CardSelectionPurpose,
   Choice,
   ChoiceType,
+  GameResult,
   isCardChoice,
   isEndBuyPhaseChoice,
   isEndTreasurePhaseChoice,
@@ -23,6 +24,7 @@ import { Effect } from './effects/Effect';
 import { EffectSource } from './effects/EffectSource';
 import { EffectTriggerType } from './effects/EffectTriggerType';
 import { TurnEligibility } from './effects/TurnEligibility';
+import { EndGameScorer } from './EndGameScorer';
 import { Game } from './Game';
 import { Logger } from './logging/Logger';
 import { ServerLogMessage } from './logging/ServerLogMessage';
@@ -46,6 +48,7 @@ export class SharedGameState {
   private costModifiers: CostModifier[] = [];
   private extraCards: CardCollection = new CardCollection();
   private _trash: Trash;
+  private gameResult: GameResult | undefined = undefined;
 
   constructor(private readonly game: Game) {
     this.messageBroadcaster = game.getMessageBroadcaster();
@@ -390,7 +393,8 @@ export class SharedGameState {
   }
 
   private isGameOver(): boolean {
-    return this.piles.getPileSizeByName('Province') === 0 || this.piles.supplyPiles.numEmptyPiles >= 3;
+    // TODO: update for Fleet
+    return this.piles.areGameEndingConditionsMet();
   }
 
   public get trash(): Trash {
@@ -638,6 +642,20 @@ export class SharedGameState {
   }
 
   public endGame(): void {
-    // TODO: fill this out
+    this.gameResult = this.createGameResult();
+  }
+
+  private createGameResult(): GameResult {
+    const endGameScorer = new EndGameScorer();
+    for (const player of this.game.getPlayers().getAllPlayers()) {
+      const scoreReport = player.calculateScore();
+      endGameScorer.addPlayerScoreReport(player.getName(), scoreReport, player.getStatistics().getTurnNumber());
+    }
+
+    return endGameScorer.getGameResult();
+  }
+
+  public getGameResult(): GameResult | undefined {
+    return this.gameResult;
   }
 }

@@ -7,6 +7,7 @@ import {
   EffectChoice,
   ExtraTurnChoice,
   GameConfiguration,
+  GameResult,
   LogMessage,
   NamedChoice,
   NoneChoice,
@@ -56,6 +57,7 @@ import {
   StatusContent,
   StatusMessage,
   GameConfigurationMessage,
+  GameResultMessage,
 } from '@dominion/web-client-common';
 import { MessageHandler } from '@dominion/common';
 
@@ -82,6 +84,7 @@ export class MessageDecoderService {
   private readonly actionPhaseChoiceHandler = new MessageHandler<ActionPhaseChoiceContent>();
   private readonly treasurePhaseChoiceHandler = new MessageHandler<TreasurePhaseChoiceContent>();
   private readonly buyPhaseChoiceHandler = new MessageHandler<BuyPhaseChoiceContent>();
+  private readonly gameResultHandler = new MessageHandler<GameResult>();
 
   connect(ws: WebSocket): void {
     ws.onmessage = (evt) => {
@@ -92,6 +95,19 @@ export class MessageDecoderService {
         console.error('Failed to decode WebSocket message', e);
       }
     };
+  }
+
+  /** Replay raw JSON strings that were buffered before the decoder was attached.
+   *  Call after ngAfterViewInit so all child-component subscriptions are live. */
+  public replayMessages(rawMessages: string[]): void {
+    for (const raw of rawMessages) {
+      try {
+        const message: Message = JSON.parse(raw) as Message;
+        this.processMessage(message);
+      } catch (e) {
+        console.error('Failed to replay buffered WebSocket message', e);
+      }
+    }
   }
 
   public subscribeToLogMessage(callback: (logMessage: LogMessage) => void): void {
@@ -230,6 +246,14 @@ export class MessageDecoderService {
     this.buyPhaseChoiceHandler.subscribe({}, callback);
   }
 
+  public subscribeToGameResult(callback: (result: GameResult) => void): void {
+    this.gameResultHandler.subscribe({}, callback);
+  }
+
+  public clearCachedGameResult(): void {
+    this.gameResultHandler.clearMostRecentValues();
+  }
+
   private processMessage(message: Message): void {
     console.log(message);
     switch (message.type) {
@@ -336,6 +360,11 @@ export class MessageDecoderService {
       case MessageType.BUY_PHASE_CHOICE: {
         const buyPhaseChoiceMessage: ActionPhaseChoiceMessage = message as ActionPhaseChoiceMessage;
         this.buyPhaseChoiceHandler.handleMessage(buyPhaseChoiceMessage.content);
+        break;
+      }
+      case MessageType.GAME_RESULT: {
+        const gameResultMessage: GameResultMessage = message as GameResultMessage;
+        this.gameResultHandler.handleMessage(gameResultMessage.content);
         break;
       }
     }

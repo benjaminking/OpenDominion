@@ -90,7 +90,7 @@ export class MessageSegmenter {
   }
 
   private createTargetSegments(segmentMatch: SegmentMatch): IncompleteMessageSegment[] {
-    return this.segmentCreators.get(segmentMatch.type).createSegments(this.message, segmentMatch);
+    return this.segmentCreators.get(segmentMatch.type)!.createSegments(this.message, segmentMatch);
   }
 
   private createFinalSegment(startIndex: number): IncompleteMessageSegment {

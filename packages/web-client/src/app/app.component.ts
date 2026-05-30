@@ -1,73 +1,48 @@
-import { Component, OnInit, OnDestroy, signal, NgZone, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { GameComponent } from './game.component';
+import { Component, HostListener } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+
+import { AuthService } from './auth/auth.service';
+import { TableApiService, TableView } from './services/table-api.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, GameComponent],
-  template: ` <game></game> `,
-  /*<div style="font-family: Arial, Helvetica, sans-serif; padding: 1rem;">
-      <h1>Dominion Game Client (Angular)</h1>
-      <p>Status: {{ status }}</p>
-      <input [(ngModel)]="messageToSend" placeholder="Message to server" />
-      <button (click)="send()">Send</button>
-      <h3>Messages</h3>
-      <ul>
-        @for (m of messages(); track m) {
-          <li>{{ m }}</li>
-        }
-      </ul>
-    </div>*/
+  imports: [RouterOutlet],
+  template: `<router-outlet></router-outlet>`,
 })
-export class AppComponent {}
-/*export class AppComponent implements OnInit, OnDestroy {
-  status = 'disconnected';
-  ws: WebSocket | null = null;
-  messages = signal<string[]>([]);
-  messageToSend = '';
+export class AppComponent {
+  private isOwnerOfOpenTable = false;
 
-  ngOnInit(): void {
-    this.connect();
+  public constructor(
+    private readonly authService: AuthService,
+    private readonly tableApiService: TableApiService,
+  ) {
+    this.authService.sessionChanges().subscribe(() => this.updateTableOwnership());
+    this.tableApiService.tableChanges().subscribe(() => this.updateTableOwnership());
   }
 
-  ngOnDestroy(): void {
-    if (this.ws) {
-      this.ws.close();
+  @HostListener('window:beforeunload', ['$event'])
+  public onBeforeUnload(event: BeforeUnloadEvent): string | void {
+    if (this.isOwnerOfOpenTable) {
+      const message = 'You are the owner of an open table. If you leave, the table will be deleted.';
+      event.returnValue = message;
+      return message;
     }
   }
 
-  connect(): void {
-    this.ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}`);
-    this.ws.onopen = () => {
-      this.status = 'connected';
-      this.messages.update((current) => [...current, 'Connected to server']);
-    };
-    this.ws.onmessage = (evt) => {
-      try {
-        const data = JSON.parse(evt.data as string);
-        this.messages.update((current) => [...current, JSON.stringify(data)]);
-      } catch (e) {
-        this.messages.update((current) => [...current, evt.data as string]);
-      }
-    };
-    this.ws.onclose = () => {
-      this.status = 'disconnected';
-      this.messages.update((current) => [...current, 'Disconnected']);
-    };
-    this.ws.onerror = (err) => {
-      this.messages.update((current) => [...current, 'WebSocket error']);
-      console.error(err);
-    };
-  }
+  private async updateTableOwnership(): Promise<void> {
+    const session = this.authService.session();
+    if (!session) {
+      this.isOwnerOfOpenTable = false;
+      return;
+    }
 
-  send(): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(this.messageToSend);
-      this.messageToSend = '';
-    } else {
-      this.messages.update((current) => [...current, 'Not connected']);
+    try {
+      const tables = await firstValueFrom(this.tableApiService.listOpenTables());
+      this.isOwnerOfOpenTable = tables.some((table) => table.ownerUserId === session.userId && table.status === 'OPEN');
+    } catch {
+      this.isOwnerOfOpenTable = false;
     }
   }
-}*/
+}

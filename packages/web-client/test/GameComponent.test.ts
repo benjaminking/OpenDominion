@@ -1,8 +1,10 @@
 import '@angular/compiler';
 import { Injector, runInInjectionContext } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { describe, expect, it, vi } from 'vitest';
 
 import { GameComponent } from '../src/app/game.component';
+import { GameSessionService } from '../src/app/services/game-session.service';
 import { MessageDecoderService } from '../src/app/message-decoder.service';
 import { MessageWriterService } from '../src/app/message-writer.service';
 
@@ -27,9 +29,11 @@ class FakeWebSocket {
 
 class FakeMessageDecoderService {
   readonly connect = vi.fn();
+  readonly clearCachedGameResult = vi.fn();
   mainPlayerNameCallback?: (content: { name: string }) => void;
   opponentNamesCallback?: (content: { names: string[] }) => void;
   turnStartCallback?: (content: { playerName: string }) => void;
+  gameResultCallback?: (content: unknown) => void;
 
   subscribeToMainPlayerName(callback: (content: { name: string }) => void): void {
     this.mainPlayerNameCallback = callback;
@@ -42,6 +46,10 @@ class FakeMessageDecoderService {
   subscribeToTurnStart(callback: (content: { playerName: string }) => void): void {
     this.turnStartCallback = callback;
   }
+
+  subscribeToGameResult(callback: (content: unknown) => void): void {
+    this.gameResultCallback = callback;
+  }
 }
 
 function createComponent() {
@@ -49,15 +57,34 @@ function createComponent() {
   const writer = {
     connect: vi.fn(),
   };
+  const session = {
+    currentSocket: vi.fn(() => null),
+    socketForTable: vi.fn(() => null),
+    connect: vi.fn(),
+  };
+  const activatedRoute = {
+    snapshot: {
+      queryParamMap: {
+        get: vi.fn(() => null),
+      },
+    },
+  };
+  const router = {
+    navigate: vi.fn(),
+    navigateByUrl: vi.fn(),
+  };
   const injector = Injector.create({
     providers: [
       { provide: MessageDecoderService, useValue: decoder },
       { provide: MessageWriterService, useValue: writer },
+      { provide: GameSessionService, useValue: session },
+      { provide: ActivatedRoute, useValue: activatedRoute },
+      { provide: Router, useValue: router },
     ],
   });
   const component = runInInjectionContext(injector, () => new GameComponent());
 
-  return { component, decoder, writer };
+  return { component, decoder, writer, session, activatedRoute, router };
 }
 
 describe('GameComponent', () => {
@@ -65,9 +92,13 @@ describe('GameComponent', () => {
     vi.stubGlobal('location', { protocol: 'http:', host: 'game.example' });
     vi.stubGlobal('WebSocket', FakeWebSocket as unknown as typeof WebSocket);
     const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const { component, decoder, writer } = createComponent();
+    const { component, decoder, writer, session, activatedRoute } = createComponent();
 
     component.connect();
+    expect(activatedRoute.snapshot.queryParamMap.get).toHaveBeenCalledWith('tableId');
+    expect(decoder.clearCachedGameResult).toHaveBeenCalledTimes(1);
+    expect(session.currentSocket).toHaveBeenCalledTimes(1);
+    expect(session.connect).not.toHaveBeenCalled();
     const ws = FakeWebSocket.instances[0];
 
     expect(ws.url).toBe('ws://game.example');

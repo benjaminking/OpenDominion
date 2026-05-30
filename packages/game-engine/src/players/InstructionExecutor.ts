@@ -339,7 +339,7 @@ export class InstructionExecutor {
     }
 
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'gains %c', card));
-    this.player.getOwnedCards().calculatePoints();
+    this.player.calculateScore();
 
     await this.player
       .getGame()

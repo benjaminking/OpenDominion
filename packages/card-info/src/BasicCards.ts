@@ -13,6 +13,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 
   {
@@ -27,6 +28,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 
   {
@@ -41,6 +43,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 
   {
@@ -55,6 +58,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: false,
   },
 
   {
@@ -70,6 +74,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.ALCHEMY,
+    is_kingdom: false,
   },
 
   {
@@ -81,6 +86,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 
   {
@@ -92,6 +98,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 
   {
@@ -103,6 +110,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 
   {
@@ -114,6 +122,7 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: false,
   },
 
   {
@@ -125,5 +134,6 @@ export const basic_cards: CardInfo[] = [
     },
     types: [CardType.CURSE],
     expansion: Expansion.BASE,
+    is_kingdom: false,
   },
 ];

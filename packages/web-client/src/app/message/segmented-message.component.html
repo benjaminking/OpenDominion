@@ -1,7 +1,7 @@
 <div class="segmented-message">
   @for (segment of segments(); track segment.id) {
     @if (segment.type === MessageSegmentType.CARD) {
-      <card-segment [text]="segment.text" [card]="segment.card" [size]="segment.size"></card-segment>
+      <card-segment [text]="segment.text" [card]="segment.card!" [size]="segment.size"></card-segment>
     } @else if (segment.type === MessageSegmentType.BOLD) {
       <bold-segment [text]="segment.text" [size]="segment.size"></bold-segment>
     } @else if (segment.type === MessageSegmentType.COIN) {

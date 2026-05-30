@@ -1,0 +1,15 @@
+<div class="avatar-root" [style.width.px]="size()" [style.height.px]="size()">
+  <div
+    class="avatar-circle"
+    [class.online-ring]="online()"
+    [style.width.px]="size()"
+    [style.height.px]="size()"
+    [style.background-color]="artUrl() ? 'transparent' : initialsColor()"
+  >
+    @if (artUrl()) {
+      <img class="avatar-art" [src]="artUrl()!" [ngStyle]="imgStyle()" alt="" />
+    } @else {
+      <span class="avatar-initials" [style.font-size.px]="size() * 0.42">{{ initials() }}</span>
+    }
+  </div>
+</div>

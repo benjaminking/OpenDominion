@@ -168,6 +168,7 @@ export const createCardHarness = () => {
     getDecisionService: () => decisionService,
     getName: () => 'Alice',
     getBotStatistics: () => ({ addCardToStatistics: vi.fn() }),
+    calculateScore: vi.fn(),
   } as unknown as Player;
 
   const ownedCards = new PlayerCards(player);

@@ -67,7 +67,7 @@ export class LogComponent implements OnInit, AfterViewChecked {
     }),
   );
 
-  @ViewChild('logScroller') private logContainer: ElementRef;
+  @ViewChild('logScroller') private logContainer!: ElementRef;
 
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
 

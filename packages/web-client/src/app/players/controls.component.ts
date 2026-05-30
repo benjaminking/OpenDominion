@@ -56,27 +56,28 @@ export class ControlsComponent {
     if (!this.playerCoins().has(this.currentPlayerName())) {
       return 0;
     }
-    return this.playerCoins().get(this.currentPlayerName())();
+    return this.playerCoins().get(this.currentPlayerName())!();
   });
 
   currentPlayerActions = computed<number>(() => {
     if (!this.playerCoins().has(this.currentPlayerName())) {
       return 0;
     }
-    return this.playerActions().get(this.currentPlayerName())();
+    return this.playerActions().get(this.currentPlayerName())!();
   });
 
   currentPlayerBuys = computed<number>(() => {
     if (!this.playerCoins().has(this.currentPlayerName())) {
       return 0;
     }
-    return this.playerBuys().get(this.currentPlayerName())();
+    return this.playerBuys().get(this.currentPlayerName())!();
   });
 
   statusStack = signal<string[]>([]);
   status = computed<string>(() => {
-    if (this.decisionManager.currentDecision() !== undefined) {
-      return this.decisionManager.currentDecision().prompt;
+    const decision = this.decisionManager.currentDecision();
+    if (decision !== undefined) {
+      return decision.prompt;
     }
     if (this.statusStack().length > 0) {
       return this.statusStack()[this.statusStack().length - 1];

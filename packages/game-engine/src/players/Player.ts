@@ -1,5 +1,5 @@
 import { Client } from '@dominion/client-common';
-import { DecisionService, LogMessage } from '@dominion/common';
+import { DecisionService, LogMessage, ScoreReport, ScoringElement } from '@dominion/common';
 
 import { Game } from '../Game';
 import { BotStatistics } from './BotStatistics';
@@ -70,6 +70,26 @@ export class Player {
 
   public transmitLogMessage(logMessage: LogMessage): void {
     this.client.sendLogMessage(logMessage);
+  }
+
+  public calculateScore(): ScoreReport {
+    const scoringElements = [...this.ownedCards.getCardScoringElements(), this.statistics.getVPChipScoringElement()];
+    const totalScore = this.calculateTotalScoreFromElements(scoringElements);
+
+    this.statistics.setScore(totalScore);
+
+    return {
+      total: totalScore,
+      elements: scoringElements,
+    };
+  }
+
+  private calculateTotalScoreFromElements(elements: ScoringElement[]): number {
+    let total = 0;
+    for (const element of elements) {
+      total += element.totalPoints;
+    }
+    return total;
   }
 
   public getClient(): Client {

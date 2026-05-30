@@ -34,7 +34,7 @@ describe('Sentry', () => {
     testHarness.addToDeck(firstRevealedCopper); // position 2 (top) → drawn first by Sentry
 
     // trash both revealed cards; discard none
-    testHarness.pickCards([firstRevealedCopper, secondRevealedCopper]);
+    testHarness.pickCards([secondRevealedCopper, initiallyDrawnCopper]);
     testHarness.pickCards([]);
     await new Sentry(testHarness.sharedGameState).play(testHarness.executor);
 

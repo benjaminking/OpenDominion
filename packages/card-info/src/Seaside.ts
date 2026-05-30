@@ -13,6 +13,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.TREASURE, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Bazaar',
@@ -23,6 +24,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Blockade',
@@ -33,6 +35,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Caravan',
@@ -43,6 +46,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Corsair',
@@ -53,6 +57,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Cutpurse',
@@ -63,6 +68,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Fishing Village',
@@ -73,6 +79,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Haven',
@@ -83,6 +90,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Island',
@@ -93,6 +101,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.VICTORY],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Lighthouse',
@@ -103,6 +112,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Lookout',
@@ -113,6 +123,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Merchant Ship',
@@ -123,6 +134,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Monkey',
@@ -133,6 +145,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Native Village',
@@ -143,6 +156,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Outpost',
@@ -153,6 +167,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Pirate',
@@ -163,6 +178,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.REACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Sailor',
@@ -173,6 +189,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Salvager',
@@ -183,6 +200,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Sea Chart',
@@ -193,6 +211,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Sea Witch',
@@ -203,6 +222,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Smugglers',
@@ -213,6 +233,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Tactician',
@@ -223,6 +244,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Tide Pools',
@@ -233,6 +255,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Treasure Map',
@@ -243,6 +266,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Treasury',
@@ -253,6 +277,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Warehouse',
@@ -263,6 +288,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
   {
     name: 'Wharf',
@@ -273,5 +299,6 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
+    is_kingdom: true,
   },
 ];

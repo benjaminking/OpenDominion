@@ -10,6 +10,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Bandit',
@@ -20,6 +21,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Bureaucrat',
@@ -30,6 +32,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Cellar',
@@ -40,6 +43,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Chapel',
@@ -50,6 +54,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Council Room',
@@ -60,6 +65,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Festival',
@@ -70,6 +76,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Gardens',
@@ -80,6 +87,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Harbinger',
@@ -90,6 +98,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Laboratory',
@@ -100,6 +109,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Library',
@@ -110,6 +120,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Market',
@@ -120,6 +131,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Merchant',
@@ -130,6 +142,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Militia',
@@ -140,6 +153,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Mine',
@@ -150,6 +164,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Moat',
@@ -160,6 +175,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Moneylender',
@@ -170,6 +186,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Poacher',
@@ -180,6 +197,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Remodel',
@@ -190,6 +208,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Sentry',
@@ -200,6 +219,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Smithy',
@@ -210,6 +230,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Throne Room',
@@ -220,6 +241,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Vassal',
@@ -230,6 +252,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Village',
@@ -240,6 +263,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Witch',
@@ -250,6 +274,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
   {
     name: 'Workshop',
@@ -260,5 +285,6 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
+    is_kingdom: true,
   },
 ];

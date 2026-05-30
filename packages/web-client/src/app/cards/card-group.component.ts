@@ -13,6 +13,7 @@ import {
 } from '../decisions/Decision';
 import { CommonModule } from '@angular/common';
 import { CardComponent } from './card.component';
+import { CardSelectionPurpose } from '@dominion/common';
 
 @Component({
   selector: 'card-group',
@@ -22,6 +23,7 @@ import { CardComponent } from './card.component';
   imports: [CardComponent, CommonModule],
 })
 export class CardGroupComponent {
+  protected readonly CardSelectionPurpose = CardSelectionPurpose;
   cards = input.required<CardMetadata[]>();
   count = input.required<number>();
   selectedcount = signal<number>(0);
@@ -50,7 +52,7 @@ export class CardGroupComponent {
     return false;
   });
 
-  isSelectionType(selectionType): boolean {
+  isSelectionType(selectionType: CardSelectionPurpose): boolean {
     const decision: Decision | undefined = this.decisionManager.currentDecision();
     if (decision === undefined) {
       return false;

@@ -1,0 +1,271 @@
+<main class="table-shell">
+  <section class="table-frame">
+    <header class="top-nav">
+      <h1>{{ table()?.name ?? 'Table Room' }}</h1>
+      <div class="toolbar">
+        <button type="button" class="ghost" routerLink="/lobby">&#8592; Lobby</button>
+        <button type="button" class="ghost" (click)="loadTable()">Refresh</button>
+        <button type="button" class="ghost danger" (click)="leave()">Leave Table</button>
+        <div class="user-menu-wrap">
+          <button type="button" class="user-menu-btn" (click)="toggleUserMenu()" [class.open]="userMenuOpen()">
+            <user-avatar [username]="currentUsername()" [avatar]="currentAvatar()" [online]="true" [size]="32" />
+            <span class="user-menu-name">{{ currentUsername() }}</span>
+            <span class="user-menu-caret">&#9660;</span>
+          </button>
+          @if (userMenuOpen()) {
+            <div class="user-menu-dropdown">
+              <button type="button" class="user-menu-item" (click)="navigateToOwnProfile()">Profile</button>
+              <div class="user-menu-divider"></div>
+              <button type="button" class="user-menu-item user-menu-item--danger" (click)="logout()">Log Out</button>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    @if (errorMessage()) {
+      <p class="error-message">{{ errorMessage() }}</p>
+    }
+
+    @if (table()) {
+      <section class="layout-grid">
+        <!-- ── Seats panel ─────────────────────────────────────────── -->
+        <article class="seats-panel">
+          <!-- Table name (click to edit) -->
+          <div class="table-name-block">
+            <div class="name-area">
+              @if (!isEditingName()) {
+                <h2
+                  class="table-name"
+                  [class.editable]="isOwner() && table()!.status === 'OPEN'"
+                  (click)="startEditingName()"
+                  [title]="isOwner() && table()!.status === 'OPEN' ? 'Click to rename' : ''"
+                >
+                  {{ table()!.name }}
+                </h2>
+              } @else {
+                <div class="name-edit-row">
+                  <input
+                    class="name-edit-input"
+                    type="text"
+                    maxlength="64"
+                    [ngModel]="editingNameInput()"
+                    (ngModelChange)="editingNameInput.set($event)"
+                    (keydown.enter)="saveName()"
+                    (keydown.escape)="cancelEditingName()"
+                    autofocus
+                  />
+                  <button type="button" (click)="saveName()">Save</button>
+                  <button type="button" class="ghost" (click)="cancelEditingName()">Cancel</button>
+                </div>
+              }
+              <span class="status-badge" [class.in-game]="table()!.status === 'IN_GAME'">{{ table()!.status }}</span>
+            </div>
+            @if (isOwner() && table()!.status === 'OPEN') {
+              <div class="player-count-control">
+                <button
+                  type="button"
+                  class="count-btn"
+                  (click)="adjustMaxPlayers(-1)"
+                  [disabled]="maxPlayersInput() <= 1"
+                >
+                  −
+                </button>
+                <span class="count-label">{{ maxPlayersInput() }} players</span>
+                <button
+                  type="button"
+                  class="count-btn"
+                  (click)="adjustMaxPlayers(1)"
+                  [disabled]="maxPlayersInput() >= 4"
+                >
+                  +
+                </button>
+              </div>
+            }
+          </div>
+
+          <!-- Seat rows -->
+          <div class="seat-list">
+            @for (seatIndex of seatIndexes(); track seatIndex) {
+              <div class="seat-row" [class.owner-row]="seatIndex === 0">
+                <span class="seat-label">
+                  @if (seatAvatar(seatIndex); as av) {
+                    <user-avatar
+                      [username]="seatDisplayName(seatIndex)"
+                      [avatar]="av"
+                      [size]="28"
+                      style="margin-right: 6px"
+                    />
+                  }
+                  @if (seatIndex === 0) {
+                    <span class="crown">♛</span>
+                  } @else {
+                    <span class="seat-num">{{ seatIndex + 1 }}.</span>
+                  }
+                  {{ seatDisplayName(seatIndex) }}
+                </span>
+
+                @if (seatIndex !== 0 && isOwner() && table()!.status === 'OPEN') {
+                  <div class="seat-controls">
+                    @if (seatStateChoice(seatIndex) !== 'OPEN') {
+                      <select
+                        class="bot-select"
+                        [ngModel]="selectedBotForSeat(seatIndex)"
+                        (ngModelChange)="updateBotChoice(seatIndex, $event)"
+                        [disabled]="seatStateChoice(seatIndex) !== 'BOT'"
+                      >
+                        @for (botName of availableBotNames(); track botName) {
+                          <option [value]="botName">{{ botName }}</option>
+                        }
+                      </select>
+                    }
+                    <select
+                      class="seat-select"
+                      [ngModel]="seatStateChoice(seatIndex)"
+                      (ngModelChange)="updateSeatState(seatIndex, $event)"
+                    >
+                      <option value="OPEN">Open</option>
+                      <option value="BOT">Bot</option>
+                    </select>
+                  </div>
+                } @else if (seatIndex !== 0) {
+                  <span
+                    class="seat-state-tag"
+                    [class.closed]="isSeatClosed(seatIndex)"
+                    [class.bot]="seatAt(seatIndex)?.isBot"
+                    >{{ seatRoleLabel(seatIndex) }}</span
+                  >
+                }
+              </div>
+            }
+          </div>
+        </article>
+
+        <!-- ── Chat panel ──────────────────────────────────────────── -->
+        <article class="chat-panel">
+          <h2>Chat</h2>
+          <div class="chat-messages" #chatScroll>
+            @for (msg of chatMessages(); track msg.timestamp) {
+              <div class="chat-message">
+                <span class="chat-sender" [style.color]="chatSenderColor(msg.username)">{{ msg.username }}</span>
+                <span class="chat-text">{{ msg.text }}</span>
+              </div>
+            }
+            @if (chatMessages().length === 0) {
+              <p class="muted chat-empty">No messages yet.</p>
+            }
+          </div>
+          <div class="chat-input-row">
+            <input
+              type="text"
+              class="chat-input"
+              placeholder="Type a message…"
+              maxlength="500"
+              [ngModel]="chatInput()"
+              (ngModelChange)="chatInput.set($event)"
+              (keydown.enter)="sendChatMessage()"
+            />
+            <button type="button" (click)="sendChatMessage()" [disabled]="!chatInput().trim()">Send</button>
+          </div>
+        </article>
+
+        <!-- ── Settings panel ──────────────────────────────────────── -->
+        <article class="settings-panel">
+          <h2>Kingdom Setup</h2>
+
+          @if (!isOwner() || table()!.status !== 'OPEN') {
+            <p class="muted">Only the table owner can change settings.</p>
+          }
+
+          <!-- Required cards -->
+          <div class="cards-section">
+            <p class="field-label">Required Cards</p>
+
+            <div class="required-card-grid">
+              @for (card of selectedCards(); track card) {
+                <div class="required-card-slot">
+                  <card [metadata]="cardMetadataFor(card)"></card>
+                  @if (isOwner() && table()!.status === 'OPEN') {
+                    <button class="card-remove-btn" type="button" (click)="removeCard(card)" title="Remove {{ card }}">
+                      ×
+                    </button>
+                  }
+                </div>
+              }
+              @if (selectedCards().length === 0) {
+                <span class="muted">No cards selected</span>
+              }
+            </div>
+
+            @if (isOwner() && table()!.status === 'OPEN') {
+              <div class="card-search-wrapper">
+                <input
+                  type="text"
+                  placeholder="Search for a card…"
+                  [ngModel]="cardSearchInput()"
+                  (ngModelChange)="updateCardSearch($event)"
+                  (blur)="hideSuggestions()"
+                  autocomplete="off"
+                />
+                @if (cardSuggestions().length > 0) {
+                  <ul class="card-suggestions">
+                    @for (name of cardSuggestions(); track name) {
+                      <li (mousedown)="addCard(name)">{{ name }}</li>
+                    }
+                  </ul>
+                }
+              </div>
+            }
+          </div>
+
+          @if (isOwner() && table()!.status === 'OPEN') {
+            <div class="owner-actions">
+              <button type="button" class="start" (click)="startGame()" [disabled]="!canStartTable()">
+                Start Game
+              </button>
+            </div>
+            @if (!canStartTable()) {
+              <p class="muted">{{ startDisabledReason() }}</p>
+            }
+          }
+
+          @if (gameResult()) {
+            <div class="game-result-wrapper">
+              <game-result-table [result]="gameResult()!"></game-result-table>
+            </div>
+          }
+
+          @if (table()!.status === 'CLOSED') {
+            <section class="rematch-panel">
+              <h3>Rematch</h3>
+
+              @if (table()!.rematch?.unavailable) {
+                <p class="muted">Rematch is no longer available because a player left the table.</p>
+              } @else if (!table()!.rematch?.proposedByUserId) {
+                <p class="muted">Any seated human player can propose a rematch.</p>
+                @if (canProposeRematch()) {
+                  <button type="button" class="start" (click)="proposeRematch()">Propose Rematch</button>
+                }
+              } @else {
+                <p class="muted">{{ rematchProposedByName() || 'A player' }} proposed a rematch.</p>
+                <p class="muted">Accepted: {{ acceptedRematchNames().join(', ') || 'None yet' }}</p>
+                <p class="muted">Waiting on: {{ pendingRematchNames().join(', ') || 'Nobody' }}</p>
+                @if (canAcceptRematch()) {
+                  <button type="button" class="start" (click)="acceptRematch()">Accept Rematch</button>
+                } @else if (hasCurrentUserAcceptedRematch()) {
+                  <p class="muted">You have accepted. Waiting for other human players.</p>
+                }
+              }
+            </section>
+          }
+
+          @if (table()!.status === 'IN_GAME') {
+            <div class="started-banner">
+              This game has started. The table is now hidden from the lobby open-table list.
+            </div>
+          }
+        </article>
+      </section>
+    }
+  </section>
+</main>

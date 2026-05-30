@@ -13,6 +13,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Watchtower',
@@ -23,6 +24,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Bishop',
@@ -34,6 +36,7 @@ export const prosperity: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
+    is_kingdom: true,
   },
   {
     name: 'Clerk',
@@ -44,6 +47,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Investment',
@@ -58,6 +62,7 @@ export const prosperity: CardInfo[] = [
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
+    is_kingdom: true,
   },
   {
     name: 'Monument',
@@ -69,6 +74,7 @@ export const prosperity: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
+    is_kingdom: true,
   },
   {
     name: 'Quarry',
@@ -82,6 +88,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Tiara',
@@ -92,6 +99,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: "Worker's Village",
@@ -102,6 +110,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Charlatan',
@@ -112,6 +121,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'City',
@@ -122,6 +132,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Collection',
@@ -133,6 +144,7 @@ export const prosperity: CardInfo[] = [
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
+    is_kingdom: true,
   },
   {
     name: 'Crystal Ball',
@@ -143,6 +155,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Magnate',
@@ -153,6 +166,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Mint',
@@ -163,6 +177,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Rabble',
@@ -173,6 +188,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Vault',
@@ -183,6 +199,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'War Chest',
@@ -193,6 +210,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Grand Market',
@@ -203,6 +221,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Hoard',
@@ -214,6 +233,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Bank',
@@ -224,6 +244,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Expand',
@@ -234,6 +255,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Forge',
@@ -244,6 +266,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: "King's Court",
@@ -254,6 +277,7 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
   {
     name: 'Peddler',
@@ -265,5 +289,6 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
+    is_kingdom: true,
   },
 ];

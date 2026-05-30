@@ -1,0 +1,49 @@
+<section class="result-section">
+  <h2 class="result-heading">Game Over</h2>
+
+  <div class="result-players">
+    @for (playerResult of playerResults(); track playerResult.playerName) {
+      <div class="player-result-card" [class]="outcomeCssClass(playerResult)">
+        <div class="player-header">
+          <span class="player-name">{{ playerResult.playerName }}</span>
+          <span class="outcome-badge" [class]="outcomeCssClass(playerResult)">{{ outcomeLabel(playerResult) }}</span>
+          <span class="score-total">{{ playerResult.scoreReport.total }} VP</span>
+          <span class="turns-label">{{ playerResult.turns }} turns</span>
+        </div>
+
+        <div class="score-breakdown">
+          @for (element of playerResult.scoreReport.elements; track $index) {
+            <div class="score-element">
+              @if (element.type === ScoringElementType.CARD) {
+                <div class="score-element-graphic">
+                  <card [metadata]="cardMetadataFor(asCardElement(element).cardName)"></card>
+                </div>
+                <div class="score-element-info">
+                  <span class="element-name">{{ asCardElement(element).cardName }}</span>
+                  <span class="element-count">×{{ asCardElement(element).count }}</span>
+                  <span class="element-points">{{ element.totalPoints >= 0 ? '+' : '' }}{{ element.totalPoints }} VP</span>
+                </div>
+              } @else if (element.type === ScoringElementType.VP_CHIP) {
+                <div class="score-element-graphic vp-chip-graphic">
+                  <img src="/card_assets/victory_point.png" alt="VP Chips" class="vp-chip-icon" />
+                </div>
+                <div class="score-element-info">
+                  <span class="element-name">VP Chips</span>
+                  <span class="element-points">{{ element.totalPoints >= 0 ? '+' : '' }}{{ element.totalPoints }} VP</span>
+                </div>
+              } @else if (element.type === ScoringElementType.LANDSCAPE) {
+                <div class="score-element-graphic landscape-graphic">
+                  <span class="landscape-icon">🏛</span>
+                </div>
+                <div class="score-element-info">
+                  <span class="element-name">{{ asLandscapeElement(element).landscapeName }}</span>
+                  <span class="element-points">{{ element.totalPoints >= 0 ? '+' : '' }}{{ element.totalPoints }} VP</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</section>

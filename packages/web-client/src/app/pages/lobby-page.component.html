@@ -1,0 +1,150 @@
+<main class="lobby-shell">
+  <section class="lobby-frame">
+    <header class="top-nav">
+      <h1>Dominion Online</h1>
+      <div class="user-menu-wrap">
+        <button type="button" class="user-menu-btn" (click)="toggleUserMenu()" [class.open]="userMenuOpen()">
+          <user-avatar [username]="currentUsername()" [avatar]="currentAvatar()" [online]="true" [size]="32" />
+          <span class="user-menu-name">{{ currentUsername() }}</span>
+          <span class="user-menu-caret">&#9660;</span>
+        </button>
+        @if (userMenuOpen()) {
+          <div class="user-menu-dropdown">
+            <button type="button" class="user-menu-item" (click)="navigateToOwnProfile()">Profile</button>
+            <div class="user-menu-divider"></div>
+            <button type="button" class="user-menu-item user-menu-item--danger" (click)="logout()">Log Out</button>
+          </div>
+        }
+      </div>
+    </header>
+
+    <section class="content-grid">
+      <aside class="users-panel" [class.chat-open]="dmTarget() !== null">
+        <div class="user-list-section">
+          <h2>Users Online</h2>
+          <label class="search-box">
+            <span>Search</span>
+            <input #searchInput type="text" placeholder="Search" (input)="setUserSearch(searchInput.value)" />
+          </label>
+
+          <div class="user-list" role="list">
+            @for (user of filteredOnlineUsers(); track user.id) {
+              <div class="user-row" role="listitem" (click)="navigateToProfile(user.id)">
+                <user-avatar [username]="user.username" [avatar]="user.avatar" [online]="user.online" [size]="36" />
+                <div>
+                  <p class="user-name">{{ user.username }}</p>
+                  <p class="user-status">{{ user.online ? 'Online' : 'Offline' }}</p>
+                </div>
+                @if (user.online && user.id !== currentUserId()) {
+                  <button
+                    type="button"
+                    class="ghost chat-btn"
+                    [disabled]="isUserInTable(user.id)"
+                    [title]="isUserInTable(user.id) ? 'Cannot chat — user is currently in a game' : ''"
+                    (click)="openChat(user); $event.stopPropagation()"
+                  >Chat</button>
+                }
+              </div>
+            }
+
+            @if (hasLoadedUsers() && filteredOnlineUsers().length === 0) {
+              <p class="muted">No users match your search.</p>
+            }
+
+            @if (!hasLoadedUsers()) {
+              <p class="muted">Loading users...</p>
+            }
+          </div>
+        </div>
+
+        @if (dmTarget() !== null) {
+          <div class="dm-section">
+            <div class="dm-header">
+              <span class="dm-title">Chat with {{ dmTarget()!.username }}</span>
+              <button type="button" class="ghost close-btn" (click)="closeChat()">✕</button>
+            </div>
+            <div class="dm-messages" #dmScroll>
+              @for (msg of dmMessages(); track msg.timestamp) {
+                <div class="chat-message">
+                  <span
+                    class="chat-sender"
+                    [style.color]="msg.senderUserId === currentUserId() ? '#7db8ff' : '#5dd8c8'"
+                  >{{ msg.senderUsername }}</span>
+                  <span class="chat-text">{{ msg.text }}</span>
+                </div>
+              }
+              @if (dmMessages().length === 0) {
+                <p class="muted chat-empty">No messages yet.</p>
+              }
+            </div>
+            <div class="chat-input-row">
+              <input
+                type="text"
+                class="chat-input"
+                placeholder="Type a message…"
+                maxlength="500"
+                [ngModel]="dmInput()"
+                (ngModelChange)="dmInput.set($event)"
+                (keydown.enter)="sendDmMessage()"
+              />
+              <button type="button" (click)="sendDmMessage()" [disabled]="!dmInput().trim()">Send</button>
+            </div>
+          </div>
+        }
+      </aside>
+
+      <section class="tables-panel">
+        <div class="table-heading-row">
+          <h2>Active Tables</h2>
+          <div class="table-heading-actions">
+            <button type="button" (click)="createTable()">Create Table</button>
+            <button type="button" class="ghost" (click)="loadTables()">Refresh</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          @if (errorMessage()) {
+            <p class="error-message">{{ errorMessage() }}</p>
+          }
+
+          @if (!hasLoadedTables()) {
+            <p class="muted">Loading available tables...</p>
+          }
+
+          @if (hasLoadedTables() && tables().length === 0) {
+            <p class="muted">No open tables yet. Create one to get started.</p>
+          }
+
+          <div class="table-list">
+            @for (table of tables(); track table.id; let idx = $index) {
+              <article class="table-card">
+                <div class="table-title-block">
+                  <h3>{{ idx + 1 }}. {{ table.name }} ({{ table.maxPlayers }}p)</h3>
+                  <p>Players {{ table.seats.length }}/{{ table.maxPlayers }} - {{ playerSummary(table) }}</p>
+                </div>
+
+                <div class="table-state-block">
+                  <p class="state-title">Lobby</p>
+                  <p class="state-detail">Waiting for {{ waitingCount(table) }}</p>
+                </div>
+
+                <div class="table-actions">
+                  @if (canJoinTable(table)) {
+                    <button type="button" (click)="joinTable(table.id)">Join</button>
+                  }
+                  @if (isOwnedByCurrentUser(table)) {
+                    <button type="button" class="danger" (click)="deleteTable(table.id)">Delete</button>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+
+          @if (createError()) {
+            <p class="error-message">{{ createError() }}</p>
+          }
+        </div>
+      </section>
+    </section>
+  </section>
+</main>

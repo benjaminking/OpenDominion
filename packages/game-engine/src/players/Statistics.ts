@@ -1,4 +1,4 @@
-import { NumberType } from '@dominion/common';
+import { NumberType, ScoringElementType, VPChipScoringElement } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
@@ -139,6 +139,13 @@ export class Statistics {
 
   public addGainedCard(card: Card): void {
     this.cardsGainedThisTurn.addCard(card);
+  }
+
+  public getVPChipScoringElement(): VPChipScoringElement {
+    return {
+      type: ScoringElementType.VP_CHIP,
+      totalPoints: this.vpChips.getValue(),
+    };
   }
 
   public hasPlayedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {

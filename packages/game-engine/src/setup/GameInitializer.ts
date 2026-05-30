@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardType, Expansion, Mechanic, PileCategory } from '@dominion/common';
+import { CardType, Expansion, GameResult, Mechanic, PileCategory } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardFactory } from '../card/CardFactory';
@@ -38,7 +38,7 @@ export class GameInitializer {
     this.addBasicTreasuresToSupply();
     this.addBasicVictoryCardsToSupply();
     for (const player of this.game.getPlayers()) {
-      player.getOwnedCards().calculatePoints();
+      player.calculateScore();
     }
     this.createInitialDecks();
   }
@@ -239,7 +239,7 @@ export class GameInitializer {
     }
   }
 
-  public async startGame(): Promise<void> {
-    await this.game.startGame();
+  public async runGame(): Promise<GameResult> {
+    return this.game.runGame();
   }
 }

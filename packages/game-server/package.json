@@ -29,22 +29,27 @@
   "author": "Ben King",
   "license": "MIT",
   "dependencies": {
+    "@dominion/client-common": "*",
     "@dominion/game-engine": "*",
     "@dominion/local-bot-client": "*",
     "@dominion/local-text-client": "*",
-    "@dominion/client-common": "*",
     "@dominion/web-client-backend": "*",
+    "bcryptjs": "^3.0.2",
     "express": "^4.18.2",
     "express-http-proxy": "^2.1.1",
-    "ws": "^8.14.2"
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.2",
+    "ws": "^8.14.2",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/tsup-config": "*",
     "@repo/typescript-config": "*",
+    "@types/jsonwebtoken": "^9.0.10",
     "eslint": "^9.9.1",
     "tsup": "^8.3.0",
-    "typescript": "^5.5.4"
+    "typescript": "^6.0.3"
   },
   "files": [
     "dist",

@@ -12,6 +12,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.VICTORY],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'Herbalist',
@@ -22,6 +23,7 @@ export const alchemy: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
+    is_kingdom: true,
   },
   {
     name: 'Apothecary',
@@ -34,6 +36,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'Scrying Pool',
@@ -46,6 +49,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'University',
@@ -58,6 +62,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'Alchemist',
@@ -70,6 +75,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'Familiar',
@@ -82,6 +88,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: "Philosopher's Stone",
@@ -97,6 +104,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.TREASURE],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'Golem',
@@ -109,6 +117,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
   },
   {
     name: 'Apprentice',
@@ -119,5 +128,6 @@ export const alchemy: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
+    is_kingdom: true,
   },
 ];

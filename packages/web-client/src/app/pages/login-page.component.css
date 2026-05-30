@@ -1,0 +1,200 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.auth-shell {
+  min-height: 100dvh;
+  padding: clamp(0.9rem, 2.4vw, 1.6rem);
+  background:
+    radial-gradient(circle at 12% 9%, rgba(98, 163, 255, 0.25), transparent 34%),
+    radial-gradient(circle at 85% 85%, rgba(40, 107, 230, 0.18), transparent 42%),
+    linear-gradient(140deg, #0a111d 0%, #111b2f 45%, #0d1a32 100%);
+  color: #e6edf8;
+  font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
+}
+
+.auth-frame {
+  max-width: 480px;
+  margin: 0 auto;
+  border: 1px solid rgba(165, 200, 255, 0.24);
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(11, 20, 33, 0.94), rgba(6, 14, 27, 0.9));
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.7rem);
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid rgba(100, 154, 255, 0.24);
+  background: linear-gradient(90deg, rgba(26, 40, 61, 0.95), rgba(13, 28, 48, 0.86));
+}
+
+.top-nav h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.top-nav nav {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav-tab {
+  border: none;
+  padding: 0.55rem 1rem;
+  border-radius: 9px;
+  color: rgba(223, 234, 255, 0.78);
+  background: transparent;
+  font-weight: 500;
+}
+
+.nav-tab.active {
+  color: #9bc8ff;
+  box-shadow: inset 0 -2px 0 #68b3ff;
+}
+
+.auth-body {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  border: 1px solid rgba(123, 172, 255, 0.15);
+  background: linear-gradient(150deg, rgba(18, 28, 44, 0.85), rgba(10, 20, 34, 0.82));
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+}
+
+.intro-panel h2 {
+  margin: 0.4rem 0 0.8rem;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  line-height: 1.08;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.76rem;
+  color: #9bc8ff;
+}
+
+.subtitle {
+  margin: 0;
+  color: rgba(220, 230, 250, 0.82);
+  max-width: 46ch;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(132, 181, 255, 0.18);
+}
+
+.mode-switch button {
+  background: rgba(8, 15, 26, 0.78);
+  color: rgba(223, 234, 255, 0.86);
+  border: none;
+  padding: 0.62rem 1rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.mode-switch button.active {
+  color: #eff6ff;
+  background: linear-gradient(180deg, #5eabff, #4289de);
+}
+
+.auth-form {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.86rem;
+  color: rgba(219, 231, 252, 0.86);
+}
+
+.auth-form input {
+  border: 1px solid rgba(132, 181, 255, 0.22);
+  border-radius: 9px;
+  background: rgba(8, 15, 26, 0.78);
+  color: #eaf1ff;
+  padding: 0.66rem 0.75rem;
+  font-size: 0.94rem;
+}
+
+.auth-form input:focus {
+  outline: 2px solid rgba(99, 170, 255, 0.45);
+  outline-offset: 1px;
+}
+
+.auth-form button[type='submit'] {
+  margin-top: 0.25rem;
+  border: none;
+  border-radius: 10px;
+  padding: 0.68rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #eff6ff;
+  cursor: pointer;
+  background: linear-gradient(180deg, #5eabff, #4289de);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 8px 18px rgba(46, 104, 182, 0.32);
+}
+
+.auth-form button[type='submit']:disabled {
+  opacity: 0.76;
+  cursor: wait;
+}
+
+.auth-form button[type='submit']:not(:disabled):hover {
+  filter: brightness(1.05);
+}
+
+.error-message {
+  margin: 0;
+  color: #ffb0a5;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .top-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .auth-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .auth-shell {
+    padding: 1rem;
+  }
+
+  .auth-frame {
+    border-radius: 14px;
+  }
+}

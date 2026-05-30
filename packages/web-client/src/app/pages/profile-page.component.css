@@ -1,0 +1,325 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.profile-shell {
+  min-height: 100dvh;
+  padding: clamp(0.9rem, 2.4vw, 1.6rem);
+  background:
+    radial-gradient(circle at 12% 9%, rgba(98, 163, 255, 0.25), transparent 34%),
+    radial-gradient(circle at 85% 85%, rgba(40, 107, 230, 0.18), transparent 42%),
+    linear-gradient(140deg, #0a111d 0%, #111b2f 45%, #0d1a32 100%);
+  color: #e6edf8;
+  font-family: 'Space Grotesk', 'Avenir Next', sans-serif;
+}
+
+.profile-frame {
+  max-width: 860px;
+  margin: 0 auto;
+  border: 1px solid rgba(165, 200, 255, 0.24);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(11, 20, 33, 0.94), rgba(6, 14, 27, 0.9));
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.48),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ── Top nav ─────────────────────────────────────── */
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.7rem);
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid rgba(100, 154, 255, 0.24);
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(90deg, rgba(26, 40, 61, 0.95), rgba(13, 28, 48, 0.86));
+}
+
+.top-nav h1 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ── Body ────────────────────────────────────────── */
+
+.profile-body {
+  padding: 1.6rem;
+}
+
+.muted {
+  color: rgba(214, 226, 247, 0.56);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.error-text {
+  color: #e05555;
+  font-size: 0.9rem;
+  margin: 0 0 12px;
+}
+
+.save-message {
+  color: #4cdb7c;
+  font-size: 0.9rem;
+  margin: 0 0 12px;
+}
+
+/* ── User header ─────────────────────────────────── */
+
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-bottom: 1.4rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.user-heading {
+  margin: 0;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 640;
+  color: #e6edf8;
+}
+
+.user-status {
+  font-size: 0.82rem;
+  color: rgba(214, 226, 247, 0.6);
+}
+
+.user-status.online {
+  color: #4cdb7c;
+}
+
+/* ── Editor panel ────────────────────────────────── */
+
+.editor-panel {
+  border-top: 1px solid rgba(123, 172, 255, 0.15);
+  padding-top: 1.2rem;
+  margin-top: 0.4rem;
+}
+
+.editor-heading {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 620;
+  color: #c8d6f0;
+}
+
+.editor-hint {
+  font-size: 0.82rem;
+  color: rgba(214, 226, 247, 0.56);
+  margin: 0 0 1rem;
+}
+
+/* Card search */
+
+.card-search-wrap {
+  position: relative;
+  width: 280px;
+  margin-bottom: 1rem;
+}
+
+.card-search-input {
+  width: 100%;
+  border: 1px solid rgba(132, 181, 255, 0.22);
+  border-radius: 9px;
+  background: rgba(8, 15, 26, 0.78);
+  color: #eaf1ff;
+  padding: 0.66rem 0.75rem;
+  font-size: 0.94rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.card-search-input:focus {
+  border-color: rgba(132, 181, 255, 0.55);
+}
+
+.suggestions-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(11, 20, 36, 0.97);
+  border: 1px solid rgba(132, 181, 255, 0.22);
+  border-radius: 9px;
+  list-style: none;
+  padding: 4px 0;
+  margin: 0;
+  z-index: 100;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+}
+
+.suggestion-item {
+  padding: 0.55rem 0.85rem;
+  font-size: 0.88rem;
+  color: #d4e4ff;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Crop area */
+
+.crop-area {
+  display: flex;
+  gap: 1.6rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.crop-container {
+  position: relative;
+  cursor: crosshair;
+  user-select: none;
+  flex-shrink: 0;
+  line-height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(132, 181, 255, 0.18);
+}
+
+.crop-img {
+  max-width: 240px;
+  max-height: 340px;
+  display: block;
+  pointer-events: none;
+}
+
+.crop-selection {
+  position: absolute;
+  border: 2px solid #fff;
+  background: rgba(255, 255, 255, 0.14);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* Preview */
+
+.preview-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.preview-label {
+  font-size: 0.8rem;
+  color: rgba(214, 226, 247, 0.56);
+  margin: 0;
+}
+
+.preview-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background: rgba(8, 15, 26, 0.78);
+  border: 1px solid rgba(132, 181, 255, 0.18);
+}
+
+.preview-art {
+  position: absolute;
+}
+
+.preview-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Buttons — reuse project ghost/btn-primary patterns */
+
+.btn-primary {
+  border: none;
+  padding: 0.58rem 1.1rem;
+  border-radius: 9px;
+  background: #2e5cb8;
+  color: #e8f0ff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #3a6fc9;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ghost {
+  background: transparent;
+  border: 1px solid rgba(132, 181, 255, 0.28);
+  padding: 0.58rem 1.1rem;
+  border-radius: 9px;
+  color: rgba(214, 226, 247, 0.78);
+  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.ghost:hover {
+  border-color: rgba(132, 181, 255, 0.55);
+  color: #e6edf8;
+}
+
+/* ── Password form ─────────────────────────────────── */
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 320px;
+}
+
+.field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: rgba(214, 226, 247, 0.7);
+}
+
+.field-input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(132, 181, 255, 0.22);
+  border-radius: 9px;
+  background: rgba(8, 15, 26, 0.78);
+  color: #eaf1ff;
+  padding: 0.66rem 0.75rem;
+  font-size: 0.94rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.field-input:focus {
+  border-color: rgba(132, 181, 255, 0.55);
+}

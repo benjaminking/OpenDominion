@@ -158,7 +158,7 @@ export class CardSegmentCreator extends SegmentCreator {
     const messageSegments: IncompleteMessageSegment[][] = [];
     for (const cardName of cardCounts.keys()) {
       messageSegments.push(
-        this.convertCardCountToMessageSegments(cardName, cardInstances.get(cardName), cardCounts.get(cardName)),
+        this.convertCardCountToMessageSegments(cardName, cardInstances.get(cardName)!, cardCounts.get(cardName)!),
       );
     }
     return messageSegments;

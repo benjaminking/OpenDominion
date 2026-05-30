@@ -82,6 +82,7 @@ export class DecisionManagerService {
     cardChoices: CardChoice[];
   }): void {
     this.resetSubscribers = [];
+    this.enableNecessaryViewsForCardChoices(chooseCardsContent.cardChoices);
     this.addNewDecision({
       ...chooseCardsContent,
       type: DecisionType.CHOOSE_CARDS,
@@ -178,18 +179,26 @@ export class DecisionManagerService {
   private enableNecessaryViewsForCardChoices(cardChoices: CardChoice[]): void {
     for (const cardChoice of cardChoices) {
       if (cardChoice.card.location === CardLocation.REVEAL_LIMBO) {
-        this.viewVisibilityService.toggleViewByName(ViewName.REVEALED_LIMBO);
+        this.viewVisibilityService.enableViewByName(ViewName.REVEALED_LIMBO);
       } else if (cardChoice.card.location === CardLocation.SET_ASIDE) {
-        this.viewVisibilityService.toggleViewByName(ViewName.SET_ASIDE);
+        this.viewVisibilityService.enableViewByName(ViewName.SET_ASIDE);
       } else if (cardChoice.card.location === CardLocation.TRASH) {
-        this.viewVisibilityService.toggleViewByName(ViewName.TRASH);
+        this.viewVisibilityService.enableViewByName(ViewName.TRASH);
       } else if (cardChoice.card.location === CardLocation.DISCARD) {
-        this.viewVisibilityService.toggleViewByName(ViewName.DISCARD);
+        this.viewVisibilityService.enableViewByName(ViewName.DISCARD);
       }
     }
   }
 
+  private disableAllViews(): void {
+    this.viewVisibilityService.disableViewByName(ViewName.REVEALED_LIMBO);
+    this.viewVisibilityService.disableViewByName(ViewName.SET_ASIDE);
+    this.viewVisibilityService.disableViewByName(ViewName.TRASH);
+    this.viewVisibilityService.disableViewByName(ViewName.DISCARD);
+  }
+
   public resolveDecisionWithCard(card: CardMetadata): void {
+    this.disableAllViews();
     this.webSocketMessageWriter.sendChoice({
       type: ChoiceType.Card,
       card: card,

@@ -2,16 +2,16 @@
   class="standard-card-group"
   [ngClass]="{
     selectable: isSelectable(),
-    'select-bottomdeck': isSelectionType('bottomdeck'),
-    'select-discard': isSelectionType('discard'),
-    'select-draw': isSelectionType('draw'),
-    'select-exile': isSelectionType('exile'),
-    'select-gain': isSelectionType('gain'),
-    'select-other': isSelectionType('other'),
-    'select-play': isSelectionType('play'),
-    'select-play-alt': isSelectionType('play-alternative'),
-    'select-topdeck': isSelectionType('topdeck'),
-    'select-trash': isSelectionType('trash'),
+    'select-bottomdeck': isSelectionType(CardSelectionPurpose.BOTTOMDECK),
+    'select-discard': isSelectionType(CardSelectionPurpose.DISCARD),
+    'select-draw': isSelectionType(CardSelectionPurpose.DRAW),
+    'select-exile': isSelectionType(CardSelectionPurpose.EXILE),
+    'select-gain': isSelectionType(CardSelectionPurpose.GAIN),
+    'select-other': isSelectionType(CardSelectionPurpose.OTHER),
+    'select-play': isSelectionType(CardSelectionPurpose.PLAY),
+    'select-play-alt': isSelectionType(CardSelectionPurpose.PLAY_ALT),
+    'select-topdeck': isSelectionType(CardSelectionPurpose.TOPDECK),
+    'select-trash': isSelectionType(CardSelectionPurpose.TRASH),
   }"
   (click)="processClick()"
 >

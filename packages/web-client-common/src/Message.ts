@@ -7,6 +7,7 @@ import {
   EffectChoice,
   ExtraTurnChoice,
   GameConfiguration,
+  GameResult,
   LogMessage,
   NamedChoice,
   NoneChoice,
@@ -228,4 +229,34 @@ export interface BuyPhaseChoiceMessage extends Message {
 export interface ResolvedChoiceMessage extends Message {
   type: MessageType.RESOLVED_CHOICE;
   content: Choice;
+}
+
+export interface ChatContent {
+  username: string;
+  text: string;
+  timestamp: number;
+}
+
+export interface ChatMessage extends Message {
+  type: MessageType.CHAT;
+  content: ChatContent;
+}
+
+export interface DmReceiveContent {
+  senderUserId: string;
+  senderUsername: string;
+  text: string;
+  timestamp: number;
+}
+
+export type GameResultContent = GameResult;
+
+export interface GameResultMessage extends Message {
+  type: MessageType.GAME_RESULT;
+  content: GameResultContent;
+}
+
+export interface DmMessage extends Message {
+  type: MessageType.DM;
+  content: DmReceiveContent;
 }

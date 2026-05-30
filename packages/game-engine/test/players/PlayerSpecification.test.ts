@@ -5,12 +5,9 @@ import { Game } from '../../src/Game';
 import { PlayerSpecification } from '../../src/players/PlayerSpecification';
 
 const playerConstructor = vi.hoisted(() =>
-  vi.fn((name: string, game: Game, client: Client, isBot: boolean) => ({
-    name,
-    game,
-    client,
-    isBot,
-  })),
+  vi.fn(function (name: string, game: Game, client: Client, isBot: boolean) {
+    return { name, game, client, isBot };
+  }),
 );
 
 vi.mock('../../src/players/Player', () => ({

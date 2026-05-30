@@ -29,6 +29,6 @@ export class TextBasedGameRunner {
     }
 
     const gameInitializer: GameInitializer = new GameInitializer([textPlayer, botPlayer], requiredCardNames);
-    await gameInitializer.startGame();
+    await gameInitializer.runGame();
   }
 }

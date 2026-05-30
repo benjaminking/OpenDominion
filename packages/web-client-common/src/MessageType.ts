@@ -1,6 +1,7 @@
 export enum MessageType {
   LOG = 'log',
   CHAT = 'chat',
+  DM = 'dm',
   PLAYER_NAME = 'player_name',
   OPPONENT_NAME = 'opponent_name',
   GAME_CONFIGURATION = 'game_configuration',
@@ -22,4 +23,5 @@ export enum MessageType {
   TREASURE_PHASE_CHOICE = 'treasure_phase_choice',
   BUY_PHASE_CHOICE = 'buy_phase_choice',
   RESOLVED_CHOICE = 'resolved_choice',
+  GAME_RESULT = 'game_result',
 }

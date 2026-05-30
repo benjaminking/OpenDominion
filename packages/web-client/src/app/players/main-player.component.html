@@ -5,9 +5,11 @@
         <img src="/images/card_back.png" />
         <div class="card-count">{{ deckSize() }}</div>
       </div>
+      <!-- TODO: when we're choosing a card from the discard, this should act like a toggle
+           in case the user closes the dialog-->
       <div class="discard">
-        @if (topDiscard()) {
-          <img src="/images/{{ topDiscard().name }}.jpg" />
+        @if (topDiscard(); as topCardOfDiscard) {
+          <img src="/images/{{ topCardOfDiscard.name }}.jpg" />
         } @else {
           <div class="empty-discard"></div>
         }
@@ -34,6 +36,4 @@
   [grouped]="true"
   [sorted]="true"
 ></card-dialog>
-<!-- TODO: when we're choosing a card from the discard, this should act like a toggle
-           in case the user closes the dialog-->
 <card-dialog title="Discard" [cards]="discard()" [name]="discardViewName"></card-dialog>

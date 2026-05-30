@@ -1,0 +1,36 @@
+<main class="auth-shell">
+  <section class="auth-frame">
+    <header class="top-nav">
+      <h1>OpenDominion</h1>
+    </header>
+
+    <section class="auth-body">
+      <section class="auth-card">
+        <div class="mode-switch" role="tablist" aria-label="Authentication mode">
+          <button type="button" [class.active]="mode === 'login'" (click)="setMode('login')">Log In</button>
+          <button type="button" [class.active]="mode === 'signup'" (click)="setMode('signup')">Sign Up</button>
+        </div>
+
+        <form [formGroup]="authForm" (ngSubmit)="submit()" class="auth-form">
+          <label>
+            Username
+            <input formControlName="username" placeholder="Username" autocomplete="username" />
+          </label>
+
+          <label>
+            Password
+            <input formControlName="password" type="password" placeholder="Password" autocomplete="current-password" />
+          </label>
+
+          @if (errorMessage) {
+            <p class="error-message">{{ errorMessage }}</p>
+          }
+
+          <button type="submit" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Please wait...' : mode === 'signup' ? 'Create Account' : 'Continue' }}
+          </button>
+        </form>
+      </section>
+    </section>
+  </section>
+</main>

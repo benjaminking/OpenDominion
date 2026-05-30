@@ -3,7 +3,7 @@
     @if (playerName === currentPlayerName()) {
       <div class="player-in-play-area">
         <div class="in-play-cards">
-          <card-display [cards]="playerInPlays().get(playerName)()" [grouped]="true" [staggered]="true"></card-display>
+          <card-display [cards]="playerInPlays().get(playerName)!()" [grouped]="true" [staggered]="true"></card-display>
         </div>
       </div>
     }

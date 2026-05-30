@@ -133,6 +133,11 @@ export class Piles {
     return Math.min(numProvincesToEnd, numCardsToEnd);
   }
 
+  public areGameEndingConditionsMet(): boolean {
+    //return this.supplyPiles.getPileByName('Province')!.isEmpty() || this.numEmptySupplyPiles >= 3;
+    return (this.supplyPiles.getPileByName('Province')?.size() ?? 0) < 8 || this.numEmptySupplyPiles >= 3;
+  }
+
   public communicateInitialState(): void {
     for (const pile of this.allPiles) {
       pile.communicateInitialState();

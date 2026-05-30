@@ -49,6 +49,10 @@ export class MessageHandler<MessageType extends object, IndexFields extends keyo
     }
   }
 
+  public clearMostRecentValues(): void {
+    this.mostRecentValues.clear();
+  }
+
   protected sendMessageToSubscribers(key: string, value: Omit<MessageType, IndexFields>): void {
     if (this.subscribers.has(key)) {
       this.subscribers.get(key)!.forEach((callback) => {

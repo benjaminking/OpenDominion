@@ -18,10 +18,11 @@ export default (config = { hasLocalizations: false }) => {
 
   return defineConfig({
     entry: ['src/**/*.ts', '!src/**/*.test.ts'],
-    dts: true,
+    dts: { compilerOptions: { ignoreDeprecations: '6.0' } },
     clean: true,
     format: ['esm', 'cjs'],
     bundle: false,
+    target: 'esnext',
     esbuildPlugins: [fixFolderImportsPlugin(), fixExtensionsPlugin()],
     ...configOptions,
   });

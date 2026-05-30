@@ -1,0 +1,136 @@
+<main class="profile-shell">
+  <section class="profile-frame">
+    <header class="top-nav">
+      <h1>Profile</h1>
+      <div class="toolbar">
+        <button type="button" class="ghost" routerLink="/lobby">&#8592; Lobby</button>
+      </div>
+    </header>
+
+    <div class="profile-body">
+      @if (isLoading()) {
+        <p class="muted">Loading…</p>
+      } @else if (errorMessage() && !profile()) {
+        <p class="error-text">{{ errorMessage() }}</p>
+      } @else if (profile(); as user) {
+        <!-- ── User header ─────────────────────────────── -->
+        <div class="user-header">
+          <user-avatar [username]="user.username" [avatar]="user.avatar" [online]="user.online" [size]="72" />
+          <div class="user-info">
+            <h2 class="user-heading">{{ user.username }}</h2>
+            <span class="user-status" [class.online]="user.online">
+              {{ user.online ? 'Online' : 'Offline' }}
+            </span>
+          </div>
+        </div>
+
+        @if (saveMessage()) {
+          <p class="save-message">{{ saveMessage() }}</p>
+        }
+        @if (errorMessage()) {
+          <p class="error-text">{{ errorMessage() }}</p>
+        }
+
+        <!-- ── Avatar editor (own profile only) ──────── -->
+        @if (isOwnProfile()) {
+          <div class="editor-panel">
+            <h3 class="editor-heading">Change Avatar</h3>
+            <p class="editor-hint">Search for a card, then drag to select your crop region.</p>
+
+            <div class="card-search-wrap">
+              <input
+                class="card-search-input"
+                type="text"
+                placeholder="Search cards…"
+                [ngModel]="cardSearch()"
+                (ngModelChange)="updateCardSearch($event)"
+                (blur)="hideSuggestions()"
+              />
+              @if (cardSuggestions().length > 0) {
+                <ul class="suggestions-list">
+                  @for (name of cardSuggestions(); track name) {
+                    <li class="suggestion-item" (mousedown)="selectCard(name)">{{ name }}</li>
+                  }
+                </ul>
+              }
+            </div>
+
+            @if (artUrl()) {
+              <div class="crop-area">
+                <div class="crop-container" #cropContainer (mousedown)="startDrag($event)">
+                  <img class="crop-img" [src]="artUrl()!" alt="" draggable="false" (load)="onImageLoad($event)" />
+                  @if (cropRect()) {
+                    <div class="crop-selection" [ngStyle]="cropRectStyle()"></div>
+                  }
+                </div>
+
+                @if (pendingAvatarData()) {
+                  <div class="preview-wrap">
+                    <p class="preview-label">Preview</p>
+                    <div class="preview-circle">
+                      <img class="preview-art" [src]="artUrl()!" [ngStyle]="previewImgStyle()" alt="" />
+                    </div>
+                    <div class="preview-actions">
+                      <button type="button" class="btn-primary" (click)="saveAvatar()">Save Avatar</button>
+                      <button type="button" class="ghost" (click)="clearSelection()">Cancel</button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- ── Change password (own profile only) ──────── -->
+        @if (isOwnProfile()) {
+          <div class="editor-panel">
+            <h3 class="editor-heading">Change Password</h3>
+
+            @if (passwordSuccess()) {
+              <p class="save-message">{{ passwordSuccess() }}</p>
+            }
+            @if (passwordError()) {
+              <p class="error-text">{{ passwordError() }}</p>
+            }
+
+            <div class="password-form">
+              <label class="field-label">
+                Current password
+                <input
+                  class="field-input"
+                  type="password"
+                  autocomplete="current-password"
+                  [ngModel]="currentPassword()"
+                  (ngModelChange)="currentPassword.set($event)"
+                />
+              </label>
+              <label class="field-label">
+                New password
+                <input
+                  class="field-input"
+                  type="password"
+                  autocomplete="new-password"
+                  [ngModel]="newPassword()"
+                  (ngModelChange)="newPassword.set($event)"
+                />
+              </label>
+              <label class="field-label">
+                Confirm new password
+                <input
+                  class="field-input"
+                  type="password"
+                  autocomplete="new-password"
+                  [ngModel]="confirmPassword()"
+                  (ngModelChange)="confirmPassword.set($event)"
+                />
+              </label>
+              <button type="button" class="btn-primary" [disabled]="isSavingPassword()" (click)="changePassword()">
+                {{ isSavingPassword() ? 'Saving…' : 'Change Password' }}
+              </button>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </section>
+</main>

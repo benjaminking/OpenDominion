@@ -42,4 +42,15 @@ describe('MessageHandler', () => {
 
     expect(callback).toHaveBeenCalledWith({ text: 'hello' });
   });
+
+  it('can clear cached most-recent values so new subscribers do not get stale replay', () => {
+    const handler = new MessageHandler<{ text: string }>();
+    handler.handleMessage({ text: 'old' });
+    handler.clearMostRecentValues();
+
+    const callback = vi.fn();
+    handler.subscribe({}, callback);
+
+    expect(callback).not.toHaveBeenCalled();
+  });
 });

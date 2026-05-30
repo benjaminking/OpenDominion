@@ -1,3 +1,5 @@
+import { GameResult } from '@dominion/common';
+
 import { Logger } from './logging/Logger';
 import { GameMessageBroadcaster } from './messaging/GameMessageBroadcaster';
 import { PlayerSpecification } from './players';
@@ -53,11 +55,12 @@ export class Game {
     this.allPlayers.randomizeOrder();
   }
 
-  public async startGame(): Promise<void> {
+  public async runGame(): Promise<GameResult> {
     await this.gameState.prepareForStartOfGame();
 
     this.communicateInitialState();
     await this.gameState.startGame();
+    return this.gameState.getGameResult()!;
   }
 
   private communicateInitialState(): void {

@@ -1,4 +1,4 @@
-/* minimal styles */
-input {
-  margin-right: 0.5rem;
+:host {
+  display: block;
+  min-height: 100dvh;
 }

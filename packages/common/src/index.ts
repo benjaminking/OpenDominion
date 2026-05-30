@@ -4,3 +4,4 @@ export * from './game';
 export * from './message';
 export * from './NumberType';
 export * from './pile';
+export * from './score';

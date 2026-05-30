@@ -23,4 +23,18 @@ export class ViewVisibilityService {
     }
     this.visibilityByViewName[viewName].set(!this.visibilityByViewName[viewName]());
   }
+
+  enableViewByName(viewName: ViewName): void {
+    if (!Object.values(ViewName).includes(viewName)) {
+      return;
+    }
+    this.visibilityByViewName[viewName].set(true);
+  }
+
+  disableViewByName(viewName: ViewName): void {
+    if (!Object.values(ViewName).includes(viewName)) {
+      return;
+    }
+    this.visibilityByViewName[viewName].set(false);
+  }
 }

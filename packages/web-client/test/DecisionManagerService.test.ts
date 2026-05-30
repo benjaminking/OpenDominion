@@ -32,6 +32,14 @@ class FakeViewVisibilityService {
   toggleViewByName(viewName: ViewName): void {
     this.visibilityByViewName[viewName].set(!this.visibilityByViewName[viewName]());
   }
+
+  enableViewByName(viewName: ViewName): void {
+    this.visibilityByViewName[viewName].set(true);
+  }
+
+  disableViewByName(viewName: ViewName): void {
+    this.visibilityByViewName[viewName].set(false);
+  }
 }
 
 function createCard(name: string, id: string): CardMetadata {

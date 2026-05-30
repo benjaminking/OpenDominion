@@ -34,6 +34,19 @@ export class CardInfoLookup {
     return instance.cardInfoByName.get(cardName)!;
   }
 
+  public static getAllCardNames(): string[] {
+    const instance = CardInfoLookup.getInstance();
+    return [...instance.cardInfoByName.keys()].sort();
+  }
+
+  public static getKingdomCardNames(): string[] {
+    const instance = CardInfoLookup.getInstance();
+    return [...instance.cardInfoByName.entries()]
+      .filter(([, info]) => info.is_kingdom === true)
+      .map(([name]) => name)
+      .sort();
+  }
+
   private static getInstance(): CardInfoLookup {
     CardInfoLookup.instance ??= new CardInfoLookup();
     return CardInfoLookup.instance;

@@ -10,6 +10,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Bridge',
@@ -20,6 +21,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Conspirator',
@@ -30,6 +32,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Courtier',
@@ -40,6 +43,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Courtyard',
@@ -50,6 +54,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Diplomat',
@@ -60,6 +65,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Duke',
@@ -70,6 +76,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Farm',
@@ -83,6 +90,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.VICTORY],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Ironworks',
@@ -93,6 +101,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Lurker',
@@ -103,6 +112,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Masquerade',
@@ -113,6 +123,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Mill',
@@ -123,6 +134,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.VICTORY],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Mining Village',
@@ -133,6 +145,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Minion',
@@ -143,6 +156,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Nobles',
@@ -153,6 +167,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.VICTORY],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Patrol',
@@ -163,6 +178,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Pawn',
@@ -173,6 +189,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Replace',
@@ -183,6 +200,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Secret Passage',
@@ -193,6 +211,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Shanty Town',
@@ -203,6 +222,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Steward',
@@ -213,6 +233,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Swindler',
@@ -223,6 +244,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Torturer',
@@ -233,6 +255,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Trading Post',
@@ -243,6 +266,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Upgrade',
@@ -253,6 +277,7 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
   {
     name: 'Wishing Well',
@@ -263,5 +288,6 @@ export const intrigue: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.INTRIGUE,
+    is_kingdom: true,
   },
 ];

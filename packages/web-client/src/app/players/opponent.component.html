@@ -14,8 +14,8 @@
           <div class="card-count">{{ deckSize() }}</div>
         </div>
         <div class="discard">
-          @if (topDiscard()) {
-            <img src="/images/{{ topDiscard().name }}.jpg" />
+          @if (topDiscard(); as topCardOfDiscard) {
+            <img src="/images/{{ topCardOfDiscard.name }}.jpg" />
           } @else {
             <div class="empty-discard"></div>
           }
