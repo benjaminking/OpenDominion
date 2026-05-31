@@ -294,9 +294,11 @@ export class InstructionExecutor {
 
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'buys %c', card));
 
-    // TODO: does anything rely on passing the pile name here?
-    await this.sharedGameState.triggerEffect(EffectTriggerType.BUY);
-    return this.gainFromPile(pileName);
+    const gainedCard = await this.gainFromPile(pileName);
+    if (gainedCard !== undefined) {
+      await this.sharedGameState.triggerEffect(EffectTriggerType.BUY, CardCollection.fromCards([gainedCard]));
+    }
+    return gainedCard;
   }
 
   public async gainCardFromPile(

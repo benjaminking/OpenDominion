@@ -18,6 +18,7 @@ export * from './Sailor';
 export * from './Salvager';
 export * from './SeaChart';
 export * from './SeaWitch';
+// TODO: Implement Smugglers
 //export * from './Smugglers';
 export * from './Tactician';
 export * from './TidePools';

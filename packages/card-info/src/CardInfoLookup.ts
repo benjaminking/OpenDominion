@@ -3,6 +3,7 @@ import { CardInfo } from '@dominion/common';
 import { alchemy } from './Alchemy';
 import { base_game as baseGame } from './BaseGame';
 import { basic_cards as basicCards } from './BasicCards';
+import { hinterlands } from './Hinterlands';
 import { intrigue } from './Intrigue';
 import { prosperity } from './Prosperity';
 import { seaside } from './Seaside';
@@ -15,6 +16,7 @@ export class CardInfoLookup {
     this.addCardInfoToMap(basicCards);
     this.addCardInfoToMap(baseGame);
     this.addCardInfoToMap(intrigue);
+    this.addCardInfoToMap(hinterlands);
     this.addCardInfoToMap(seaside);
     this.addCardInfoToMap(alchemy);
     this.addCardInfoToMap(prosperity);
