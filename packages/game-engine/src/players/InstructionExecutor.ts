@@ -152,6 +152,13 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().getMatchingCardsInHand(cardEligibilityFunction);
   }
 
+  public getCardsFromLocation(location: CardLocation): CardCollection {
+    if (this.sharedGameState.isSharedLocation(location)) {
+      return this.sharedGameState.getCardsFromArea(location);
+    }
+    return this.player.getOwnedCards().getCardsFromArea(location);
+  }
+
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
     if (this.sharedGameState.isSharedLocation(cardMetadata.location)) {
       return this.sharedGameState.getCardByMetadata(cardMetadata);
@@ -944,5 +951,83 @@ export class InstructionExecutor {
 
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
+  }
+
+  // Allies support stubs
+
+  /** Stub: add Favors (not yet tracked). */
+  public addFavors(_n: number): void {
+    //
+  }
+
+  /** Stub: get current Favor count. */
+  public getFavors(): number {
+    return 0;
+  }
+
+  /** Stub: pay coins outside buy flow (e.g., Capital City / Pageant-style decisions). */
+  public payCoins(_n: number): boolean {
+    return false;
+  }
+
+  /** Stub: rotate a split pile family (Augurs, Wizards, Townsfolk, etc.). */
+  public rotatePileGroup(_groupName: string): void {
+    //
+  }
+
+  /** Stub: rotate any supply pile (Battle Plan). */
+  public async rotateAnySupplyPile(): Promise<void> {
+    //
+  }
+
+  /** Stub: true when the previous draw operation caused a shuffle. */
+  public didLastDrawShuffle(): boolean {
+    return false;
+  }
+
+  /** Stub: mark this player to skip their next turn (Lich). */
+  public skipNextTurn(): void {
+    //
+  }
+
+  /** Stub: this turn, choose cards gain an extra different option (Elder). */
+  public enableChooseExtraOptionThisTurn(): void {
+    //
+  }
+
+  /** Move all cards from deck into discard pile. */
+  public async moveDeckToDiscard(): Promise<void> {
+    const movedCards = await this.takeCardsOffDeck(this.player.getOwnedCards().getDeck().size());
+    await this.discardCards(movedCards, CardLocation.DECK);
+  }
+
+  /** Put a card from a known location onto the bottom of the deck. */
+  public putCardOnBottomOfDeckFromLocation(card: Card, location: CardLocation): void {
+    this.removeCardFromLocation(card, location);
+    card.setLocation(CardLocation.DECK);
+    this.player.getOwnedCards().getDeck().insertCardAtPosition(card, 0);
+  }
+
+  /** Replay an already in-play card without moving it. */
+  public async replayCardInPlay(card: Card): Promise<void> {
+    await card.play(this);
+  }
+
+  /** Stub: return a card from hand/in-play/etc. back to its supply pile. */
+  public returnCardToPile(_card: Card): void {
+    //
+  }
+
+  public getNumEmptySupplyPiles(): number {
+    return this.sharedGameState.piles.numEmptySupplyPiles;
+  }
+
+  public getInPlayCards(): CardCollection {
+    return this.player.getOwnedCards().getInPlay();
+  }
+
+  /** Stub: cap number of cards playable from hand on a future turn (Voyage). */
+  public setMaxCardsFromHandToPlayOnNextTurn(_maxCards: number): void {
+    //
   }
 }
