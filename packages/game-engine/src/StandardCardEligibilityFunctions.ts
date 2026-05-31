@@ -146,6 +146,19 @@ class CanBeDiscardedInCleanup extends CardEligibilityFunction {
 
 const canBeDiscardedInCleanup = new CanBeDiscardedInCleanup();
 
+class Not extends CardEligibilityFunction {
+  public constructor(func: CardEligibilityFunction) {
+    super((c: Card) => !func.matches(c));
+  }
+}
+
+const not = function (func: CardEligibilityFunction): CardEligibilityFunction {
+  return new Not(func);
+};
+
+const isAttackCard: CardEligibilityFunction = new MatchesType(CardType.ATTACK);
+const isRewardCard: CardEligibilityFunction = new MatchesType(CardType.REWARD);
+
 export {
   anyCard,
   both,
@@ -164,6 +177,9 @@ export {
   isSupplyCard,
   isTheSameCardAs,
   isTreasureCard,
+  isAttackCard,
+  isRewardCard,
   isVictoryCard,
   noCard,
+  not,
 };

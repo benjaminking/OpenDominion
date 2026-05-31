@@ -945,4 +945,22 @@ export class InstructionExecutor {
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
+
+  // TODO: implement Coffers token tracking (Cornucopia & Guilds).
+  public addCoffers(_n: number): void { return; }
+
+  // TODO: implement spending Coffers for coins (Cornucopia & Guilds).
+  public async spendCoffers(_n: number): Promise<void> { return Promise.resolve(); }
+
+  // TODO: implement reading current Coffers count (Cornucopia & Guilds).
+  public getCoffers(): number { return 0; }
+
+  // TODO: implement gaining a Reward card from the Reward pile (Cornucopia & Guilds - Joust).
+  public async gainReward(): Promise<void> { return Promise.resolve(); }
+
+  // TODO: implement counting cards gained specifically in the buy phase (Cornucopia & Guilds - Merchant Guild).
+  public numCardsGainedInBuyPhase(): number { return 0; }
+
+  // TODO: implement a global cost reduction for all cards this turn (Cornucopia & Guilds - Renown).
+  public applyGlobalCostReduction(_n: number): void { return; }
 }
