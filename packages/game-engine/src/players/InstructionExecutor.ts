@@ -945,4 +945,66 @@ export class InstructionExecutor {
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
+
+  // --- Promo / Deprecated stubs ---
+
+  /** Expose the player to the left for cards like Envoy, Tribute, Contraband. */
+  public async performWithLeftPlayer(fn: (ie: InstructionExecutor) => Promise<void>): Promise<void> {
+    const leftPlayer = this.sharedGameState.getPlayerLeftOfCurrent();
+    await fn(leftPlayer.getInstructionExecutor());
+  }
+
+  /** Returns the current number of remaining actions (for Diadem). */
+  public getNumActions(): number {
+    return this.player.getStatistics().getActions();
+  }
+
+  /** Adds a bonus to the coin value of Copper cards played this turn (for Coppersmith). */
+  public addCopperValueBonus(_amount: number): void {
+    // TODO: Implement Copper value bonus
+  }
+
+  /** Names a card by having the player select from all card names in the game.
+   *  Returns the chosen name, or '' if none chosen (stub). */
+  public async chooseCardByName(_prompt: string): Promise<string> {
+    // TODO: Implement named card selection UI
+    return '';
+  }
+
+  /** Adds a coin token to the named mat (e.g. 'Pirate Ship', 'Trade Route'). */
+  public addCoinTokenToMat(_matName: string): void {
+    // TODO: Implement coin token mat
+  }
+
+  /** Returns the number of coin tokens on the named mat. */
+  public getCoinTokensOnMat(_matName: string): number {
+    // TODO: Implement coin token mat
+    return 0;
+  }
+
+  /** Restricts the current player from buying the named card this turn (for Contraband). */
+  public addBuyRestriction(_cardName: string): void {
+    // TODO: Implement buy restriction
+  }
+
+  /** Moves all cards in the player's deck to their discard pile (for Chancellor, Trusty Steed). */
+  public moveDeckToDiscard(): void {
+    // TODO: Implement move deck to discard
+  }
+
+  /** Adds an Embargo token to the named supply pile (for Embargo). */
+  public addEmbargoToken(_pileName: string): void {
+    // TODO: Implement Embargo token mechanic
+  }
+
+  /** Looks at the bottom card of the player's deck without removing it. */
+  public async lookAtBottomCardOfDeck(): Promise<import('../card/Card').Card | undefined> {
+    // TODO: Implement look at bottom card of deck
+    return undefined;
+  }
+
+  /** Puts the bottom card of the player's deck on top. */
+  public putBottomCardOnTop(): void {
+    // TODO: Implement put bottom card on top
+  }
 }
