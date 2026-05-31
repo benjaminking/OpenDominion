@@ -28,9 +28,7 @@ export class Gladiator extends KingdomCard {
     const leftPlayer = ie.getSharedGameState().getPlayerLeftOfCurrent();
     const leftIe = leftPlayer.getInstructionExecutor();
     const copyChoice: Card | Choice = await leftIe
-      .chooseCard(
-        'You may reveal a copy of ' + cardToReveal.getName() + ' from your hand',
-      )
+      .chooseCard('You may reveal a copy of ' + cardToReveal.getName() + ' from your hand')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.OTHER)
       .whereCardIs(cardNameIs(cardToReveal.getName()))

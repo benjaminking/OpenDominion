@@ -27,4 +27,3 @@ export class SaltTheEarth extends Event {
     }
   }
 }
-

@@ -47,4 +47,3 @@ export class SprawlingCastle extends KingdomCard {
     return 4;
   }
 }
-

@@ -50,5 +50,3 @@ export class HauntedCastle extends KingdomCard {
     return 2;
   }
 }
-
-
