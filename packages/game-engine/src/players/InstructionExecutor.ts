@@ -926,6 +926,181 @@ export class InstructionExecutor {
     await this.sharedGameState.eachPlayerPassesACardToTheLeft();
   }
 
+  // TODO: implement moving only the deck stack into discard without triggering shuffle side-effects.
+  public async moveDeckToDiscardPile(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  // TODO: implement "play a Supply card leaving it there" semantics for Command cards.
+  public async playSupplyCardWithoutGaining(_card: Card): Promise<void> {
+    return Promise.resolve();
+  }
+
+  // TODO: implement returning transient cards (like Spoils/Madman) to their source pile.
+  public async returnCardToOwnPile(_card: Card, _fromLocation: CardLocation): Promise<void> {
+    return Promise.resolve();
+  }
+
+  // TODO: implement gaining a card from the shuffled Ruins pile (Dark Ages).
+  public async gainFromRuinsPile(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  // TODO: implement gaining a Spoils from the Spoils pile (Dark Ages).
+  public async gainSpoils(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  // TODO: implement buy-phase gain tracking and exchange card for Madman if no cards were gained in the buy phase (Dark Ages - Hermit).
+  public async exchangeCardForMadman(_card: Card): Promise<void> {
+    return Promise.resolve();
+  }
+
+  public async processEffectsByType(
+    triggerType: EffectTriggerType,
+    targetCards: Card | CardCollection | undefined,
+    extraInformation = '',
+    usedEffectIDs: Set<string> = new Set<string>(),
+  ): Promise<void> {
+    const allEffects = this.getApplicableEffectsByType(triggerType, targetCards);
+    const optionalEffects = allEffects.filter((e: Effect) => !e.isMandatory() && !usedEffectIDs.has(e.getId()));
+    const mandatoryEffects = allEffects.filter((e: Effect) => e.isMandatory() && !usedEffectIDs.has(e.getId()));
+
+    const uniqueMandatoryEffectCardNames = new Set<string>(
+      mandatoryEffects.map((value: Effect) => value.getOwner().getName()),
+    );
+    if (optionalEffects.length === 0 && uniqueMandatoryEffectCardNames.size === 1) {
+      await mandatoryEffects[0].doAction(this, targetCards);
+      usedEffectIDs.add(mandatoryEffects[0].getId());
+      if (mandatoryEffects.length === 1) {
+        return;
+      } else {
+        return this.processEffectsByType(triggerType, targetCards, extraInformation, usedEffectIDs);
+      }
+    }
+
+    if (allEffects.length > 0) {
+      let extraMessage = '';
+      if (triggerType === EffectTriggerType.WOULD_GAIN && targetCards !== undefined) {
+        extraMessage =
+          'You would gain ' +
+          (targetCards instanceof CardCollection
+            ? targetCards.print()
+            : CardCollection.fromCards([targetCards]).print()) +
+          '.';
+      } else if (triggerType === EffectTriggerType.GAIN && targetCards !== undefined) {
+        extraMessage =
+          'You gained ' +
+          (targetCards instanceof CardCollection
+            ? targetCards.print()
+            : CardCollection.fromCards([targetCards]).print()) +
+          '.';
+      } else if (triggerType === EffectTriggerType.ATTACK && targetCards !== undefined) {
+        extraMessage =
+          'An opponent played ' +
+          (targetCards instanceof CardCollection
+            ? targetCards.print()
+            : CardCollection.fromCards([targetCards]).print()) +
+          '.';
+      }
+      const effectsById: Map<string, Effect> = this.createEffectIdMap(optionalEffects, mandatoryEffects);
+
+      const effectChoice: Choice = await this.player
+        .getDecisionService()
+        .chooseFromMultipleEvents(
+          extraMessage,
+          this.createEffectChoices(optionalEffects),
+          this.createEffectChoices(mandatoryEffects),
+        );
+      if (effectChoice.type === ChoiceType.Effect) {
+        const effect: Effect = effectsById.get((effectChoice as EffectChoice).effectId)!;
+        usedEffectIDs.add(effect.getId());
+
+        this.sharedGameState.pushActiveEffectOntoStack(effect);
+        await effect.doAction(this, targetCards);
+        this.sharedGameState.popActiveEffectOffOfStack();
+        return this.processEffectsByType(triggerType, targetCards, extraInformation, usedEffectIDs);
+      }
+    }
+  }
+
+  private createEffectChoices(effects: Effect[]): EffectChoice[] {
+    const effectChoices: EffectChoice[] = [];
+    for (const effect of effects) {
+      effectChoices.push({
+        type: ChoiceType.Effect,
+        effectName: effect.getOwner().getName(),
+        effectId: effect.getId(),
+      });
+    }
+    return effectChoices;
+  }
+
+  private createEffectIdMap(optionalEffects: Effect[], mandatoryEffects: Effect[]): Map<string, Effect> {
+    const effectIdMap: Map<string, Effect> = new Map<string, Effect>();
+    for (const optionalEffect of optionalEffects) {
+      effectIdMap.set(optionalEffect.getId(), optionalEffect);
+    }
+    for (const mandatoryEffect of mandatoryEffects) {
+      effectIdMap.set(mandatoryEffect.getId(), mandatoryEffect);
+    }
+    return effectIdMap;
+  }
+
+  private getApplicableEffectsByType(
+    trigger: EffectTriggerType,
+    targetCards: Card | CardCollection | undefined,
+  ): Effect[] {
+    const allEffects: Effect[] = [];
+    allEffects.push(...this.filterEffectsToApplicable(this.player.getEffects().getEffectsByType(trigger), targetCards));
+    allEffects.push(
+      ...this.filterEffectsToApplicable(this.player.getOwnedCards().getEffectsByType(trigger), targetCards),
+    );
+    if (targetCards !== undefined && targetCards instanceof CardCollection) {
+      allEffects.push(...this.filterEffectsToApplicable(targetCards.getEffectsByType(trigger), targetCards, true));
+    } else if (targetCards !== undefined) {
+      allEffects.push(
+        ...this.filterEffectsToApplicable(
+          CardCollection.fromCards([targetCards]).getEffectsByType(trigger),
+          targetCards,
+          true,
+        ),
+      );
+    }
+
+    if (trigger === EffectTriggerType.SHUFFLE) {
+      allEffects.push(
+        ...this.filterEffectsToApplicable(this.player.getOwnedCards().getDeckEffectsByType(trigger), targetCards),
+      );
+    }
+
+    return allEffects;
+  }
+
+  private filterEffectsToApplicable(
+    effects: Effect[],
+    targetCards: Card | CardCollection | undefined,
+    allowSelf = false,
+  ): Effect[] {
+    const applicableEffects: Effect[] = [];
+    for (const effect of effects) {
+      if (
+        (!effect.isSelf() || (allowSelf && effect.isSelf())) &&
+        (targetCards === undefined ||
+          (targetCards instanceof CardCollection && targetCards.size() === 0) ||
+          (targetCards instanceof CardCollection && effect.getCardEligibility().matchesAny(targetCards)) ||
+          (targetCards instanceof Card && effect.getCardEligibility().matches(targetCards))) &&
+        this.sharedGameState.isTurnEligibilitySatisfied(effect.getTurnEligibility()) &&
+        !effect.hasExpired() &&
+        effect.areOtherConditionsSatisfied(this)
+      ) {
+        applicableEffects.push(effect);
+      }
+    }
+
+    return applicableEffects;
+  }
+
   public createThisTurnEligibilityFunction(): TurnEligibility {
     return new ThisTurnEligibility(this.sharedGameState);
   }
