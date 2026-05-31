@@ -24,7 +24,7 @@ export class Scepter extends KingdomCard {
         }),
       )
       .from(
-        new ActionChoice('Replay a non-Command Action card you played this turn that\'s still in play', async () => {
+        new ActionChoice("Replay a non-Command Action card you played this turn that's still in play", async () => {
           // Choose a non-Command Action card still in play.
           const cardToReplay: Card | Choice = await ie
             .chooseCard('Choose a non-Command Action card in play to replay')

@@ -1353,22 +1353,34 @@ export class InstructionExecutor {
   // ── Renaissance stubs ──────────────────────────────────────────────────────
 
   /** Stub: add n Villager tokens (not yet tracked). */
-  public addVillagers(_n: number): void { /* stub */ }
+  public addVillagers(_n: number): void {
+    /* stub */
+  }
 
   /** Stub: return current Villager token count. */
-  public getVillagers(): number { return 0; }
+  public getVillagers(): number {
+    return 0;
+  }
 
   /** Stub: take the named Artifact (Flag, Horn, Key, Lantern, Treasure Chest). */
-  public takeArtifact(_name: string): void { /* stub */ }
+  public takeArtifact(_name: string): void {
+    /* stub */
+  }
 
   /** Stub: return whether this player currently holds the named Artifact. */
-  public hasArtifact(_name: string): boolean { return false; }
+  public hasArtifact(_name: string): boolean {
+    return false;
+  }
 
   /** Stub: return the named Artifact to the shared supply. */
-  public returnArtifact(_name: string): void { /* stub */ }
+  public returnArtifact(_name: string): void {
+    /* stub */
+  }
 
   /** Stub: return a card from the player's possession back to its supply pile. */
-  public returnCardToPile(_card: Card): void { /* stub */ }
+  public returnCardToPile(_card: Card): void {
+    /* stub */
+  }
 
   /**
    * Replay the effect of an already-in-play card without moving it.
