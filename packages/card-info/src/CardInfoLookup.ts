@@ -1,10 +1,23 @@
 import { CardInfo } from '@dominion/common';
 
+import { adventures } from './Adventures';
 import { alchemy } from './Alchemy';
+import { allies } from './Allies';
 import { base_game as baseGame } from './BaseGame';
 import { basic_cards as basicCards } from './BasicCards';
+import { cornucopiaAndGuilds } from './CornucopiaAndGuilds';
+import { darkAges } from './DarkAges';
+import { deprecated } from './Deprecated';
+import { empires } from './Empires';
+import { hinterlands } from './Hinterlands';
 import { intrigue } from './Intrigue';
+import { menagerie } from './Menagerie';
+import { nocturne } from './Nocturne';
+import { plunder } from './Plunder';
+import { promo } from './Promo';
 import { prosperity } from './Prosperity';
+import { renaissance } from './Renaissance';
+import { risingSun } from './RisingSun';
 import { seaside } from './Seaside';
 
 export class CardInfoLookup {
@@ -18,6 +31,19 @@ export class CardInfoLookup {
     this.addCardInfoToMap(seaside);
     this.addCardInfoToMap(alchemy);
     this.addCardInfoToMap(prosperity);
+    this.addCardInfoToMap(cornucopiaAndGuilds);
+    this.addCardInfoToMap(hinterlands);
+    this.addCardInfoToMap(darkAges);
+    this.addCardInfoToMap(adventures);
+    this.addCardInfoToMap(empires);
+    this.addCardInfoToMap(nocturne);
+    this.addCardInfoToMap(renaissance);
+    this.addCardInfoToMap(menagerie);
+    this.addCardInfoToMap(allies);
+    this.addCardInfoToMap(plunder);
+    this.addCardInfoToMap(risingSun);
+    this.addCardInfoToMap(promo);
+    this.addCardInfoToMap(deprecated);
   }
 
   private addCardInfoToMap(cardInfoList: CardInfo[]): void {
