@@ -35,7 +35,9 @@ export class Jester extends KingdomCard {
       await attackedIe.gainFromPile('curse');
     } else {
       await attackingIe
-        .chooseOneOption('Jester: gain a copy of ' + topCard.getName() + ' or have ' + attackedPlayer.getName() + ' gain a copy?')
+        .chooseOneOption(
+          'Jester: gain a copy of ' + topCard.getName() + ' or have ' + attackedPlayer.getName() + ' gain a copy?',
+        )
         .from(
           new ActionChoice('You gain a copy', async () => {
             await attackingIe.gainFromPile(topCard.getName());

@@ -25,7 +25,9 @@ export class Advisor extends KingdomCard {
     const leftIe: InstructionExecutor = leftPlayer.getInstructionExecutor();
 
     const cardToDiscard: Card | Choice = await leftIe
-      .chooseCard('Choose a card from ' + ie.getSharedGameState().getCurrentPlayer().getName() + '\'s revealed cards to discard')
+      .chooseCard(
+        'Choose a card from ' + ie.getSharedGameState().getCurrentPlayer().getName() + "'s revealed cards to discard",
+      )
       .from(topCards)
       .to(CardSelectionPurpose.DISCARD)
       .choose();

@@ -20,12 +20,13 @@ export class Shop extends KingdomCard {
 
     // Play an Action from hand that you don't already have a copy of in play
     const notAlreadyInPlay = new CardEligibilityFunction(
-      (c: Card) => !ie.hasMatchingCardInPlay(new CardEligibilityFunction(
-        (p: Card) => p.getName().toLowerCase() === c.getName().toLowerCase(),
-      )),
+      (c: Card) =>
+        !ie.hasMatchingCardInPlay(
+          new CardEligibilityFunction((p: Card) => p.getName().toLowerCase() === c.getName().toLowerCase()),
+        ),
     );
     const eligibleAction: Card | Choice = await ie
-      .chooseCard('You may play an Action you don\'t have a copy of in play')
+      .chooseCard("You may play an Action you don't have a copy of in play")
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.PLAY_ALT)
       .whereCardIs(both(isActionCard, notAlreadyInPlay))

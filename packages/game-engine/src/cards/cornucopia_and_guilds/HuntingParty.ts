@@ -20,7 +20,13 @@ export class HuntingParty extends KingdomCard {
     await ie.revealHand();
 
     const handNames = new Set<string>(
-      ie.getSharedGameState().getCurrentPlayer().getOwnedCards().getHand().asCardArray().map((c) => c.getName()),
+      ie
+        .getSharedGameState()
+        .getCurrentPlayer()
+        .getOwnedCards()
+        .getHand()
+        .asCardArray()
+        .map((c) => c.getName()),
     );
 
     // Look at top cards until finding one whose name is not in hand
