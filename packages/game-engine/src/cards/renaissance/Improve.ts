@@ -44,9 +44,7 @@ export class Improve extends KingdomCard {
               return;
             }
             const cardToGain: Card | Choice = await ie
-              .chooseCard(
-                'Choose a card costing exactly $' + trashed.getCost().plus(1).coins.toFixed() + ' to gain',
-              )
+              .chooseCard('Choose a card costing exactly $' + trashed.getCost().plus(1).coins.toFixed() + ' to gain')
               .from(CardSelectionLocation.SUPPLY)
               .to(CardSelectionPurpose.GAIN)
               .whereCardIs(costsExactly(trashed.getCost().plus(1)))
