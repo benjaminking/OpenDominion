@@ -2,6 +2,7 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const cornucopiaAndGuilds: CardInfo[] = [
   {
+    category: CardCategory.CARD,
     name: 'Hamlet',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\nYou may discard a card\nfor +1 Action.\nYou may discard a card\nfor +1 Buy.',
@@ -14,6 +15,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Menagerie',
     category: CardCategory.CARD,
     text: '+1 Action\n\nReveal your hand.\nIf the revealed cards all have\ndifferent names, +3 Cards.\nOtherwise, +1 Card.',
@@ -26,6 +28,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Remake',
     category: CardCategory.CARD,
     text: 'Do this twice: Trash a card\nfrom your hand, then gain\na card costing exactly $1 more than it.',
@@ -38,6 +41,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Young Witch',
     category: CardCategory.CARD,
     text: '+2 Cards\nDiscard 2 cards. Each other player\ngains a Curse unless they reveal a\nBane from their hand.\n-\nSetup: Add an extra Kingdom\ncard pile costing $2 or $3 to the\nSupply. Its cards are Banes.',
@@ -50,6 +54,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Horn of Plenty',
     category: CardCategory.CARD,
     text: "Gain a card costing up to\n$1 per differently named card\nyou have in play (counting\nthis). If it's a Victory card,\ntrash this.",
@@ -62,6 +67,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Hunting Party',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\nReveal your hand. Reveal cards\nfrom your deck until you reveal\na card that isn’t a copy of one\nin your hand. Put it into your\nhand and discard the rest.',
@@ -74,6 +80,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Jester',
     category: CardCategory.CARD,
     text: '+$2\nEach other player discards\nthe top card of their deck.\nIf it’s a Victory card they\ngain a Curse; otherwise they\ngain a copy of the discarded\ncard or you do, your choice.',
@@ -86,6 +93,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Fairgrounds',
     category: CardCategory.CARD,
     text: 'Worth 2 VP per 5\ndifferently named cards you\nhave (round down).',
@@ -98,6 +106,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Candlestick Maker',
     category: CardCategory.CARD,
     text: '+1 Action\n+1 Buy\n+1 Coffers',
@@ -111,6 +120,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Stonemason',
     category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nGain 2 cards each costing\nless than it.\n-\nOverpay: Gain 2 Action\ncards each costing the\namount overpaid.',
@@ -124,6 +134,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Advisor',
     category: CardCategory.CARD,
     text: '+1 Action\n\nReveal the top 3 cards of\nyour deck. The player to\nyour left chooses one of\nthem. Discard that card and\nput the rest into your hand.',
@@ -136,6 +147,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Herald',
     category: CardCategory.CARD,
     text: "+1 Card\n+1 Action\nReveal the top card of your\ndeck. If it's an Action, play it.\n-\nOverpay: Per $1 overpaid,\nput any card from your discard\npile onto your deck.",
@@ -149,6 +161,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Plaza',
     category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions\n\nYou may discard a Treasure\nfor +1 Coffers.',
@@ -162,6 +175,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Baker',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+1 Coffers\n-\nSetup: Each player gets\n+1 Coffers.',
@@ -175,6 +189,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Butcher',
     category: CardCategory.CARD,
     text: '+2 Coffers\n\nYou may trash a card from your\nhand, to gain a card, costing\nup to $1 more than it per\nCoffers you spend.',
@@ -188,6 +203,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Journeyman',
     category: CardCategory.CARD,
     text: 'Name a card. Reveal cards\nfrom your deck until you\nreveal 3 cards without that\nname. Put those cards into\nyour hand and discard the rest.',
@@ -200,6 +216,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Merchant Guild',
     category: CardCategory.CARD,
     text: '+1 Buy\n+$1\n\nAt the end of your Buy phase\nthis turn, +1 Coffers per card\nyou gained in it.',
@@ -213,6 +230,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Soothsayer',
     category: CardCategory.CARD,
     text: 'Gain a Gold. Each other\nplayer gains a Curse, and if\nthey did, draws a card.',
@@ -225,6 +243,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Farrier',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+1 Buy\n-\nOverpay: +1 Card at the end\nof this turn per $1 overpaid.',
@@ -238,6 +257,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Shop',
     category: CardCategory.CARD,
     text: "+1 Card\n+$1\nYou may play an Action card\nfrom your hand that you don't\nhave a copy of in play.",
@@ -250,6 +270,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Infirmary',
     category: CardCategory.CARD,
     text: '+1 Card\nYou may trash a card\nfrom your hand.\n-\nOverpay: Play this once\nper $1 overpaid.',
@@ -263,6 +284,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Farmhands',
     category: CardCategory.CARD,
     text: '+1 Card\n+2 Action\n-\nWhen you gain this, you may\nset aside an Action or Treasure\nfrom your hand, and play it at\nthe start of your next turn.',
@@ -275,6 +297,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Carnival',
     category: CardCategory.CARD,
     text: 'Reveal the top 4 cards of\nyour deck. Put one of each\ndifferently named card into\nyour hand and discard the rest.',
@@ -287,6 +310,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Ferryman',
     category: CardCategory.CARD,
     text: '+2 Cards\n+1 Action\nDiscard a card\n-\nSetup: Choose an unused\nKingdom card pile costing\n$3 or $4.Gain one when\nyou gain a Ferryman.',
@@ -299,6 +323,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Footpad',
     category: CardCategory.CARD,
     text: '+2 Coffers\nEach other player discards\ndown to 3 cards in hand.\n-\nIn games using this,\nwhen you gain a card in an\nAction phase, +1 Card.',
@@ -312,6 +337,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Joust',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+$1\nYou may set aside a Province\nfrom your hand to gain any\nReward to your hand. Discard\nthe Province in Clean-up.',
@@ -325,6 +351,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Coronet',
     category: CardCategory.CARD,
     text: 'You may play a non-Reward\nAction from your hand twice.\n\nYou may play a non-Reward\nTreasure from your hand twice.\n\n(This is not in the Supply.)',
@@ -338,6 +365,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: false,
   },
   {
+    category: CardCategory.CARD,
     name: 'Courser',
     category: CardCategory.CARD,
     text: 'Choose two different options:\n+2 Cards; +2 Actions;\n+$2; gain 4 Silvers.\n\n(This is not in the Supply.)',
@@ -351,6 +379,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: false,
   },
   {
+    category: CardCategory.CARD,
     name: 'Demesne',
     category: CardCategory.CARD,
     text: '+2 Actions\n+2 Buys\nGain a Gold.\n-\nWorth 1 VP per Gold you have.\n(This is not in the Supply.)',
@@ -364,6 +393,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: false,
   },
   {
+    category: CardCategory.CARD,
     name: 'Housecarl',
     category: CardCategory.CARD,
     text: '+1 Card per differently named\nAction card you have in play.\n\n(This is not in the Supply.)',
@@ -377,6 +407,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: false,
   },
   {
+    category: CardCategory.CARD,
     name: 'Huge Turnip',
     category: CardCategory.CARD,
     text: '+2 Coffers\n\n+$1 per Coffers you have.\n\n(This is not in the Supply.)',
@@ -394,6 +425,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     is_kingdom: false,
   },
   {
+    category: CardCategory.CARD,
     name: 'Renown',
     category: CardCategory.CARD,
     text: '+1 Buy\n\nThis turn, cards cost $2 less.\n(This is not in the Supply.)',
