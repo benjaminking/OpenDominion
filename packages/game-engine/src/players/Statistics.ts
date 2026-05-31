@@ -8,6 +8,7 @@ import { Player } from './Player';
 export class Statistics {
   private score: StatisticSignal;
   private coins: StatisticSignal;
+  private potions: StatisticSignal;
   private actions: StatisticSignal;
   private buys: StatisticSignal;
   private vpChips: StatisticSignal;
@@ -16,6 +17,7 @@ export class Statistics {
     const messageBroadcaster: GameMessageBroadcaster = this.player.getGame().getMessageBroadcaster();
     this.score = new StatisticSignal(player, NumberType.SCORE, messageBroadcaster);
     this.coins = new StatisticSignal(player, NumberType.COINS, messageBroadcaster);
+    this.potions = new StatisticSignal(player, NumberType.POTIONS, messageBroadcaster);
     this.actions = new StatisticSignal(player, NumberType.ACTIONS, messageBroadcaster);
     this.buys = new StatisticSignal(player, NumberType.BUYS, messageBroadcaster);
     this.vpChips = new StatisticSignal(player, NumberType.VP_CHIPS, messageBroadcaster);
@@ -24,6 +26,7 @@ export class Statistics {
   public communicateInitialState() {
     this.score.forceBroadcast();
     this.coins.forceBroadcast();
+    this.potions.forceBroadcast();
     this.actions.forceBroadcast();
     this.buys.forceBroadcast();
     this.vpChips.forceBroadcast();
@@ -40,6 +43,10 @@ export class Statistics {
     return this.coins.getValue();
   }
 
+  public getPotions(): number {
+    return this.potions.getValue();
+  }
+
   public getActions(): number {
     return this.actions.getValue();
   }
@@ -52,6 +59,7 @@ export class Statistics {
     this.resetActions();
     this.resetBuys();
     this.resetCoins();
+    this.resetPotions();
   }
 
   public addCoins(additionalCoins: number): Promise<void> {
@@ -69,8 +77,20 @@ export class Statistics {
     this.coins.subtract(coinsSpent);
   }
 
+  public addPotions(additionalPotions: number): void {
+    this.potions.add(additionalPotions);
+  }
+
+  public spendPotions(potionsSpent: number): void {
+    this.potions.subtract(potionsSpent);
+  }
+
   public resetCoins(): void {
     this.coins.update(0);
+  }
+
+  public resetPotions(): void {
+    this.potions.update(0);
   }
 
   public addActions(additionalActions: number): void {
@@ -109,6 +129,6 @@ export class Statistics {
   }
 
   public canAfford(cost: Cost): boolean {
-    return this.getCoins() >= cost.coins;
+    return this.getCoins() >= cost.coins && this.getPotions() >= cost.potions;
   }
 }

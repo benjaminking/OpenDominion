@@ -74,6 +74,10 @@ export class InstructionExecutor {
     this.player.getStatistics().subtractCoins(coinsToSubtract);
   }
 
+  public addPotions(additionalPotions: number): void {
+    this.player.getStatistics().addPotions(additionalPotions);
+  }
+
   public addVP(vp: number): void {
     this.player.getStatistics().addVP(vp);
   }
@@ -314,6 +318,7 @@ export class InstructionExecutor {
     }
 
     this.player.getStatistics().spendCoins(card.getCost().coins);
+    this.player.getStatistics().spendPotions(card.getCost().potions);
     this.player.getStatistics().useBuy();
     this.player.getTurnTracker().addBoughtCard(card);
 
