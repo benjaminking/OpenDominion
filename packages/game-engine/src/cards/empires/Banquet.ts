@@ -35,4 +35,3 @@ export class Banquet extends Event {
     }
   }
 }
-
