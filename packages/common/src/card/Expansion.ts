@@ -17,5 +17,7 @@ export enum Expansion {
   MENAGERIE = 'Menagerie',
   ALLIES = 'Allies',
   PLUNDER = 'Plunder',
+  RISING_SUN = 'Rising Sun',
+  DEPRECATED = 'Deprecated',
   TESTING = 'Testing',
 }

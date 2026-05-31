@@ -1,4 +1,5 @@
 export * from './AnonymousCard';
+export * from './CardCategory';
 export * from './CardInfo';
 export * from './CardLocation';
 export * from './CardMetadata';

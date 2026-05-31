@@ -1,7 +1,8 @@
-import { CardInfo, CardType, Expansion } from '@dominion/common';
+import { CardCategory, CardInfo, CardType, Expansion } from '@dominion/common';
 
 export const hinterlands: CardInfo[] = [
   {
+    category: CardCategory.CARD,
     name: 'Crossroads',
     text: 'Reveal your hand. +1 Card\nper Victory card revealed. If\nthis is the first time you played\na Crossroads this turn,\n+3 Actions.',
     font_size: 'medium',
@@ -13,6 +14,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: "Fool's Gold",
     text: "If this is the first time you\nplayed a Fool's Gold this turn,\n+$1, otherwise +$4.\n-\nWhen another player gains a\nProvince, you may trash this\nfrom your hand, to gain\na Gold onto your deck.",
     font_size: 'medium',
@@ -27,6 +29,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Develop',
     text: 'Trash a card from your hand.\nGain two cards onto your\ndeck, with one costing exactly\n$1 more than it, and one\ncosting exactly $1 less than it, in either order.',
     font_size: 'medium',
@@ -38,6 +41,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Guard Dog',
     text: '+2 Cards\nIf you have 5 or fewer cards in\nhand, +2 Cards.\n-\nWhen another player plays an\nAttack, you may first play this\nfrom your hand.',
     font_size: 'medium',
@@ -49,6 +53,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Oasis',
     text: '+1 Card\n+1 Action\n+$1\nDiscard a card.',
     font_size: 'medium',
@@ -60,6 +65,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Scheme',
     text: '+1 Card\n+1 Action\n\nThis turn, you may put one of\nyour Action cards onto your\ndeck when you discard\nit from play.',
     font_size: 'medium',
@@ -71,6 +77,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Tunnel',
     text: '2 VP\n-\nWhen you discard this other\nthan during Clean-up, you may\nreveal it to gain a Gold.',
     font_size: 'medium',
@@ -82,6 +89,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Jack of All Trades',
     text: 'Gain a Silver.\nLook at the top card of your\ndeck; you may discard it.\nDraw until you have 5\ncards in hand.\nYou may trash a non-Treasure\ncard from your hand.',
     font_size: 'medium',
@@ -93,6 +101,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Jack of All Trades',
     text: 'Gain a Silver.\nLook at the top card of your\ndeck; you may discard it.\nDraw until you have 5\ncards in hand.\nYou may trash a non-Treasure\ncard from your hand.',
     font_size: 'medium',
@@ -104,6 +113,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Nomads',
     text: '+1 Buy\n+$2\n-\nWhen you gain or trash this,\n+$2.',
     font_size: 'medium',
@@ -115,6 +125,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Spice Merchant',
     text: 'You may trash a Treasure from\nyour hand to choose one:\n+2 Cards and +1 Action;\nor +1 Buy and +$2.',
     font_size: 'medium',
@@ -126,6 +137,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Trader',
     text: 'Trash a card from your hand.\nGain a Silver per $1 it costs.\n-\nWhen you gain a card, you may\nreveal this from your hand, to\nexchange the card for a Silver.',
     font_size: 'medium',
@@ -137,6 +149,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Trail',
     text: '+1 Card\n+1 Action\n-\nWhen you gain, trash, or\ndiscard this, other than in\nClean-up, you may play it.',
     font_size: 'medium',
@@ -148,6 +161,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Weaver',
     text: 'Gain two Silvers or a card\ncosting up to $4.\n-\nWhen you discard this\nother than in Clean-up,\nyou may play it.',
     font_size: 'medium',
@@ -159,6 +173,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Berserker',
     text: 'Gain a card costing less than\nthis. Each other player discards\ndown to 3 cards in hand.\n-\nWhen you gain this, if you\nhave an Action in play,\nplay this.',
     font_size: 'medium',
@@ -170,6 +185,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Cartographer',
     text: '+1 Card\n+1 Action\nLook at the top 4 cards of your\ndeck. Discard any number of\nthem, then put the rest back\nin any order.',
     font_size: 'medium',
@@ -181,6 +197,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Cauldron',
     text: '$2\n+1 Buy\nThe third time you gain an\nAction this turn, each other\nplayer gains a Curse.',
     font_size: 'medium',
@@ -195,6 +212,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Haggler',
     text: '+$2\nThis turn, when you gain a\ncard, if you bought it, gain a\ncheaper non-Victory card.',
     font_size: 'medium',
@@ -206,6 +224,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Highway',
     text: '+1 Card\n+1 Action\n\nThis turn, cards cost $1 less.',
     font_size: 'medium',
@@ -217,6 +236,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Inn',
     text: '+2 Cards\n+2 Actions\nDiscard 2 cards.\n-\nWhen you gain this, reveal\nany number of Action cards\nfrom your discard pile, and\nshuffle them into your deck.',
     font_size: 'medium',
@@ -228,6 +248,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Margrave',
     text: '+3 Cards\n+1 Buy\nEach other player draws a\ncard, then discards down\nto 3 cards in hand.',
     font_size: 'medium',
@@ -239,6 +260,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Souk',
     text: "+1 Buy\n+$7\n–$1 per card in your hand\n(you can't go below $0).\n-\nWhen you gain this, trash up to\n2 cards from your hand.",
     font_size: 'medium',
@@ -250,6 +272,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Stables',
     text: 'You may discard a Treasure,\nfor +3 Cards and +1 Action.',
     font_size: 'medium',
@@ -261,6 +284,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Wheelwright',
     text: '+1 Card\n+1 Action\n\nYou may discard a card to gain\nan Action card costing as much\nas it or less.',
     font_size: 'medium',
@@ -272,6 +296,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: "Witch's Hut",
     text: "+4 Cards\nDiscard 2 cards, revealed.\nIf they're both Actions, each\nother player gains a Curse.",
     font_size: 'medium',
@@ -283,6 +308,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Border Village',
     text: '+1 Card\n+2 Actions\n-\nWhen you gain this, gain a cheaper card.',
     font_size: 'medium',
@@ -294,6 +320,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
+    category: CardCategory.CARD,
     name: 'Farmland',
     text: '2 VP\n-\nWhen you gain this, trash a\ncard from your hand and gain\na non-Farmland card costing\nexactly $2 more than it.',
     font_size: 'medium',
