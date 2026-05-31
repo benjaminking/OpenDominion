@@ -34,7 +34,7 @@ export abstract class KnightCard extends KingdomCard {
 
     if (eligible.size() > 0) {
       const cardToTrash: Card | Choice = await attackingIe
-        .chooseCard('Choose a card to trash ($3-$6) from opponent\'s revealed cards')
+        .chooseCard("Choose a card to trash ($3-$6) from opponent's revealed cards")
         .from(eligible)
         .to(CardSelectionPurpose.TRASH)
         .allowNoneOption()

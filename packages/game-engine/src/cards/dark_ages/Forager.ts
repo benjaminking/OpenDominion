@@ -25,10 +25,7 @@ export class Forager extends KingdomCard {
       await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
     }
 
-    const numUniqueTreasures = ie
-      .getSharedGameState()
-      .trash.getMatchingCards(isTreasureCard)
-      .cardGroups().length;
+    const numUniqueTreasures = ie.getSharedGameState().trash.getMatchingCards(isTreasureCard).cardGroups().length;
     await ie.addCoins(numUniqueTreasures);
   }
 }

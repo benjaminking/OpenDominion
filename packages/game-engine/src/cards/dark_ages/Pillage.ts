@@ -35,7 +35,7 @@ export class Pillage extends KingdomCard {
       // Attacking player chooses a card from attacked player's hand to discard
       const hand: CardCollection = attackedIe.getMatchingCardsInHand(anyCard);
       const cardToDiscard: Card | Choice = await attackingIe
-        .chooseCard('Choose a card from opponent\'s hand to discard')
+        .chooseCard("Choose a card from opponent's hand to discard")
         .from(hand)
         .to(CardSelectionPurpose.DISCARD)
         .allowNoneOption()
