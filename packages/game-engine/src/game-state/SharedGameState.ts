@@ -147,6 +147,10 @@ export class SharedGameState {
     return this.previousTurns;
   }
 
+  public enableCharlatanCurseTreasureRule(): void {
+    // TODO: Make Curse behave as a Treasure worth $1 in games using Charlatan.
+  }
+
   private async drawInitialHands(): Promise<void> {
     await this.executeForEachPlayer(async (ie: InstructionExecutor) => {
       await ie.drawCards(this.numCardsToDrawAtEndOfTurn);
@@ -499,7 +503,7 @@ export class SharedGameState {
     for (const costModifier of this.costModifiers) {
       cost = costModifier.apply(card, cost, currentTurn, currentTurnPhase);
     }
-    return cost;
+    return card.adjustCost(cost, this.getCurrentPlayer().getInstructionExecutor());
   }
 
   public getScoreByName(playerName: string): number {
