@@ -141,6 +141,10 @@ export class Statistics {
     this.cardsGainedThisTurn.addCard(card);
   }
 
+  public getNumCardsGainedThisTurn(): number {
+    return this.cardsGainedThisTurn.size();
+  }
+
   public getVPChipScoringElement(): VPChipScoringElement {
     return {
       type: ScoringElementType.VP_CHIP,

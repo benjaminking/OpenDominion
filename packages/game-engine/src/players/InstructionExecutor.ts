@@ -945,4 +945,74 @@ export class InstructionExecutor {
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
+
+  // --- Nocturne stubs ---
+
+  /** Receive a Boon from the Boon deck and apply its effect. (Nocturne/Fate) */
+  public async receiveBoon(): Promise<void> {
+    // TODO: implement Boon deck management
+  }
+
+  /** Receive the next Hex from the Hex deck and apply its effect. (Nocturne/Doom) */
+  public async receiveNextHex(): Promise<void> {
+    // TODO: implement Hex deck management
+  }
+
+  /** Gain a card from the named Spirit pile (e.g. 'Imp', 'Will-o\'-Wisp', 'Ghost', 'Wish'). */
+  public async gainFromSpiritPile(spiritName: string): Promise<void> {
+    // TODO: implement Spirit pile management
+    void spiritName;
+  }
+
+  /** Exchange a card in play for a card from the named pile (e.g. Vampire→Bat). */
+  public async exchangeCard(card: Card, targetPileName: string): Promise<void> {
+    // TODO: implement exchange mechanic
+    void card;
+    void targetPileName;
+  }
+
+  /** Play a face-up non-Duration Action card from the trash, flipping it face-down for the turn. */
+  public async playCardFromTrash(card: Card): Promise<void> {
+    // TODO: implement play-from-trash mechanic (Necromancer)
+    void card;
+  }
+
+  /** Take a State card by name (e.g. 'Lost in the Woods', 'Deluded'). */
+  public takeState(stateName: string): void {
+    // TODO: implement State card management
+    void stateName;
+  }
+
+  /** Return true if the named State card is currently held by this player. */
+  public hasState(stateName: string): boolean {
+    // TODO: implement State card management
+    void stateName;
+    return false;
+  }
+
+  /** Return true if the current turn phase is the Night phase. */
+  public isNightPhase(): boolean {
+    // TODO: implement Night phase detection
+    return false;
+  }
+
+  /** Move all cards in this player's deck to their discard pile. */
+  public async moveDeckToDiscard(): Promise<void> {
+    // TODO: implement deck-to-discard (Bad Omens hex)
+  }
+
+  /** Shuffle a collection of cards into this player's deck. */
+  public async shuffleCardsIntoDeck(_cards: CardCollection): Promise<void> {
+    // TODO: implement shuffle-into-deck (Famine hex)
+  }
+
+  /** Count cards in play matching the eligibility function. */
+  public numMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.player.getOwnedCards().getInPlay().numMatchingCards(cardEligibilityFunction);
+  }
+
+  /** Count cards gained by this player this turn. */
+  public getNumCardsGainedThisTurn(): number {
+    return this.player.getStatistics().getNumCardsGainedThisTurn();
+  }
 }

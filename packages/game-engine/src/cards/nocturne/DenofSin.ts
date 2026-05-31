@@ -1,0 +1,35 @@
+import { CardInfoLookup } from '@dominion/card-info';
+
+import { KingdomCard } from '../../card/KingdomCard';
+import { Effect } from '../../effects/Effect';
+import { EffectAction } from '../../effects/EffectAction';
+import { EffectSource } from '../../effects/EffectSource';
+import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { SharedGameState } from '../../SharedGameState';
+
+// Den of Sin (Night/Duration): At the start of your next turn, +2 Cards.
+export class DenofSin extends KingdomCard {
+  constructor(sharedGameState: SharedGameState) {
+    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Den of Sin'));
+  }
+
+  public async play(ie: InstructionExecutor): Promise<void> {
+    ie.addEffect(
+      new Effect.Builder()
+        .from(this)
+        .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)
+        .onTurn(ie.createNextTurnEligibilityFunction())
+        .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
+        .makeMandatory()
+        .action(
+          new EffectAction(async (effectIe: InstructionExecutor) => {
+            await effectIe.drawCards(2);
+            this.markAsFinished();
+          }),
+        )
+        .build(),
+    );
+    this.markAsUnfinished();
+  }
+}
