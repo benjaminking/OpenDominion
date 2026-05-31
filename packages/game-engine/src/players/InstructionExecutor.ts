@@ -945,4 +945,43 @@ export class InstructionExecutor {
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
+
+  // ── Renaissance stubs ──────────────────────────────────────────────────────
+
+  /** Stub: add n Coffers tokens (not yet tracked). */
+  public addCoffers(_n: number): void { /* stub */ }
+
+  /** Stub: return current Coffers token count. */
+  public getCoffers(): number { return 0; }
+
+  /** Stub: add n Villager tokens (not yet tracked). */
+  public addVillagers(_n: number): void { /* stub */ }
+
+  /** Stub: return current Villager token count. */
+  public getVillagers(): number { return 0; }
+
+  /** Stub: take the named Artifact (Flag, Horn, Key, Lantern, Treasure Chest). */
+  public takeArtifact(_name: string): void { /* stub */ }
+
+  /** Stub: return whether this player currently holds the named Artifact. */
+  public hasArtifact(_name: string): boolean { return false; }
+
+  /** Stub: return the named Artifact to the shared supply. */
+  public returnArtifact(_name: string): void { /* stub */ }
+
+  /** Stub: return a card from the player's possession back to its supply pile. */
+  public returnCardToPile(_card: Card): void { /* stub */ }
+
+  /**
+   * Replay the effect of an already-in-play card without moving it.
+   * Stub: proper Command card tracking is not yet implemented.
+   */
+  public async replayCardInPlay(card: Card): Promise<void> {
+    await card.play(this);
+  }
+
+  /** Return the number of cards currently in this player's discard pile. */
+  public getDiscardPileSize(): number {
+    return this.player.getOwnedCards().getDiscard().size();
+  }
 }

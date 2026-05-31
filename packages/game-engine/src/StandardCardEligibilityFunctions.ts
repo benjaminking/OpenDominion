@@ -78,6 +78,26 @@ const costsTheSameAs = function (otherCard: Card) {
   return new CostsTheSameAs(otherCard);
 };
 
+class CostsBetween extends CardEligibilityFunction {
+  public constructor(min: Cost, max: Cost) {
+    super((c: Card) => !c.getCost().isLessThan(min) && c.getCost().isLessThanOrEqualTo(max));
+  }
+}
+
+const costsBetween = function (min: Cost, max: Cost) {
+  return new CostsBetween(min, max);
+};
+
+class CostsAtLeast extends CardEligibilityFunction {
+  public constructor(min: Cost) {
+    super((c: Card) => !c.getCost().isLessThan(min));
+  }
+}
+
+const costsAtLeast = function (min: Cost) {
+  return new CostsAtLeast(min);
+};
+
 class CardNameIs extends CardEligibilityFunction {
   public constructor(cardName: string) {
     super((c: Card) => c.getName().toLowerCase() === cardName.toLowerCase());
@@ -151,6 +171,8 @@ export {
   both,
   canBeDiscardedInCleanup,
   cardNameIs,
+  costsAtLeast,
+  costsBetween,
   costsExactly,
   costsTheSameAs,
   costsUpTo,

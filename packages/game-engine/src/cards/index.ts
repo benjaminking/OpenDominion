@@ -3,3 +3,4 @@ export * from './basic_cards';
 export * from './base_game';
 export * from './intrigue';
 export * from './seaside';
+export * from './renaissance';
