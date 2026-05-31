@@ -251,6 +251,8 @@ export {
   isSupplyCard,
   isTheSameCardAs,
   isTreasureCard,
+  isAttackCard,
+  isRewardCard,
   isVictoryCard,
   noCard,
   not,
