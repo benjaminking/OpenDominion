@@ -9,3 +9,4 @@ export * from './intrigue';
 export * from './prosperity';
 export * from './seaside';
 export * from './cornucopia_and_guilds';
+export * from './nocturne';
