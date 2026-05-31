@@ -945,4 +945,105 @@ export class InstructionExecutor {
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
+
+  // Adventures stubs
+
+  /** Put a card onto the player's Tavern mat (stub). */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public putCardOnTavernMat(_card: Card): void {
+    // TODO: implement Tavern mat
+  }
+
+  /** Return the number of Coppers on the player's Tavern mat (stub). */
+  public getNumCopperOnTavernMat(): number {
+    // TODO: implement Tavern mat
+    return 0;
+  }
+
+  /** Return true if the player's Journey token is face up (starts face up). */
+  public isJourneyTokenFaceUp(): boolean {
+    // TODO: implement Journey token
+    return true;
+  }
+
+  /** Flip the player's Journey token. */
+  public flipJourneyToken(): void {
+    // TODO: implement Journey token
+  }
+
+  /** Exchange a Traveller card for the named replacement (stub). */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public exchangeTraveller(_card: Card, _targetName: string): Promise<void> {
+    // TODO: implement Traveller exchange
+    return Promise.resolve();
+  }
+
+  /** Give a player the –$1 token (stub). */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public giveMinusDollarToken(_player: Player): void {
+    // TODO: implement –$1 token
+  }
+
+  /** Give a player the –1 Card token (stub). */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public giveMinusOneCardToken(_player: Player): void {
+    // TODO: implement –1 Card token
+  }
+
+  /** Move a pile token (e.g. +1 Action, +1 Card) to an action supply pile (stub). */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public applyPileToken(_pileName: string, _tokenType: string): void {
+    // TODO: implement pile tokens
+  }
+
+  /** Return the number of Traveller cards the player has in play (stub). */
+  public getNumTravellersInPlay(): number {
+    // TODO: implement Traveller counting
+    return 0;
+  }
+
+  /** Return the number of cards the player to the right gained on their last turn (stub). */
+  public getNumCardsGainedLastTurnByRightPlayer(): number {
+    // TODO: implement right-player gain tracking
+    return 0;
+  }
+
+  /** Return available coins (stub for Storyteller). */
+  public getCoinsAvailable(): number {
+    return this.player.getStatistics().getCoins();
+  }
+
+  /** Spend all currently available coins (stub for Storyteller). */
+  public async spendAllCoins(): Promise<void> {
+    // Reduce coins to zero via negative addCoins
+    const coins = this.getCoinsAvailable();
+    if (coins > 0) {
+      await this.addCoins(-coins);
+    }
+  }
+
+  /** Guard a block of logic to run once per turn by key. Returns false (stub). */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public oncePerTurn(_key: string): boolean {
+    // TODO: implement once-per-turn tracking
+    return false;
+  }
+
+  /** Put the player's deck into their discard pile. */
+  public async putDeckIntoDiscardPile(): Promise<void> {
+    const deckCards = this.player.getOwnedCards().getDeck().clone();
+    for (const card of deckCards.asCardArray()) {
+      this.player.getOwnedCards().getDeck().removeCard(card);
+      await this.player.getOwnedCards().discardCard(card);
+    }
+  }
+
+  /** Put all cards from hand onto deck in any order (puts in current order). */
+  public putHandOntoDeck(): void {
+    const hand = this.player.getOwnedCards().getHand().clone();
+    for (const card of hand.asCardArray()) {
+      this.player.getOwnedCards().removeCardFromHand(card);
+      this.player.getOwnedCards().addCardToDeck(card);
+    }
+  }
 }
