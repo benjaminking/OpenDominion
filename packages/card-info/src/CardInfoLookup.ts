@@ -28,7 +28,6 @@ export class CardInfoLookup {
     this.addCardInfoToMap(basicCards);
     this.addCardInfoToMap(baseGame);
     this.addCardInfoToMap(intrigue);
-    this.addCardInfoToMap(hinterlands);
     this.addCardInfoToMap(seaside);
     this.addCardInfoToMap(alchemy);
     this.addCardInfoToMap(prosperity);
