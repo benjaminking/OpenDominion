@@ -424,6 +424,10 @@ export class PlayerCards {
     return this.hand.numMatchingCards(cardEligibilityFunction);
   }
 
+  public numMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.inPlay.numMatchingCards(cardEligibilityFunction);
+  }
+
   public getMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
     return this.hand.getMatchingCards(cardEligibilityFunction);
   }

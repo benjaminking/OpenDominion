@@ -75,6 +75,10 @@ export class Card {
     return this.sharedGameState.cost(this);
   }
 
+  public adjustCost(cost: Cost, _ie: InstructionExecutor): Cost {
+    return cost;
+  }
+
   public getTypes(): Set<CardType> {
     return this._types;
   }
@@ -123,6 +127,10 @@ export class Card {
   }
   public async play(_ie: InstructionExecutor) {
     //
+  }
+
+  public canBeBought(_ie: InstructionExecutor): boolean {
+    return true;
   }
 
   public score(_allCardGroups: CardCollection[]): number {

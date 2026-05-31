@@ -49,6 +49,7 @@ export class SharedGameState {
   private extraCards: CardCollection = new CardCollection();
   private _trash: Trash;
   private gameResult: GameResult | undefined = undefined;
+  private namedWarChestCardsThisTurn: Set<string> = new Set<string>();
 
   constructor(private readonly game: Game) {
     this.messageBroadcaster = game.getMessageBroadcaster();
@@ -121,6 +122,22 @@ export class SharedGameState {
     return this.previousTurns;
   }
 
+  public clearWarChestNamesForTurn(): void {
+    this.namedWarChestCardsThisTurn.clear();
+  }
+
+  public markCardAsNamedForWarChestThisTurn(cardName: string): void {
+    this.namedWarChestCardsThisTurn.add(cardName.toLowerCase());
+  }
+
+  public hasCardBeenNamedForWarChestThisTurn(cardName: string): boolean {
+    return this.namedWarChestCardsThisTurn.has(cardName.toLowerCase());
+  }
+
+  public enableCharlatanCurseTreasureRule(): void {
+    // TODO: Make Curse behave as a Treasure worth $1 in games using Charlatan.
+  }
+
   private async drawInitialHands(): Promise<void> {
     await this.executeForEachPlayer(async (ie: InstructionExecutor) => {
       await ie.drawCards(this.numCardsToDrawAtEndOfTurn);
@@ -168,6 +185,7 @@ export class SharedGameState {
   }
 
   private async startTurn(turnType: TurnType): Promise<void> {
+    this.clearWarChestNamesForTurn();
     this.messageBroadcaster.sendTurnStartMessage(this.getCurrentPlayer());
     this.messageBroadcaster.sendStatus(new PlayerNameStatus('%q turn', this.getCurrentPlayer()), StatusAction.REPLACE);
 
@@ -335,7 +353,10 @@ export class SharedGameState {
       return false;
     }
     /* || isEventName(choice.getName()) || isProjectName(choice.getName())*/
-    return this.getCurrentPlayer().getStatistics().canAfford(this.cost(card));
+    return (
+      card.canBeBought(this.getCurrentPlayer().getInstructionExecutor()) &&
+      this.getCurrentPlayer().getStatistics().canAfford(this.cost(card))
+    );
   }
 
   public async performCleanup() {
@@ -453,7 +474,7 @@ export class SharedGameState {
     for (const costModifier of this.costModifiers) {
       cost = costModifier.apply(card, cost, currentTurn);
     }
-    return cost;
+    return card.adjustCost(cost, this.getCurrentPlayer().getInstructionExecutor());
   }
 
   public getScoreByName(playerName: string): number {

@@ -144,6 +144,10 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().numMatchingCardsInHand(cardEligibilityFunction);
   }
 
+  public numMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.player.getOwnedCards().numMatchingCardsInPlay(cardEligibilityFunction);
+  }
+
   public numMatchingCardsPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
     return this.player.getStatistics().numMatchingCardsPlayedThisTurn(cardEligibilityFunction);
   }
@@ -294,9 +298,11 @@ export class InstructionExecutor {
 
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'buys %c', card));
 
-    // TODO: does anything rely on passing the pile name here?
-    await this.sharedGameState.triggerEffect(EffectTriggerType.BUY);
-    return this.gainFromPile(pileName);
+    const gainedCard = await this.gainFromPile(pileName);
+    if (gainedCard !== undefined) {
+      await this.sharedGameState.triggerEffect(EffectTriggerType.BUY, CardCollection.fromCards([gainedCard]));
+    }
+    return gainedCard;
   }
 
   public async gainCardFromPile(
@@ -873,7 +879,7 @@ export class InstructionExecutor {
       potentialChoices.push({
         type: ChoiceType.Card,
         card: topCard.getMetadata(),
-      } as CardChoice);
+      });
     }
 
     return potentialChoices;
@@ -896,7 +902,7 @@ export class InstructionExecutor {
         potentialChoices.push({
           type: ChoiceType.Card,
           card: card.getMetadata(),
-        } as CardChoice);
+        });
       }
     }
 
@@ -927,7 +933,7 @@ export class InstructionExecutor {
         potentialChoices.push({
           type: ChoiceType.MultiCard,
           cards: cardGroup.toCardMetadataArray(),
-        } as MultiCardChoice);
+        });
       }
     }
 
