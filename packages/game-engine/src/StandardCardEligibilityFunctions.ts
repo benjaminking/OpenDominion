@@ -31,6 +31,7 @@ const isTreasureCard: CardEligibilityFunction = new MatchesType(CardType.TREASUR
 const isVictoryCard: CardEligibilityFunction = new MatchesType(CardType.VICTORY);
 const isCurseCard: CardEligibilityFunction = new MatchesType(CardType.CURSE);
 const isDurationCard: CardEligibilityFunction = new MatchesType(CardType.DURATION);
+const isCastleCard: CardEligibilityFunction = new MatchesType(CardType.CASTLE);
 
 class IsSimpleTreasure extends CardEligibilityFunction {
   public constructor() {
@@ -157,6 +158,7 @@ export {
   either,
   isACopyOf,
   isActionCard,
+  isCastleCard,
   isCurseCard,
   isDurationCard,
   isInLocation,

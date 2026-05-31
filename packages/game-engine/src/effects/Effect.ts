@@ -18,7 +18,7 @@ import { TurnEligibility } from './TurnEligibility';
 export class Effect {
   private _id = '';
   private _numTimesUsed = 0;
-  private owner: CardShapedObject | undefined = undefined;
+  private owner: CardShapedObject | Card | undefined = undefined;
   private expiration: EffectExpiration = new NoEffectExpiration();
   private type: EffectTriggerType = EffectTriggerType.NEVER;
   private source: EffectSource = EffectSource.ANYONE;
@@ -46,7 +46,7 @@ export class Effect {
     return this._id;
   }
 
-  public getOwner(): CardShapedObject {
+  public getOwner(): CardShapedObject | Card {
     return this.owner!;
   }
 
@@ -99,7 +99,7 @@ export class Effect {
   public static Builder = class {
     effect: Effect = new Effect();
 
-    public from(owner: CardShapedObject): this {
+    public from(owner: CardShapedObject | Card): this {
       this.effect.owner = owner;
       return this;
     }

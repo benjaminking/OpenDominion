@@ -945,4 +945,61 @@ export class InstructionExecutor {
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
+
+  // --- Empires stubs ---
+
+  public getCoinsAvailable(): number {
+    return this.player.getStatistics().getCoins();
+  }
+
+  public addDebt(_amount: number): void {
+    // TODO: implement debt mechanics
+  }
+
+  public getPileVPTokens(_pileName: string): number {
+    // TODO: implement pile VP token mechanics
+    return 0;
+  }
+
+  public addPileVPTokens(_pileName: string, _amount: number): void {
+    // TODO: implement pile VP token mechanics
+  }
+
+  public takePileVPTokens(_pileName: string): number {
+    // TODO: implement pile VP token mechanics
+    return 0;
+  }
+
+  public async playCardFromSupplyWithoutGaining(_card: Card): Promise<void> {
+    // TODO: implement Command card mechanic (play from supply without gaining)
+  }
+
+  public getNumSilversGainedThisTurn(): number {
+    // TODO: implement tracking Silver gains this turn
+    return 0;
+  }
+
+  public getNumCardsGainedThisTurn(): number {
+    // TODO: implement tracking cards gained this turn
+    return 0;
+  }
+
+  public hasDoubledCoinsThisTurn(): boolean {
+    // TODO: implement tracking coin doubling this turn
+    return false;
+  }
+
+  public isActionPhase(): boolean {
+    // TODO: implement phase tracking
+    return true;
+  }
+
+  public isBuyPhase(): boolean {
+    // TODO: implement phase tracking
+    return false;
+  }
+
+  public async performDonate(): Promise<void> {
+    // TODO: implement Donate mechanic (put deck+discard into hand, trash any, shuffle, draw 5)
+  }
 }
