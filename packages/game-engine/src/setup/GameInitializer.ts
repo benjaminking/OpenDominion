@@ -186,11 +186,11 @@ export class GameInitializer {
     const pileFactory: PileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
     this.game
       .getGameState()
-      .piles.addBasicVictoryPile(
+      .piles.addBasicTreasurePile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Potion'),
           GameInitializer.DEFAULT_POTION_PILE_SIZE,
-          new Set<PileCategory>([PileCategory.BASIC_VICTORY, PileCategory.SUPPLY]),
+          new Set<PileCategory>([PileCategory.BASIC_TREASURE, PileCategory.SUPPLY]),
         ),
       );
   }

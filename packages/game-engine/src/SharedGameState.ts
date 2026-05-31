@@ -275,17 +275,13 @@ export class SharedGameState {
     const handCardChoices: CardChoice[] = this.getCurrentPlayer()
       .getInstructionExecutor()
       .getEligibleCardChoices(new Set<CardLocation>([CardLocation.HAND]), isTreasureCard);
-    const supplyCardChoices: CardChoice[] = this.piles.getEligibleCardChoicesToBuy(
-      this.getCurrentPlayer().getStatistics().getCoins(),
-    );
+    const supplyCardChoices: CardChoice[] = this.getAffordableSupplyChoices();
 
     return [...handCardChoices, ...supplyCardChoices];
   }
 
   private async makeBuyPhaseChoice(): Promise<void> {
-    const supplyChoices: CardChoice[] = this.piles.getEligibleCardChoicesToBuy(
-      this.getCurrentPlayer().getStatistics().getCoins(),
-    );
+    const supplyChoices: CardChoice[] = this.getAffordableSupplyChoices();
     const buyPhaseChoice: Choice = await this.getCurrentPlayer()
       .getDecisionService()
       .makeBuyPhaseChoice(
@@ -294,6 +290,12 @@ export class SharedGameState {
         this.getCurrentPlayer().getStatistics().getCoins(),
       );
     return this.buyPhaseLoopCallback(buyPhaseChoice);
+  }
+
+  private getAffordableSupplyChoices(): CardChoice[] {
+    return this.piles
+      .getEligibleCardChoicesToBuy(this.getCurrentPlayer().getStatistics().getCoins())
+      .filter((choice) => this.canBuyCard(choice.card));
   }
 
   private async buyPhaseLoopCallback(choice: Choice): Promise<void> {

@@ -70,6 +70,10 @@ export class InstructionExecutor {
     await this.player.getStatistics().addCoins(additionalCoins);
   }
 
+  public addPotions(additionalPotions: number): void {
+    this.player.getStatistics().addPotions(additionalPotions);
+  }
+
   public addVP(vp: number): void {
     this.player.getStatistics().addVP(vp);
   }
@@ -290,6 +294,7 @@ export class InstructionExecutor {
     }
 
     this.player.getStatistics().spendCoins(card.getCost().coins);
+    this.player.getStatistics().spendPotions(card.getCost().potions);
     this.player.getStatistics().useBuy();
 
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'buys %c', card));
