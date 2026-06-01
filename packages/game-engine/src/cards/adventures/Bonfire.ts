@@ -1,4 +1,5 @@
-import { CardInfoLookup, CardLocation, CardSelectionPurpose } from '@dominion/card-info';
+import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Event } from '../../card/Event';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
