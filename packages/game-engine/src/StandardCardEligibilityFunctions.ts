@@ -31,6 +31,7 @@ const isTreasureCard: CardEligibilityFunction = new MatchesType(CardType.TREASUR
 const isVictoryCard: CardEligibilityFunction = new MatchesType(CardType.VICTORY);
 const isCurseCard: CardEligibilityFunction = new MatchesType(CardType.CURSE);
 const isDurationCard: CardEligibilityFunction = new MatchesType(CardType.DURATION);
+const isAttackCard: CardEligibilityFunction = new MatchesType(CardType.ATTACK);
 
 class IsSimpleTreasure extends CardEligibilityFunction {
   public constructor() {
@@ -66,6 +67,26 @@ class CostsExactly extends CardEligibilityFunction {
 
 const costsExactly = function (coins: Cost) {
   return new CostsExactly(coins);
+};
+
+class CostsAtLeast extends CardEligibilityFunction {
+  public constructor(cost: Cost) {
+    super((c: Card) => !c.getCost().isLessThan(cost));
+  }
+}
+
+const costsAtLeast = function (coins: Cost) {
+  return new CostsAtLeast(coins);
+};
+
+class CostsBetween extends CardEligibilityFunction {
+  public constructor(min: Cost, max: Cost) {
+    super((c: Card) => !c.getCost().isLessThan(min) && c.getCost().isLessThanOrEqualTo(max));
+  }
+}
+
+const costsBetween = function (min: Cost, max: Cost) {
+  return new CostsBetween(min, max);
 };
 
 class CostsTheSameAs extends CardEligibilityFunction {
@@ -151,12 +172,15 @@ export {
   both,
   canBeDiscardedInCleanup,
   cardNameIs,
+  costsAtLeast,
+  costsBetween,
   costsExactly,
   costsTheSameAs,
   costsUpTo,
   either,
   isACopyOf,
   isActionCard,
+  isAttackCard,
   isCurseCard,
   isDurationCard,
   isInLocation,

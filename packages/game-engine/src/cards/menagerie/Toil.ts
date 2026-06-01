@@ -4,22 +4,27 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 import { Event } from '../../card/Event';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../SharedGameState';
-import { cardNameIs } from '../../StandardCardEligibilityFunctions';
+import { isActionCard } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
-export class Bonfire extends Event {
-  public constructor(sharedGameState: SharedGameState) {
-    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Bonfire'));
+export class Toil extends Event {
+  constructor(sharedGameState: SharedGameState) {
+    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Toil'));
   }
 
   public async onBuy(ie: InstructionExecutor): Promise<void> {
+    ie.addBuys(1);
+
     const cards = await ie
-      .chooseCards('Choose up to 4 cards to trash')
+      .chooseCards('You may play an Action card from your hand')
       .from(CardLocation.HAND)
-      .to(CardSelectionPurpose.TRASH)
-      .whereNumCardsIs(upToNChecked(2))
-      .whereCardIs(cardNameIs('Copper'))
+      .to(CardSelectionPurpose.PLAY)
+      .whereCardIs(isActionCard)
+      .whereNumCardsIs(upToNChecked(1))
       .choose();
-    await ie.trashCardsFromLocation(cards, CardLocation.HAND);
+
+    if (!cards.isEmpty()) {
+      await ie.playCardFromHand(cards.getArbitraryCard());
+    }
   }
 }

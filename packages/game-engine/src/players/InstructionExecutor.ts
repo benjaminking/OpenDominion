@@ -152,6 +152,13 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().getMatchingCardsInHand(cardEligibilityFunction);
   }
 
+  public getCardsFromLocation(location: CardLocation): CardCollection {
+    if (this.sharedGameState.isSharedLocation(location)) {
+      return this.sharedGameState.getCardsFromArea(location);
+    }
+    return this.player.getOwnedCards().getCardsFromArea(location);
+  }
+
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
     if (this.sharedGameState.isSharedLocation(cardMetadata.location)) {
       return this.sharedGameState.getCardByMetadata(cardMetadata);
@@ -944,5 +951,103 @@ export class InstructionExecutor {
 
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
+  }
+
+  public getNumEmptySupplyPiles(): number {
+    return this.sharedGameState.piles.numEmptySupplyPiles;
+  }
+
+  public async gainHorse(n = 1, gainLocation: CardLocation = CardLocation.DISCARD): Promise<void> {
+    for (let i = 0; i < n; i++) {
+      await this.gainFromPile('Horse', gainLocation);
+    }
+  }
+
+  /** Stub: exile support is not yet modeled separately from set-aside. */
+  public async exileCardFromLocation(card: Card, location: CardLocation): Promise<void> {
+    await this.setCardAsideFromLocation(card, location);
+  }
+
+  /** Stub: exile a card from supply (removes from pile, sets aside on current player). */
+  public async exileFromSupply(cardChoice: Card | string): Promise<void> {
+    const pileName = typeof cardChoice === 'string' ? cardChoice : cardChoice.getPileName();
+    const card = this.sharedGameState.piles.removeTopCardFromPile(pileName);
+    if (card !== undefined) {
+      this.setCardAside(card, true);
+    }
+  }
+
+  /** Stub: does not track true Exile zone, always false for now. */
+  public hasExiledCopy(_cardName: string): boolean {
+    return false;
+  }
+
+  /** Stub: no true Exile zone, no-op. */
+  public async discardExiledCurses(): Promise<void> {
+    //
+  }
+
+  /** Stub: no true Exile zone, no-op. */
+  public async putExiledActionOntoDeck(): Promise<void> {
+    //
+  }
+
+  /** Stub: track cards trashed by player to the right last turn. */
+  public getNumCardsPlayerToRightTrashedOnLastTurn(): number {
+    return 0;
+  }
+
+  /** Stub: Snowy Village behavior. */
+  public ignoreFurtherAddedActionsThisTurn(): void {
+    //
+  }
+
+  /** Stub: Mastermind behavior helper. */
+  public async playActionFromHandNTimes(_n: number): Promise<void> {
+    //
+  }
+
+  /** Replay a card currently in play without moving it. */
+  public async replayCardInPlay(card: Card): Promise<void> {
+    await card.play(this);
+  }
+
+  /** Stub: return card to its supply pile. */
+  public returnCardToPile(_card: Card): void {
+    //
+  }
+
+  /** Stub: once-per-game flag helper for events like Seize the Day. */
+  public canUseOncePerGame(_key: string): boolean {
+    return true;
+  }
+
+  /** Stub: once-per-game flag helper for events like Seize the Day. */
+  public markUsedOncePerGame(_key: string): void {
+    //
+  }
+
+  /** Stub: once-per-turn marker helper. */
+  public canUseOncePerTurn(_key: string): boolean {
+    return true;
+  }
+
+  /** Stub: once-per-turn marker helper. */
+  public markUsedOncePerTurn(_key: string): void {
+    //
+  }
+
+  /** Stub: number of differently named cards gained this turn. */
+  public getNumDifferentlyNamedCardsGainedThisTurn(): number {
+    return 0;
+  }
+
+  public getTopSupplyCards(): CardCollection {
+    return this.sharedGameState.piles.getTopCardsOfSupplyPiles();
+  }
+
+  /** Stub: Invest tracking is not implemented yet. */
+  public async investInActionFromSupply(_card: Card): Promise<void> {
+    //
   }
 }
