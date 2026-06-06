@@ -1,5 +1,6 @@
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
+import { CardShapedObject } from '../card/CardShapedObject';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { InstructionExecutor } from '../players/InstructionExecutor';
 import { Player } from '../players/Player';
@@ -17,7 +18,7 @@ import { TurnEligibility } from './TurnEligibility';
 export class Effect {
   private _id = '';
   private _numTimesUsed = 0;
-  private owner: Card | undefined = undefined;
+  private owner: CardShapedObject | undefined = undefined;
   private expiration: EffectExpiration = new NoEffectExpiration();
   private type: EffectTriggerType = EffectTriggerType.NEVER;
   private source: EffectSource = EffectSource.ANYONE;
@@ -45,7 +46,7 @@ export class Effect {
     return this._id;
   }
 
-  public getOwner(): Card {
+  public getOwner(): CardShapedObject {
     return this.owner!;
   }
 
@@ -98,7 +99,7 @@ export class Effect {
   public static Builder = class {
     effect: Effect = new Effect();
 
-    public from(owner: Card): this {
+    public from(owner: CardShapedObject): this {
       this.effect.owner = owner;
       return this;
     }

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, computed, inject, input, OnInit, Signal, signal, ViewChild, WritableSignal } from '@angular/core';
 import { MessageDecoderService } from '../message-decoder.service';
 import { PileCategory, PileMetadata } from '@dominion/common';
 import { PileComponent } from './pile.component';
@@ -27,6 +27,7 @@ export class PilesComponent implements OnInit {
 
   private addPileToGroup(pile: PileMetadata): void {
     if (this.seenPileNames.has(pile.name)) {
+      this.updateExistingPile(pile);
       return;
     }
     this.seenPileNames.add(pile.name);
@@ -54,8 +55,27 @@ export class PilesComponent implements OnInit {
       }
     }
   }
+
+  private updateExistingPile(pile: PileMetadata): void {
+    updateExistingPileInGroup(pile, this.kingdomPiles);
+    updateExistingPileInGroup(pile, this.treasurePiles);
+    updateExistingPileInGroup(pile, this.victoryPiles);
+    updateExistingPileInGroup(pile, this.nonSupplyPiles);
+  }
+}
+
+function updateExistingPileInGroup(pile: PileMetadata, groupSignal: WritableSignal<PileMetadata[]>): void {
+  groupSignal.update((currentValue: PileMetadata[]) => {
+    const index = currentValue.findIndex((p) => p.name === pile.name);
+    if (index === -1) {
+      return currentValue;
+    }
+    const newValue = [...currentValue];
+    newValue[index] = pile;
+    return newValue.sort(pileSortingFunction);
+  });
 }
 
 function pileSortingFunction(a: PileMetadata, b: PileMetadata): number {
-  return b.cost.coins - a.cost.coins || a.name.localeCompare(b.name);
+  return b.originalCost.coins - a.originalCost.coins || a.name.localeCompare(b.name);
 }

@@ -1,0 +1,11 @@
+<div class="resource-counter-wrapper">
+  <div class="icon-wrapper">
+    @if (iconType() === 'vp') {
+      <vp [text]="''" [size]="'full'"></vp>
+    } @else if (iconType() === 'coin') {
+      <coin [text]="''" [size]="'full'"></coin>
+    }
+  </div>
+  <div class="resource-counter-label">{{ label() }}</div>
+  <div class="resource-counter-value">{{ count() }}</div>
+</div>

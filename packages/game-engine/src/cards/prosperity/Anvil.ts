@@ -6,7 +6,7 @@ import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { costsUpTo, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Anvil extends KingdomCard {

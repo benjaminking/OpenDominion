@@ -4,8 +4,8 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { CostModifier } from '../../effects/CostModifier';
 import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
 import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Quarry extends KingdomCard {
@@ -15,6 +15,7 @@ export class Quarry extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.addCoins(1);
+
     this.sharedGameState.addCostModifier(
       new CostModifier.Builder()
         .setCardEligibility(isActionCard)

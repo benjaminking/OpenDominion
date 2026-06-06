@@ -6,8 +6,8 @@ import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { RestOfTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Collection extends KingdomCard {
@@ -18,6 +18,7 @@ export class Collection extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.addCoins(2);
     ie.addBuys(1);
+
     ie.addEffect(
       new Effect.Builder()
         .from(this)

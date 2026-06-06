@@ -7,7 +7,7 @@ import { Cost } from '../../src/card/Cost';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { Pile } from '../../src/piles/Pile';
 import { PileGroup } from '../../src/piles/PileGroup';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {}
 

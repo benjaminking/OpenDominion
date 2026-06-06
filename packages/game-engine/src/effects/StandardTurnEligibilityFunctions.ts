@@ -1,4 +1,4 @@
-import { SharedGameState } from '../SharedGameState';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { Turn } from '../turns/Turn';
 import { TurnEligibility } from './TurnEligibility';
 

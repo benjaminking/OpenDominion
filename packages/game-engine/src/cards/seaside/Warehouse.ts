@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Warehouse extends KingdomCard {

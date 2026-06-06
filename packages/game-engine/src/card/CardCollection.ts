@@ -5,6 +5,7 @@ import { CardSortingFunction } from '../CardSortingFunctions';
 import { ChangeListener } from '../ChangeListener';
 import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
+import { CardCostCache } from '../game-state/CardCostCache';
 import { ArrayIterator } from '../Iterator';
 import { Card } from './Card';
 import { CardGroup } from './CardGroup';
@@ -206,6 +207,15 @@ export class CardCollection implements Iterable<Card> {
       throw new Error('Tried to get arbitrary card from empty card collection');
     }
     return this.cards[0];
+  }
+
+  public reportCardCosts(cardCostCache: CardCostCache): void {
+    for (const card of this.cards) {
+      cardCostCache.updateCostForCardName(card.getName(), card.getCost());
+      if (cardCostCache.haveCostsChanged()) {
+        break;
+      }
+    }
   }
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {

@@ -9,11 +9,7 @@
   z-index: 1;
 }
 
-.player-line.me {
-  /*grid-column-start: pile-end;
-    grid-column-end: right;
-    grid-row-start: deck-end;
-    grid-row-end: bottom;*/
+.player-line {
   grid-area: player-line-me;
 }
 
@@ -66,18 +62,12 @@
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap-reverse;
-}
-
-.player-line-container.me {
   flex-direction: row;
 }
 
-.player-line-container.me .player-line {
+.player-line {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-}
-
-.player-line {
   background-color: rgba(0, 0, 0, 0.8);
   border: solid 1px rgb(0, 0, 0);
   min-height: 75px;
@@ -85,6 +75,10 @@
   display: flex;
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.player-line .display-stat:last-child {
+  margin-left: auto;
 }
 
 .display-stat {
@@ -102,34 +96,35 @@
 }
 
 .deck-and-discard {
-  position: relative;
-  width: 115px;
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 105px;
 }
 
 .deck {
-  position: relative;
-  display: inline-block;
   background-color: rgba(70, 63, 37, 0.7);
   border-radius: 5px;
-  margin-right: 3px;
+  height: 75px;
+  position: relative;
+}
+
+.deck card {
+  display: block;
+  transform: scale(0.291);
+  transform-origin: top left;
 }
 
 .discard {
-  position: relative;
-  display: inline-block;
   border-radius: 5px;
-  margin-right: 3px;
+  height: 75px;
 }
 
-.deck-and-discard img {
-  height: 75px;
-  vertical-align: middle;
-}
-
-.rotated-name-holder {
-  width: 75px;
-  height: 75px;
-  margin-left: -50px;
+.discard card {
+  display: block;
+  transform: scale(0.291);
+  transform-origin: top left;
 }
 
 .rotated-name {
@@ -137,14 +132,12 @@
   color: white;
   font-variant: small-caps;
   font-size: 18px;
-  -ms-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
   word-break: break-all;
   vertical-align: middle;
   text-align: center;
-  width: 75px;
   height: 75px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 .hand-size-label {
@@ -168,6 +161,13 @@
   top: 0px;
   right: 0px;
   z-index: 4;
+}
+
+.empty-deck {
+  background-color: rgba(70, 63, 37, 0.7);
+  border-radius: 5px;
+  width: 49px;
+  height: 75px;
 }
 
 .empty-discard {

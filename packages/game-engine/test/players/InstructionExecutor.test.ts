@@ -17,7 +17,7 @@ import { NextTurnEligibility, ThisTurnEligibility } from '../../src/effects/Stan
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {
   public override async play(_instructionExecutor: InstructionExecutor): Promise<void> {

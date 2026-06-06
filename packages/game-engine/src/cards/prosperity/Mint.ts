@@ -3,19 +3,14 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isDurationCard, isTheSameCardAs, isTreasureCard } from '../../StandardCardEligibilityFunctions';
-
-const isNonDurationTreasure = new CardEligibilityFunction(
-  (card: Card) => isTreasureCard.matches(card) && !isDurationCard.matches(card),
-);
+import { both, isDurationCard, isTheSameCardAs, isTreasureCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class Mint extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -29,9 +24,7 @@ export class Mint extends KingdomCard {
         .addCondition(new EffectCondition(() => this.getLocation() !== CardLocation.PILE))
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            const treasuresInPlay = ie.getCardsByMetadata(
-              ie.getEligibleCardChoices(new Set([CardLocation.IN_PLAY]), isNonDurationTreasure).map((c) => c.card),
-            );
+            const treasuresInPlay = ie.getMatchingCardsInPlay(both(isTreasureCard, not(isDurationCard)));
             await ie.trashCardsFromLocation(treasuresInPlay, CardLocation.IN_PLAY);
           }),
         )
@@ -50,7 +43,7 @@ export class Mint extends KingdomCard {
 
     if (revealedTreasure instanceof Card) {
       await ie.revealCard(revealedTreasure);
-      await ie.gainCardFromPile(revealedTreasure.getPileName());
+      await ie.gainCardFromPile(revealedTreasure);
     }
   }
 }

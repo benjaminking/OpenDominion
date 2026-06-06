@@ -46,6 +46,7 @@ export class GameResultTableComponent {
     const info = CardInfoLookup.lookUpCardInfo(cardName);
     return {
       name: cardName,
+      displayName: cardName,
       id: cardName,
       location: CardLocation.PILE,
       types: info.types as CardType[],

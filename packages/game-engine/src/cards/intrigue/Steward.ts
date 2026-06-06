@@ -4,8 +4,8 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Steward extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {

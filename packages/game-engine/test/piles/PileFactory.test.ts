@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { PileFactory } from '../../src/piles/PileFactory';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 const createSharedGameStateMock = () => {
   return {

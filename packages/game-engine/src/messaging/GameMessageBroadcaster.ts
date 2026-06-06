@@ -1,4 +1,4 @@
-import { CardCount, CardLocation, GameConfiguration, NumberType, PileMetadata } from '@dominion/common';
+import { CardCount, CardLocation, Mechanic, NumberType, PileMetadata } from '@dominion/common';
 import { StatusAction } from '@dominion/common';
 
 import { CardCollection } from '../card/CardCollection';
@@ -38,15 +38,6 @@ export class GameMessageBroadcaster {
         opponentNames.push(this.players[otherPlayerIndex].getName());
       }
       mainPlayer.getClient().sendOpponentNames(opponentNames);
-    }
-  }
-
-  public sendGameConfiguration(gameConfiguration: GameConfiguration): void {
-    if (!this.shouldBroadcast) {
-      return;
-    }
-    for (const player of this.players) {
-      player.getClient().sendGameConfiguration(gameConfiguration);
     }
   }
 
@@ -217,6 +208,15 @@ export class GameMessageBroadcaster {
       if (player.isBotPlayer()) {
         player.getClient().sendBotCardCounts(cardCountsObj);
       }
+    }
+  }
+
+  public sendMechanics(mechanics: Set<Mechanic>): void {
+    if (!this.shouldBroadcast) {
+      return;
+    }
+    for (const player of this.players) {
+      player.getClient().sendMechanics(mechanics);
     }
   }
 }

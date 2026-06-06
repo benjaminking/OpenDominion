@@ -1,3 +1,4 @@
+import { CardCategory } from './CardCategory';
 import { CardType } from './CardType';
 import { Cost } from './Cost';
 import { Expansion } from './Expansion';
@@ -5,6 +6,7 @@ import { Mechanic } from './Mechanic';
 import { Production } from './Production';
 
 export interface CardInfo {
+  category: CardCategory;
   name: string;
   text: string;
   font_size: string;

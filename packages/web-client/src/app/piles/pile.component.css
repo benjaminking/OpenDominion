@@ -319,3 +319,12 @@
 .panel-duration-treasure:hover {
   background: linear-gradient(rgba(221, 119, 0, 1), rgba(251, 223, 97, 1));
 }
+
+.panel-treasure-curse {
+  background: linear-gradient(rgba(251, 223, 97, 0.68), rgba(114, 55, 135, 0.68));
+  border: solid 1px rgba(90, 40, 100, 1);
+}
+
+.panel-treasure-curse:hover {
+  background: linear-gradient(rgba(251, 223, 97, 1), rgba(114, 55, 135, 1));
+}

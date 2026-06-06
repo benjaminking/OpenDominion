@@ -2,7 +2,7 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 export class Province extends Card {
   public constructor(sharedGameState: SharedGameState) {

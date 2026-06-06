@@ -128,6 +128,16 @@ const either = function (func1: CardEligibilityFunction, func2: CardEligibilityF
   return new Either(func1, func2);
 };
 
+class Not extends CardEligibilityFunction {
+  public constructor(func: CardEligibilityFunction) {
+    super((c: Card) => !func.matches(c));
+  }
+}
+
+const not = function (func: CardEligibilityFunction) {
+  return new Not(func);
+};
+
 class IsInLocation extends CardEligibilityFunction {
   public constructor(location: CardLocation) {
     super((c: Card) => c.getLocation() === location);

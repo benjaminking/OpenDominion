@@ -3,9 +3,9 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 export class Bureaucrat extends KingdomCard {

@@ -4,8 +4,8 @@ import { CardLocation } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { either, isActionCard, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class CrystalBall extends KingdomCard {

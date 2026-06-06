@@ -25,8 +25,8 @@ enum OverlayType {
   DURATION,
   TREASURE_DURATION,
   DURATION_REACTION,
-
   TREASURE_CURSE,
+
   ACTION_TREASURE,
   TREASURE_REACTION,
   VICTORY_REACTION,
@@ -96,6 +96,7 @@ export class CardComponent {
     'Colony',
     'Curse',
     'Potion',
+    'Charlatan Curse',
   ]);
   layoutType = computed<LayoutType>(() => {
     const cardName = this.metadata().name;
@@ -106,8 +107,8 @@ export class CardComponent {
   });
 
   costSymbol = computed<string>(() => {
-    let coins = this.cardInfo().cost.coins.toFixed();
-    if (this.cardInfo().cost.has_asterisk) {
+    let coins = this.metadata().cost.coins.toFixed();
+    if (this.cardInfo().cost.has_asterisk && this.cardInfo().cost === this.metadata().cost) {
       coins += '*';
     }
     return coins;
@@ -130,7 +131,7 @@ export class CardComponent {
     const isReaction = this.metadata().types.includes(CardType.REACTION);
     const isDuration = this.metadata().types.includes(CardType.DURATION);
 
-    if (isTreasure && !isVictory && !isDuration) {
+    if (isTreasure && !isVictory && !isDuration && !isCurse) {
       return OverlayType.TREASURE;
     }
     if (isVictory && !isTreasure && !isAction) {
@@ -147,6 +148,9 @@ export class CardComponent {
     }
     if (isTreasure && isVictory) {
       return OverlayType.TREASURE_VICTORY;
+    }
+    if (isTreasure && isCurse) {
+      return OverlayType.TREASURE_CURSE;
     }
     if (isDuration && !isTreasure && !isReaction) {
       return OverlayType.DURATION;

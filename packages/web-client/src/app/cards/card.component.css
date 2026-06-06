@@ -112,17 +112,17 @@ reserve: #d9be87
 
 .portrait-card-full .card-text-container {
   position: absolute;
-  top: 11.5cqh;
+  top: 13.5cqh;
   left: 4.8cqw;
   width: 90cqw;
-  height: 30cqh;
+  height: 60cqh;
   font-family: 'CardText';
   font-size: 15cqh;
   color: black;
   z-index: 3;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: top;
 }
 
 .portrait-card .card-text-container {

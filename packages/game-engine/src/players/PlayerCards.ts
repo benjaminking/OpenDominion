@@ -7,6 +7,7 @@ import { PrivacyType } from '../card/PrivacyType';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
+import { CardCostCache } from '../game-state/CardCostCache';
 import { Logger } from '../logging/Logger';
 import { ServerLogMessage } from '../logging/ServerLogMessage';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
@@ -432,6 +433,10 @@ export class PlayerCards {
     return this.hand.getMatchingCards(cardEligibilityFunction);
   }
 
+  public getMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
+    return this.inPlay.getMatchingCards(cardEligibilityFunction);
+  }
+
   public getEffectsByType(effectTrigger: EffectTriggerType): Effect[] {
     let effects: Effect[] = [];
 
@@ -443,6 +448,17 @@ export class PlayerCards {
 
   public getDeckEffectsByType(effectTrigger: EffectTriggerType): Effect[] {
     return this.deck.getEffectsByType(effectTrigger);
+  }
+
+  public reportCardCosts(cardCostCache: CardCostCache): void {
+    this.hand.reportCardCosts(cardCostCache);
+    this.inPlay.reportCardCosts(cardCostCache);
+    this.deck.reportCardCosts(cardCostCache);
+    this.discard.reportCardCosts(cardCostCache);
+    this.setAside.reportCardCosts(cardCostCache);
+    this.limbo.reportCardCosts(cardCostCache);
+    this.islandMat.reportCardCosts(cardCostCache);
+    this.nativeVillageMat.reportCardCosts(cardCostCache);
   }
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
@@ -475,6 +491,17 @@ export class PlayerCards {
       }
     }
     return cards;
+  }
+
+  forceFullBroadcast(): void {
+    this.hand.forceBroadcast();
+    this.inPlay.forceBroadcast();
+    this.deck.forceBroadcast();
+    this.discard.forceBroadcast();
+    this.setAside.forceBroadcast();
+    this.limbo.forceBroadcast();
+    this.islandMat.forceBroadcast();
+    this.nativeVillageMat.forceBroadcast();
   }
 
   forceFullBroadcastOfDiscard(): void {

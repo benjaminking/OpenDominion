@@ -12,7 +12,7 @@ import {
   ThisTurnEligibility,
 } from '../src/effects/StandardTurnEligibilityFunctions';
 import { Player } from '../src/players/Player';
-import { SharedGameState } from '../src/SharedGameState';
+import { SharedGameState } from '../src/game-state/SharedGameState';
 import { Turn } from '../src/turns/Turn';
 
 const createPlayer = (name: string, unofficialTurnNumber = 0): Player => {

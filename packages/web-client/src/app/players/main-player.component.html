@@ -1,4 +1,4 @@
-<div class="player-line-container me">
+<div class="player-line-container">
   <div class="player-line">
     <div class="deck-and-discard display-stat">
       <div class="deck">
@@ -9,23 +9,45 @@
            in case the user closes the dialog-->
       <div class="discard">
         @if (topDiscard(); as topCardOfDiscard) {
-          <img src="/images/{{ topCardOfDiscard.name }}.jpg" />
+          <card [metadata]="topCardOfDiscard"></card>
         } @else {
           <div class="empty-discard"></div>
         }
       </div>
     </div>
-    <div class="reveal-limbo-toggle card-area-toggle display-stat" (click)="toggleRevealedCardsViewer()">
-      Revealed Cards
-      <div class="pile-count">{{ limbo().length }}</div>
-    </div>
-    <div class="set-aside-toggle card-area-toggle display-stat" (click)="toggleSetAsideCardsViewer()">
-      Set Aside Cards
-      <div class="pile-count">{{ setAside().length }}</div>
-    </div>
-    <div class="rotated-name-holder display-stat">
-      <div class="rotated-name">{{ name() }}</div>
-    </div>
+    @if (isUsing(vpChipMechanic)) {
+      <div class="display-stat">
+        <resource-counter [label]="'VP'" [count]="vp()" [iconType]="vpIconType"></resource-counter>
+      </div>
+    }
+    @if (isUsing(coffersMechanic)) {
+      <div class="display-stat">
+        <resource-counter [label]="'Coffers'" [count]="coffers()" [iconType]="coinIconType"></resource-counter>
+      </div>
+    }
+    @if (isUsing(villagersMechanic)) {
+      <div class="display-stat">
+        <resource-counter [label]="'Villagers'" [count]="villagers()" [iconType]="coinIconType"></resource-counter>
+      </div>
+    }
+    @if (isUsing(favorsMechanic)) {
+      <div class="display-stat">
+        <resource-counter [label]="'Favors'" [count]="favors()" [iconType]="coinIconType"></resource-counter>
+      </div>
+    }
+    @if (limbo().length > 0) {
+      <div class="reveal-limbo-toggle card-area-toggle display-stat" (click)="toggleRevealedCardsViewer()">
+        Revealed Cards
+        <div class="pile-count">{{ limbo().length }}</div>
+      </div>
+    }
+    @if (setAside().length > 0) {
+      <div class="set-aside-toggle card-area-toggle display-stat" (click)="toggleSetAsideCardsViewer()">
+        Set Aside Cards
+        <div class="pile-count">{{ setAside().length }}</div>
+      </div>
+    }
+    <div class="rotated-name display-stat">{{ name() }}</div>
   </div>
 </div>
 <card-dialog title="Revealed Cards" [cards]="limbo()" [name]="revealedCardsViewName"></card-dialog>

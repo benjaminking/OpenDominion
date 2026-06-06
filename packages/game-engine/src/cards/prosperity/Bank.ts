@@ -2,7 +2,7 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Bank extends KingdomCard {

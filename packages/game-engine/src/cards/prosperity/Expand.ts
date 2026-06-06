@@ -4,8 +4,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 export class Expand extends KingdomCard {

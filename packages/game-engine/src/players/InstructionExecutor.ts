@@ -32,10 +32,10 @@ import {
 } from '../effects/StandardEffectExpirations';
 import { NextTurnEligibility, ThisTurnEligibility } from '../effects/StandardTurnEligibilityFunctions';
 import { TurnEligibility } from '../effects/TurnEligibility';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { Logger } from '../logging/Logger';
 import { ServerLogMessage } from '../logging/ServerLogMessage';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
-import { SharedGameState } from '../SharedGameState';
 import { isSimpleTreasure } from '../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../StandardNumberEligibilityFunctions';
 import { ExtraTurn } from '../turns/ExtraTurn';
@@ -154,6 +154,10 @@ export class InstructionExecutor {
 
   public getMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
     return this.player.getOwnedCards().getMatchingCardsInHand(cardEligibilityFunction);
+  }
+
+  public getMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
+    return this.player.getOwnedCards().getMatchingCardsInPlay(cardEligibilityFunction);
   }
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
@@ -315,7 +319,11 @@ export class InstructionExecutor {
     } else {
       pileName = cardChoice.getPileName();
     }
-    return this.gainFromPile(pileName, gainLocation);
+
+    if (this.sharedGameState.isCopyOfCardOnTopOfPile(cardChoice, pileName)) {
+      return this.gainFromPile(pileName, gainLocation);
+    }
+    return undefined;
   }
 
   public async gainFromPile(

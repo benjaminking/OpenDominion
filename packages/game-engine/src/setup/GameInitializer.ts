@@ -177,6 +177,7 @@ export class GameInitializer {
   }
 
   private handleCardMechanics(randomizer: Card): void {
+    this.game.getGameState().registerCardMechanics(randomizer);
     if (randomizer.usesMechanic(Mechanic.POTIONS)) {
       this.addPotionsToSupply();
     }

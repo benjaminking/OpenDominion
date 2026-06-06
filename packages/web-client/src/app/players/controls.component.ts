@@ -246,14 +246,9 @@ export class ControlsComponent {
     return isChooseCardsDecision(decision);
   });
 
-  isCorrectNumberOfCardsSelected() {
-    const decision = this.decisionManager.currentDecision();
-    if (decision === undefined || !isChooseCardsDecision(decision)) {
-      return false;
-    }
-
+  isCorrectNumberOfCardsSelected = computed<boolean>(() => {
     return this.decisionManager.isCorrectNumberOfCardsSelected();
-  }
+  });
 
   completeSelection(): void {
     this.decisionManager.resolveDecisionWithCards();

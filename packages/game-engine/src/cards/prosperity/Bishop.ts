@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Bishop extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -23,7 +23,7 @@ export class Bishop extends KingdomCard {
 
     if (cardToTrash instanceof Card) {
       const trashedCard: Card | undefined = await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-      if (trashedCard !== undefined) {
+      if (trashedCard instanceof Card) {
         ie.addVP(Math.floor(trashedCard.getCost().coins / 2));
       }
     }

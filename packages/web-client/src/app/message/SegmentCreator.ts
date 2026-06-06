@@ -133,10 +133,10 @@ export class CardSegmentCreator extends SegmentCreator {
   private getCardCounts(cards: CardMetadata[]): Map<string, number> {
     const cardCounts: Map<string, number> = new Map<string, number>();
     for (const card of cards) {
-      if (!cardCounts.has(card.name)) {
-        cardCounts.set(card.name, 0);
+      if (!cardCounts.has(card.displayName)) {
+        cardCounts.set(card.displayName, 0);
       }
-      cardCounts.set(card.name, cardCounts.get(card.name)! + 1);
+      cardCounts.set(card.displayName, cardCounts.get(card.displayName)! + 1);
     }
     return cardCounts;
   }
@@ -144,8 +144,8 @@ export class CardSegmentCreator extends SegmentCreator {
   private getCardInstances(cards: CardMetadata[]): Map<string, CardMetadata> {
     const cardInstances: Map<string, CardMetadata> = new Map<string, CardMetadata>();
     for (const card of cards) {
-      if (!cardInstances.has(card.name)) {
-        cardInstances.set(card.name, card);
+      if (!cardInstances.has(card.displayName)) {
+        cardInstances.set(card.displayName, card);
       }
     }
     return cardInstances;
@@ -158,26 +158,22 @@ export class CardSegmentCreator extends SegmentCreator {
     const messageSegments: IncompleteMessageSegment[][] = [];
     for (const cardName of cardCounts.keys()) {
       messageSegments.push(
-        this.convertCardCountToMessageSegments(cardName, cardInstances.get(cardName)!, cardCounts.get(cardName)!),
+        this.convertCardCountToMessageSegments(cardInstances.get(cardName)!, cardCounts.get(cardName)!),
       );
     }
     return messageSegments;
   }
 
-  private convertCardCountToMessageSegments(
-    name: string,
-    card: CardMetadata,
-    count: number,
-  ): IncompleteMessageSegment[] {
+  private convertCardCountToMessageSegments(card: CardMetadata, count: number): IncompleteMessageSegment[] {
     if (count === 1) {
-      if (name.match(/^[aeiou]/i)) {
+      if (card.displayName.match(/^[aeiou]/i)) {
         return [
           {
             text: 'an ',
             type: MessageSegmentType.ORDINARY,
           },
           {
-            text: card.name,
+            text: card.displayName,
             card: card,
             type: MessageSegmentType.CARD,
           },
@@ -189,20 +185,20 @@ export class CardSegmentCreator extends SegmentCreator {
           type: MessageSegmentType.ORDINARY,
         },
         {
-          text: card.name,
+          text: card.displayName,
           card: card,
           type: MessageSegmentType.CARD,
         },
       ];
     } else {
-      if (name.match(/(s|ch|sh|x|z)$/i)) {
+      if (card.displayName.match(/(s|ch|sh|x|z)$/i)) {
         return [
           {
             text: count.toFixed() + ' ',
             type: MessageSegmentType.ORDINARY,
           },
           {
-            text: name + (count > 1 ? 'es' : ''),
+            text: card.displayName + (count > 1 ? 'es' : ''),
             card: card,
             type: MessageSegmentType.CARD,
           },
@@ -214,7 +210,7 @@ export class CardSegmentCreator extends SegmentCreator {
           type: MessageSegmentType.ORDINARY,
         },
         {
-          text: name + (count > 1 ? 's' : ''),
+          text: card.displayName + (count > 1 ? 's' : ''),
           card: card,
           type: MessageSegmentType.CARD,
         },

@@ -5,6 +5,7 @@ export interface PileMetadata {
   name: string;
   size: number;
   cost: Cost;
+  originalCost: Cost;
   topCard: CardMetadata | undefined;
   types: CardType[];
   categories: PileCategory[];

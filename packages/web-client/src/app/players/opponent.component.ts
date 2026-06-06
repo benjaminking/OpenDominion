@@ -1,11 +1,13 @@
 import { Component, effect, inject, input, OnInit, signal } from '@angular/core';
 import { CardLocation, CardMetadata, NumberType } from '@dominion/common';
 import { MessageDecoderService } from '../message-decoder.service';
+import { CardComponent } from '../cards/card.component';
 
 @Component({
   selector: 'opponent',
   templateUrl: './opponent.component.html',
   styleUrls: ['./opponent.component.css'],
+  imports: [CardComponent],
 })
 export class OpponentComponent {
   name = input<string>('');
