@@ -3,9 +3,9 @@ import { CardLocation } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 export class Cutpurse extends KingdomCard {

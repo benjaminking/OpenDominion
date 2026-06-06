@@ -20,7 +20,7 @@ import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { PrivacyType } from '../../src/card/PrivacyType';
 import { PlayerCards } from '../../src/players/PlayerCards';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {
   public setCoinsForTest(value: number): void {

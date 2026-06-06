@@ -16,7 +16,7 @@ import { Deck } from '../../src/players/Deck';
 import { Discard } from '../../src/players/Discard';
 import { Hand } from '../../src/players/Hand';
 import { InPlay } from '../../src/players/InPlay';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { Trash } from '../../src/Trash';
 
 class TestCard extends Card {}

@@ -6,8 +6,8 @@ import { CardCollection } from '../../card/CardCollection';
 import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsExactly } from '../../StandardCardEligibilityFunctions';
 
 export class Forge extends KingdomCard {
@@ -22,12 +22,12 @@ export class Forge extends KingdomCard {
       .to(CardSelectionPurpose.TRASH)
       .choose();
 
+    const trashedCards = await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);
+
     let totalCoins = 0;
-    for (const card of cardsToTrash) {
+    for (const card of trashedCards.asCardArray()) {
       totalCoins += card.getCost().coins;
     }
-
-    await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);
 
     const cardToGain: Card | Choice = await ie
       .chooseCard('Choose a card costing exactly $' + totalCoins.toFixed() + ' to gain')

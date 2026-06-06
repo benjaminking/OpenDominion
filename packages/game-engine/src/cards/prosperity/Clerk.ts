@@ -3,14 +3,13 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Clerk extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -22,15 +21,7 @@ export class Clerk extends KingdomCard {
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.HAND))
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            await ie
-              .chooseOneOption('Do you want to play Clerk from your hand?')
-              .from(
-                new ActionChoice('Yes', async () => {
-                  await ie.playCardFromLocation(this, CardLocation.HAND);
-                }),
-              )
-              .from(new ActionChoice('No'))
-              .choose();
+            await ie.playCardFromLocation(this, CardLocation.HAND);
           }),
         )
         .build(),

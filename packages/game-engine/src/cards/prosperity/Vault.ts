@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { either, exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Vault extends KingdomCard {
@@ -20,8 +20,8 @@ export class Vault extends KingdomCard {
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
       .choose();
-    await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
-    await ie.addCoins(cardsToDiscard.size());
+    const discardedCards = await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
+    await ie.addCoins(discardedCards.size());
 
     await ie.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
       const otherDiscards: CardCollection = await otherIe

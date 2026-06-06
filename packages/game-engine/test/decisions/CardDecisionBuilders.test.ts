@@ -19,7 +19,7 @@ import { CardSelectionLocation } from '../../src/decisions/CardSelectionLocation
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { exactlyNChecked } from '../../src/StandardNumberEligibilityFunctions';
 
 class TestCard extends Card {}

@@ -3,9 +3,9 @@ import { CardInfo, CardLocation, CardType, PileCategory } from '@dominion/common
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
 import { convertToClassName } from '../NameUtils';
-import { SharedGameState } from '../SharedGameState';
 import { Pile } from './Pile';
 
 export class PileFactory {

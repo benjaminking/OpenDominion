@@ -1,9 +1,7 @@
 <div class="opponent">
-  <div class="player-line-container other">
+  <div class="player-line-container">
     <div class="player-line">
-      <div class="rotated-name-holder display-stat">
-        <div class="rotated-name">{{ name() }}</div>
-      </div>
+      <div class="rotated-name display-stat">{{ name() }}</div>
       <div class="hand-size-display">
         <img src="/images/hand_size.png" />
         <div class="area-label hand-size-label">&times; {{ handSize() }}</div>
@@ -15,7 +13,7 @@
         </div>
         <div class="discard">
           @if (topDiscard(); as topCardOfDiscard) {
-            <img src="/images/{{ topCardOfDiscard.name }}.jpg" />
+            <card [metadata]="topCardOfDiscard"></card>
           } @else {
             <div class="empty-discard"></div>
           }

@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vp-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.vp-image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* small */
+.vp-image-wrapper.small {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+.vp-image-wrapper.small img {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+/* medium */
+.vp-image-wrapper.medium {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+.vp-image-wrapper.medium img {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+/* large */
+.vp-image-wrapper.large {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+.vp-image-wrapper.large img {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+/* xlarge */
+.vp-image-wrapper.xlarge {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+.vp-image-wrapper.xlarge img {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+/* xxlarge */
+.vp-image-wrapper.xxlarge {
+  height: 40cqh;
+  width: 40cqh;
+}
+
+.vp-image-wrapper.xxlarge img {
+  height: 40cqh;
+  width: 40cqh;
+}
+
+/* full */
+.vp-image-wrapper.full {
+  height: 100cqh;
+  width: 100cqh;
+}
+
+.vp-image-wrapper.full img {
+  height: 100cqh;
+  width: 100cqh;
+}

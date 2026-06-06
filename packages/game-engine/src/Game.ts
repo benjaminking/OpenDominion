@@ -1,11 +1,11 @@
 import { GameResult } from '@dominion/common';
 
+import { SharedGameState } from './game-state/SharedGameState';
 import { Logger } from './logging/Logger';
 import { GameMessageBroadcaster } from './messaging/GameMessageBroadcaster';
 import { PlayerSpecification } from './players';
 import { AllPlayers } from './players/AllPlayers';
 import { Player } from './players/Player';
-import { SharedGameState } from './SharedGameState';
 
 export class Game {
   private readonly gameState: SharedGameState;

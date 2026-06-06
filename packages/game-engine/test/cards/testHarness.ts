@@ -21,7 +21,7 @@ import { CardCollection } from '../../src/card/CardCollection';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 // ---------------------------------------------------------------------------
 // Accumulating statistics so tests can inspect stats.coins, stats.actions etc.

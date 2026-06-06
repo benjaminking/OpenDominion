@@ -9,7 +9,7 @@ import { NameSortingFunction } from '../../src/CardSortingFunctions';
 import { ChangeListener } from '../../src/ChangeListener';
 import { Effect } from '../../src/effects/Effect';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {}
 

@@ -1,7 +1,7 @@
 import { CardInfo } from '@dominion/common';
 import { Expansion } from '@dominion/common';
 
-import { SharedGameState } from '../SharedGameState';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { Card } from './Card';
 
 export class KingdomCard extends Card {

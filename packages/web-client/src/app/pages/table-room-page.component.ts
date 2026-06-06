@@ -324,7 +324,7 @@ export class TableRoomPageComponent implements OnInit, OnDestroy {
 
   public cardMetadataFor(name: string): CardMetadata {
     const info = CardInfoLookup.lookUpCardInfo(name);
-    return { name, id: name, location: CardLocation.PILE, types: info.types, cost: info.cost };
+    return { name, displayName: name, id: name, location: CardLocation.PILE, types: info.types, cost: info.cost };
   }
 
   private saveCards(): void {

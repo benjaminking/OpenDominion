@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Magnate extends KingdomCard {
@@ -12,6 +12,8 @@ export class Magnate extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.revealHand();
-    await ie.drawCards(ie.numMatchingCardsInHand(isTreasureCard));
+
+    const numTreasuresInHand = ie.numMatchingCardsInHand(isTreasureCard);
+    await ie.drawCards(numTreasuresInHand);
   }
 }

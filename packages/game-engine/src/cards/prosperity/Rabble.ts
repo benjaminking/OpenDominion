@@ -2,12 +2,10 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { either, isActionCard, isTreasureCard } from '../../StandardCardEligibilityFunctions';
-
-const isActionOrTreasure = either(isActionCard, isTreasureCard);
 
 export class Rabble extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -24,7 +22,7 @@ export class Rabble extends KingdomCard {
     const topCards = await ie.takeCardsOffDeck(3);
     await ie.revealCards(topCards);
 
-    const cardsToDiscard: CardCollection = topCards.getMatchingCards(isActionOrTreasure);
+    const cardsToDiscard: CardCollection = topCards.getMatchingCards(either(isActionCard, isTreasureCard));
     await ie.discardCardsFromRevealedSet(cardsToDiscard, topCards);
     if (topCards.size() > 0) {
       await ie.topDeckCardsFromRevealedSet(topCards);

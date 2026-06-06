@@ -5,11 +5,7 @@
   z-index: 1;
 }
 
-.player-line.other {
-  /*grid-column-start: pile-end;
-    grid-column-end: right;
-    grid-row-start: top;
-    grid-row-end: main-start;*/
+.player-line {
   grid-area: player-line-other;
 }
 
@@ -19,12 +15,16 @@
   flex-wrap: wrap-reverse;
 }
 
-.player-line-container.other {
+.player-line-container .display-stat:first-child {
+  margin-right: auto;
+}
+
+.player-line-container {
   flex-direction: row-reverse;
   flex-wrap: wrap;
 }
 
-.player-line-container.other .player-line {
+.player-line-container .player-line {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
@@ -54,28 +54,35 @@
 }
 
 .deck-and-discard {
-  position: relative;
-  width: 115px;
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 105px;
 }
 
 .deck {
-  position: relative;
-  display: inline-block;
   background-color: rgba(70, 63, 37, 0.7);
   border-radius: 5px;
-  margin-right: 3px;
+  height: 75px;
+  position: relative;
+}
+
+.deck card {
+  display: block;
+  transform: scale(0.291);
+  transform-origin: top left;
 }
 
 .discard {
-  position: relative;
-  display: inline-block;
   border-radius: 5px;
-  margin-right: 3px;
+  height: 75px;
 }
 
-.deck-and-discard img {
-  height: 75px;
-  vertical-align: middle;
+.discard card {
+  display: block;
+  transform: scale(0.291);
+  transform-origin: top left;
 }
 
 .rotated-name-holder {
@@ -89,14 +96,12 @@
   color: white;
   font-variant: small-caps;
   font-size: 18px;
-  -ms-transform: rotate(90deg);
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
   word-break: break-all;
   vertical-align: middle;
   text-align: center;
-  width: 75px;
   height: 75px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 .hand-size-label {
@@ -120,6 +125,13 @@
   top: 0px;
   right: 0px;
   z-index: 4;
+}
+
+.empty-deck {
+  background-color: rgba(70, 63, 37, 0.7);
+  border-radius: 5px;
+  width: 49px;
+  height: 75px;
 }
 
 .empty-discard {

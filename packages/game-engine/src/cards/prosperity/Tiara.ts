@@ -8,8 +8,8 @@ import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { RestOfTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Tiara extends KingdomCard {
@@ -19,6 +19,7 @@ export class Tiara extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     ie.addBuys(1);
+
     ie.addEffect(
       new Effect.Builder()
         .from(this)

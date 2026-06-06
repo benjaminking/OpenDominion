@@ -7,7 +7,7 @@ import { CostModifier } from '../src/effects/CostModifier';
 import { EffectSource } from '../src/effects/EffectSource';
 import { EffectTriggerType } from '../src/effects/EffectTriggerType';
 import { Player } from '../src/players/Player';
-import { SharedGameState } from '../src/SharedGameState';
+import { SharedGameState } from '../src/game-state/SharedGameState';
 
 const createPlayerStub = (
   name: string,

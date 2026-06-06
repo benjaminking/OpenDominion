@@ -4,7 +4,6 @@ export enum MessageType {
   DM = 'dm',
   PLAYER_NAME = 'player_name',
   OPPONENT_NAME = 'opponent_name',
-  GAME_CONFIGURATION = 'game_configuration',
   TURN_START = 'turn_start',
   STATISTIC = 'statistic',
   CARDS = 'cards',
@@ -24,4 +23,5 @@ export enum MessageType {
   BUY_PHASE_CHOICE = 'buy_phase_choice',
   RESOLVED_CHOICE = 'resolved_choice',
   GAME_RESULT = 'game_result',
+  MECHANICS = 'mechanics',
 }
