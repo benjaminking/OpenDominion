@@ -20,6 +20,7 @@ import { TreasureCoinSortingFunction } from '../CardSortingFunctions';
 import { ActionChoice } from '../decisions/ActionChoice';
 import { CardChoiceBuilder } from '../decisions/CardChoiceBuilder';
 import { CardMultiChoiceBuilder } from '../decisions/CardMultiChoiceBuilder';
+import { CardSelectionLocation } from '../decisions/CardSelectionLocation';
 import { ChooseMultipleOptionsBuilder } from '../decisions/ChooseMultipleOptionsBuilder';
 import { ChooseOneOptionBuilder } from '../decisions/ChooseOneOptionBuilder';
 import { Effect } from '../effects/Effect';
@@ -36,7 +37,7 @@ import { SharedGameState } from '../game-state/SharedGameState';
 import { Logger } from '../logging/Logger';
 import { ServerLogMessage } from '../logging/ServerLogMessage';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
-import { isSimpleTreasure } from '../StandardCardEligibilityFunctions';
+import { isSimpleTreasure, noCard } from '../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../StandardNumberEligibilityFunctions';
 import { ExtraTurn } from '../turns/ExtraTurn';
 import { ExtraTurnPrecondition } from '../turns/ExtraTurnPreconditions';
@@ -133,11 +134,11 @@ export class InstructionExecutor {
   }
 
   public hasPlayedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {
-    return this.player.getStatistics().hasPlayedMatchingCardThisTurn(cardEligibilityFunction);
+    return this.player.getTurnTracker().hasPlayedMatchingCardThisTurn(cardEligibilityFunction);
   }
 
   public hasGainedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {
-    return this.player.getStatistics().hasGainedMatchingCardThisTurn(cardEligibilityFunction);
+    return this.player.getTurnTracker().hasGainedMatchingCardThisTurn(cardEligibilityFunction);
   }
 
   public numMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): number {
@@ -149,7 +150,7 @@ export class InstructionExecutor {
   }
 
   public numMatchingCardsPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
-    return this.player.getStatistics().numMatchingCardsPlayedThisTurn(cardEligibilityFunction);
+    return this.player.getTurnTracker().numMatchingCardsPlayedThisTurn(cardEligibilityFunction);
   }
 
   public getMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
@@ -242,7 +243,7 @@ export class InstructionExecutor {
 
   private registerPlayedCard(card: Card): void {
     this.sharedGameState.addPlayedCard(card);
-    this.player.getStatistics().addPlayedCard(card);
+    this.player.getTurnTracker().addPlayedCard(card);
     this.player.getOwnedCards();
   }
 
@@ -299,6 +300,7 @@ export class InstructionExecutor {
 
     this.player.getStatistics().spendCoins(card.getCost().coins);
     this.player.getStatistics().useBuy();
+    this.player.getTurnTracker().addBoughtCard(card);
 
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'buys %c', card));
 
@@ -352,6 +354,7 @@ export class InstructionExecutor {
       this.player.getOwnedCards().addCardToHand(card);
     }
 
+    this.player.getTurnTracker().addGainedCard(card);
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'gains %c', card));
     this.player.calculateScore();
 
@@ -649,6 +652,21 @@ export class InstructionExecutor {
     return this.revealCards(this.player.getOwnedCards().getHand());
   }
 
+  public async nameCard(
+    cardSelectionPurpose: CardSelectionPurpose = CardSelectionPurpose.OTHER,
+  ): Promise<Card | Choice> {
+    const choice = await this.chooseCard('Choose a card to name for War Chest')
+      .from(CardSelectionLocation.ALL_CARDS)
+      .to(cardSelectionPurpose)
+      .choose();
+
+    if (choice instanceof Card) {
+      this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'names %c', choice));
+    }
+
+    return choice;
+  }
+
   public addEffect(effect: Effect): void {
     this.player.getEffects().addEffect(effect);
     this.sharedGameState.registerEffectTrigger(effect.getTrigger(), effect.getSource());
@@ -863,6 +881,21 @@ export class InstructionExecutor {
     return eligiblityFunction;
   }
 
+  public createPlayerToTheLeftGainedOnTheirLastTurnCardEligibilityFunction(): CardEligibilityFunction {
+    const playerToTheLeft = this.sharedGameState.getPlayerLeftOfCurrent();
+    const lastTurn = playerToTheLeft.getTurnTracker().getLastCompletedTurn();
+
+    if (lastTurn === undefined) {
+      return noCard;
+    }
+
+    return playerToTheLeft.getTurnTracker().getCardsGainedOnTurnEligibilityFunction(lastTurn);
+  }
+
+  public createBoughtCardEligibilityFunction(): CardEligibilityFunction {
+    return this.player.getTurnTracker().getCardsBoughtThisTurnEligibilityFunction();
+  }
+
   public createOnceThisTurnEffectExpiration(): EffectExpiration {
     return new OnceThisTurnEffectExpiration(this.sharedGameState.getCurrentTurn());
   }
@@ -953,7 +986,7 @@ export class InstructionExecutor {
   }
 
   public setNumCardsToDrawInCleanup(numCardsToDrawInCleanup: number): void {
-    this.player.getStatistics().setNumCardsToDrawInCleanup(numCardsToDrawInCleanup);
+    this.player.getTurnTracker().setNumCardsToDrawInCleanup(numCardsToDrawInCleanup);
   }
 
   public forceFullBroadcastOfDiscard(): void {

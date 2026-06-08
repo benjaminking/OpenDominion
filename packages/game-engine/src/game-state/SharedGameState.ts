@@ -128,17 +128,15 @@ export class SharedGameState {
   }
 
   public getPlayerLeftOfCurrent(): Player {
-    return this.game
-      .getPlayers()
-      .getPlayerAtIndex((this._currentPlayerIndex + 1) % this.game.getPlayers().numTotalPlayers());
+    return this.game.getPlayers().getPlayerToTheLeftByName(this.getCurrentPlayer().getName());
+  }
+
+  public getPlayerLeftOfPlayer(player: Player): Player {
+    return this.game.getPlayers().getPlayerToTheLeftByName(player.getName());
   }
 
   public getCurrentTurn(): Turn {
-    return new Turn(
-      this.getCurrentPlayer(),
-      this.getCurrentPlayer().getStatistics().getTurnNumber(),
-      this.getCurrentPlayer().getStatistics().getUnofficialTurnNumber(),
-    );
+    return this.getCurrentPlayer().getTurnTracker().getCurrentTurn();
   }
 
   // this is one round of the turn order starting with the current player
@@ -209,15 +207,15 @@ export class SharedGameState {
     this.messageBroadcaster.sendStatus(new PlayerNameStatus('%q turn', this.getCurrentPlayer()), StatusAction.REPLACE);
 
     if (turnType === TurnType.STANDARD) {
-      this.getCurrentPlayer().getStatistics().startNewStandardTurn();
+      this.getCurrentPlayer().getTurnTracker().startNewStandardTurn();
     } else {
-      this.getCurrentPlayer().getStatistics().startNewExtraTurn();
+      this.getCurrentPlayer().getTurnTracker().startNewExtraTurn();
     }
     this.logger.gameMessage(
       this.getCurrentPlayer(),
       ServerLogMessage.turnStartMessage(
         this.getCurrentPlayer(),
-        this.getCurrentPlayer().getStatistics().getTurnNumber(),
+        this.getCurrentPlayer().getTurnTracker().getCurrentTurn().getNumber(),
       ),
     );
 
@@ -406,6 +404,7 @@ export class SharedGameState {
   private async endTurn() {
     if (!this.isGameOver()) {
       for (const player of this.game.getPlayers().getAllPlayers()) {
+        player.getTurnTracker().endTurn();
         player.getStatistics().reset();
         player.getEffects().registerEndOfPlayersTurn(this.getCurrentPlayer(), this.getCurrentTurn());
         player.getEffects().removeExpiredEffects();
@@ -751,7 +750,11 @@ export class SharedGameState {
     const endGameScorer = new EndGameScorer();
     for (const player of this.game.getPlayers().getAllPlayers()) {
       const scoreReport = player.calculateScore();
-      endGameScorer.addPlayerScoreReport(player.getName(), scoreReport, player.getStatistics().getTurnNumber());
+      endGameScorer.addPlayerScoreReport(
+        player.getName(),
+        scoreReport,
+        player.getTurnTracker().getCurrentTurn().getNumber(),
+      );
     }
 
     return endGameScorer.getGameResult();

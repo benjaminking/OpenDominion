@@ -8,7 +8,7 @@ export class ThisTurnEligibility implements TurnEligibility {
 
   constructor(gameState: SharedGameState) {
     this.activePlayerName = gameState.getCurrentPlayer().getName();
-    this.currentTurnNumber = gameState.getCurrentPlayer().getStatistics().getUnofficialTurnNumber();
+    this.currentTurnNumber = gameState.getCurrentPlayer().getTurnTracker().getCurrentTurn().getUnofficialNumber();
   }
 
   public matches(turn: Turn): boolean {
@@ -22,7 +22,7 @@ export class NextTurnEligibility implements TurnEligibility {
 
   constructor(gameState: SharedGameState) {
     this.activePlayerName = gameState.getCurrentPlayer().getName();
-    this.currentTurnNumber = gameState.getCurrentPlayer().getStatistics().getUnofficialTurnNumber();
+    this.currentTurnNumber = gameState.getCurrentPlayer().getTurnTracker().getCurrentTurn().getUnofficialNumber();
   }
 
   public matches(turn: Turn): boolean {

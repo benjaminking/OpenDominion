@@ -8,7 +8,7 @@ import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { RestOfTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
+import { both, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 export class Hoard extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -22,8 +22,8 @@ export class Hoard extends KingdomCard {
       new Effect.Builder()
         .from(this)
         .onTurn(ie.createThisTurnEligibilityFunction())
-        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-        .whereCardIs(isVictoryCard)
+        .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+        .whereCardIs(both(isVictoryCard, ie.createBoughtCardEligibilityFunction()))
         .withExpiration(new RestOfTurnEffectExpiration(ie.getSharedGameState().getCurrentTurn()))
         .makeMandatory()
         .action(

@@ -218,6 +218,11 @@ export class CardCollection implements Iterable<Card> {
     }
   }
 
+  public toCardNameEligibilityFunction(): CardEligibilityFunction {
+    const cardNames = new Set<string>(this.cards.map((c) => c.getName()));
+    return new CardEligibilityFunction((card: Card) => cardNames.has(card.getName()));
+  }
+
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
     for (const card of this.cards) {
       if (card.getId() === cardMetadata.id) {
