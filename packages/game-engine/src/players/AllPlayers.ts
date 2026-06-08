@@ -42,12 +42,18 @@ export class AllPlayers implements Iterable<Player> {
     return this.allPlayers[playerIndex];
   }
 
+  // TODO: these should probably accept Player objects instead of player names
   public getPlayerIndexByName(playerName: string): number {
     return this.allPlayers.findIndex((player: Player) => player.getName() === playerName);
   }
 
   public getOpponentsOfPlayerByName(playerName: string): Player[] {
     return this.allPlayers.filter((x) => x.getName() !== playerName);
+  }
+
+  public getPlayerToTheLeftByName(playerName: string): Player {
+    const playerIndex = this.getPlayerIndexByName(playerName);
+    return this.getPlayerAtIndex((playerIndex + 1) % this.allPlayers.length);
   }
 
   public getAllPlayers(): Player[] {

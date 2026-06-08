@@ -18,7 +18,7 @@ export * from './Sailor';
 export * from './Salvager';
 export * from './SeaChart';
 export * from './SeaWitch';
-//export * from './Smugglers';
+export * from './Smugglers';
 export * from './Tactician';
 export * from './TidePools';
 export * from './TreasureMap';

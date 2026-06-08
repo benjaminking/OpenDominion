@@ -18,11 +18,7 @@ export class WarChest extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     const leftPlayerIe = ie.getSharedGameState().getPlayerLeftOfCurrent().getInstructionExecutor();
-    const namedCard: Card | Choice = await leftPlayerIe
-      .chooseCard('Choose a card to name for War Chest')
-      .from(CardSelectionLocation.SUPPLY)
-      .to(CardSelectionPurpose.OTHER)
-      .choose();
+    const namedCard: Card | Choice = await leftPlayerIe.nameCard();
 
     if (namedCard instanceof Card) {
       WarChest.addNamedCardForCurrentTurn(namedCard.getName(), ie.getSharedGameState());

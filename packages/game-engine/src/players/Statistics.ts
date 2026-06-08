@@ -1,25 +1,16 @@
 import { NumberType, ScoringElementType, VPChipScoringElement } from '@dominion/common';
 
-import { Card } from '../card/Card';
-import { CardCollection } from '../card/CardCollection';
 import { Cost } from '../card/Cost';
-import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
 import { StatisticSignal } from '../messaging/StatisticSignal';
 import { Player } from './Player';
 
 export class Statistics {
-  private turnNumber = 0;
-  private unofficialTurnNumber = 0;
   private score: StatisticSignal;
   private coins: StatisticSignal;
   private actions: StatisticSignal;
   private buys: StatisticSignal;
   private vpChips: StatisticSignal;
-  private cardsPlayedThisTurn: CardCollection = new CardCollection();
-  private cardsGainedThisTurn: CardCollection = new CardCollection();
-  private cleanupCardDrawOverride: number | undefined = undefined;
-  private cleanupExtraCardsToDraw = 0;
 
   constructor(private readonly player: Player) {
     const messageBroadcaster: GameMessageBroadcaster = this.player.getGame().getMessageBroadcaster();
@@ -57,37 +48,10 @@ export class Statistics {
     return this.buys.getValue();
   }
 
-  public getTurnNumber(): number {
-    return this.turnNumber;
-  }
-
-  public getUnofficialTurnNumber(): number {
-    return this.unofficialTurnNumber;
-  }
-
-  public getNumCardsPlayedThisTurn(): number {
-    return this.cardsPlayedThisTurn.size();
-  }
-
   public reset(): void {
     this.resetActions();
     this.resetBuys();
     this.resetCoins();
-    this.cardsPlayedThisTurn.clear();
-    this.cardsGainedThisTurn.clear();
-    this.cleanupCardDrawOverride = undefined;
-    this.cleanupExtraCardsToDraw = 0;
-  }
-
-  public startNewStandardTurn(): void {
-    this.turnNumber++;
-    this.unofficialTurnNumber++;
-    this.reset();
-  }
-
-  public startNewExtraTurn(): void {
-    this.unofficialTurnNumber++;
-    this.reset();
   }
 
   public addCoins(additionalCoins: number): Promise<void> {
@@ -133,46 +97,11 @@ export class Statistics {
     this.vpChips.add(additionalVPChips);
   }
 
-  public addPlayedCard(card: Card): void {
-    this.cardsPlayedThisTurn.addCard(card);
-  }
-
-  public addGainedCard(card: Card): void {
-    this.cardsGainedThisTurn.addCard(card);
-  }
-
   public getVPChipScoringElement(): VPChipScoringElement {
     return {
       type: ScoringElementType.VP_CHIP,
       totalPoints: this.vpChips.getValue(),
     };
-  }
-
-  public hasPlayedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {
-    return this.cardsPlayedThisTurn.doesAnyMatch(cardEligibilityFunction);
-  }
-
-  public hasGainedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {
-    return this.cardsGainedThisTurn.doesAnyMatch(cardEligibilityFunction);
-  }
-
-  public numMatchingCardsPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
-    return this.cardsPlayedThisTurn.numMatchingCards(cardEligibilityFunction);
-  }
-
-  public setNumCardsToDrawInCleanup(numCardsToDraw: number): void {
-    this.cleanupCardDrawOverride = numCardsToDraw;
-  }
-
-  public setNumExtraCardsToDrawInCleanup(numExtraCardsToDraw: number): void {
-    this.cleanupExtraCardsToDraw = numExtraCardsToDraw;
-  }
-
-  public getNumCardsToDrawInCleanup(defaultNumber: number): number {
-    if (this.cleanupCardDrawOverride === undefined) {
-      return defaultNumber + this.cleanupExtraCardsToDraw;
-    }
-    return this.cleanupCardDrawOverride + this.cleanupExtraCardsToDraw;
   }
 
   public canAfford(cost: Cost): boolean {
