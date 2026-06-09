@@ -3,15 +3,16 @@ import { Mechanic } from '@dominion/common';
 import { CardInfo } from '../../../common/dist/index.cjs';
 import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { convertToClassName, convertToFileName } from '../NameUtils';
-import { SharedGameState } from '../SharedGameState';
+import { MechanicsInUse } from '../game-state/MechanicsInUse';
 
 export abstract class CardShapedObject {
-  private readonly _properName: string;
-  private readonly _filename: string;
-  private readonly _className: string;
+  protected readonly _properName: string;
+  protected readonly _filename: string;
+  protected readonly _className: string;
   private readonly _mechanics: Set<Mechanic>;
-  private _id = 'default_id';
+  protected _id = 'default_id';
   private _effects: Effect[] = [];
 
   public constructor(
@@ -36,6 +37,10 @@ export abstract class CardShapedObject {
     return this._properName;
   }
 
+  public getDisplayName(): string {
+    return this._properName;
+  }
+
   public getClassName(): string {
     return this._className;
   }
@@ -49,6 +54,10 @@ export abstract class CardShapedObject {
 
   public usesMechanic(mechanic: Mechanic): boolean {
     return this._mechanics.has(mechanic);
+  }
+
+  public registerUsedMechanics(mechanicsInUse: MechanicsInUse): void {
+    mechanicsInUse.addAll(this._mechanics);
   }
 
   public getEffects(): Effect[] {

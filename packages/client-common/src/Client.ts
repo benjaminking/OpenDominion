@@ -1,9 +1,10 @@
-import { GameConfiguration, StatusAction } from '@dominion/common';
+import { Mechanic, StatusAction } from '@dominion/common';
 import {
   CardCount,
   CardLocation,
   CardMetadata,
   DecisionService,
+  GameConfiguration,
   GameMessageTransmitter,
   LogMessage,
   LogMessageTransmitter,
@@ -37,10 +38,6 @@ export class Client {
 
   public sendOpponentNames(opponentNames: string[]): void {
     this.gameMessageTransmitter.sendOpponentNames(opponentNames);
-  }
-
-  public sendGameConfiguration(gameConfiguration: GameConfiguration): void {
-    this.gameMessageTransmitter.sendGameConfiguration(gameConfiguration);
   }
 
   public sendTurnStartMessage(currentPlayerName: string): void {
@@ -81,5 +78,13 @@ export class Client {
 
   public sendBotCardCounts(cardCountsObj: CardCount[]): void {
     this.gameMessageTransmitter.sendBotCardCounts(cardCountsObj);
+  }
+
+  public sendMechanics(mechanics: Set<Mechanic>): void {
+    this.gameMessageTransmitter.sendMechanics(mechanics);
+  }
+
+  public sendGameConfiguration(configuration: GameConfiguration): void {
+    this.gameMessageTransmitter.sendGameConfiguration(configuration);
   }
 }

@@ -3,7 +3,7 @@
     <div class="portrait-card-full">
       <img class="full-card-template" src="/card_assets/card_template_full.png" />
       <div class="card-name">
-        <div class="card-text">{{ metadata().name }}</div>
+        <div class="card-text">{{ metadata().displayName }}</div>
       </div>
       <div class="card-types">
         <div class="card-text" [ngClass]="typesSize()">{{ typesStr() }}</div>
@@ -40,7 +40,7 @@
       <img class="card-template" src="/card_assets/card_template.png" />
       <div class="card-name">
         <div class="card-text">
-          {{ metadata().name }}
+          {{ metadata().displayName }}
         </div>
       </div>
       <div class="card-types">

@@ -1,6 +1,6 @@
 import { Cost } from '../card/Cost';
 
-export abstract class CostChangeFunction {
+export class CostChangeFunction {
   protected internalFunction: (currentCost: Cost) => Cost;
 
   public constructor(internalFunction: (currentCost: Cost) => Cost) {

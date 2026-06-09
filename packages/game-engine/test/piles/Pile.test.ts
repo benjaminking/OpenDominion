@@ -6,7 +6,7 @@ import { CardCollection } from '../../src/card/CardCollection';
 import { Cost } from '../../src/card/Cost';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { Pile } from '../../src/piles/Pile';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {}
 
@@ -81,6 +81,7 @@ describe('Pile', () => {
     expect(pile.getPileMetadata()).toEqual({
       name: 'Victory',
       size: 2,
+      originalCost: Cost.Simple(5).toCommonCost(),
       cost: Cost.Simple(5).toCommonCost(),
       topCard: duchy.getMetadata(),
       types: [CardType.ACTION, CardType.VICTORY],

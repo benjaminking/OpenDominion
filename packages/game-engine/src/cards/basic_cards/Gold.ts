@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Gold extends Card {
   public constructor(sharedGameState: SharedGameState) {

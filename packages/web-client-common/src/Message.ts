@@ -6,9 +6,9 @@ import {
   Choice,
   EffectChoice,
   ExtraTurnChoice,
-  GameConfiguration,
   GameResult,
   LogMessage,
+  Mechanic,
   NamedChoice,
   NoneChoice,
   NumberType,
@@ -44,11 +44,6 @@ export interface OpponentNamesContent {
 export interface OpponentNamesMessage extends Message {
   type: MessageType.OPPONENT_NAME;
   content: OpponentNamesContent;
-}
-
-export interface GameConfigurationMessage {
-  type: MessageType.GAME_CONFIGURATION;
-  content: GameConfiguration;
 }
 
 export interface TurnStartContent {
@@ -259,4 +254,13 @@ export interface GameResultMessage extends Message {
 export interface DmMessage extends Message {
   type: MessageType.DM;
   content: DmReceiveContent;
+}
+
+export interface MechanicsContent {
+  mechanics: Mechanic[];
+}
+
+export interface MechanicsMessage extends Message {
+  type: MessageType.MECHANICS;
+  content: MechanicsContent;
 }

@@ -6,7 +6,6 @@ import {
   CardSelectionPurpose,
   EffectChoice,
   ExtraTurnChoice,
-  GameConfiguration,
   GameResult,
   LogMessage,
   NamedChoice,
@@ -56,17 +55,18 @@ import {
   TurnStartContent,
   StatusContent,
   StatusMessage,
-  GameConfigurationMessage,
   GameResultMessage,
+  MechanicsContent,
+  MechanicsMessage,
 } from '@dominion/web-client-common';
 import { MessageHandler } from '@dominion/common';
+import { Mechanic } from '../../../common/dist/card/Mechanic';
 
 @Injectable({ providedIn: 'root' })
 export class MessageDecoderService {
   private readonly logMessageHandler = new MessageHandler<LogMessage>();
   private readonly mainPlayerNameHandler = new MessageHandler<MainPlayerNameContent>();
   private readonly opponentNamesHandler = new MessageHandler<OpponentNamesContent>();
-  private readonly gameConfigurationHandler = new MessageHandler<GameConfiguration>();
   private readonly turnStartHandler = new MessageHandler<TurnStartContent>();
   private readonly statisticHandler = new MessageHandler<StatisticContent, 'owner' | 'type'>(['owner', 'type']);
   private readonly cardsHandler = new MessageHandler<CardsContent, 'owner' | 'location'>(['owner', 'location']);
@@ -85,6 +85,7 @@ export class MessageDecoderService {
   private readonly treasurePhaseChoiceHandler = new MessageHandler<TreasurePhaseChoiceContent>();
   private readonly buyPhaseChoiceHandler = new MessageHandler<BuyPhaseChoiceContent>();
   private readonly gameResultHandler = new MessageHandler<GameResult>();
+  private readonly mechanicsHandler = new MessageHandler<MechanicsContent>();
 
   connect(ws: WebSocket): void {
     ws.onmessage = (evt) => {
@@ -120,10 +121,6 @@ export class MessageDecoderService {
 
   public subscribeToOpponentNames(callback: (opponentNamesContent: { names: string[] }) => void): void {
     this.opponentNamesHandler.subscribe({}, callback);
-  }
-
-  public subscribeToGameConfiguration(callback: (gameConfiguration: GameConfiguration) => void): void {
-    this.gameConfigurationHandler.subscribe({}, callback);
   }
 
   public subscribeToTurnStart(callback: (turnStartContent: { playerName: string }) => void): void {
@@ -250,6 +247,10 @@ export class MessageDecoderService {
     this.gameResultHandler.subscribe({}, callback);
   }
 
+  public subscribeToMechanics(callback: (mechanicsContent: { mechanics: Mechanic[] }) => void): void {
+    this.mechanicsHandler.subscribe({}, callback);
+  }
+
   public clearCachedGameResult(): void {
     this.gameResultHandler.clearMostRecentValues();
   }
@@ -270,11 +271,6 @@ export class MessageDecoderService {
       case MessageType.OPPONENT_NAME: {
         const opponentNamesMessage: OpponentNamesMessage = message as OpponentNamesMessage;
         this.opponentNamesHandler.handleMessage(opponentNamesMessage.content);
-        break;
-      }
-      case MessageType.GAME_CONFIGURATION: {
-        const GameConfigurationMessage: GameConfigurationMessage = message as GameConfigurationMessage;
-        this.gameConfigurationHandler.handleMessage(GameConfigurationMessage.content);
         break;
       }
       case MessageType.TURN_START: {
@@ -365,6 +361,11 @@ export class MessageDecoderService {
       case MessageType.GAME_RESULT: {
         const gameResultMessage: GameResultMessage = message as GameResultMessage;
         this.gameResultHandler.handleMessage(gameResultMessage.content);
+        break;
+      }
+      case MessageType.MECHANICS: {
+        const mechanicsMessage: MechanicsMessage = message as MechanicsMessage;
+        this.mechanicsHandler.handleMessage(mechanicsMessage.content);
         break;
       }
     }

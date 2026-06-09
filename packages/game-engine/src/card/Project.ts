@@ -1,6 +1,6 @@
 import { CardInfo } from '@dominion/common';
 
-import { SharedGameState } from '../SharedGameState';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { CardShapedObject } from './CardShapedObject';
 
 export class Project extends CardShapedObject {

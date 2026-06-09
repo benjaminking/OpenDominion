@@ -38,7 +38,7 @@ export class DecisionManagerService {
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
   private readonly webSocketMessageWriter = inject(MessageWriterService);
   private readonly viewVisibilityService = inject(ViewVisibilityService);
-  private selectedCards: CardMetadata[] = [];
+  private selectedCards: WritableSignal<CardMetadata[]> = signal([]);
   private resetSubscribers: Array<() => void> = [];
 
   private decisionStack: WritableSignal<Decision[]> = signal([]);
@@ -208,7 +208,7 @@ export class DecisionManagerService {
   public resolveDecisionWithCards(): void {
     this.webSocketMessageWriter.sendChoice({
       type: ChoiceType.MultiCard,
-      cards: this.selectedCards,
+      cards: this.selectedCards(),
     } as MultiCardChoice);
     this.resetSelectedCards();
   }
@@ -280,20 +280,20 @@ export class DecisionManagerService {
   }
 
   public addSelectedCard(card: CardMetadata, resetCallback: () => void): void {
-    this.selectedCards.push(card);
+    this.selectedCards.update((currentValue) => [...currentValue, card]);
     this.resetSubscribers.push(resetCallback);
   }
 
-  public isCorrectNumberOfCardsSelected(): boolean {
+  public isCorrectNumberOfCardsSelected = computed<boolean>(() => {
     const decision = this.currentDecision();
     if (decision !== undefined && isChooseCardsDecision(decision)) {
-      return decision.numSelectedEligibility.includes(this.selectedCards.length);
+      return decision.numSelectedEligibility.includes(this.selectedCards().length);
     }
     return false;
-  }
+  });
 
   public resetSelectedCards(): void {
-    this.selectedCards = [];
+    this.selectedCards.set([]);
     for (const callback of this.resetSubscribers) {
       callback();
     }

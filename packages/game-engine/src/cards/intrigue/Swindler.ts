@@ -4,9 +4,9 @@ import { CardSelectionPurpose } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { costsTheSameAs } from '../../StandardCardEligibilityFunctions';
 
 export class Swindler extends KingdomCard {

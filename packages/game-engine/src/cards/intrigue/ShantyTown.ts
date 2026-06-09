@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class ShantyTown extends KingdomCard {

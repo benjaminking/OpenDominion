@@ -1,70 +1,36 @@
-import { CardInfo, CardLocation, CardMetadata, CardType, Mechanic } from '@dominion/common';
+import { CardInfo, CardLocation, CardMetadata, CardType } from '@dominion/common';
 
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
-import { Effect } from '../effects/Effect';
-import { EffectTriggerType } from '../effects/EffectTriggerType';
-import { convertToClassName, convertToFileName } from '../NameUtils';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { InstructionExecutor } from '../players/InstructionExecutor';
-import { SharedGameState } from '../SharedGameState';
 import { CardCollection } from './CardCollection';
+import { CardShapedObject } from './CardShapedObject';
 import { Cost } from './Cost';
 
-export class Card {
-  private readonly _properName: string;
+export class Card extends CardShapedObject {
   private readonly _cost: Cost;
   private readonly _types: Set<CardType>;
-  private readonly _filename: string;
-  private readonly _className: string;
   private readonly _pileName: string;
-  private readonly _mechanics: Set<Mechanic>;
-  private _id = 'default_id';
   private _originalCost: Cost;
   private _location: CardLocation = CardLocation.PILE;
   private _isSimpleTreasure = false;
   private _isSupplyCard = false;
   private _coins = 0;
-  private _effects: Effect[] = [];
-  private hasThingsLeftToDo = false;
+  private _hasThingsLeftToDo = false;
 
   public constructor(
     protected readonly sharedGameState: SharedGameState,
     cardInfo: CardInfo,
   ) {
-    this._properName = cardInfo.name;
+    super(sharedGameState, cardInfo);
     this._cost = Cost.fromCommonCost(cardInfo.cost);
     this._types = new Set(cardInfo.types);
-    this._filename = convertToFileName(this._properName);
-    this._className = convertToClassName(this._properName);
     this._pileName = this._properName;
     this._originalCost = this._cost;
-    this._mechanics = new Set(cardInfo.mechanics);
-  }
-
-  public equals(otherCard: Card): boolean {
-    return this._id === otherCard._id;
-  }
-
-  public getFilename(): string {
-    return this._filename;
-  }
-
-  public getName(): string {
-    return this._properName;
-  }
-
-  public getClassName(): string {
-    return this._className;
   }
 
   public getPileName(): string {
     return this._pileName;
-  }
-
-  public getId(): string {
-    return this._id;
-  }
-  public setId(value: string): void {
-    this._id = value;
   }
 
   public getOriginalCost(): Cost {
@@ -77,10 +43,6 @@ export class Card {
 
   public getTypes(): Set<CardType> {
     return this._types;
-  }
-
-  public usesMechanic(mechanic: Mechanic): boolean {
-    return this._mechanics.has(mechanic);
   }
 
   public getLocation(): CardLocation {
@@ -111,18 +73,12 @@ export class Card {
     this._coins = value;
   }
 
-  public getEffects(): Effect[] {
-    return this._effects;
-  }
-  public addEffect(effect: Effect): void {
-    this._effects.push(effect);
-    this.sharedGameState.registerEffectTrigger(effect.getTrigger(), effect.getSource());
-  }
-  public removeEffectsByType(type: EffectTriggerType): void {
-    this._effects = this._effects.filter((x: Effect) => x.getTrigger() !== type);
-  }
   public async play(_ie: InstructionExecutor) {
     //
+  }
+
+  public canBeBought(_ie: InstructionExecutor): boolean {
+    return true;
   }
 
   public score(_allCardGroups: CardCollection[]): number {
@@ -130,15 +86,15 @@ export class Card {
   }
 
   public canBeDiscardedInCleanup(): boolean {
-    return !this.hasThingsLeftToDo;
+    return !this._hasThingsLeftToDo;
   }
 
   public markAsUnfinished(): void {
-    this.hasThingsLeftToDo = true;
+    this._hasThingsLeftToDo = true;
   }
 
   public markAsFinished(): void {
-    this.hasThingsLeftToDo = false;
+    this._hasThingsLeftToDo = false;
   }
 
   public hasType(type: CardType): boolean {
@@ -165,7 +121,8 @@ export class Card {
   public getMetadata(): CardMetadata {
     const currentCost = this.getCost();
     return {
-      name: this._properName,
+      name: this.getName(),
+      displayName: this.getDisplayName(),
       id: this._id,
       location: this._location,
       types: Array.from(this._types),

@@ -2,8 +2,10 @@ import { CardChoice, ChoiceType } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
+import { CardFactory } from '../card/CardFactory';
 import { Cost } from '../card/Cost';
 import { CostSortingFunction } from '../CardSortingFunctions';
+import { CardCostCache } from '../game-state/CardCostCache';
 import { costsUpTo } from '../StandardCardEligibilityFunctions';
 import { Pile } from './Pile';
 import { PileGroup } from './PileGroup';
@@ -120,6 +122,12 @@ export class Piles {
     return choices;
   }
 
+  public replaceCardsInPiles(cardName: string, replacementCardName: string, cardFactory: CardFactory): void {
+    for (const pile of this.allPiles) {
+      pile.replaceCardsInPile(cardName, replacementCardName, cardFactory);
+    }
+  }
+
   public getGainsNeededToEnd(): number {
     const numProvincesToEnd = this.supplyPiles.getPileByName('Province')!.size();
 
@@ -138,9 +146,24 @@ export class Piles {
     //return (this.supplyPiles.getPileByName('Province')?.size() ?? 0) < 8 || this.numEmptySupplyPiles >= 3;
   }
 
+  public reportCardCosts(cardCostCache: CardCostCache): void {
+    for (const pile of this.supplyPiles) {
+      pile.reportCardCosts(cardCostCache);
+      if (cardCostCache.haveCostsChanged()) {
+        break;
+      }
+    }
+  }
+
   public communicateInitialState(): void {
     for (const pile of this.allPiles) {
       pile.communicateInitialState();
+    }
+  }
+
+  public forceFullBroadcast(): void {
+    for (const pile of this.allPiles) {
+      pile.forceBroadcast();
     }
   }
 }

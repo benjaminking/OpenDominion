@@ -316,4 +316,19 @@ export const prosperity: CardInfo[] = [
     expansion: Expansion.PROSPERITY,
     is_kingdom: true,
   },
+  {
+    category: CardCategory.CARD,
+    name: 'Charlatan Curse',
+    text: '$1\n\n-1VP',
+    font_size: 'xlarge',
+    cost: {
+      coins: 0,
+    },
+    production: {
+      coins: 1,
+    },
+    types: [CardType.CURSE, CardType.TREASURE],
+    expansion: Expansion.BASE,
+    is_kingdom: false,
+  },
 ];

@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Event } from '../../card/Event';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 

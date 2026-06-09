@@ -1,3 +1,4 @@
+import { Mechanic } from '../card';
 import { CardLocation } from '../card/CardLocation';
 import { CardMetadata } from '../card/CardMetadata';
 import { GameConfiguration } from '../game/GameConfiguration';
@@ -9,7 +10,6 @@ import { StatusAction } from './StatusAction';
 export interface GameMessageTransmitter {
   sendMainPlayerName: (mainPlayerName: string) => void;
   sendOpponentNames: (opponentNames: string[]) => void;
-  sendGameConfiguration: (GameConfiguration: GameConfiguration) => void;
   sendTurnStartMessage: (currentPlayerName: string) => void;
   sendStatisticUpdate: (ownerName: string, type: NumberType, value: number) => void;
   sendCardsUpdate: (ownerName: string, location: CardLocation, cards: CardMetadata[]) => void;
@@ -20,4 +20,6 @@ export interface GameMessageTransmitter {
   sendStatus: (statusMessage: string, action: StatusAction) => void;
   sendBotCoins: (numCoins: number) => void;
   sendBotCardCounts: (cardCountsObj: CardCount[]) => void;
+  sendMechanics: (mechanics: Set<Mechanic>) => void;
+  sendGameConfiguration: (configuration: GameConfiguration) => void;
 }

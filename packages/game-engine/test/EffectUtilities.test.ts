@@ -12,7 +12,7 @@ import {
   ThisTurnEligibility,
 } from '../src/effects/StandardTurnEligibilityFunctions';
 import { Player } from '../src/players/Player';
-import { SharedGameState } from '../src/SharedGameState';
+import { SharedGameState } from '../src/game-state/SharedGameState';
 import { Turn } from '../src/turns/Turn';
 
 const createPlayer = (name: string, unofficialTurnNumber = 0): Player => {
@@ -20,6 +20,12 @@ const createPlayer = (name: string, unofficialTurnNumber = 0): Player => {
     getName: vi.fn(() => name),
     getStatistics: vi.fn(() => ({
       getUnofficialTurnNumber: vi.fn(() => unofficialTurnNumber),
+    })),
+    getTurnTracker: vi.fn(() => ({
+      getCurrentTurn: vi.fn(() => ({
+        getUnofficialNumber: vi.fn(() => unofficialTurnNumber),
+        getOwner: vi.fn(() => ({ getName: () => name })),
+      })),
     })),
   } as unknown as Player;
 };

@@ -47,6 +47,13 @@ export class Cost {
     return new Cost(this.coins + coins, this.potions, this.debt);
   }
 
+  public minus(coins: number): Cost {
+    if (this.coins - coins < 0) {
+      return new Cost(0, this.potions, this.debt);
+    }
+    return new Cost(this.coins - coins, this.potions, this.debt);
+  }
+
   public toCommonCost(): CommonCost {
     return {
       coins: this.coins,

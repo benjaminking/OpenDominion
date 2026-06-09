@@ -6,8 +6,8 @@ import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTheSameCardAs, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 export class Treasury extends KingdomCard {

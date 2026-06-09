@@ -2,7 +2,7 @@ import { CardLocation } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { CardFactory } from '../../src/card/CardFactory';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 const createSharedGameStateMock = () => {
   return {

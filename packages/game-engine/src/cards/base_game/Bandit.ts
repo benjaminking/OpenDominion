@@ -4,9 +4,9 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Bandit extends KingdomCard {

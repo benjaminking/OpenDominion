@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion } from '@dominion/common';
 
 export const base_game: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Artisan',
+    category: CardCategory.CARD,
     text: 'Gain a card to your hand\ncosting up to $5.\n\nPut a card from your hand\nonto your deck.',
     font_size: 'medium',
     cost: {
@@ -14,8 +14,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bandit',
+    category: CardCategory.CARD,
     text: 'Gain a Gold. Each other\nplayer reveals the top 2 cards\nof their deck, trashes a revealed\nTreasure other than Copper,\nand discards the rest.',
     font_size: 'medium',
     cost: {
@@ -26,8 +26,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bureaucrat',
+    category: CardCategory.CARD,
     text: 'Gain a Silver onto your deck.\nEach other player reveals a\nVictory card from their hand\nand puts it onto their deck\n(or reveals a hand with no\nVictory cards).',
     font_size: 'medium',
     cost: {
@@ -38,8 +38,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Cellar',
+    category: CardCategory.CARD,
     text: '+1 Action\n\nDiscard any number of cards.\n+1 Card per card discarded.',
     font_size: 'medium',
     cost: {
@@ -50,8 +50,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Chapel',
+    category: CardCategory.CARD,
     text: 'Trash up to 4 cards\nfrom your hand.',
     font_size: 'medium',
     cost: {
@@ -62,8 +62,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Council Room',
+    category: CardCategory.CARD,
     text: '+4 Cards\n+1 Buy\n\nEach other player draws a card.',
     font_size: 'medium',
     cost: {
@@ -74,8 +74,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Festival',
+    category: CardCategory.CARD,
     text: '+2 Actions\n+1 Buy\n+$2',
     font_size: 'medium',
     cost: {
@@ -86,8 +86,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Gardens',
+    category: CardCategory.CARD,
     text: 'Worth 1VP per 10 cards you\nhave (round down).',
     font_size: 'medium',
     cost: {
@@ -98,8 +98,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Harbinger',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n\nLook through your discard pile.\nYou may put a card from it\nonto your deck.',
     font_size: 'medium',
     cost: {
@@ -110,8 +110,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Laboratory',
+    category: CardCategory.CARD,
     text: '+2 Cards\n+1 Action',
     font_size: 'medium',
     cost: {
@@ -122,8 +122,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Library',
+    category: CardCategory.CARD,
     text: 'Draw until you have 7 cards\nin hand, skipping any Action\ncards you choose to;\nset those aside, discarding\nthem afterwards.',
     font_size: 'medium',
     cost: {
@@ -134,8 +134,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Market',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+1 Buy\n+$1',
     font_size: 'medium',
     cost: {
@@ -146,8 +146,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Merchant',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n\nThe first time you play a Silver this turn, +$1.',
     font_size: 'medium',
     cost: {
@@ -158,8 +158,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Militia',
+    category: CardCategory.CARD,
     text: '+$2\n\nEach other player discards down to 3 cards in hand.',
     font_size: 'medium',
     cost: {
@@ -170,8 +170,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mine',
+    category: CardCategory.CARD,
     text: 'You may trash a Treasure from\nyour hand. Gain a Treasure to\nyour hand costing up to $3\nmore than it.',
     font_size: 'medium',
     cost: {
@@ -182,8 +182,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Moat',
+    category: CardCategory.CARD,
     text: '+2 Cards\n-\nWhen another player plays\nan Attack card, you may first\nreveal this from your hand, to\nbe unaffected by it.',
     font_size: 'medium',
     cost: {
@@ -194,8 +194,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Moneylender',
+    category: CardCategory.CARD,
     text: 'You may trash a Copper from\nyour hand for +$3.',
     font_size: 'medium',
     cost: {
@@ -206,8 +206,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Poacher',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+$1\n\nDiscard a card per empty\nSupply pile.',
     font_size: 'medium',
     cost: {
@@ -218,8 +218,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Remodel',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nGain a card costing up to\n$2 more than it.',
     font_size: 'medium',
     cost: {
@@ -230,8 +230,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sentry',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n\nLook at the top 2 cards of your\ndeck. Trash and/or discard any\nnumber of them. Put the rest\nback on top in any order.',
     font_size: 'medium',
     cost: {
@@ -242,8 +242,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Smithy',
+    category: CardCategory.CARD,
     text: '+3 Cards',
     font_size: 'medium',
     cost: {
@@ -254,8 +254,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Throne Room',
+    category: CardCategory.CARD,
     text: 'You may play an Action card\nfrom your hand twice.',
     font_size: 'medium',
     cost: {
@@ -266,8 +266,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Vassal',
+    category: CardCategory.CARD,
     text: "+$2\n\nDiscard the top card of your\ndeck. If it's an Action card,\nyou may play it.",
     font_size: 'medium',
     cost: {
@@ -278,8 +278,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Village',
+    category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions',
     font_size: 'medium',
     cost: {
@@ -290,8 +290,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Witch',
+    category: CardCategory.CARD,
     text: '+2 Cards\n\nEach other player\ngains a Curse.',
     font_size: 'medium',
     cost: {
@@ -302,8 +302,8 @@ export const base_game: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Workshop',
+    category: CardCategory.CARD,
     text: 'Gain a card costing up to $4.',
     font_size: 'medium',
     cost: {

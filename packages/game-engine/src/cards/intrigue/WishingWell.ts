@@ -3,9 +3,8 @@ import { CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class WishingWell extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -15,11 +14,7 @@ export class WishingWell extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(1);
     ie.addActions(1);
-    const cardGuess = await ie
-      .chooseCard('Guess what your top card is.')
-      .from(CardSelectionLocation.ALL_CARDS)
-      .to(CardSelectionPurpose.DRAW)
-      .choose();
+    const cardGuess = await ie.nameCard(CardSelectionPurpose.DRAW);
 
     const topCard = await ie.lookAtTopCardOfDeck();
 

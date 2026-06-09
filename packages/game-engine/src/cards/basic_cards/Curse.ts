@@ -1,7 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 export class Curse extends Card {
   public constructor(sharedGameState: SharedGameState) {

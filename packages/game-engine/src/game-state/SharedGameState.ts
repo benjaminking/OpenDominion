@@ -15,30 +15,35 @@ import {
   StatusAction,
 } from '@dominion/common';
 
-import { Card } from './card/Card';
-import { CardCollection } from './card/CardCollection';
-import { Cost } from './card/Cost';
-import { CardPlayOptions } from './CardPlayOptions';
-import { CostModifier } from './effects/CostModifier';
-import { Effect } from './effects/Effect';
-import { EffectSource } from './effects/EffectSource';
-import { EffectTriggerType } from './effects/EffectTriggerType';
-import { TurnEligibility } from './effects/TurnEligibility';
-import { EndGameScorer } from './EndGameScorer';
-import { Game } from './Game';
-import { Logger } from './logging/Logger';
-import { ServerLogMessage } from './logging/ServerLogMessage';
-import { GameMessageBroadcaster } from './messaging/GameMessageBroadcaster';
-import { PlayerNameStatus } from './messaging/Status';
-import { Piles } from './piles/Piles';
-import { InstructionExecutor } from './players/InstructionExecutor';
-import { Player } from './players/Player';
-import { isActionCard, isSupplyCard, isTreasureCard } from './StandardCardEligibilityFunctions';
-import { Trash } from './Trash';
-import { ExtraTurn } from './turns/ExtraTurn';
-import { Turn } from './turns/Turn';
-import { TurnPhase } from './turns/TurnPhase';
-import { TurnType } from './turns/TurnType';
+import { Card } from '../card/Card';
+import { CardCollection } from '../card/CardCollection';
+import { CardFactory } from '../card/CardFactory';
+import { Cost } from '../card/Cost';
+import { CardPlayOptions } from '../CardPlayOptions';
+import { CostChangeTrigger } from '../effects/CostChangeTrigger';
+import { CostModifier } from '../effects/CostModifier';
+import { Effect } from '../effects/Effect';
+import { EffectSource } from '../effects/EffectSource';
+import { EffectTriggerType } from '../effects/EffectTriggerType';
+import { TurnEligibility } from '../effects/TurnEligibility';
+import { EndGameScorer } from '../EndGameScorer';
+import { Game } from '../Game';
+import { Logger } from '../logging/Logger';
+import { ServerLogMessage } from '../logging/ServerLogMessage';
+import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
+import { PlayerNameStatus } from '../messaging/Status';
+import { Piles } from '../piles/Piles';
+import { InstructionExecutor } from '../players/InstructionExecutor';
+import { Player } from '../players/Player';
+import { isActionCard, isSupplyCard, isTreasureCard } from '../StandardCardEligibilityFunctions';
+import { Trash } from '../Trash';
+import { ExtraTurn } from '../turns/ExtraTurn';
+import { Turn } from '../turns/Turn';
+import { TurnPhase } from '../turns/TurnPhase';
+import { TurnType } from '../turns/TurnType';
+import { CardCostCache } from './CardCostCache';
+import { MechanicsInUse } from './MechanicsInUse';
+import { SetupRule } from './SetupRule';
 
 export class SharedGameState {
   private readonly messageBroadcaster: GameMessageBroadcaster;
@@ -49,15 +54,39 @@ export class SharedGameState {
   private extraCards: CardCollection = new CardCollection();
   private _trash: Trash;
   private gameResult: GameResult | undefined = undefined;
+  private setupRules: Map<string, SetupRule> = new Map<string, SetupRule>();
+  private _piles: Piles = new Piles();
+  private _cardCostCache: CardCostCache = new CardCostCache();
+  private readonly mechanicsInUse: MechanicsInUse;
 
   constructor(private readonly game: Game) {
     this.messageBroadcaster = game.getMessageBroadcaster();
     this.logger = game.getLogger();
     this._trash = new Trash(this.messageBroadcaster);
+    this.mechanicsInUse = new MechanicsInUse(this.messageBroadcaster);
+  }
+
+  public get piles(): Piles {
+    return this._piles;
+  }
+
+  public registerCardMechanics(card: Card): void {
+    card.registerUsedMechanics(this.mechanicsInUse);
+  }
+
+  public addSetupRule(cardName: string, setupRule: SetupRule): void {
+    this.setupRules.set(cardName, setupRule);
   }
 
   public async prepareForStartOfGame(): Promise<void> {
+    this.applySetupRules();
     await this.drawInitialHands();
+  }
+
+  private applySetupRules(): void {
+    for (const setupRule of this.setupRules.values()) {
+      setupRule.applySetupRules(this);
+    }
   }
 
   public async startGame(): Promise<void> {
@@ -65,6 +94,7 @@ export class SharedGameState {
   }
 
   public communicateInitialState(): void {
+    this.mechanicsInUse.forceBroadcast();
     this.communicatePlayersToClients();
     this.communicatePilesToClients();
   }
@@ -75,6 +105,13 @@ export class SharedGameState {
 
   private communicatePilesToClients(): void {
     this.piles.communicateInitialState();
+  }
+
+  private forceFullBroadcast(): void {
+    this.piles.forceFullBroadcast();
+    for (const player of this.game.getPlayers()) {
+      player.getOwnedCards().forceFullBroadcast();
+    }
   }
 
   private _currentPlayerIndex = 0;
@@ -91,17 +128,15 @@ export class SharedGameState {
   }
 
   public getPlayerLeftOfCurrent(): Player {
-    return this.game
-      .getPlayers()
-      .getPlayerAtIndex((this._currentPlayerIndex + 1) % this.game.getPlayers().numTotalPlayers());
+    return this.game.getPlayers().getPlayerToTheLeftByName(this.getCurrentPlayer().getName());
+  }
+
+  public getPlayerLeftOfPlayer(player: Player): Player {
+    return this.game.getPlayers().getPlayerToTheLeftByName(player.getName());
   }
 
   public getCurrentTurn(): Turn {
-    return new Turn(
-      this.getCurrentPlayer(),
-      this.getCurrentPlayer().getStatistics().getTurnNumber(),
-      this.getCurrentPlayer().getStatistics().getUnofficialTurnNumber(),
-    );
+    return this.getCurrentPlayer().getTurnTracker().getCurrentTurn();
   }
 
   public getNumPlayers(): number {
@@ -176,17 +211,19 @@ export class SharedGameState {
     this.messageBroadcaster.sendStatus(new PlayerNameStatus('%q turn', this.getCurrentPlayer()), StatusAction.REPLACE);
 
     if (turnType === TurnType.STANDARD) {
-      this.getCurrentPlayer().getStatistics().startNewStandardTurn();
+      this.getCurrentPlayer().getTurnTracker().startNewStandardTurn();
     } else {
-      this.getCurrentPlayer().getStatistics().startNewExtraTurn();
+      this.getCurrentPlayer().getTurnTracker().startNewExtraTurn();
     }
     this.logger.gameMessage(
       this.getCurrentPlayer(),
       ServerLogMessage.turnStartMessage(
         this.getCurrentPlayer(),
-        this.getCurrentPlayer().getStatistics().getTurnNumber(),
+        this.getCurrentPlayer().getTurnTracker().getCurrentTurn().getNumber(),
       ),
     );
+
+    this.recalculateCosts();
 
     for (const player of this.getCurrentTurnOrder()) {
       player.getEffects().registerStartOfPlayersTurn(this.getCurrentPlayer(), this.getCurrentTurn());
@@ -339,7 +376,21 @@ export class SharedGameState {
       return false;
     }
     /* || isEventName(choice.getName()) || isProjectName(choice.getName())*/
-    return this.getCurrentPlayer().getStatistics().canAfford(this.cost(card));
+    return (
+      card.canBeBought(this.getCurrentPlayer().getInstructionExecutor()) &&
+      this.getCurrentPlayer().getStatistics().canAfford(this.cost(card))
+    );
+  }
+
+  public isCopyOfCardOnTopOfPile(card: Card | string, pileName: string): boolean {
+    const topCard: Card | undefined = this.piles.getTopCardOfPile(pileName);
+    if (topCard === undefined) {
+      return false;
+    }
+    if (typeof card === 'string') {
+      return topCard.getName() === card || topCard.getDisplayName() === card;
+    }
+    return topCard.getName() === card.getName();
   }
 
   public async performCleanup() {
@@ -357,6 +408,7 @@ export class SharedGameState {
   private async endTurn() {
     if (!this.isGameOver()) {
       for (const player of this.game.getPlayers().getAllPlayers()) {
+        player.getTurnTracker().endTurn();
         player.getStatistics().reset();
         player.getEffects().registerEndOfPlayersTurn(this.getCurrentPlayer(), this.getCurrentTurn());
         player.getEffects().removeExpiredEffects();
@@ -374,7 +426,7 @@ export class SharedGameState {
 
   private removeIneligibleCostModifiers(): void {
     const nextTurn = this.getCurrentTurn().nextUnofficialTurn();
-    this.costModifiers = this.costModifiers.filter((item) => !item.isEligibleOnTurn(nextTurn));
+    this.costModifiers = this.costModifiers.filter((item) => item.isEligibleOnTurn(nextTurn));
   }
 
   public async buyFromPile(pileName: string) {
@@ -403,11 +455,6 @@ export class SharedGameState {
 
   public get trash(): Trash {
     return this._trash;
-  }
-
-  private _piles: Piles = new Piles();
-  public get piles(): Piles {
-    return this._piles;
   }
 
   private numCardsToDrawAtEndOfTurn = 5;
@@ -454,8 +501,9 @@ export class SharedGameState {
   public cost(card: Card): Cost {
     let cost = card.getOriginalCost();
     const currentTurn = this.getCurrentTurn();
+    const currentTurnPhase = this.getTurnPhase();
     for (const costModifier of this.costModifiers) {
-      cost = costModifier.apply(card, cost, currentTurn);
+      cost = costModifier.apply(card, cost, currentTurn, currentTurnPhase);
     }
     return cost;
   }
@@ -495,6 +543,8 @@ export class SharedGameState {
   }
 
   public async triggerEffect(triggerType: EffectTriggerType, cards?: Card | CardCollection) {
+    this.checkCostModifierTriggers(triggerType, cards);
+
     if (!this.usedEffectTypes.has(triggerType)) {
       return;
     }
@@ -508,6 +558,22 @@ export class SharedGameState {
       await this.processEffectsForOtherPlayers(triggerType, cards);
     } else {
       await this.processEffectsForCurrentPlayer(triggerType, cards);
+    }
+  }
+
+  private checkCostModifierTriggers(triggerType: EffectTriggerType, cards?: Card | CardCollection): void {
+    if (!this.costModifierTriggers.has(triggerType)) {
+      return;
+    }
+    for (const trigger of this.costModifierTriggers.get(triggerType)!) {
+      if (
+        cards === undefined ||
+        (cards instanceof Card && trigger.getCardEligibility().matches(cards)) ||
+        (cards instanceof CardCollection && trigger.getCardEligibility().matchesAny(cards))
+      ) {
+        this.recalculateCosts();
+        break;
+      }
     }
   }
 
@@ -541,6 +607,37 @@ export class SharedGameState {
 
   public addCostModifier(costModifier: CostModifier): void {
     this.costModifiers.push(costModifier);
+    this.registerCostModifierTrigger(costModifier);
+    this.recalculateCosts();
+  }
+
+  private costModifierTriggers = new Map<EffectTriggerType, CostChangeTrigger[]>();
+  private registerCostModifierTrigger(costModifier: CostModifier): void {
+    for (const trigger of costModifier.getCostRecalculationTriggers()) {
+      if (!this.costModifierTriggers.has(trigger.getTriggerType())) {
+        this.costModifierTriggers.set(trigger.getTriggerType(), []);
+      }
+      this.costModifierTriggers.get(trigger.getTriggerType())!.push(trigger);
+    }
+  }
+
+  private recalculateCosts(): void {
+    this._cardCostCache.startNewCostCheck();
+
+    // TODO: consider keeping a list of all cards used in this game
+    // so that we can iterate through that directly
+    this.piles.reportCardCosts(this._cardCostCache);
+    if (!this._cardCostCache.haveCostsChanged()) {
+      for (const player of this.game.getPlayers().getAllPlayers()) {
+        player.getOwnedCards().reportCardCosts(this._cardCostCache);
+        if (this._cardCostCache.haveCostsChanged()) {
+          break;
+        }
+      }
+    }
+    if (this._cardCostCache.haveCostsChanged()) {
+      this.forceFullBroadcast();
+    }
   }
 
   public clearBlocksForAttackCard(attackCard: Card): void {
@@ -623,6 +720,10 @@ export class SharedGameState {
     card.setLocation(CardLocation.TRASH);
   }
 
+  public replaceCardsInPiles(cardName: string, replacementCardName: string): void {
+    this.piles.replaceCardsInPiles(cardName, replacementCardName, new CardFactory(this));
+  }
+
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
     if (cardMetadata.location === CardLocation.PILE) {
       return this.piles.getTopCardsOfSupplyPiles().getCardByMetadata(cardMetadata);
@@ -653,7 +754,11 @@ export class SharedGameState {
     const endGameScorer = new EndGameScorer();
     for (const player of this.game.getPlayers().getAllPlayers()) {
       const scoreReport = player.calculateScore();
-      endGameScorer.addPlayerScoreReport(player.getName(), scoreReport, player.getStatistics().getTurnNumber());
+      endGameScorer.addPlayerScoreReport(
+        player.getName(),
+        scoreReport,
+        player.getTurnTracker().getCurrentTurn().getNumber(),
+      );
     }
 
     return endGameScorer.getGameResult();

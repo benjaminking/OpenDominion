@@ -1,7 +1,7 @@
 import { CardInfo } from '@dominion/common';
 
+import { SharedGameState } from '../game-state/SharedGameState';
 import { InstructionExecutor } from '../players/InstructionExecutor';
-import { SharedGameState } from '../SharedGameState';
 import { CardShapedObject } from './CardShapedObject';
 import { Cost } from './Cost';
 

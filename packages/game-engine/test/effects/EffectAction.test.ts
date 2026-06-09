@@ -5,7 +5,7 @@ import { Card } from '../../src/card/Card';
 import { CardCollection } from '../../src/card/CardCollection';
 import { EffectAction } from '../../src/effects/EffectAction';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 const createCardInfo = (): CardInfo => ({
   name: 'Copper',

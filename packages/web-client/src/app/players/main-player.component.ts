@@ -5,12 +5,17 @@ import { CardLocation, NumberType } from '@dominion/common';
 import { ViewVisibilityService } from '../view-visibility.service';
 import { ViewName } from '../view-names';
 import { CardDialogComponent } from '../cards/card-dialog.component';
+import { ResourceCounterComponent } from './resource-counter.component';
+import { IconType } from '../icons/IconType';
+import { Mechanic } from '@dominion/common';
+import { CommonModule } from '@angular/common';
+import { CardComponent } from '../cards/card.component';
 
 @Component({
   selector: 'main-player',
   templateUrl: './main-player.component.html',
   styleUrls: ['./main-player.component.css'],
-  imports: [CardDialogComponent],
+  imports: [CommonModule, CardComponent, CardDialogComponent, ResourceCounterComponent],
 })
 export class MainPlayerComponent {
   name = input<string>('');
@@ -24,10 +29,24 @@ export class MainPlayerComponent {
   buys = signal<number>(0);
   coins = signal<number>(0);
   score = signal<number>(0);
+  vp = signal<number>(0);
+  coffers = signal<number>(0);
+  villagers = signal<number>(0);
+  favors = signal<number>(0);
+
+  mechanicsInUse = new Set<Mechanic>();
 
   revealedCardsViewName = ViewName.REVEALED_LIMBO;
   setAsideCardsViewName = ViewName.SET_ASIDE;
   discardViewName = ViewName.DISCARD;
+
+  vpIconType = IconType.VP;
+  coinIconType = IconType.COIN;
+
+  vpChipMechanic = Mechanic.VP_CHIPS;
+  coffersMechanic = Mechanic.COFFERS;
+  villagersMechanic = Mechanic.VILLAGERS;
+  favorsMechanic = Mechanic.FAVORS;
 
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
   private readonly viewVisibilityService = inject(ViewVisibilityService);
@@ -89,6 +108,35 @@ export class MainPlayerComponent {
           this.score.set(statisticContent.value);
         },
       );
+      this.webSocketMessageDecoder.subscribeToStatisticUpdate(
+        { owner: this.name(), type: NumberType.VP_CHIPS },
+        (statisticContent: { value: number }) => {
+          this.vp.set(statisticContent.value);
+        },
+      );
+      this.webSocketMessageDecoder.subscribeToStatisticUpdate(
+        { owner: this.name(), type: NumberType.COFFERS },
+        (statisticContent: { value: number }) => {
+          this.coffers.set(statisticContent.value);
+        },
+      );
+      this.webSocketMessageDecoder.subscribeToStatisticUpdate(
+        { owner: this.name(), type: NumberType.VILLAGERS },
+        (statisticContent: { value: number }) => {
+          this.villagers.set(statisticContent.value);
+        },
+      );
+      this.webSocketMessageDecoder.subscribeToStatisticUpdate(
+        { owner: this.name(), type: NumberType.FAVORS },
+        (statisticContent: { value: number }) => {
+          this.favors.set(statisticContent.value);
+        },
+      );
+      this.webSocketMessageDecoder.subscribeToMechanics((mechanicsContent: { mechanics: Mechanic[] }) => {
+        for (const mechanic of mechanicsContent.mechanics) {
+          this.mechanicsInUse.add(mechanic);
+        }
+      });
     });
   }
 
@@ -98,5 +146,9 @@ export class MainPlayerComponent {
 
   toggleSetAsideCardsViewer(): void {
     this.viewVisibilityService.toggleViewByName(ViewName.SET_ASIDE);
+  }
+
+  isUsing(mechanic: Mechanic): boolean {
+    return this.mechanicsInUse.has(mechanic);
   }
 }

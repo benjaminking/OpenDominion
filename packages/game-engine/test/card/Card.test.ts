@@ -7,7 +7,7 @@ import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { Effect } from '../../src/effects/Effect';
 import { EffectSource } from '../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 interface SharedGameStateMock {
   cost: ReturnType<typeof vi.fn>;
@@ -271,6 +271,7 @@ describe('Card', () => {
 
     expect(metadata).toEqual({
       name: 'Duchy',
+      displayName: 'Duchy',
       id: 'duchy-1',
       location: CardLocation.DISCARD,
       types: [CardType.VICTORY],

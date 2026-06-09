@@ -9,6 +9,7 @@ import {
   StatusAction,
 } from '@dominion/common';
 
+import { Mechanic } from '../../common/dist/card/Mechanic.cjs';
 import { BotStatistics } from './BotStatistics';
 import { Piles } from './Piles';
 import { Players } from './Players';
@@ -47,9 +48,6 @@ export class ClientGameState implements GameMessageTransmitter {
       this._players.addOpponent(opponentName);
     }
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public sendGameConfiguration(_gameConfiguration: GameConfiguration): void {}
 
   public sendTurnStartMessage(currentPlayerName: string): void {
     this.players.startTurn(currentPlayerName);
@@ -114,4 +112,10 @@ export class ClientGameState implements GameMessageTransmitter {
   public sendBotCardCounts(cardCountsObj: CardCount[]): void {
     this._botStatistics.updateDeckCounts(cardCountsObj);
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public sendMechanics(_mechanics: Set<Mechanic>): void {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public sendGameConfiguration(_configuration: GameConfiguration): void {}
 }

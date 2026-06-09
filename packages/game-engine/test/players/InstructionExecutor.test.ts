@@ -17,7 +17,9 @@ import { NextTurnEligibility, ThisTurnEligibility } from '../../src/effects/Stan
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
-import { SharedGameState } from '../../src/SharedGameState';
+import { TurnTracker } from '../../src/players/TurnTracker';
+import { Turn } from '../../src/turns/Turn';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {
   public override async play(_instructionExecutor: InstructionExecutor): Promise<void> {
@@ -193,6 +195,9 @@ const createHarness = () => {
   const ownedCards = new PlayerCards(player);
   player.getOwnedCards = () => ownedCards;
 
+  const turnTracker = new TurnTracker(new Turn(player, 0, 0));
+  player.getTurnTracker = () => turnTracker;
+
   const executor = new InstructionExecutor(sharedGameState as unknown as SharedGameState, player);
 
   return {
@@ -200,6 +205,7 @@ const createHarness = () => {
     player,
     ownedCards,
     statistics,
+    turnTracker,
     effects,
     logger,
     broadcaster,
@@ -217,7 +223,7 @@ const createHarness = () => {
 
 describe('InstructionExecutor', () => {
   it('forwards stats, lookup, and eligibility helpers', () => {
-    const { executor, player, ownedCards, statistics, sharedGameState, sharedExtraCards } = createHarness();
+    const { executor, player, ownedCards, statistics, turnTracker, sharedGameState, sharedExtraCards } = createHarness();
     const forceDiscardBroadcastSpy = vi
       .spyOn(ownedCards, 'forceFullBroadcastOfDiscard')
       .mockImplementation(() => undefined);
@@ -229,8 +235,8 @@ describe('InstructionExecutor', () => {
     const matchingEligibility = new CardEligibilityFunction((card) => card.hasType(CardType.ACTION));
 
     ownedCards.addCardToHand(handCard);
-    player.getStatistics().addPlayedCard(playedCard);
-    player.getStatistics().addGainedCard(gainedCard);
+    turnTracker.addPlayedCard(playedCard);
+    turnTracker.addGainedCard(gainedCard);
     sharedGameState.cardsPlayedThisTurn.addCard(playedCard);
     sharedExtraCards.addCard(sharedCard);
     sharedGameState.getCardByMetadata.mockReturnValue(sharedCard);
@@ -243,9 +249,6 @@ describe('InstructionExecutor', () => {
     expect(executor.handSize()).toBe(1);
     expect(executor.hasMatchingCardInHand(matchingEligibility)).toBe(true);
     expect(executor.hasMatchingCardInPlay(matchingEligibility)).toBe(false);
-    statistics.hasPlayedMatchingCardThisTurn.mockReturnValue(true);
-    statistics.hasGainedMatchingCardThisTurn.mockReturnValue(true);
-    statistics.numMatchingCardsPlayedThisTurn.mockReturnValue(1);
 
     expect(executor.hasPlayedMatchingCardThisTurn(matchingEligibility)).toBe(true);
     expect(
@@ -271,7 +274,7 @@ describe('InstructionExecutor', () => {
     expect(statistics.addActions).toHaveBeenCalledWith(2);
     expect(statistics.addBuys).toHaveBeenCalledWith(3);
     expect(statistics.addVP).toHaveBeenCalledWith(4);
-    expect(statistics.setNumCardsToDrawInCleanup).toHaveBeenCalledWith(2);
+    expect(turnTracker.getNumCardsToDrawInCleanup(5)).toBe(2);
     expect(forceDiscardBroadcastSpy).toHaveBeenCalledTimes(1);
   });
 

@@ -10,20 +10,23 @@ import {
   PileMetadata,
   StatusAction,
 } from '@dominion/common';
-import { MainPlayerMessage } from '@dominion/web-client-common';
-import { TurnStartMessage } from '@dominion/web-client-common';
-import { CardsMessage } from '@dominion/web-client-common';
-import { TopCardMessage } from '@dominion/web-client-common';
-import { PileMetadataMessage } from '@dominion/web-client-common';
-import { GameConfigurationMessage } from '@dominion/web-client-common';
-import { SharedCardsMessage } from '@dominion/web-client-common';
-import { CardCountMessage } from '@dominion/web-client-common';
-import { StatisticMessage } from '@dominion/web-client-common';
-import { OpponentNamesMessage } from '@dominion/web-client-common';
-import { LogWSMessage } from '@dominion/web-client-common';
-import { MessageType } from '@dominion/web-client-common';
-import { StatusMessage } from '@dominion/web-client-common';
+import {
+  CardCountMessage,
+  CardsMessage,
+  LogWSMessage,
+  MainPlayerMessage,
+  MechanicsMessage,
+  MessageType,
+  OpponentNamesMessage,
+  PileMetadataMessage,
+  SharedCardsMessage,
+  StatisticMessage,
+  StatusMessage,
+  TopCardMessage,
+  TurnStartMessage,
+} from '@dominion/web-client-common';
 
+import { Mechanic } from '../../common/dist/card/Mechanic.cjs';
 import { WebSocketMessageWriter } from './WebSocketMessageWriter';
 
 export class WebSocketMessageTransmitter implements GameMessageTransmitter, LogMessageTransmitter {
@@ -48,12 +51,6 @@ export class WebSocketMessageTransmitter implements GameMessageTransmitter, LogM
       type: MessageType.OPPONENT_NAME,
       content: { names: opponentNames },
     } as OpponentNamesMessage);
-  }
-  sendGameConfiguration(gameConfiguration: GameConfiguration): void {
-    this.messageWriter.sendMessage({
-      type: MessageType.GAME_CONFIGURATION,
-      content: gameConfiguration,
-    } as GameConfigurationMessage);
   }
   sendTurnStartMessage(currentPlayerName: string): void {
     this.messageWriter.sendMessage({
@@ -127,8 +124,19 @@ export class WebSocketMessageTransmitter implements GameMessageTransmitter, LogM
     } as StatusMessage);
   }
 
+  sendMechanics(mechanics: Set<Mechanic>): void {
+    this.messageWriter.sendMessage({
+      type: MessageType.MECHANICS,
+      content: {
+        mechanics: Array.from(mechanics),
+      },
+    } as MechanicsMessage);
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   sendBotCoins(_numCoins: number): void {}
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   sendBotCardCounts(_cardCountsObj: CardCount[]): void {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  sendGameConfiguration(_configuration: GameConfiguration): void {}
 }

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { PileFactory } from '../../src/piles/PileFactory';
-import { SharedGameState } from '../../src/SharedGameState';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 const createSharedGameStateMock = () => {
   return {
@@ -45,6 +45,12 @@ describe('PileFactory', () => {
     expect(pile.getPileMetadata()).toEqual({
       name: 'Estate',
       size: 3,
+      originalCost: {
+        coins: 2,
+        potions: 0,
+        debt: 0,
+        has_asterisk: false,
+      },
       cost: {
         coins: 2,
         potions: 0,

@@ -7,7 +7,9 @@ import { CostModifier } from '../src/effects/CostModifier';
 import { EffectSource } from '../src/effects/EffectSource';
 import { EffectTriggerType } from '../src/effects/EffectTriggerType';
 import { Player } from '../src/players/Player';
-import { SharedGameState } from '../src/SharedGameState';
+import { TurnTracker } from '../src/players/TurnTracker';
+import { Turn } from '../src/turns/Turn';
+import { SharedGameState } from '../src/game-state/SharedGameState';
 
 const createPlayerStub = (
   name: string,
@@ -31,13 +33,22 @@ const createPlayerStub = (
     getInstructionExecutor: vi.fn(() => instructionExecutor),
     getEffects: vi.fn(() => effects),
     getStatistics: vi.fn(() => statistics),
+    getOwnedCards: vi.fn(() => ({
+      reportCardCosts: vi.fn(),
+    })),
   } as unknown as Player;
+
+  const turnTracker = new TurnTracker(
+    new Turn(player, options?.turnNumber ?? 1, options?.unofficialTurnNumber ?? 1),
+  );
+  (player as unknown as { getTurnTracker: () => TurnTracker }).getTurnTracker = () => turnTracker;
 
   return {
     player,
     instructionExecutor,
     effects,
     statistics,
+    turnTracker,
   };
 };
 
@@ -47,6 +58,10 @@ const createSharedGameState = (playerStubs: ReturnType<typeof createPlayerStub>[
     numTotalPlayers: vi.fn(() => players.length),
     getPlayerAtIndex: vi.fn((index: number) => players[index]),
     getPlayerByName: vi.fn((name: string) => players.find((player) => player.getName() === name)),
+    getPlayerToTheLeftByName: vi.fn((name: string) => {
+      const idx = players.findIndex((p) => p.getName() === name);
+      return players[(idx + 1) % players.length];
+    }),
     getAllPlayers: vi.fn(() => players),
     [Symbol.iterator]: () => players[Symbol.iterator](),
   };
@@ -195,7 +210,7 @@ describe('SharedGameState', () => {
     const card = {
       getOriginalCost: vi.fn(() => Cost.Simple(8)),
     };
-    const firstModifier: Pick<CostModifier, 'apply'> = {
+    const firstModifier: Pick<CostModifier, 'apply' | 'getCostRecalculationTriggers'> = {
       apply: vi.fn((receivedCard, receivedCost, receivedTurn) => {
         expect(receivedCard).toBe(card);
         expect(receivedCost.coins).toBe(8);
@@ -204,9 +219,11 @@ describe('SharedGameState', () => {
         expect(receivedTurn.getUnofficialNumber()).toBe(6);
         return receivedCost.plus(-2);
       }),
+      getCostRecalculationTriggers: vi.fn(() => []),
     };
-    const secondModifier: Pick<CostModifier, 'apply'> = {
+    const secondModifier: Pick<CostModifier, 'apply' | 'getCostRecalculationTriggers'> = {
       apply: vi.fn((_receivedCard, receivedCost) => receivedCost.plus(-1)),
+      getCostRecalculationTriggers: vi.fn(() => []),
     };
 
     state.addCostModifier(firstModifier as CostModifier);
