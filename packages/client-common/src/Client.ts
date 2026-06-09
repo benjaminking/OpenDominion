@@ -4,6 +4,7 @@ import {
   CardLocation,
   CardMetadata,
   DecisionService,
+  GameConfiguration,
   GameMessageTransmitter,
   LogMessage,
   LogMessageTransmitter,
@@ -81,5 +82,9 @@ export class Client {
 
   public sendMechanics(mechanics: Set<Mechanic>): void {
     this.gameMessageTransmitter.sendMechanics(mechanics);
+  }
+
+  public sendGameConfiguration(configuration: GameConfiguration): void {
+    this.gameMessageTransmitter.sendGameConfiguration(configuration);
   }
 }

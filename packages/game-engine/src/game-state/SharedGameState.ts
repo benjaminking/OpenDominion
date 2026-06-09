@@ -139,6 +139,10 @@ export class SharedGameState {
     return this.getCurrentPlayer().getTurnTracker().getCurrentTurn();
   }
 
+  public getNumPlayers(): number {
+    return this.game.getPlayers().numTotalPlayers();
+  }
+
   // this is one round of the turn order starting with the current player
   public getCurrentTurnOrder(): Player[] {
     const turnOrder: Player[] = [];

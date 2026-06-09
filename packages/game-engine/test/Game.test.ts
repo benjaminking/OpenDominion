@@ -27,7 +27,7 @@ const sharedGameStateModule = vi.hoisted(() => {
   };
 });
 
-vi.mock('../src/SharedGameState', () => ({
+vi.mock('../src/game-state/SharedGameState', () => ({
   SharedGameState: sharedGameStateModule.SharedGameState,
 }));
 

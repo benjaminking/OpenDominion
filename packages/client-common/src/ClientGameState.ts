@@ -2,6 +2,7 @@ import {
   CardCount,
   CardLocation,
   CardMetadata,
+  GameConfiguration,
   GameMessageTransmitter,
   NumberType,
   PileMetadata,
@@ -114,4 +115,7 @@ export class ClientGameState implements GameMessageTransmitter {
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public sendMechanics(_mechanics: Set<Mechanic>): void {}
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public sendGameConfiguration(_configuration: GameConfiguration): void {}
 }

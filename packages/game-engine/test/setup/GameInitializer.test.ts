@@ -111,6 +111,7 @@ vi.mock('../../src/Game', () => ({
           addBasicVictoryPile: addBasicVictoryPileMock,
           addKingdomPile: addKingdomPileMock,
         },
+        registerCardMechanics: vi.fn(),
       }),
       getMessageBroadcaster: () => ({ id: 'broadcaster' }),
       getPlayers: () => playersState,

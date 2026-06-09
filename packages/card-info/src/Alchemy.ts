@@ -140,4 +140,32 @@ export const alchemy: CardInfo[] = [
     expansion: Expansion.ALCHEMY,
     is_kingdom: true,
   },
+  {
+    name: 'Transmute',
+    category: CardCategory.CARD,
+    text: 'Trash a card from your hand.\nIf it is an Action card, gain a Duchy.\nIf it is a Treasure card, gain a Transmute.\nIf it is a Victory card, gain a Gold.',
+    font_size: 'medium',
+    cost: {
+      coins: 0,
+      potions: 1,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
+  },
+  {
+    name: 'Possession',
+    category: CardCategory.CARD,
+    text: 'The player to your left takes an extra turn after this one (but not a 2nd extra turn), during which you can see all their cards and make all their decisions. They discard any cards they would have gained and you gain them instead. They also discard any VP chips they would have received.',
+    font_size: 'small',
+    cost: {
+      coins: 6,
+      potions: 1,
+    },
+    types: [CardType.ACTION],
+    expansion: Expansion.ALCHEMY,
+    mechanics: [Mechanic.POTIONS],
+    is_kingdom: true,
+  },
 ];

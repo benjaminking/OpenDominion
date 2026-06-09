@@ -1,6 +1,7 @@
 import { Mechanic } from '../card';
 import { CardLocation } from '../card/CardLocation';
 import { CardMetadata } from '../card/CardMetadata';
+import { GameConfiguration } from '../game/GameConfiguration';
 import { NumberType } from '../NumberType';
 import { PileMetadata } from '../pile/PileMetadata';
 import { CardCount } from './CardCount';
@@ -20,4 +21,5 @@ export interface GameMessageTransmitter {
   sendBotCoins: (numCoins: number) => void;
   sendBotCardCounts: (cardCountsObj: CardCount[]) => void;
   sendMechanics: (mechanics: Set<Mechanic>) => void;
+  sendGameConfiguration: (configuration: GameConfiguration) => void;
 }

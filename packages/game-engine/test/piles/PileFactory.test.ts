@@ -45,6 +45,12 @@ describe('PileFactory', () => {
     expect(pile.getPileMetadata()).toEqual({
       name: 'Estate',
       size: 3,
+      originalCost: {
+        coins: 2,
+        potions: 0,
+        debt: 0,
+        has_asterisk: false,
+      },
       cost: {
         coins: 2,
         potions: 0,
