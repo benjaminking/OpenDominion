@@ -5,9 +5,9 @@ import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
 import { CostSortingFunction } from '../CardSortingFunctions';
 import { CardCostCache } from '../game-state/CardCostCache';
+import { anyCard } from '../StandardCardEligibilityFunctions';
 import { Pile } from './Pile';
 import { PileGroup } from './PileGroup';
-import { anyCard } from '../StandardCardEligibilityFunctions';
 
 export class Piles {
   private _basicTreasurePiles: PileGroup = new PileGroup();
