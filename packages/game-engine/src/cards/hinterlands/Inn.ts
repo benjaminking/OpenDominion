@@ -7,8 +7,8 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
@@ -40,12 +40,10 @@ export class Inn extends KingdomCard {
   }
 
   private async onGain(ie: InstructionExecutor): Promise<void> {
-    const discardActionCards = ie.getCardsByMetadata(
-      ie.getEligibleCardChoices(new Set([CardLocation.DISCARD]), isActionCard).map((choice) => choice.card),
-    );
     const toShuffleIntoDeck = await ie
       .chooseCards('Reveal any number of Action cards from your discard pile to put onto your deck')
-      .from(discardActionCards)
+      .from(CardLocation.DISCARD)
+      .whereCardIs(isActionCard)
       .to(CardSelectionPurpose.OTHER)
       .choose();
 
@@ -53,5 +51,6 @@ export class Inn extends KingdomCard {
     for (const card of toShuffleIntoDeck) {
       await ie.topDeckCardFromLocation(card, CardLocation.DISCARD, true);
     }
+    await ie.shuffleDeck();
   }
 }

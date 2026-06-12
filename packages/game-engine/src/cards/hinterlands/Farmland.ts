@@ -2,7 +2,6 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
@@ -10,11 +9,15 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { both, costsExactly, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
-
-const isNotFarmland = new CardEligibilityFunction((card: Card) => card.getName() !== 'Farmland');
+import {
+  both,
+  cardNameIs,
+  costsExactlyNMoreThanCard,
+  isTheSameCardAs,
+  not,
+} from '../../StandardCardEligibilityFunctions';
 
 export class Farmland extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -53,8 +56,7 @@ export class Farmland extends KingdomCard {
       .chooseCard('Choose a non-Farmland card costing exactly ' + trashedCard.getCost().plus(2).toString() + ' to gain')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
-      .whereCardIs(both(isNotFarmland, costsExactly(trashedCard.getCost().plus(2))))
-      .allowNoneOption()
+      .whereCardIs(both(not(cardNameIs('Farmland')), costsExactlyNMoreThanCard(trashedCard, 2)))
       .choose();
 
     if (cardToGain instanceof Card) {

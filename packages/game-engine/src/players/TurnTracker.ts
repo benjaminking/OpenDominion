@@ -92,6 +92,14 @@ export class TurnTracker {
     );
   }
 
+  public numMatchingCardsGainedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
+    return (
+      this.cardsGainedByUnofficialTurnNumber
+        .get(this.currentTurn.getUnofficialNumber())
+        ?.numMatchingCards(cardEligibilityFunction) ?? 0
+    );
+  }
+
   public getCardsGainedOnTurnEligibilityFunction(turn: Turn): CardEligibilityFunction {
     return (
       this.cardsGainedByUnofficialTurnNumber.get(turn.getUnofficialNumber())?.toCardNameEligibilityFunction() ?? noCard

@@ -3,11 +3,11 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
-import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
+import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class WitchesHut extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -27,7 +27,7 @@ export class WitchesHut extends KingdomCard {
     await ie.revealCards(cardsToDiscard);
     await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
 
-    if (cardsToDiscard.numMatchingCards(isActionCard) === 2) {
+    if (cardsToDiscard.size() === 2 && cardsToDiscard.numMatchingCards(isActionCard) === 2) {
       await ie.performAttack(this, this.attack.bind(this));
     }
   }

@@ -2,16 +2,15 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { costsLessThanCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class BorderVillage extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -33,15 +32,11 @@ export class BorderVillage extends KingdomCard {
   }
 
   private async onGain(ie: InstructionExecutor, gainedCard: Card): Promise<void> {
-    const cheaperThanBorderVillage = new CardEligibilityFunction((card: Card) =>
-      card.getCost().isLessThan(gainedCard.getCost()),
-    );
     const cardToGain: Card | Choice = await ie
       .chooseCard('Choose a cheaper card to gain')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
-      .whereCardIs(cheaperThanBorderVillage)
-      .allowNoneOption()
+      .whereCardIs(costsLessThanCard(gainedCard))
       .choose();
 
     if (cardToGain instanceof Card) {

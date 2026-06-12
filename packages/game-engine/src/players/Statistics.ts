@@ -61,6 +61,10 @@ export class Statistics {
     return Promise.resolve();
   }
 
+  public subtractCoins(coinsToSubtract: number): void {
+    this.coins.subtract(Math.min(coinsToSubtract, this.coins.getValue()));
+  }
+
   public spendCoins(coinsSpent: number): void {
     this.coins.subtract(coinsSpent);
   }

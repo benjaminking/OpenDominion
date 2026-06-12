@@ -31,6 +31,7 @@ const isTreasureCard: CardEligibilityFunction = new MatchesType(CardType.TREASUR
 const isVictoryCard: CardEligibilityFunction = new MatchesType(CardType.VICTORY);
 const isCurseCard: CardEligibilityFunction = new MatchesType(CardType.CURSE);
 const isDurationCard: CardEligibilityFunction = new MatchesType(CardType.DURATION);
+const isAttackCard: CardEligibilityFunction = new MatchesType(CardType.ATTACK);
 
 class IsSimpleTreasure extends CardEligibilityFunction {
   public constructor() {
@@ -58,6 +59,26 @@ const costsUpTo = function (coins: Cost) {
   return new CostsUpTo(coins);
 };
 
+class CostsLessThan extends CardEligibilityFunction {
+  public constructor(cost: Cost) {
+    super((c: Card) => c.getCost().isLessThan(cost));
+  }
+}
+
+const costsLessThan = function (coins: Cost) {
+  return new CostsLessThan(coins);
+};
+
+class CostsLessThanCard extends CardEligibilityFunction {
+  public constructor(otherCard: Card) {
+    super((c: Card) => c.getCost().isLessThan(otherCard.getCost()));
+  }
+}
+
+const costsLessThanCard = function (otherCard: Card) {
+  return new CostsLessThanCard(otherCard);
+};
+
 class CostsExactly extends CardEligibilityFunction {
   public constructor(cost: Cost) {
     super((c: Card) => c.getCost().isEqualTo(cost));
@@ -68,14 +89,50 @@ const costsExactly = function (coins: Cost) {
   return new CostsExactly(coins);
 };
 
-class CostsTheSameAs extends CardEligibilityFunction {
+class CostsTheSameAsCard extends CardEligibilityFunction {
   public constructor(otherCard: Card) {
     super((c: Card) => c.getCost().isEqualTo(otherCard.getCost()));
   }
 }
 
-const costsTheSameAs = function (otherCard: Card) {
-  return new CostsTheSameAs(otherCard);
+const costsTheSameAsCard = function (otherCard: Card) {
+  return new CostsTheSameAsCard(otherCard);
+};
+
+class CostsTheSameOrLessThanCard extends CardEligibilityFunction {
+  public constructor(otherCard: Card) {
+    super((c: Card) => c.getCost().isLessThanOrEqualTo(otherCard.getCost()));
+  }
+}
+
+const costsTheSameOrLessThanCard = function (otherCard: Card) {
+  return new CostsTheSameOrLessThanCard(otherCard);
+};
+
+class CostsExactlyNMoreThanCard extends CardEligibilityFunction {
+  public constructor(otherCard: Card, n: number) {
+    super((c: Card) => c.getCost().isEqualTo(otherCard.getCost().plus(n)));
+  }
+}
+
+const costsExactlyNMoreThanCard = function (otherCard: Card, n: number) {
+  return new CostsExactlyNMoreThanCard(otherCard, n);
+};
+
+class CostsExactlyNLessThanCard extends CardEligibilityFunction {
+  public constructor(otherCard: Card, n: number) {
+    super(
+      // Implemented this way because the Cost class does not allow for negative costs
+      (c: Card) =>
+        c.getCost().coins === otherCard.getCost().coins - n &&
+        c.getCost().potions === otherCard.getCost().potions &&
+        c.getCost().debt === otherCard.getCost().debt,
+    );
+  }
+}
+
+const costsExactlyNLessThanCard = function (otherCard: Card, n: number) {
+  return new CostsExactlyNLessThanCard(otherCard, n);
 };
 
 class CardNameIs extends CardEligibilityFunction {
@@ -175,7 +232,12 @@ export {
   canBeDiscardedInCleanup,
   cardNameIs,
   costsExactly,
-  costsTheSameAs,
+  costsExactlyNLessThanCard,
+  costsExactlyNMoreThanCard,
+  costsLessThan,
+  costsLessThanCard,
+  costsTheSameAsCard,
+  costsTheSameOrLessThanCard,
   costsUpTo,
   either,
   isACopyOf,

@@ -6,7 +6,7 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { costsExactly } from '../../StandardCardEligibilityFunctions';
+import { costsExactlyNMoreThanCard } from '../../StandardCardEligibilityFunctions';
 
 export class Upgrade extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -36,7 +36,7 @@ export class Upgrade extends KingdomCard {
       .chooseCard('Choose a card costing exactly $' + trashedCard.getCost().plus(1).coins.toFixed() + ' to gain')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
-      .whereCardIs(costsExactly(trashedCard.getCost().plus(1)))
+      .whereCardIs(costsExactlyNMoreThanCard(trashedCard, 1))
       .choose();
 
     if (cardToGain instanceof Card) {

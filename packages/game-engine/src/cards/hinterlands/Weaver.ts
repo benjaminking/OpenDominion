@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
@@ -8,13 +8,12 @@ import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
-import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { isNotCleanup } from '../../effects/StandardEffectConditions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
-import { TurnPhase } from '../../turns/TurnPhase';
 
 export class Weaver extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -25,11 +24,7 @@ export class Weaver extends KingdomCard {
         .from(this)
         .triggerOn(EffectTriggerType.DISCARD, EffectSource.SELF)
         .whereCardIs(isTheSameCardAs(this))
-        .addCondition(
-          new EffectCondition(
-            (ie: InstructionExecutor) => ie.getSharedGameState().getTurnPhase() !== TurnPhase.CLEANUP,
-          ),
-        )
+        .addCondition(isNotCleanup)
         .action(new EffectAction(this.reaction.bind(this)))
         .build(),
     );
@@ -62,14 +57,6 @@ export class Weaver extends KingdomCard {
   }
 
   private async reaction(ie: InstructionExecutor, _target: Card): Promise<void> {
-    await ie
-      .chooseOneOption('You may play Weaver')
-      .from(
-        new ActionChoice('Play Weaver', async () => {
-          await ie.playCardFromLocation(this, this.getLocation());
-        }),
-      )
-      .from(new ActionChoice('Do not play'))
-      .choose();
+    await ie.playCardFromLocation(this, this.getLocation());
   }
 }

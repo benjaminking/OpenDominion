@@ -109,6 +109,14 @@ export class Piles {
     return this.supplyPiles.hasPile(pileName);
   }
 
+  public isPile(pileName: string): boolean {
+    return this.allPiles.hasPile(pileName);
+  }
+
+  public returnCardToPile(card: Card): void {
+    this.allPiles.getPileByName(card.getPileName())?.addCard(card);
+  }
+
   public getEligibleCardChoicesToBuy(coins: number): CardChoice[] {
     const choices: CardChoice[] = [];
     for (const topCard of this.getTopCardsOfSupplyPiles()

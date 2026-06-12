@@ -2,14 +2,11 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
-
-const isNonTreasure = new CardEligibilityFunction((card: Card) => !isTreasureCard.matches(card));
+import { isTreasureCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class JackOfAllTrades extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -39,7 +36,7 @@ export class JackOfAllTrades extends KingdomCard {
       .chooseCard('You may trash a non-Treasure card from your hand')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.TRASH)
-      .whereCardIs(isNonTreasure)
+      .whereCardIs(not(isTreasureCard))
       .allowNoneOption()
       .choose();
     if (cardToTrash instanceof Card) {
