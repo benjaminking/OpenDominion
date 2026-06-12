@@ -4,8 +4,8 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { CostModifier } from '../../effects/CostModifier';
 import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
 import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Highway extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {

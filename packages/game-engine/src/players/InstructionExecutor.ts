@@ -71,6 +71,10 @@ export class InstructionExecutor {
     await this.player.getStatistics().addCoins(additionalCoins);
   }
 
+  public subtractCoins(coinsToSubtract: number): void {
+    this.player.getStatistics().subtractCoins(coinsToSubtract);
+  }
+
   public addVP(vp: number): void {
     this.player.getStatistics().addVP(vp);
   }
@@ -151,6 +155,10 @@ export class InstructionExecutor {
 
   public numMatchingCardsPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
     return this.player.getTurnTracker().numMatchingCardsPlayedThisTurn(cardEligibilityFunction);
+  }
+
+  public numMatchingCardsGainedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.player.getTurnTracker().numMatchingCardsGainedThisTurn(cardEligibilityFunction);
   }
 
   public getMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
@@ -332,15 +340,20 @@ export class InstructionExecutor {
     pileName: string,
     gainLocation: CardLocation = CardLocation.DISCARD,
   ): Promise<Card | undefined> {
+    const card = this.removeTopCardFromPile(pileName);
+    if (card === undefined) {
+      return undefined;
+    }
+    await this.gain(card, gainLocation);
+    return card;
+  }
+
+  private removeTopCardFromPile(pileName: string): Card | undefined {
     if (this.sharedGameState.piles.isPileEmpty(pileName)) {
       return undefined;
     }
 
     const card: Card | undefined = this.sharedGameState.piles.removeTopCardFromPile(pileName);
-    if (card === undefined) {
-      return;
-    }
-    await this.gain(card, gainLocation);
     return card;
   }
 
@@ -364,6 +377,12 @@ export class InstructionExecutor {
       .triggerEffect(EffectTriggerType.GAIN, CardCollection.fromCards([card]));
   }
 
+  public async gainCardFromPileNTimes(cardChoice: Card | string, n: number): Promise<void> {
+    for (let i = 0; i < n; i++) {
+      await this.gainCardFromPile(cardChoice);
+    }
+  }
+
   public async gainCardFromTrash(card: Card, gainLocation = CardLocation.DISCARD): Promise<Card | undefined> {
     if (!this.sharedGameState.trash.contains(card) || card.getLocation() !== CardLocation.TRASH) {
       this.logger.gameMessage(
@@ -376,6 +395,44 @@ export class InstructionExecutor {
     this.sharedGameState.trash.removeCard(card);
     await this.gain(card, gainLocation);
     return card;
+  }
+
+  public exchangeCardFromLocation(cardToReturn: Card, location: CardLocation, pileName: string): void {
+    // In order for the exchange to happen, the first card must be returnable
+    // and the second card must be gainable
+    if (!this.sharedGameState.piles.isPile(cardToReturn.getPileName())) {
+      return;
+    }
+    const cardToReceive: Card | undefined = this.removeTopCardFromPile(pileName);
+    if (cardToReceive === undefined) {
+      return;
+    }
+
+    this.returnCardToPileFromLocation(cardToReturn, location);
+    this.putCardInDiscardFromPile(pileName);
+    this.logger.gameMessage(
+      this.player,
+      ServerLogMessage.publicMessage(
+        this.player,
+        'exchanges %c for %c',
+        CardCollection.fromCards([cardToReturn, cardToReceive]),
+      ),
+    );
+  }
+
+  public returnCardToPileFromLocation(card: Card, location: CardLocation): void {
+    if (this.sharedGameState.piles.isPile(card.getPileName())) {
+      this.removeCardFromLocation(card, location);
+      this.sharedGameState.piles.returnCardToPile(card);
+    }
+  }
+
+  private putCardInDiscardFromPile(pileName: string): Card | undefined {
+    const card: Card | undefined = this.removeTopCardFromPile(pileName);
+    if (card instanceof Card) {
+      this.player.getOwnedCards().addCardToDiscard(card);
+      return;
+    }
   }
 
   public receivePassedCard(card: Card): void {
@@ -634,6 +691,12 @@ export class InstructionExecutor {
   public putCardsFromNativeVillageMatIntoHand(): void {
     const nativeVillageCards = this.player.getOwnedCards().removeAllCardsFromNativeVillageMat();
     this.player.getOwnedCards().addCardsToHand(nativeVillageCards);
+  }
+
+  public async shuffleDeck(): Promise<void> {
+    await this.sharedGameState.triggerEffect(EffectTriggerType.WOULD_SHUFFLE);
+    this.player.getOwnedCards().shuffleDeck();
+    await this.sharedGameState.triggerEffect(EffectTriggerType.SHUFFLE);
   }
 
   public async revealCards(cards: CardCollection): Promise<void> {

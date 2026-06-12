@@ -9,7 +9,7 @@ import {
   canBeDiscardedInCleanup,
   cardNameIs,
   costsExactly,
-  costsTheSameAs,
+  costsTheSameAsCard,
   costsUpTo,
   either,
   isACopyOf,
@@ -304,7 +304,7 @@ describe('StandardCardEligibilityFunctions', () => {
       const testCard = createMockCard({
         getCost: vi.fn(() => Cost.Simple(4)),
       });
-      const sameAs = costsTheSameAs(refCard);
+      const sameAs = costsTheSameAsCard(refCard);
       expect(sameAs.matches(testCard)).toBe(true);
     });
 
@@ -315,7 +315,7 @@ describe('StandardCardEligibilityFunctions', () => {
       const testCard = createMockCard({
         getCost: vi.fn(() => Cost.Simple(3)),
       });
-      const sameAs = costsTheSameAs(refCard);
+      const sameAs = costsTheSameAsCard(refCard);
       expect(sameAs.matches(testCard)).toBe(false);
     });
 
@@ -326,7 +326,7 @@ describe('StandardCardEligibilityFunctions', () => {
       const testCard = createMockCard({
         getCost: vi.fn(() => Cost.Debt(2, 3)),
       });
-      const sameAs = costsTheSameAs(refCard);
+      const sameAs = costsTheSameAsCard(refCard);
       expect(sameAs.matches(testCard)).toBe(true);
     });
 
@@ -337,7 +337,7 @@ describe('StandardCardEligibilityFunctions', () => {
       const testCard = createMockCard({
         getCost: vi.fn(() => Cost.Debt(2, 4)),
       });
-      const sameAs = costsTheSameAs(refCard);
+      const sameAs = costsTheSameAsCard(refCard);
       expect(sameAs.matches(testCard)).toBe(false);
     });
 
@@ -348,7 +348,7 @@ describe('StandardCardEligibilityFunctions', () => {
       const testCard = createMockCard({
         getCost: vi.fn(() => Cost.Simple(3)),
       });
-      const sameAs = costsTheSameAs(refCard);
+      const sameAs = costsTheSameAsCard(refCard);
       expect(sameAs.matches(testCard)).toBe(true);
 
       // Change reference card cost

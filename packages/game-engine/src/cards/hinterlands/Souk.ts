@@ -7,8 +7,8 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
@@ -28,7 +28,8 @@ export class Souk extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     ie.addBuys(1);
-    await ie.addCoins(Math.max(0, 7 - ie.handSize()));
+    await ie.addCoins(7);
+    ie.subtractCoins(ie.handSize());
   }
 
   private async onGain(ie: InstructionExecutor): Promise<void> {

@@ -3,15 +3,14 @@ import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { cardNameIs, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 export class FoolsGold extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -28,7 +27,7 @@ export class FoolsGold extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    if (ie.numMatchingCardsPlayedThisTurn(isTheSameCardAs(this)) === 1) {
+    if (ie.numMatchingCardsPlayedThisTurn(cardNameIs("Fool's Gold")) === 1) {
       await ie.addCoins(1);
     } else {
       await ie.addCoins(4);
@@ -36,16 +35,8 @@ export class FoolsGold extends KingdomCard {
   }
 
   private async reaction(ie: InstructionExecutor, _gainedCard: Card): Promise<void> {
-    await ie
-      .chooseOneOption("You may trash Fool's Gold from your hand to gain a Gold onto your deck")
-      .from(
-        new ActionChoice('Trash and gain Gold onto deck', async () => {
-          await ie.revealCard(this);
-          await ie.trashCardFromLocation(this, CardLocation.HAND);
-          await ie.gainCardFromPile('Gold', CardLocation.DECK);
-        }),
-      )
-      .from(new ActionChoice('Do nothing'))
-      .choose();
+    await ie.revealCard(this);
+    await ie.trashCardFromLocation(this, CardLocation.HAND);
+    await ie.gainCardFromPile('Gold', CardLocation.DECK);
   }
 }

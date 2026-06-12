@@ -3,14 +3,14 @@ import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { isAttackCard } from '../../StandardCardEligibilityFunctions';
 
 export class GuardDog extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -18,7 +18,8 @@ export class GuardDog extends KingdomCard {
     this.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.ATTACK, EffectSource.OTHER_PLAYER)
+        .triggerOn(EffectTriggerType.PLAYED_CARD, EffectSource.OTHER_PLAYER)
+        .whereCardIs(isAttackCard)
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.HAND))
         .action(new EffectAction(this.reaction.bind(this)))
         .build(),
@@ -33,14 +34,6 @@ export class GuardDog extends KingdomCard {
   }
 
   private async reaction(ie: InstructionExecutor, _attackCard: Card): Promise<void> {
-    await ie
-      .chooseOneOption('You may play Guard Dog from your hand first')
-      .from(
-        new ActionChoice('Play Guard Dog', async () => {
-          await ie.playCardFromLocation(this, CardLocation.HAND);
-        }),
-      )
-      .from(new ActionChoice('Do not play it'))
-      .choose();
+    await ie.playCardFromLocation(this, CardLocation.HAND);
   }
 }

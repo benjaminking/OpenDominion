@@ -199,6 +199,10 @@ export class PlayerCards {
     await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.SHUFFLE);
   }
 
+  public shuffleDeck(): void {
+    this.deck.shuffle();
+  }
+
   public async drawUpTo(size: number): Promise<void> {
     return this.drawUpToHelper(size, new CardCollection());
   }

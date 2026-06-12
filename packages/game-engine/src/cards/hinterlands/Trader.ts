@@ -3,14 +3,13 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Trader extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -41,22 +40,10 @@ export class Trader extends KingdomCard {
       return;
     }
 
-    for (let i = 0; i < trashedCard.getCost().coins; i++) {
-      await ie.gainCardFromPile('Silver');
-    }
+    await ie.gainCardFromPileNTimes('Silver', trashedCard.getCost().coins);
   }
 
-  private async reaction(ie: InstructionExecutor, gainedCard: Card): Promise<void> {
-    await ie
-      .chooseOneOption('You may reveal Trader to exchange gained card for a Silver')
-      .from(
-        new ActionChoice('Exchange for Silver', async () => {
-          await ie.revealCard(this);
-          await ie.trashCardFromLocation(gainedCard, gainedCard.getLocation());
-          await ie.gainCardFromPile('Silver', gainedCard.getLocation());
-        }),
-      )
-      .from(new ActionChoice('Do not exchange'))
-      .choose();
+  private reaction(ie: InstructionExecutor, gainedCard: Card): void {
+    ie.exchangeCardFromLocation(gainedCard, gainedCard.getLocation(), 'Silver');
   }
 }

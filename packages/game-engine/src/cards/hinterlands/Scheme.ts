@@ -2,16 +2,20 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
-import { RestOfTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
+import { OnceThisTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isActionCard } from '../../StandardCardEligibilityFunctions';
+import { both, isActionCard } from '../../StandardCardEligibilityFunctions';
+
+const cardWouldBeDiscarded = new CardEligibilityFunction((card: Card): boolean => {
+  return card.canBeDiscardedInCleanup();
+});
 
 export class Scheme extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -26,15 +30,15 @@ export class Scheme extends KingdomCard {
       new Effect.Builder()
         .from(this)
         .onTurn(ie.createThisTurnEligibilityFunction())
-        .triggerOn(EffectTriggerType.DISCARD, EffectSource.SELF)
-        .whereCardIs(isActionCard)
-        .withExpiration(new RestOfTurnEffectExpiration(ie.getSharedGameState().getCurrentTurn()))
+        .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.SELF)
+        .withExpiration(new OnceThisTurnEffectExpiration(ie.getSharedGameState().getCurrentTurn()))
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, discardedCards: CardCollection) => {
+          new EffectAction(async (effectIe: InstructionExecutor) => {
             const actionToTopDeck = await effectIe
               .chooseCard('You may put one of your Action cards onto your deck')
-              .from(discardedCards)
+              .from(CardLocation.IN_PLAY)
               .to(CardSelectionPurpose.TOPDECK)
+              .whereCardIs(both(isActionCard, cardWouldBeDiscarded))
               .allowNoneOption()
               .choose();
             if (actionToTopDeck instanceof Card) {

@@ -2,13 +2,11 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsExactly } from '../../StandardCardEligibilityFunctions';
+import { costsExactlyNLessThanCard, costsExactlyNMoreThanCard, either } from '../../StandardCardEligibilityFunctions';
 
 export class Develop extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -31,63 +29,34 @@ export class Develop extends KingdomCard {
       return;
     }
 
-    const lowerCost = trashedCard.getCost().plus(-1);
-    const higherCost = trashedCard.getCost().plus(1);
-
-    if (lowerCost.coins === trashedCard.getCost().coins) {
-      await this.gainOntoDeckAtExactCost(
-        ie,
-        higherCost,
-        'Choose a card costing exactly ' + higherCost.toString() + ' to gain',
-      );
-      return;
-    }
-
-    await ie
-      .chooseOneOption('Choose which card to gain first:')
-      .from(
-        new ActionChoice('Gain the higher-cost card first', async () => {
-          await this.gainOntoDeckAtExactCost(
-            ie,
-            higherCost,
-            'Choose a card costing exactly ' + higherCost.toString() + ' to gain',
-          );
-          await this.gainOntoDeckAtExactCost(
-            ie,
-            lowerCost,
-            'Choose a card costing exactly ' + lowerCost.toString() + ' to gain',
-          );
-        }),
-      )
-      .from(
-        new ActionChoice('Gain the lower-cost card first', async () => {
-          await this.gainOntoDeckAtExactCost(
-            ie,
-            lowerCost,
-            'Choose a card costing exactly ' + lowerCost.toString() + ' to gain',
-          );
-          await this.gainOntoDeckAtExactCost(
-            ie,
-            higherCost,
-            'Choose a card costing exactly ' + higherCost.toString() + ' to gain',
-          );
-        }),
-      )
-      .choose();
-  }
-
-  private async gainOntoDeckAtExactCost(ie: InstructionExecutor, exactCost: Cost, prompt: string): Promise<void> {
     const cardToGain: Card | Choice = await ie
-      .chooseCard(prompt)
+      .chooseCard('Choose a card costing either $1 more or $1 less than the trashed card to gain')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
-      .whereCardIs(costsExactly(exactCost))
+      .whereCardIs(either(costsExactlyNLessThanCard(trashedCard, 1), costsExactlyNMoreThanCard(trashedCard, 1)))
       .allowNoneOption()
       .choose();
 
     if (cardToGain instanceof Card) {
-      await ie.gainCardFromPile(cardToGain);
-      await ie.topDeckCardFromLocation(cardToGain, CardLocation.DISCARD);
+      await ie.gainCardFromPile(cardToGain, CardLocation.DECK);
+
+      const otherCost = costsExactlyNMoreThanCard(trashedCard, 1).matches(cardToGain)
+        ? trashedCard.getCost().plus(1)
+        : trashedCard.getCost().minus(1);
+      const otherCardEligibilityFunction = costsExactlyNMoreThanCard(trashedCard, 1).matches(cardToGain)
+        ? costsExactlyNLessThanCard(trashedCard, 1)
+        : costsExactlyNMoreThanCard(trashedCard, 1);
+      const otherCardToGain: Card | Choice = await ie
+        .chooseCard('Choose a card costing exactly ' + otherCost.toString() + ' to gain')
+        .from(CardSelectionLocation.SUPPLY)
+        .to(CardSelectionPurpose.GAIN)
+        .whereCardIs(otherCardEligibilityFunction)
+        .allowNoneOption()
+        .choose();
+
+      if (otherCardToGain instanceof Card) {
+        await ie.gainCardFromPile(otherCardToGain, CardLocation.DECK);
+      }
     }
   }
 }
