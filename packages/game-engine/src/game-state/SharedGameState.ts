@@ -229,7 +229,7 @@ export class SharedGameState {
       player.getEffects().registerStartOfPlayersTurn(this.getCurrentPlayer(), this.getCurrentTurn());
     }
 
-    await this.triggerEffect(EffectTriggerType.TURN_START);
+    await this.triggerEffect(EffectTriggerType.TURN_START, this.getCurrentPlayer());
     return this.startActionPhase();
   }
 
@@ -267,7 +267,7 @@ export class SharedGameState {
   private async startBuyPhase(): Promise<void> {
     this.setTurnPhase(TurnPhase.BUY);
 
-    await this.triggerEffect(EffectTriggerType.BUY_START);
+    await this.triggerEffect(EffectTriggerType.BUY_START, this.getCurrentPlayer());
     return this.buyPhaseLoop();
   }
 
@@ -396,12 +396,12 @@ export class SharedGameState {
   public async performCleanup() {
     this.setTurnPhase(TurnPhase.CLEANUP);
 
-    await this.triggerEffect(EffectTriggerType.BUY_END);
-    await this.triggerEffect(EffectTriggerType.CLEANUP_START);
+    await this.triggerEffect(EffectTriggerType.BUY_END, this.getCurrentPlayer());
+    await this.triggerEffect(EffectTriggerType.CLEANUP_START, this.getCurrentPlayer());
     await this.getCurrentPlayer().getOwnedCards().discardAllFromInPlay();
     await this.getCurrentPlayer().getOwnedCards().discardHand();
     await this.getCurrentPlayer().getOwnedCards().drawCards(this.numCardsToDrawAtEndOfTurn);
-    await this.triggerEffect(EffectTriggerType.TURN_END);
+    await this.triggerEffect(EffectTriggerType.TURN_END, this.getCurrentPlayer());
     await this.endTurn();
   }
 
@@ -444,7 +444,7 @@ export class SharedGameState {
     );
 
     // TODO: does anything rely on passing the pile name here?
-    await this.triggerEffect(EffectTriggerType.BUY);
+    await this.triggerEffect(EffectTriggerType.BUY, this.getCurrentPlayer());
     return this.getCurrentPlayer().getInstructionExecutor().gainFromPile(pileName);
   }
 
@@ -542,7 +542,7 @@ export class SharedGameState {
     }
   }
 
-  public async triggerEffect(triggerType: EffectTriggerType, cards?: Card | CardCollection) {
+  public async triggerEffect(triggerType: EffectTriggerType, triggeringPlayer: Player, cards?: Card | CardCollection) {
     this.checkCostModifierTriggers(triggerType, cards);
 
     if (!this.usedEffectTypes.has(triggerType)) {
@@ -553,11 +553,11 @@ export class SharedGameState {
       (this.usedEffectTypes.get(triggerType)!.has(EffectSource.SELF) &&
         this.usedEffectTypes.get(triggerType)!.has(EffectSource.OTHER_PLAYER))
     ) {
-      await this.processEffectsForAllPlayers(triggerType, cards);
+      await this.processEffectsForAllPlayers(triggerType, triggeringPlayer, cards);
     } else if (this.usedEffectTypes.get(triggerType)!.has(EffectSource.OTHER_PLAYER)) {
-      await this.processEffectsForOtherPlayers(triggerType, cards);
+      await this.processEffectsForOtherPlayers(triggerType, triggeringPlayer, cards);
     } else {
-      await this.processEffectsForCurrentPlayer(triggerType, cards);
+      await this.processEffectsForCurrentPlayer(triggerType, triggeringPlayer, cards);
     }
   }
 
@@ -579,30 +579,33 @@ export class SharedGameState {
 
   public async processEffectsForAllPlayers(
     triggerType: EffectTriggerType,
+    triggeringPlayer: Player,
     cards: Card | CardCollection | undefined,
   ): Promise<void> {
     for (const player of this.getCurrentTurnOrder()) {
-      await player.getInstructionExecutor().processEffectsByType(triggerType, cards);
+      await player.getEffects().processEffectsByType(triggerType, triggeringPlayer, cards);
     }
   }
 
   public async processEffectsForOtherPlayers(
     triggerType: EffectTriggerType,
+    triggeringPlayer: Player,
     cards: Card | CardCollection | undefined,
   ): Promise<void> {
     for (const player of this.getCurrentTurnOrder()) {
       if (player.getName() === this.getCurrentPlayer().getName()) {
         continue;
       }
-      await player.getInstructionExecutor().processEffectsByType(triggerType, cards);
+      await player.getEffects().processEffectsByType(triggerType, triggeringPlayer, cards);
     }
   }
 
   public async processEffectsForCurrentPlayer(
     triggerType: EffectTriggerType,
+    triggeringPlayer: Player,
     cards: Card | CardCollection | undefined,
   ): Promise<void> {
-    await this.getCurrentPlayer().getInstructionExecutor().processEffectsByType(triggerType, cards);
+    await this.getCurrentPlayer().getEffects().processEffectsByType(triggerType, triggeringPlayer, cards);
   }
 
   public addCostModifier(costModifier: CostModifier): void {
@@ -711,7 +714,7 @@ export class SharedGameState {
     }
 
     this.logger.gameMessage(player, ServerLogMessage.publicMessage(player, 'trashes %c', cards));
-    await this.triggerEffect(EffectTriggerType.TRASH, cards);
+    await this.triggerEffect(EffectTriggerType.TRASH, player, cards);
     return cards;
   }
 

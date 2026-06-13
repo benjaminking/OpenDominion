@@ -188,7 +188,7 @@ export class PlayerCards {
   }
 
   private async performShuffle(): Promise<void> {
-    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.WOULD_SHUFFLE);
+    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.WOULD_SHUFFLE, this.player);
 
     this.deck.addCards(this.discard);
     this.discard.clear();
@@ -196,7 +196,11 @@ export class PlayerCards {
 
     this.deck.updateLocationForAll(CardLocation.DECK);
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'shuffles.'));
-    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.SHUFFLE);
+    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.SHUFFLE, this.player);
+  }
+
+  public shuffleDeck(): void {
+    this.deck.shuffle();
   }
 
   public async drawUpTo(size: number): Promise<void> {
@@ -211,7 +215,10 @@ export class PlayerCards {
     const card = await this.lookAtTopCardOfDeck();
     if (card !== undefined) {
       if (isActionCard.matches(card)) {
-        await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.REVEALED_ACTION_DURING_DTX, card);
+        await this.player
+          .getGame()
+          .getGameState()
+          .triggerEffect(EffectTriggerType.REVEALED_ACTION_DURING_DTX, this.player, card);
         return this.drawUpToHelper(size, revealedDrawUpToCards);
       } else {
         await this.drawCards(1);
@@ -248,7 +255,7 @@ export class PlayerCards {
     await this.player
       .getGame()
       .getGameState()
-      .triggerEffect(EffectTriggerType.DISCARD, CardCollection.fromCards([card]));
+      .triggerEffect(EffectTriggerType.DISCARD, this.player, CardCollection.fromCards([card]));
     return card;
   }
 
@@ -257,7 +264,7 @@ export class PlayerCards {
       this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'discards %c', cards));
     }
 
-    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.DISCARD, cards);
+    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.DISCARD, this.player, cards);
     for (const card of cards) {
       if (card.getLocation() === expectedLocation) {
         this.addCardToDiscard(card);

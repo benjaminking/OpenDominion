@@ -101,7 +101,7 @@ export const hinterlands: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Jack of All Trades',
+    name: 'Jack Of All Trades',
     category: CardCategory.CARD,
     text: 'Gain a Silver.\nLook at the top card of your\ndeck; you may discard it.\nDraw until you have 5\ncards in hand.\nYou may trash a non-Treasure\ncard from your hand.',
     font_size: 'medium',

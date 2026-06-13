@@ -7,7 +7,7 @@ import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { costsTheSameAs } from '../../StandardCardEligibilityFunctions';
+import { costsTheSameAsCard } from '../../StandardCardEligibilityFunctions';
 
 export class Swindler extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -29,7 +29,7 @@ export class Swindler extends KingdomCard {
       .chooseCard('Choose a card costing exactly ' + trashedCard.getCost().toString() + ' to have your opponent gain')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
-      .whereCardIs(costsTheSameAs(trashedCard))
+      .whereCardIs(costsTheSameAsCard(trashedCard))
       .choose();
 
     if (!(cardToGain instanceof Card)) {
