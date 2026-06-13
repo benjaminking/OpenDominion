@@ -9,7 +9,7 @@ import { Player } from '../../players/Player';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
-export class WitchesHut extends KingdomCard {
+export class WitchsHut extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo("Witch's Hut"));
   }

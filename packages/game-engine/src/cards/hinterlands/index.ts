@@ -23,4 +23,4 @@ export * from './Trail';
 export * from './Tunnel';
 export * from './Weaver';
 export * from './Wheelwright';
-export * from './WitchesHut';
+export * from './WitchsHut';
