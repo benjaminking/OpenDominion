@@ -12,7 +12,7 @@ import { TurnTracker } from './TurnTracker';
 
 export class Player {
   private readonly ownedCards: PlayerCards;
-  private readonly effects: PlayerEffects = new PlayerEffects();
+  private readonly effects: PlayerEffects;
   private readonly instructionExecutor: InstructionExecutor;
   private readonly statistics: Statistics;
   private readonly botStatistics: BotStatistics;
@@ -25,6 +25,7 @@ export class Player {
     private readonly isBot = false,
   ) {
     this.ownedCards = new PlayerCards(this);
+    this.effects = new PlayerEffects(this);
     this.instructionExecutor = new InstructionExecutor(this.game.getGameState(), this);
     this.statistics = new Statistics(this);
     this.botStatistics = new BotStatistics(this, game.getMessageBroadcaster());
