@@ -274,6 +274,32 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().drawUpTo(size);
   }
 
+  public async revealUntil(cardEligibilityFunction: CardEligibilityFunction, count = 1): Promise<CardCollection> {
+    const allCards: CardCollection = new CardCollection();
+    const matchingCards: CardCollection = new CardCollection();
+    const nonMatchingCards: CardCollection = new CardCollection();
+
+    while (matchingCards.size() < count) {
+      const topCard: Card | undefined = await this.takeCardOffDeck();
+      if (topCard === undefined) {
+        break;
+      }
+
+      await this.revealCard(topCard);
+      allCards.addCard(topCard);
+      if (cardEligibilityFunction.matches(topCard)) {
+        matchingCards.addCard(topCard);
+      } else {
+        nonMatchingCards.addCard(topCard);
+      }
+    }
+
+    await this.revealCards(allCards);
+    await this.discardCardsFromLocation(nonMatchingCards, CardLocation.REVEAL_LIMBO);
+
+    return matchingCards;
+  }
+
   public async putTopCardOfDeckIntoHand(): Promise<Card | undefined> {
     const topCard: Card | undefined = await this.player.getOwnedCards().takeCardOffDeck();
     if (topCard instanceof Card) {
@@ -304,6 +330,21 @@ export class InstructionExecutor {
       await this.chooseWayIfNecessary(card);
       await this.playCardNTimesHelper(card, n - 1);
     }
+  }
+
+  public async playMultipleCardsFromLocation(cards: CardCollection, location: CardLocation): Promise<void> {
+    if (cards.size() === 0) {
+      return;
+    }
+    const firstToPlay: Card | Choice = await this.chooseCard('Choose a card to play next')
+      .from(cards)
+      .to(CardSelectionPurpose.PLAY_ALT)
+      .choose();
+    if (firstToPlay instanceof Card) {
+      await this.playCardFromLocation(firstToPlay, location);
+      cards.removeCard(firstToPlay);
+    }
+    return this.playMultipleCardsFromLocation(cards, location);
   }
 
   private async chooseWayIfNecessary(card: Card): Promise<void> {
@@ -502,6 +543,7 @@ export class InstructionExecutor {
 
   public putCardIntoHandFromLocation(card: Card, location: CardLocation): void {
     if (card.getLocation() !== location) {
+      this.removeCardFromLocation(card, location);
       this.logger.gameMessage(
         this.player,
         ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't put it into hand", card),
@@ -512,6 +554,19 @@ export class InstructionExecutor {
 
   public putCardsIntoHand(cards: CardCollection): void {
     this.player.getOwnedCards().addCardsToHand(cards);
+  }
+
+  public putCardsIntoHandFromLocation(cards: CardCollection, location: CardLocation): void {
+    for (const card of cards) {
+      if (card.getLocation() !== location) {
+        this.removeCardFromLocation(card, location);
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't put it into hand", card),
+        );
+      }
+      this.player.getOwnedCards().addCardToHand(card);
+    }
   }
 
   public putCardsIntoHandFromSet(cards: CardCollection, set: CardCollection): void {

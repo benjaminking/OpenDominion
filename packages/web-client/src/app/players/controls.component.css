@@ -11,6 +11,8 @@
   border-top-right-radius: 10px;
   width: 500px;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .status {
@@ -27,6 +29,7 @@
   vertical-align: middle;
   text-align: left;
   color: #ddd;
+  display: flex;
 }
 
 .status {
@@ -52,7 +55,10 @@
   padding: 10px;
   margin-left: 5px;
   border-radius: 5px;
-  display: inline-block;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .button-area button:hover {
@@ -64,4 +70,10 @@
 .button-area button[disabled] {
   background-color: rgba(119, 119, 119, 1);
   cursor: pointer;
+}
+
+.icon-wrapper {
+  container-type: size;
+  height: 30px;
+  min-width: 25px;
 }

@@ -89,7 +89,7 @@ describe('PileComponent', () => {
     expect(component.isEmpty()).toBe(false);
     expect(component.count()).toBe(37);
     expect(component.topCard()).toEqual(updatedTopCard);
-    expect(component.costSymbol()).toBe('3*');
+    expect(component.coinCostSymbol()).toBe('3*');
     expect(component.cardAssetDirectory()).toBe('card_assets');
 
     settingsService.useOfficialArt();
@@ -146,7 +146,7 @@ describe('PileComponent', () => {
     expect(component.isAction()).toBe(true);
     expect(component.isEmpty()).toBe(true);
     expect(component.isSelectable()).toBe(false);
-    expect(component.costSymbol()).toBe('3*');
+    expect(component.coinCostSymbol()).toBe('3*');
 
     consoleLogSpy.mockRestore();
   });

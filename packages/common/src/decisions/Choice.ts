@@ -82,6 +82,7 @@ export function isMultiNamedChoice(choice: Choice): choice is MultiNamedChoice {
 export interface SimpleTreasuresChoice extends Choice {
   type: ChoiceType.SimpleTreasures;
   coins: number;
+  potions: number;
 }
 
 export function isSimpleTreasuresChoice(choice: Choice): choice is SimpleTreasuresChoice {

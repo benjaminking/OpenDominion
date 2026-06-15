@@ -304,6 +304,7 @@ export class SharedGameState {
     const simpleTreasureChoice = {
       type: ChoiceType.SimpleTreasures,
       coins: this.getCurrentPlayer().getOwnedCards().calculateSimpleTreasureCoinsInHand(),
+      potions: this.getCurrentPlayer().getOwnedCards().calculateSimpleTreasurePotionsInHand(),
     } as SimpleTreasuresChoice;
 
     const treasurePhaseChoice: Choice = await this.getCurrentPlayer()
@@ -329,14 +330,13 @@ export class SharedGameState {
         supplyChoices,
         this.getCurrentPlayer().getStatistics().getBuys(),
         this.getCurrentPlayer().getStatistics().getCoins(),
+        this.getCurrentPlayer().getStatistics().getPotions(),
       );
     return this.buyPhaseLoopCallback(buyPhaseChoice);
   }
 
   private getAffordableSupplyChoices(): CardChoice[] {
-    return this.piles
-      .getEligibleCardChoicesToBuy(this.getCurrentPlayer().getStatistics().getCoins())
-      .filter((choice) => this.canBuyCard(choice.card));
+    return this.piles.getEligibleCardChoicesToBuy().filter((choice) => this.canBuyCard(choice.card));
   }
 
   private async buyPhaseLoopCallback(choice: Choice): Promise<void> {

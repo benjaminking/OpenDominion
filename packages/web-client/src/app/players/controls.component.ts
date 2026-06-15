@@ -8,11 +8,14 @@ import {
   isChooseCardsDecision,
   isTreasurePhaseDecision,
 } from '../decisions/Decision';
+import { CoinComponent } from '../icons/coin.component';
+import { PotionComponent } from '../icons/potion.component';
 
 @Component({
   selector: 'controls',
   templateUrl: './controls.component.html',
   styleUrls: ['./controls.component.css'],
+  imports: [CoinComponent, PotionComponent],
 })
 export class ControlsComponent {
   mainPlayerName = input<string>('');
@@ -44,6 +47,20 @@ export class ControlsComponent {
     });
     return coinsByName;
   });
+  playerPotions: Signal<Map<string, WritableSignal<number>>> = computed(() => {
+    const potionsByName: Map<string, WritableSignal<number>> = new Map();
+    this.playerNames().forEach((name) => {
+      potionsByName.set(name, signal<number>(0));
+    });
+    return potionsByName;
+  });
+  playerDebt: Signal<Map<string, WritableSignal<number>>> = computed(() => {
+    const debtByName: Map<string, WritableSignal<number>> = new Map();
+    this.playerNames().forEach((name) => {
+      debtByName.set(name, signal<number>(0));
+    });
+    return debtByName;
+  });
   playerScores: Signal<Map<string, WritableSignal<number>>> = computed(() => {
     const scoresByName: Map<string, WritableSignal<number>> = new Map();
     this.playerNames().forEach((name) => {
@@ -59,15 +76,29 @@ export class ControlsComponent {
     return this.playerCoins().get(this.currentPlayerName())!();
   });
 
+  currentPlayerPotions = computed<number>(() => {
+    if (!this.playerPotions().has(this.currentPlayerName())) {
+      return 0;
+    }
+    return this.playerPotions().get(this.currentPlayerName())!();
+  });
+
+  currentPlayerDebt = computed<number>(() => {
+    if (!this.playerDebt().has(this.currentPlayerName())) {
+      return 0;
+    }
+    return this.playerDebt().get(this.currentPlayerName())!();
+  });
+
   currentPlayerActions = computed<number>(() => {
-    if (!this.playerCoins().has(this.currentPlayerName())) {
+    if (!this.playerActions().has(this.currentPlayerName())) {
       return 0;
     }
     return this.playerActions().get(this.currentPlayerName())!();
   });
 
   currentPlayerBuys = computed<number>(() => {
-    if (!this.playerCoins().has(this.currentPlayerName())) {
+    if (!this.playerBuys().has(this.currentPlayerName())) {
       return 0;
     }
     return this.playerBuys().get(this.currentPlayerName())!();
@@ -145,6 +176,24 @@ export class ControlsComponent {
           },
         );
         this.webSocketMessageDecoder.subscribeToStatisticUpdate(
+          { owner: name, type: NumberType.POTIONS },
+          (statisticContent: { value: number }) => {
+            const potionsSignal = this.playerPotions().get(name);
+            if (potionsSignal) {
+              potionsSignal.set(statisticContent.value);
+            }
+          },
+        );
+        this.webSocketMessageDecoder.subscribeToStatisticUpdate(
+          { owner: name, type: NumberType.DEBT },
+          (statisticContent: { value: number }) => {
+            const debtSignal = this.playerDebt().get(name);
+            if (debtSignal) {
+              debtSignal.set(statisticContent.value);
+            }
+          },
+        );
+        this.webSocketMessageDecoder.subscribeToStatisticUpdate(
           { owner: name, type: NumberType.SCORE },
           (statisticContent: { value: number }) => {
             const scoreSignal = this.playerScores().get(name);
@@ -193,6 +242,20 @@ export class ControlsComponent {
     if (isTreasurePhaseDecision(decision)) {
       if (decision.simpleTreasuresChoice !== undefined) {
         return decision.simpleTreasuresChoice.coins;
+      }
+    }
+    return 0;
+  });
+
+  simpleTreasurePotions = computed<number>(() => {
+    const decision = this.decisionManager.currentDecision();
+    if (decision === undefined) {
+      return 0;
+    }
+
+    if (isTreasurePhaseDecision(decision)) {
+      if (decision.simpleTreasuresChoice !== undefined) {
+        return decision.simpleTreasuresChoice.potions;
       }
     }
     return 0;

@@ -134,3 +134,24 @@
   height: 40cqh;
   width: 40cqh;
 }
+
+/* full */
+.coin-image-wrapper.full {
+  height: 100cqh;
+  width: 100cqh;
+}
+
+.full .coin-text-wrapper {
+  height: 100cqh;
+  width: 100cqh;
+}
+
+.full .coin-label {
+  font-size: 100cqh;
+  height: 100cqh;
+}
+
+.coin-image-wrapper.full img {
+  height: 100cqh;
+  width: 100cqh;
+}

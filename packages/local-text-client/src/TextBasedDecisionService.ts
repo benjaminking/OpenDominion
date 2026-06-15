@@ -230,7 +230,7 @@ export class TextBasedDecisionService implements DecisionService {
       choicesByCardName.get(card.card.name)!.push({
         type: ChoiceType.Card,
         card: card.card,
-      } as CardChoice);
+      });
     }
 
     const potentialChoices: Map<string, CardChoice[]> = new Map<string, CardChoice[]>();
@@ -571,6 +571,7 @@ export class TextBasedDecisionService implements DecisionService {
     options: CardChoice[],
     numBuys: number,
     numCoins: number,
+    numPotions: number,
   ): Promise<CardChoice | EndBuyPhaseChoice | EndTurnChoice> {
     const message =
       'You have ' +

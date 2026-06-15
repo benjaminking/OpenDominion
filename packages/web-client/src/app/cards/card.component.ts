@@ -7,6 +7,7 @@ import { convertToFileName } from '../util/NamingUtils';
 import { SegmentedMessageComponent } from '../message/segmented-message.component';
 import { CoinComponent } from '../icons/coin.component';
 import { GlobalSettingsService } from '../settings/global-settings.service';
+import { PotionComponent } from '../icons/potion.component';
 
 enum LayoutType {
   PORTRAIT,
@@ -56,7 +57,7 @@ enum OverlayType {
   selector: 'card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [CommonModule, SegmentedMessageComponent, CoinComponent],
+  imports: [CommonModule, SegmentedMessageComponent, CoinComponent, PotionComponent],
 })
 export class CardComponent {
   metadata = input.required<CardMetadata>();
@@ -106,12 +107,16 @@ export class CardComponent {
     return LayoutType.PORTRAIT;
   });
 
-  costSymbol = computed<string>(() => {
+  coinCostSymbol = computed<string>(() => {
     let coins = this.metadata().cost.coins.toFixed();
     if (this.cardInfo().cost.has_asterisk && this.cardInfo().cost === this.metadata().cost) {
       coins += '*';
     }
     return coins;
+  });
+
+  hasPotionCost = computed<boolean>(() => {
+    return (this.metadata().cost.potions ?? 0) > 0;
   });
 
   productionSymbol = computed<string>(() => {
@@ -120,6 +125,10 @@ export class CardComponent {
     }
     let coins = this.cardInfo().production?.coins?.toFixed() ?? '';
     return coins;
+  });
+
+  hasPotionProduction = computed<boolean>(() => {
+    return (this.cardInfo().production?.potions ?? 0) > 0;
   });
 
   OverlayType = OverlayType;

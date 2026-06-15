@@ -33,7 +33,7 @@ describe('CardComponent', () => {
     expect(component.fileName()).toBe('copper');
     expect(component.layoutType()).toBe(component.LayoutType.PORTRAIT_FULL);
     expect(component.overlayType()).toBe(component.OverlayType.TREASURE);
-    expect(component.costSymbol()).toBe('0');
+    expect(component.coinCostSymbol()).toBe('0');
     expect(component.productionSymbol()).toBe('1');
     expect(component.cardAssetDirectory()).toBe('card_assets');
 
@@ -78,7 +78,7 @@ describe('CardComponent', () => {
     expect(component.productionSymbol()).toBe('?');
 
     setInputSignalValue(component.metadata as () => CardMetadata, createCard('Hoard', 'hoard-1', [CardType.TREASURE]));
-    expect(component.costSymbol()).toBe('6*');
+    expect(component.coinCostSymbol()).toBe('6*');
 
     setInputSignalValue(component.metadata as () => CardMetadata, createCard('Duchy', 'duchy-1', [CardType.VICTORY]));
     expect(component.overlayType()).toBe(component.OverlayType.VICTORY);

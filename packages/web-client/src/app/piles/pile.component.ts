@@ -7,12 +7,13 @@ import { Decision, isBuyPhaseDecision, isChooseCardDecision, isTreasurePhaseDeci
 import { CommonModule } from '@angular/common';
 import { GlobalSettingsService } from '../settings/global-settings.service';
 import { CoinComponent } from '../icons/coin.component';
+import { PotionComponent } from '../icons/potion.component';
 
 @Component({
   selector: 'pile',
   templateUrl: './pile.component.html',
   styleUrls: ['./pile.component.css'],
-  imports: [CoinComponent, CommonModule],
+  imports: [CoinComponent, PotionComponent, CommonModule],
 })
 export class PileComponent implements OnInit {
   name = input.required<string>();
@@ -85,7 +86,7 @@ export class PileComponent implements OnInit {
     return this.count() === 0;
   });
 
-  costSymbol = computed<string>(() => {
+  coinCostSymbol = computed<string>(() => {
     console.log(JSON.stringify(this.cost()));
     let coins: string = this.cost()?.coins.toFixed() ?? '';
     if (this.cost()?.has_asterisk) {

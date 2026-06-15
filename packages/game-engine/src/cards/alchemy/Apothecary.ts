@@ -1,14 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs, either } from '../../StandardCardEligibilityFunctions';
-
-const isCopperOrPotion = either(cardNameIs('Copper'), cardNameIs('Potion'));
 
 export class Apothecary extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -19,23 +14,14 @@ export class Apothecary extends KingdomCard {
     await ie.drawCards(1);
     ie.addActions(1);
 
-    const toTopDeck = new CardCollection();
-    for (let i = 0; i < 4; i++) {
-      const topCard: Card | undefined = await ie.takeCardOffDeck();
-      if (topCard === undefined) {
-        break;
-      }
+    const topCards = await ie.takeCardsOffDeck(4);
+    await ie.revealCards(topCards);
 
-      await ie.revealCard(topCard);
-      if (isCopperOrPotion.matches(topCard)) {
-        ie.putCardIntoHandFromLocation(topCard, CardLocation.REVEAL_LIMBO);
-      } else {
-        toTopDeck.addCard(topCard);
-      }
-    }
+    const cardsToHand = topCards.getMatchingCards(either(cardNameIs('Copper'), cardNameIs('Potion')));
+    ie.putCardsIntoHandFromSet(cardsToHand, topCards);
 
-    if (toTopDeck.size() > 0) {
-      await ie.topDeckCardsFromRevealedSet(toTopDeck);
+    if (topCards.size() > 0) {
+      await ie.topDeckCardsFromRevealedSet(topCards);
     }
   }
 }

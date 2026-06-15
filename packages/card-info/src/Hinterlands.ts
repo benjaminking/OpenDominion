@@ -110,19 +110,6 @@ export const hinterlands: CardInfo[] = [
   },
   {
     category: CardCategory.CARD,
-    name: 'Jack of All Trades',
-    category: CardCategory.CARD,
-    text: 'Gain a Silver.\nLook at the top card of your\ndeck; you may discard it.\nDraw until you have 5\ncards in hand.\nYou may trash a non-Treasure\ncard from your hand.',
-    font_size: 'medium',
-    cost: {
-      coins: 4,
-    },
-    types: [CardType.ACTION],
-    expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
-  },
-  {
-    category: CardCategory.CARD,
     name: 'Nomads',
     category: CardCategory.CARD,
     text: '+1 Buy\n+$2\n-\nWhen you gain or trash this,\n+$2.',

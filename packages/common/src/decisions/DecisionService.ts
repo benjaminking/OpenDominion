@@ -59,5 +59,6 @@ export interface DecisionService {
     cardChoices: CardChoice[],
     numBuys: number,
     numCoins: number,
+    numPotions: number,
   ): Promise<CardChoice | EndBuyPhaseChoice | EndTurnChoice>;
 }

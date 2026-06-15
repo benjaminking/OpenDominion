@@ -112,6 +112,7 @@ export class BotDecisionService implements DecisionService {
     options: CardChoice[],
     numBuys: number,
     numCoins: number,
+    numPotions: number,
   ): Promise<CardChoice | EndBuyPhaseChoice | EndTurnChoice> {
     return Promise.resolve(this.bot.makeBuyPhaseChoice(options, numBuys, numCoins));
   }

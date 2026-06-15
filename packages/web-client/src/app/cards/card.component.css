@@ -149,6 +149,7 @@ reserve: #d9be87
   top: 87.5cqh;
   left: 2cqw;
   z-index: 3;
+  display: flex;
 }
 
 .production {
