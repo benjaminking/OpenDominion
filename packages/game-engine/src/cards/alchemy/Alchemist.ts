@@ -2,14 +2,13 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 export class Alchemist extends KingdomCard {
@@ -33,15 +32,7 @@ export class Alchemist extends KingdomCard {
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY))
         .action(
           new EffectAction(async (effectIe: InstructionExecutor) => {
-            await effectIe
-              .chooseOneOption('You may put Alchemist onto your deck')
-              .from(
-                new ActionChoice('Put it onto your deck', async () => {
-                  await effectIe.topDeckCardFromLocation(this, CardLocation.IN_PLAY);
-                }),
-              )
-              .from(new ActionChoice('Leave it in play'))
-              .choose();
+            await effectIe.topDeckCardFromLocation(this, CardLocation.IN_PLAY);
           }),
         )
         .build(),

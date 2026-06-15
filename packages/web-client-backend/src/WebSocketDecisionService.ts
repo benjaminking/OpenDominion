@@ -186,6 +186,7 @@ export class WebSocketDecisionService implements DecisionService {
     cardChoices: CardChoice[],
     _numBuys: number,
     _numCoins: number,
+    _numPotions: number,
   ): Promise<CardChoice | EndBuyPhaseChoice | EndTurnChoice> {
     this.webSocketMessageWriter.sendMessage({
       type: MessageType.BUY_PHASE_CHOICE,

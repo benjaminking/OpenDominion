@@ -4,9 +4,9 @@ import { CardLocation } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class ScryingPool extends KingdomCard {
@@ -20,17 +20,8 @@ export class ScryingPool extends KingdomCard {
     await this.revealTopCardChoice(ie.getSharedGameState().getCurrentPlayer(), ie);
     await ie.performAttack(this, this.attack.bind(this));
 
-    while (true) {
-      const revealedCard: Card | undefined = await ie.takeCardOffDeck();
-      if (revealedCard === undefined) {
-        break;
-      }
-      await ie.revealCard(revealedCard);
-      ie.putCardIntoHandFromLocation(revealedCard, CardLocation.REVEAL_LIMBO);
-      if (!isActionCard.matches(revealedCard)) {
-        break;
-      }
-    }
+    const actions = await ie.revealUntil(isActionCard, Infinity);
+    ie.putCardsIntoHandFromLocation(actions, CardLocation.REVEAL_LIMBO);
   }
 
   public async attack(attackedPlayer: Player, attackingPlayer: Player): Promise<void> {

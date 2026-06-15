@@ -42,7 +42,10 @@
       [src]="'/' + cardAssetDirectory() + '/empty_overlay.png'"
     />
     <div class="card-cost-image">
-      <coin [text]="costSymbol()" [size]="'xxlarge'"></coin>
+      <coin [text]="coinCostSymbol()" [size]="'xxlarge'"></coin>
+      @if (cost()?.potions) {
+        <potion [size]="'xxlarge'"></potion>
+      }
     </div>
     <div class="pile-count">{{ count() }}</div>
   </div>

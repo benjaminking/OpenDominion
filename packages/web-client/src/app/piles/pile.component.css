@@ -53,6 +53,7 @@
   left: 0px;
   bottom: 0px;
   height: 16px;
+  display: flex;
 }
 
 .card-cost-image img {

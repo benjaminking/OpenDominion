@@ -420,6 +420,16 @@ export class PlayerCards {
     return simpleCoins;
   }
 
+  public calculateSimpleTreasurePotionsInHand() {
+    let simplePotions = 0;
+    for (const card of this.hand) {
+      if (card.getName() === 'Potion') {
+        simplePotions++;
+      }
+    }
+    return simplePotions;
+  }
+
   public hasMatchingCardInHand(cardEligibilityFunction: CardEligibilityFunction): boolean {
     return this.hand.doesAnyMatch(cardEligibilityFunction);
   }
