@@ -3,10 +3,8 @@ import { CardChoice, ChoiceType } from '@dominion/common';
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
-import { Cost } from '../card/Cost';
 import { CostSortingFunction } from '../CardSortingFunctions';
 import { CardCostCache } from '../game-state/CardCostCache';
-import { costsUpTo } from '../StandardCardEligibilityFunctions';
 import { Pile } from './Pile';
 import { PileGroup } from './PileGroup';
 
@@ -117,11 +115,9 @@ export class Piles {
     this.allPiles.getPileByName(card.getPileName())?.addCard(card);
   }
 
-  public getEligibleCardChoicesToBuy(coins: number): CardChoice[] {
+  public getEligibleCardChoicesToBuy(): CardChoice[] {
     const choices: CardChoice[] = [];
-    for (const topCard of this.getTopCardsOfSupplyPiles()
-      .getMatchingCardsUnique(costsUpTo(Cost.Simple(coins)))
-      .sorted(new CostSortingFunction())) {
+    for (const topCard of this.getTopCardsOfSupplyPiles().sorted(new CostSortingFunction())) {
       choices.push({
         type: ChoiceType.Card,
         card: topCard.getMetadata(),

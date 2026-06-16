@@ -1,14 +1,17 @@
 <div class="statistics">
-  <span class="statistic" id="coin_counter">
-    @if (currentPlayerCoins() <= 20) {
-      <img src="images/coin{{ currentPlayerCoins() }}_large.png" />
-    } @else {
-      <span ng-show="gameState.coins > 20">{{ currentPlayerCoins() }}</span>
+  <div class="statistic" id="coin_counter">
+    <div class="icon-wrapper">
+      <coin [text]="currentPlayerCoins().toFixed()" [size]="'full'"></coin>
+    </div>
+
+    @for (potion of [].constructor(currentPlayerPotions()); track $index) {
+      <div class="icon-wrapper">
+        <potion [size]="'full'"></potion>
+      </div>
     }
-    <!-- <img src="images/coinp_large.png" ng-repeat="p in game.range(gameState.potions)" /> -->
-  </span>
-  <span class="statistic" id="action_counter">, {{ currentPlayerActions() }} actions</span>
-  <span class="statistic" id="buy_counter">, {{ currentPlayerBuys() }} buys</span>
+  </div>
+  <div class="statistic" id="action_counter">, {{ currentPlayerActions() }} actions</div>
+  <div class="statistic" id="buy_counter">, {{ currentPlayerBuys() }} buys</div>
 </div>
 <div class="status">{{ status() }}</div>
 
@@ -19,12 +22,14 @@
     @if (canPlaySimpleTreasures()) {
       <button id="play_treasures" (click)="makeSimpleTreasureChoice()">
         +
-        @if (simpleTreasureCoins() <= 20) {
-          <img src="images/coin{{ simpleTreasureCoins() }}.png" />
-        } @else {
-          <div>{{ '$' + simpleTreasureCoins() }}</div>
+        <div class="icon-wrapper">
+          <coin [text]="simpleTreasureCoins().toFixed()" [size]="'full'"></coin>
+        </div>
+        @for (potion of [].constructor(simpleTreasurePotions()); track $index) {
+          <div class="icon-wrapper">
+            <potion [size]="'full'"></potion>
+          </div>
         }
-        <!-- <img ng-repeat="p in game.range(game.getBasicTreasurePotions())" src="images/coinp.png" /> -->
       </button>
     }
 

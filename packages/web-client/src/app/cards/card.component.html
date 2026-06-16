@@ -24,14 +24,27 @@
         </div>
       </div>
       <div class="cost">
-        <coin [text]="costSymbol()" [size]="'large'"></coin>
+        <coin [text]="coinCostSymbol()" [size]="'large'"></coin>
+        @if (hasPotionCost()) {
+          <potion [size]="'large'"></potion>
+        }
       </div>
       @if (cardInfo().production !== undefined) {
         <div class="production left">
-          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          @if (productionSymbol() !== '0') {
+            <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          }
+          @if (hasPotionProduction()) {
+            <potion [size]="'large'"></potion>
+          }
         </div>
         <div class="production right">
-          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          @if (productionSymbol() !== '0') {
+            <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          }
+          @if (hasPotionProduction()) {
+            <potion [size]="'large'"></potion>
+          }
         </div>
       }
     </div>
@@ -70,14 +83,21 @@
         </div>
       </div>
       <div class="cost">
-        <coin [text]="costSymbol()" [size]="'large'"></coin>
+        <coin [text]="coinCostSymbol()" [size]="'large'"></coin>
+        @if (hasPotionCost()) {
+          <potion [size]="'large'"></potion>
+        }
       </div>
       @if (cardInfo().production !== undefined) {
         <div class="production left">
-          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          @if (productionSymbol() !== '0') {
+            <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          }
         </div>
         <div class="production right">
-          <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          @if (productionSymbol() !== '0') {
+            <coin [text]="productionSymbol()" [size]="'large'"></coin>
+          }
         </div>
       }
     </div>

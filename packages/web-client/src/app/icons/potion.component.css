@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.potion-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.potion-image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* small */
+.potion-image-wrapper.small {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+.potion-image-wrapper.small img {
+  height: 4.6cqh;
+  width: 4.6cqh;
+}
+
+/* medium */
+.potion-image-wrapper.medium {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+.potion-image-wrapper.medium img {
+  height: 5.8cqh;
+  width: 5.8cqh;
+}
+
+/* large */
+.potion-image-wrapper.large {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+.potion-image-wrapper.large img {
+  height: 10cqh;
+  width: 10cqh;
+}
+
+/* xlarge */
+.potion-image-wrapper.xlarge {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+.potion-image-wrapper.xlarge img {
+  height: 25cqh;
+  width: 25cqh;
+}
+
+/* xxlarge */
+.potion-image-wrapper.xxlarge {
+  height: 40cqh;
+  width: 40cqh;
+}
+
+.potion-image-wrapper.xxlarge img {
+  height: 40cqh;
+  width: 40cqh;
+}
+
+/* full */
+.potion-image-wrapper.full {
+  height: 100cqh;
+  width: 100cqh;
+}
+
+.potion-image-wrapper.full img {
+  height: 100cqh;
+  width: 100cqh;
+}
