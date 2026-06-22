@@ -1,11 +1,12 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
+import { CostModifier } from '../../effects/CostModifier';
+import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
+import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
-// Renown (Reward): +1 Buy; cards cost $2 less this turn.
-// Note: applyGlobalCostReduction() is a stub.
 export class Renown extends Card {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Renown'));
@@ -13,7 +14,12 @@ export class Renown extends Card {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     ie.addBuys(1);
-    // TODO: applyGlobalCostReduction stub — cost reduction not yet implemented
-    ie.applyGlobalCostReduction(2);
+    this.sharedGameState.addCostModifier(
+      new CostModifier.Builder()
+        .setTurnEligibility(new ThisTurnEligibility(this.sharedGameState))
+        .setCostChangeFunction(new CoinCostReduction(2))
+        .build(),
+    );
+    return Promise.resolve();
   }
 }

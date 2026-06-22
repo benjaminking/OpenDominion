@@ -7,6 +7,7 @@ import { CostSortingFunction } from '../CardSortingFunctions';
 import { CardCostCache } from '../game-state/CardCostCache';
 import { Pile } from './Pile';
 import { PileGroup } from './PileGroup';
+import { anyCard } from '../StandardCardEligibilityFunctions';
 
 export class Piles {
   private _basicTreasurePiles: PileGroup = new PileGroup();
@@ -70,6 +71,16 @@ export class Piles {
     this.allPiles.addPile(pile);
   }
 
+  public addNonKingdomSupplyPile(pile: Pile): void {
+    this.supplyPiles.addPile(pile);
+    this.allPiles.addPile(pile);
+  }
+
+  public addNonSupplyPile(pile: Pile): void {
+    this.nonSupplyPiles.addPile(pile);
+    this.allPiles.addPile(pile);
+  }
+
   public getTopCardsOfSupplyPiles(): CardCollection {
     return this.supplyPiles.getTopCards();
   }
@@ -101,6 +112,13 @@ export class Piles {
       return this.allPiles.getPileByName(pileName)!.size();
     }
     return 0;
+  }
+
+  public getUniqueCardsFromPile(pileName: string): CardCollection {
+    if (this.allPiles.hasPile(pileName)) {
+      return this.allPiles.getPileByName(pileName)!.getMatchingCardsUnique(anyCard);
+    }
+    return new CardCollection();
   }
 
   public isSupplyPile(pileName: string): boolean {

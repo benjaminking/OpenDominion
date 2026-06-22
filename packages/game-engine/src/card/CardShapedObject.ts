@@ -1,11 +1,13 @@
 import { Mechanic } from '@dominion/common';
 
-import { CardInfo } from '../../../common/dist/index.cjs';
+import { CardInfo } from '@dominion/card-info';
 import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import { SharedGameState } from '../game-state/SharedGameState';
 import { convertToClassName, convertToFileName } from '../NameUtils';
 import { MechanicsInUse } from '../game-state/MechanicsInUse';
+import { SetupRule } from '../setup/SetupRule';
+import { SetupRules } from '../setup/SetupRules';
 
 export abstract class CardShapedObject {
   protected readonly _properName: string;
@@ -14,6 +16,7 @@ export abstract class CardShapedObject {
   private readonly _mechanics: Set<Mechanic>;
   protected _id = 'default_id';
   private _effects: Effect[] = [];
+  private _setupRules: SetupRules = new SetupRules();
 
   public constructor(
     protected readonly sharedGameState: SharedGameState,
@@ -69,5 +72,13 @@ export abstract class CardShapedObject {
   }
   public removeEffectsByType(type: EffectTriggerType): void {
     this._effects = this._effects.filter((x: Effect) => x.getTrigger() !== type);
+  }
+
+  public addSetupRule(setupRule: SetupRule) {
+    this._setupRules.add(setupRule);
+  }
+
+  public getSetupRules(): SetupRules {
+    return this._setupRules;
   }
 }

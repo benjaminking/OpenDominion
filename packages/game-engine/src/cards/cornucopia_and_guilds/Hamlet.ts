@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
 
 export class Hamlet extends KingdomCard {
@@ -25,8 +25,10 @@ export class Hamlet extends KingdomCard {
       .allowNoneOption()
       .choose();
     if (forAction instanceof Card) {
-      await ie.discardCardFromLocation(forAction, CardLocation.HAND);
-      ie.addActions(1);
+      const discardedCard = await ie.discardCardFromLocation(forAction, CardLocation.HAND);
+      if (discardedCard instanceof Card) {
+        ie.addActions(1);
+      }
     }
 
     // You may discard a card for +1 Buy
@@ -38,8 +40,10 @@ export class Hamlet extends KingdomCard {
       .allowNoneOption()
       .choose();
     if (forBuy instanceof Card) {
-      await ie.discardCardFromLocation(forBuy, CardLocation.HAND);
-      ie.addBuys(1);
+      const discardedCard = await ie.discardCardFromLocation(forBuy, CardLocation.HAND);
+      if (discardedCard instanceof Card) {
+        ie.addBuys(1);
+      }
     }
   }
 }

@@ -7,21 +7,19 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { both, either, isActionCard, isTreasureCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { either, isActionCard, isTheSameCardAs,isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 // Farmhands: +1 Card, +2 Actions; when you gain this, you may set aside an
 // Action or Treasure from your hand and play it at the start of your next turn.
 export class Farmhands extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Farmhands'));
-    // On-gain effect: may set aside Action/Treasure from hand, play at start of next turn
     this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
-        .self()
         .whereCardIs(isTheSameCardAs(this))
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
@@ -44,9 +42,8 @@ export class Farmhands extends KingdomCard {
                 .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
                 .makeMandatory()
                 .action(
-                  new EffectAction((ie: InstructionExecutor, _targetCard: Card) => {
-                    ie.putCardIntoHandFromLocation(cardToSetAside, CardLocation.SET_ASIDE);
-                    ie.playCardFromHand(cardToSetAside);
+                  new EffectAction(async (ie: InstructionExecutor) => {
+                    await ie.playCardFromLocation(cardToSetAside, CardLocation.SET_ASIDE);
                   }),
                 )
                 .build(),

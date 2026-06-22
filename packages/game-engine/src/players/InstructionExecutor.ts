@@ -28,6 +28,7 @@ import { EffectTriggerType } from '../effects/EffectTriggerType';
 import {
   EndOfPlayersNextTurnEffectExpiration,
   OnceThisTurnEffectExpiration,
+  RestOfTurnEffectExpiration,
   StartOfPlayersNextTurnEffectExpiration,
 } from '../effects/StandardEffectExpirations';
 import { NextTurnEligibility, ThisTurnEligibility } from '../effects/StandardTurnEligibilityFunctions';
@@ -36,10 +37,11 @@ import { SharedGameState } from '../game-state/SharedGameState';
 import { Logger } from '../logging/Logger';
 import { ServerLogMessage } from '../logging/ServerLogMessage';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
-import { isSimpleTreasure, noCard } from '../StandardCardEligibilityFunctions';
+import { anyCard, isDuplicateWith, isSimpleTreasure, noCard, not } from '../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../StandardNumberEligibilityFunctions';
 import { ExtraTurn } from '../turns/ExtraTurn';
 import { ExtraTurnPrecondition } from '../turns/ExtraTurnPreconditions';
+import { TurnPhase } from '../turns/TurnPhase';
 import { Player } from './Player';
 
 export class InstructionExecutor {
@@ -118,6 +120,7 @@ export class InstructionExecutor {
     return extraTurns.map((et: ExtraTurn) => et.toExtraTurnChoice());
   }
 
+  // TODO: these implementations are hacky - do them in the style of overpay with a local function
   public async chooseDeckDepth(): Promise<number> {
     let choiceBuilder: ChooseOneOptionBuilder = this.chooseOneOption('How many cards down?');
     for (let depth = 0; depth <= this.handSize(); ++depth) {
@@ -126,6 +129,51 @@ export class InstructionExecutor {
     }
     const choice: ActionChoice = await choiceBuilder.choose();
     return parseInt(choice.getName());
+  }
+
+  public async chooseCoffers(): Promise<number> {
+    let choiceBuilder: ChooseOneOptionBuilder = this.chooseOneOption('How many coffers to spend?');
+    for (let numCoffers = 0; numCoffers <= this.player.getStatistics().getCoffers(); ++numCoffers) {
+      choiceBuilder = choiceBuilder.from(new ActionChoice(numCoffers.toFixed(), () => { }))
+    }
+    const choice: ActionChoice = await choiceBuilder.choose();
+    return parseInt(choice.getName());
+  }
+
+  public async chooseOverpayAmount(): Promise<MoneyAmount | undefined> {
+    let choiceBuilder: ChooseOneOptionBuilder = this.chooseOneOption('How much would you like to overpay?');
+
+    let overpayAmount: MoneyAmount | undefined = undefined;
+    function selectOverpay(chosenOverpay: MoneyAmount | undefined): void {
+      overpayAmount = chosenOverpay;
+    }
+
+    for (let numCoins = 0; numCoins <= this.player.getStatistics().getCoins(); ++numCoins) {
+      choiceBuilder = choiceBuilder.from(new ActionChoice('$' + numCoins.toFixed(), () => { selectOverpay({ coins: numCoins }) }))
+      if(this.player.getStatistics().getPotions() > 0) {
+        choiceBuilder = choiceBuilder.from(new ActionChoice('$' + numCoins.toFixed() + 'P', () => { selectOverpay({ coins: numCoins, potions: 1 }) }))
+      }
+    }
+    choiceBuilder = choiceBuilder.from(new ActionChoice('Don\'t overpay', () => { selectOverpay(undefined) }))
+    await choiceBuilder.choose();
+
+    if (overpayAmount !== undefined) {
+      this.player.getStatistics().spendAmount(overpayAmount);
+    }
+    return overpayAmount;
+  }
+
+  public async chooseRewardToGain(gainLocation: CardLocation = CardLocation.DISCARD): Promise<Card | undefined> {
+    const rewardToGain = this.chooseCard("Choose a reward to gain")
+      .from(this.sharedGameState.piles.getUniqueCardsFromPile('Rewards'))
+      .to(CardSelectionPurpose.GAIN)
+      .choose();
+    
+    if (!(rewardToGain instanceof Card)) {
+      return;
+    }
+
+    return this.gainCardFromPile(rewardToGain, gainLocation);
   }
 
   public handSize(): number {
@@ -164,12 +212,24 @@ export class InstructionExecutor {
     return this.player.getTurnTracker().numMatchingCardsGainedThisTurn(cardEligibilityFunction);
   }
 
+  public getNumCardsGainedInThisTurnsBuyPhase(): number {
+    return this.player.getTurnTracker().numMatchingCardsGainedThisTurnByPhase(anyCard, TurnPhase.BUY);
+  }
+
   public getMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
     return this.player.getOwnedCards().getMatchingCardsInHand(cardEligibilityFunction);
   }
 
   public getMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
     return this.player.getOwnedCards().getMatchingCardsInPlay(cardEligibilityFunction);
+  }
+
+  public numUniqueMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.player.getOwnedCards().getInPlay().getMatchingCardsUnique(cardEligibilityFunction).size();
+  }
+
+  public numUniqueMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.player.getOwnedCards().getHand().getMatchingCardsUnique(cardEligibilityFunction).size();
   }
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
@@ -261,7 +321,6 @@ export class InstructionExecutor {
   }
 
   private registerPlayedCard(card: Card): void {
-    this.sharedGameState.addPlayedCard(card);
     this.player.getTurnTracker().addPlayedCard(card);
     this.player.getOwnedCards();
   }
@@ -594,6 +653,10 @@ export class InstructionExecutor {
     return this.discardCard(card);
   }
 
+  public async discardTopCardOfDeck(): Promise<Card | undefined> {
+    return this.player.getOwnedCards().discardTopCardOfDeck();
+  }
+
   public async discardCards(cards: CardCollection, expectedLocation: CardLocation): Promise<CardCollection> {
     if (cards.size() > 0) {
       this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'discards %c', cards));
@@ -847,7 +910,7 @@ export class InstructionExecutor {
         return false;
       }
 
-      if (cardEligibilityFunction.numMatchingCards(this.sharedGameState.cardsPlayedThisTurn) > 1) {
+      if (this.player.getTurnTracker().hasPlayedMatchingCardThisTurn(cardEligibilityFunction)) {
         return false;
       }
       return true;
@@ -878,8 +941,20 @@ export class InstructionExecutor {
     return this.player.getTurnTracker().getCardsBoughtThisTurnEligibilityFunction();
   }
 
+  public createIsNotDuplicateWithHandCardEligibilityFunction(): CardEligibilityFunction {
+    return not(isDuplicateWith(this.player.getOwnedCards().getHand()));
+  }
+
+  public createIsNotDuplicateWithInPlayCardEligibilityFunction(): CardEligibilityFunction {
+    return not(isDuplicateWith(this.player.getOwnedCards().getInPlay()));
+  }
+
   public createOnceThisTurnEffectExpiration(): EffectExpiration {
     return new OnceThisTurnEffectExpiration(this.sharedGameState.getCurrentTurn());
+  }
+
+  public createRestOfTurnEffectExpiration(): EffectExpiration {
+    return new RestOfTurnEffectExpiration(this.sharedGameState.getCurrentTurn());
   }
 
   public createStartOfMyNextTurnEffectExpiration(): EffectExpiration {
@@ -975,33 +1050,20 @@ export class InstructionExecutor {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
 
-  // TODO: implement Coffers token tracking (Cornucopia & Guilds).
-  public addCoffers(_n: number): void {
-    return;
+  public addCoffers(additionalCoffers: number): void {
+    this.player.getStatistics().addCoffers(additionalCoffers);
   }
 
-  // TODO: implement spending Coffers for coins (Cornucopia & Guilds).
-  public async spendCoffers(_n: number): Promise<void> {
-    return Promise.resolve();
+  public async spendCoffers(amountToSpend: number): Promise<void> {
+    const numSpent = this.removeCoffers(amountToSpend);
+    await this.player.getStatistics().addCoins(numSpent);
   }
 
-  // TODO: implement reading current Coffers count (Cornucopia & Guilds).
+  public removeCoffers(amountToRemove: number): number {
+    return this.player.getStatistics().removeCoffers(amountToRemove);
+  }
+
   public getCoffers(): number {
-    return 0;
-  }
-
-  // TODO: implement gaining a Reward card from the Reward pile (Cornucopia & Guilds - Joust).
-  public async gainReward(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  // TODO: implement counting cards gained specifically in the buy phase (Cornucopia & Guilds - Merchant Guild).
-  public numCardsGainedInBuyPhase(): number {
-    return 0;
-  }
-
-  // TODO: implement a global cost reduction for all cards this turn (Cornucopia & Guilds - Renown).
-  public applyGlobalCostReduction(_n: number): void {
-    return;
+    return this.player.getStatistics().getCoffers();
   }
 }

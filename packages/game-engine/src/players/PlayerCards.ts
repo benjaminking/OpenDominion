@@ -259,6 +259,15 @@ export class PlayerCards {
     return card;
   }
 
+  public async discardTopCardOfDeck(): Promise<Card | undefined> {
+    const topCardOfDeck = await this.takeCardOffDeck();
+    if (topCardOfDeck === undefined) {
+      return undefined;
+    }
+    this.limbo.removeCard(topCardOfDeck);
+    return this.discardCard(topCardOfDeck);
+  }
+
   public async discardCards(cards: CardCollection, expectedLocation: CardLocation): Promise<CardCollection> {
     if (cards.size() > 0) {
       this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'discards %c', cards));

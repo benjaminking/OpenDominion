@@ -4,12 +4,10 @@ import { CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 
-// Advisor: +1 Action; reveal top 3 cards of your deck; the player to your left
-// chooses one — discard that, put the rest into your hand.
 export class Advisor extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Advisor'));
@@ -37,7 +35,6 @@ export class Advisor extends KingdomCard {
       await ie.discardCard(cardToDiscard);
     }
 
-    // Put remaining cards into hand
-    await ie.putCardsIntoHandFromSet(topCards.clone(), topCards);
+    ie.putCardsIntoHandFromSet(topCards, topCards);
   }
 }

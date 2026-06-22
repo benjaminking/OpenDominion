@@ -2,16 +2,16 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { KingdomCard } from '../../card/KingdomCard';
+import { Effect } from '../../effects/Effect';
+import { EffectAction } from '../../effects/EffectAction';
+import { EffectSource } from '../../effects/EffectSource';
+import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { OneTimeEffectExpirtation } from '../../effects/StandardEffectExpirations';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
-const isProvince = new CardEligibilityFunction((c: Card) => c.getName() === 'Province');
-
-// Joust: +1 Card, +1 Action, +$1. You may set aside a Province from your hand;
-// if you do, gain a Reward card.
-// Note: gainReward() is a stub — Reward cards are not yet implemented.
 export class Joust extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Joust'));
@@ -27,15 +27,19 @@ export class Joust extends KingdomCard {
       .chooseCard('You may set aside a Province from your hand to gain a Reward')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.OTHER)
-      .whereCardIs(isProvince)
+      .whereCardIs(cardNameIs('Province'))
       .allowNoneOption()
       .choose();
 
     if (province instanceof Card) {
       await ie.setCardAsideFromLocation(province, CardLocation.HAND);
-      // TODO: gainReward stub - gains a card from the Reward pile
-      await ie.gainReward();
-      // Province discards in cleanup (handled by canBeDiscardedInCleanup for SET_ASIDE)
+      await ie.chooseRewardToGain(CardLocation.HAND);
+      this.addEffect(new Effect.Builder()
+        .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.ANYONE)
+        .withExpiration(new OneTimeEffectExpirtation())
+        .makeMandatory()
+        .action(new EffectAction(async (ie: InstructionExecutor) => ie.discardCardFromLocation(province, CardLocation.SET_ASIDEs)))
+        .build());
     }
   }
 }

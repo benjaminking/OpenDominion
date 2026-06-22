@@ -1,35 +1,51 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { Effect } from '../../effects/Effect';
+import { EffectAction } from '../../effects/EffectAction';
+import { EffectSource } from '../../effects/EffectSource';
+import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isActionCard } from '../../StandardCardEligibilityFunctions';
+import { isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
-// Herald: +1 Card, +1 Action; reveal top card of deck, if Action play it.
-// Overpay: per $1 overpaid, put a card from your discard pile onto your deck.
 export class Herald extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Herald'));
+    this.addEffect(new Effect.Builder()
+      .from(this)
+      .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
+      .whereCardIs(isTheSameCardAs(this))
+      .action(new EffectAction(async (ie: InstructionExecutor) => {
+        const overpayAmount: MoneyAmount = await ie.chooseOverpayAmount();
+        for (let i = 0; i < overpayAmount.coins; ++i) {
+          const cardToTopDeck = ie.chooseCard("Choose a card to put on your deck")
+            .from(CardLocation.DISCARD)
+            .to(CardSelectionPurpose.TOPDECK)
+            .choose();
+          
+          if (cardToTopDeck instanceof Card) {
+            await ie.topDeckCardFromLocation(cardToTopDeck, CardLocation.DISCARD);
+          }
+        }
+      }))
+      .build())
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(1);
     ie.addActions(1);
-    // TODO: overpay effect - per $1 overpaid, put discard card onto deck (not yet triggered by buy)
-
-    const topCard: Card | undefined = await ie.takeCardOffDeck();
+    
+    const topCard: Card | undefined = await ie.lookAtTopCardOfDeck();
     if (topCard === undefined) {
       return;
     }
     await ie.revealCard(topCard);
 
     if (isActionCard.matches(topCard)) {
-      // Play it from REVEAL_LIMBO (card location after takeCardOffDeck)
-      await ie.playCardFromLocation(topCard, CardLocation.REVEAL_LIMBO);
-    } else {
-      ie.putCardOnDeck(topCard);
-    }
+      await ie.playCardFromLocation(topCard, CardLocation.DECK);
+    } 
   }
 }

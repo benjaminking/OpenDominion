@@ -1,62 +1,96 @@
-import { CardLocation } from '@dominion/common';
+import { CardLocation, Expansion } from '@dominion/common';
 
+import { Card } from '../card/Card';
+import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
-import { KingdomCard } from '../card/KingdomCard';
 import * as cards from '../cards/index';
-import { Randomizers } from './Randomizers';
+import { SharedGameState } from '../game-state/SharedGameState';
+import { PileSpecification } from './PileSpecification';
+import { anyKingdomPileSpecification } from './StandardPileSpecifications';
 
 export class KingdomChooser {
-  private cardFactory: CardFactory;
   private allCardNames: string[] = [];
+  private requiredCardRandomizers: Card[] = [];
+  private kingdomCardsGenerated: CardCollection = new CardCollection();
+  private allCardsGenerated: CardCollection = new CardCollection();
   private usedCardNames: Set<string> = new Set<string>();
+  private MAX_NUM_CARD_FINDING_ATTEMPTS = 200;
 
-  public constructor(cardFactory: CardFactory) {
-    this.cardFactory = cardFactory;
+  public constructor(private readonly cardFactory: CardFactory, requiredCardNames: string[]) {
     for (const cardName of Object.keys(cards)) {
       this.allCardNames.push(cardName.replace(/\W+/g, ''));
     }
+    for (const requiredCardName of requiredCardNames) {
+      this.requiredCardRandomizers.push(this.createRandomizer(requiredCardName))
+    }
   }
 
-  public selectRandomizers(requiredCardNames: string[]): Randomizers {
-    this.usedCardNames.clear();
+  public hasMoreKingdomCards(): boolean {
+    return this.kingdomCardsGenerated.size() < 10;
+  }
 
-    const chosenRandomizers: KingdomCard[] = [];
+  public getNextKingdomRandomizer(): Card | undefined {
+    if (this.requiredCardRandomizers.length) {
+      return this.requiredCardRandomizers.pop();
+    }
+    const randomizer = this.selectMatchingRandomizer(anyKingdomPileSpecification);
+    if (randomizer !== undefined) {
+      this.kingdomCardsGenerated.addCard(randomizer);
+    }
+    return randomizer;
+  }
 
-    let kingdomCardCount = 0;
-    for (let cardName of requiredCardNames) {
-      cardName = cardName.replace(/\W+/g, '');
-      if (!(this.cardFactory.createCard(cardName, '', CardLocation.PILE) instanceof KingdomCard)) {
-        console.log('Warning: the following required card is not a kingdom card: ' + cardName);
-        continue;
+  public selectMatchingRandomizer(pileSpecification: PileSpecification): Card | undefined {
+    let numAttempts = 0;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    while (true) {
+      const randomCard = this.chooseRandomCard()
+      numAttempts++;
+      if (pileSpecification.doesRandomizerMatch(randomCard)) {
+        this.allCardsGenerated.addCard(randomCard);
+        return randomCard;
       }
-      chosenRandomizers.push(
-        this.cardFactory.createCard(cardName, cardName + '_randomizer', CardLocation.PILE) as KingdomCard,
-      );
-      this.usedCardNames.add(cardName);
-      kingdomCardCount++;
+      if (numAttempts >= this.MAX_NUM_CARD_FINDING_ATTEMPTS) {
+        return undefined;
+      }
     }
-
-    while (kingdomCardCount < 10) {
-      const cardName = this.getRandomUnusedKingdomCardName();
-      chosenRandomizers.push(
-        this.cardFactory.createCard(cardName, cardName + '_randomizer', CardLocation.PILE) as KingdomCard,
-      );
-      this.usedCardNames.add(cardName);
-      kingdomCardCount++;
-    }
-
-    return new Randomizers(chosenRandomizers);
+    return undefined;
   }
 
-  private getRandomUnusedKingdomCardName(): string {
-    let cardName = this.allCardNames[(this.allCardNames.length * Math.random()) << 0];
-    while (
-      cardName === 'default' ||
-      this.usedCardNames.has(cardName) ||
-      !(this.cardFactory.createCard(cardName, '', CardLocation.PILE) instanceof KingdomCard)
-    ) {
-      cardName = this.allCardNames[(this.allCardNames.length * Math.random()) << 0];
+  private chooseRandomCard(): Card {
+    const randomCardName = this.chooseRandomCardName();
+    return this.createRandomizer(randomCardName);
+  }
+
+  private createRandomizer(cardName: string): Card {
+    return this.cardFactory.createCard(cardName, cardName + '_randomizer', CardLocation.PILE);
+  }
+
+  private chooseRandomCardName(): string {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    while (true) {
+      const cardName = this.allCardNames[(this.allCardNames.length * Math.random()) << 0];
+      if (cardName !== 'default' && !this.usedCardNames.has(cardName)) {
+        return cardName;
+      }
     }
-    return cardName;
+    return '';
+  }
+
+  public getProportionFromExpansion(expansion: Expansion): number {
+    return this.kingdomCardsGenerated.getProportionFromExpansion(expansion);
+  }
+
+  public applyGameStateSetupRules(sharedGameState: SharedGameState): void {
+    for (const randomizer of this.allCardsGenerated) {
+      if (!randomizer.getSetupRules().hasAnyGameStateSetupRules()) {
+        return;
+      }
+      
+      while (randomizer.getSetupRules().hasAnyGameStateSetupRules()) {
+        const setupRule = randomizer.getSetupRules().getNextGameStateSetupRule();
+        setupRule.applySetupRule(sharedGameState);
+      }
+    }
   }
 }

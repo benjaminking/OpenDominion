@@ -7,8 +7,11 @@ import { Game } from '../Game';
 import { PileFactory } from '../piles/PileFactory';
 import { PlayerSpecification } from '../players';
 import { KingdomChooser } from './KingdomChooser';
-import { Randomizers } from './Randomizers';
 import { StartingDeckConfigurationBuilder } from './StartingDeckConfigurationBuilder';
+import { PileSpecification } from './PileSpecification';
+import { Pile } from '../piles/Pile';
+import { anyKingdomPileSpecification } from './StandardPileSpecifications';
+import { SpecialPileLookup, SpecialPileType } from '../piles/SpecialPiles';
 
 export interface GameInitializerOptions {
   useColoniesPlatinum?: boolean;
@@ -28,6 +31,9 @@ export class GameInitializer {
   private readonly game: Game;
   private readonly startingDeckConfigurationBuilder: StartingDeckConfigurationBuilder =
     new StartingDeckConfigurationBuilder();
+  private readonly pileFactory: PileFactory;
+  private readonly kingdomChooser: KingdomChooser;
+  private readonly specialPileLookup: SpecialPileLookup = new SpecialPileLookup();
 
   public constructor(
     private readonly players: PlayerSpecification[],
@@ -37,6 +43,8 @@ export class GameInitializer {
     this.game = new Game(this.players);
     this.game.choosePlayerOrder();
     this.initializeGameState();
+    this.pileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
+    this.kingdomChooser = new KingdomChooser(new CardFactory(this.game.getGameState()), this.requiredCardNames);
   }
 
   protected initializeGameState(): void {
@@ -50,36 +58,27 @@ export class GameInitializer {
   }
 
   protected generateKingdomCards(): void {
-    const randomizers: Randomizers = this.selectRandomizers();
-    this.addCardsToKingdom(randomizers);
-    this.performKingdomLevelSetup(randomizers);
-  }
-
-  private selectRandomizers(): Randomizers {
-    const kingdomChooser = new KingdomChooser(new CardFactory(this.game.getGameState()));
-    return kingdomChooser.selectRandomizers(this.requiredCardNames);
-  }
-
-  private addCardsToKingdom(randomizers: Randomizers): void {
-    for (const randomizer of randomizers.getCards()) {
-      this.addKingdomCard(randomizer);
+    while (this.kingdomChooser.hasMoreKingdomCards()) {
+      const randomizer = this.kingdomChooser.selectMatchingRandomizer(anyKingdomPileSpecification);
+      if (randomizer === undefined) {
+        break;
+      }
+      const pileSize = this.determineKingdomPileSize(randomizer);
+      this.addKingdomPile(randomizer, pileSize);
     }
+    this.performKingdomLevelSetup();
   }
 
-  private addKingdomCard(randomizer: Card): void {
-    const pileFactory: PileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
+  public addPile(pileSpecification: PileSpecification): Pile | undefined {
+    const randomizer: Card | undefined = this.kingdomChooser.selectMatchingRandomizer(pileSpecification);
+    if (randomizer === undefined) {
+      return undefined;
+    }
     const pileSize = this.determineKingdomPileSize(randomizer);
-    this.game
-      .getGameState()
-      .piles.addKingdomPile(
-        pileFactory.createPile(
-          CardInfoLookup.lookUpCardInfo(randomizer.getPileName()),
-          pileSize,
-          new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]),
-        ),
-      );
 
+    this.addKingdomPile(randomizer, pileSize);
     this.handleCardMechanics(randomizer);
+    this.handleInitializationSetupRules(randomizer);
   }
 
   private determineKingdomPileSize(randomizer: Card): number {
@@ -99,6 +98,20 @@ export class GameInitializer {
 
   private determineCursePileSize(): number {
     return (this.players.length - 1) * 10;
+  }
+
+  private addKingdomPile(randomizer: Card, pileSize: number): Pile {
+    const pile: Pile = this.pileFactory.createPile(
+      CardInfoLookup.lookUpCardInfo(randomizer.getPileName()),
+      pileSize,
+      new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]),
+    );
+    this.game
+      .getGameState()
+      .piles.addKingdomPile(
+        pile
+    );
+    return pile;
   }
 
   // move the details of standard initialization to Piles
@@ -181,6 +194,45 @@ export class GameInitializer {
     if (randomizer.usesMechanic(Mechanic.POTIONS)) {
       this.addPotionsToSupply();
     }
+    if (randomizer.usesMechanic(Mechanic.REWARDS)) {
+      this.addSpecialPile(SpecialPileType.REWARDS);
+    }
+  }
+
+  private addSpecialPile(specialPileType: SpecialPileType) {
+    const specialPileSpecification = this.specialPileLookup.lookUpSpecialPile(specialPileType);
+    const specialPile: Pile = this.pileFactory.createSpecialPile(specialPileSpecification);
+    if (specialPileSpecification.pileCategories.has(PileCategory.KINGDOM)) {
+      this.game
+        .getGameState()
+        .piles.addKingdomPile(
+          specialPile
+      );
+    }
+    else if (specialPileSpecification.pileCategories.has(PileCategory.SUPPLY) {
+      this.game
+        .getGameState()
+        .piles.addNonKingdomSupplyPile(
+          specialPile
+      );
+    }
+    else if (specialPileSpecification.pileCategories.has(PileCategory.NON_SUPPLY)) {
+      this.game
+        .getGameState()
+        .piles.addNonSupplyPile(
+          specialPile
+      );
+    }
+  }
+
+  private handleInitializationSetupRules(randomizer: Card): void {
+    while (randomizer.getSetupRules().hasAnyGameInitializationSetupRules()) {
+      randomizer.getSetupRules().getNextGameInitializationSetupRule().applySetupRule(this);
+    }
+  }
+
+  public replaceCardsInPiles(cardName: string, replacementCardName: string): void {
+    this.game.getGameState().replaceCardsInPiles(cardName, replacementCardName);
   }
 
   private addPotionsToSupply(): void {
@@ -196,20 +248,21 @@ export class GameInitializer {
       );
   }
 
-  private performKingdomLevelSetup(randomizers: Randomizers) {
-    if (this.arePlatinumAndColonyRequired(randomizers)) {
+  private performKingdomLevelSetup() {
+    if (this.arePlatinumAndColonyRequired()) {
       this.addPlatinumAndColonyToSupply();
     }
-    if (this.areSheltersRequired(randomizers)) {
+    if (this.areSheltersRequired()) {
       this.addSheltersToStartingDecks();
     }
+    this.kingdomChooser.applyGameStateSetupRules(this.game.getGameState());
   }
 
-  private arePlatinumAndColonyRequired(randomizers: Randomizers): boolean {
+  private arePlatinumAndColonyRequired(): boolean {
     if (typeof this.options.useColoniesPlatinum === 'boolean') {
       return this.options.useColoniesPlatinum;
     }
-    return Math.random() < randomizers.getProportionFromExpansion(Expansion.PROSPERITY);
+    return Math.random() < this.kingdomChooser.getProportionFromExpansion(Expansion.PROSPERITY);
   }
 
   private addPlatinumAndColonyToSupply(): void {
@@ -235,11 +288,11 @@ export class GameInitializer {
       );
   }
 
-  private areSheltersRequired(randomizers: Randomizers): boolean {
+  private areSheltersRequired(): boolean {
     if (typeof this.options.useShelters === 'boolean') {
       return this.options.useShelters;
     }
-    return Math.random() < randomizers.getProportionFromExpansion(Expansion.DARK_AGES);
+    return Math.random() < this.kingdomChooser.getProportionFromExpansion(Expansion.DARK_AGES);
   }
 
   private addSheltersToStartingDecks(): void {

@@ -2,9 +2,9 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
+import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 // Demesne (Reward): +2 Actions, +2 Buys; gain a Gold.
 // Worth 1VP per Gold you have.
@@ -22,11 +22,7 @@ export class Demesne extends Card {
   public score(allCardGroups: CardCollection[]): number {
     let goldCount = 0;
     for (const collection of allCardGroups) {
-      for (const card of collection.asCardArray()) {
-        if (card.getName() === 'Gold') {
-          goldCount++;
-        }
-      }
+      goldCount += collection.getMatchingCards(cardNameIs('gold')).size();
     }
     return goldCount;
   }

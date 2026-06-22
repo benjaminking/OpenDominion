@@ -1,4 +1,4 @@
-import { Cost as CommonCost } from '@dominion/common';
+import { Cost as CommonCost, MoneyAmount } from '@dominion/common';
 
 export class Cost {
   private _coins = 0;
@@ -38,6 +38,10 @@ export class Cost {
 
   public static fromCommonCost(commonCost: CommonCost): Cost {
     return new Cost(commonCost.coins, commonCost.potions ?? 0, commonCost.debt ?? 0, commonCost.has_asterisk);
+  }
+
+  public static fromMoneyAmount(moneyAmount: MoneyAmount): Cost {
+    return new Cost(moneyAmount.coins, moneyAmount.potions ?? 0, 0, false);
   }
 
   public plus(coins: number): Cost {

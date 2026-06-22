@@ -2,11 +2,9 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
-// Courser (Reward): +2 Cards, +2 Actions, +$2, or gain 4 Silvers
-// (choose two different options).
 export class Courser extends Card {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Courser'));
@@ -32,9 +30,7 @@ export class Courser extends Card {
       )
       .from(
         new ActionChoice('Gain 4 Silvers', async () => {
-          for (let i = 0; i < 4; i++) {
-            await ie.gainFromPile('Silver');
-          }
+          await ie.gainCardFromPileNTimes('Silver', 4);
         }),
       )
       .choose(2);

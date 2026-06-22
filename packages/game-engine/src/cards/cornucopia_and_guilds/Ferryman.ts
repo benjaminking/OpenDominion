@@ -2,25 +2,40 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
+import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
+import { Effect } from '../../effects/Effect';
+import { EffectAction } from '../../effects/EffectAction';
+import { EffectSource } from '../../effects/EffectSource';
+import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
+import { Pile } from '../../piles/Pile';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { AddedPilePostAction } from '../../setup/AddedPilePostAction';
+import { PileAddingSetupRule } from '../../setup/PileAddingSetupRule';
+import { PileSpecification } from '../../setup/PileSpecification';
+import { both, costsExactly, either, isKingdomCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
-// Ferryman: +2 Cards, +1 Action; discard a card.
-// Setup: Choose a Kingdom card pile costing $3 or $4 to add to the game.
-// When you gain Ferryman, gain one of those cards. (setup/gain effect is a stub)
 export class Ferryman extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Ferryman'));
+    this.addSetupRule(new PileAddingSetupRule(new PileSpecification(both(isKingdomCard, either(costsExactly(Cost.Simple(3)), costsExactly(Cost.Simple(4))))),
+      new AddedPilePostAction((pile: Pile) => {
+        this.addEffect(
+          new Effect.Builder()
+            .from(this)
+            .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+            .whereCardIs(isTheSameCardAs(this))
+            .makeMandatory()
+            .action(new EffectAction(async (ie: InstructionExecutor) => ie.gainCardFromPile(pile.name)))
+            .build()
+      )
+    })))
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(2);
     ie.addActions(1);
-
-    // TODO: when you gain Ferryman, gain a card from the chosen $3–$4 pile
-    // (requires a setup-chosen bonus pile not yet implemented in engine)
 
     const toDiscard: Card | Choice = await ie
       .chooseCard('Discard a card')

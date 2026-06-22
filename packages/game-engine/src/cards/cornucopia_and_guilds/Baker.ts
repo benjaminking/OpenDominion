@@ -1,20 +1,29 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { GameStateSetupRule, SetupRuleType } from '../../setup/SetupRule';
 
-// Baker: +1 Card, +1 Action, +1 Coffers.
-// Setup: Each player gets +1 Coffers. (setup effect is a stub)
+class ExtraCofferSetupRule implements GameStateSetupRule {
+  public setupRuleType: SetupRuleType.GAME_STATE = SetupRuleType.GAME_STATE;
+  public applySetupRule(sharedGameState: SharedGameState): void {
+    for(const player of sharedGameState.getCurrentTurnOrder()) {
+      player.getInstructionExecutor().addCoffers(1);
+    }
+  }
+  
+}
+
 export class Baker extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Baker'));
+    this.addSetupRule(new ExtraCofferSetupRule())
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(1);
     ie.addActions(1);
-    // TODO: addCoffers stub
     ie.addCoffers(1);
   }
 }

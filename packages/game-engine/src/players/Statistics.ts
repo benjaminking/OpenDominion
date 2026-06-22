@@ -1,4 +1,4 @@
-import { NumberType, ScoringElementType, VPChipScoringElement } from '@dominion/common';
+import { MoneyAmount, NumberType, ScoringElementType, VPChipScoringElement } from '@dominion/common';
 
 import { Cost } from '../card/Cost';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
@@ -12,6 +12,7 @@ export class Statistics {
   private actions: StatisticSignal;
   private buys: StatisticSignal;
   private vpChips: StatisticSignal;
+  private coffers: StatisticSignal;
 
   constructor(private readonly player: Player) {
     const messageBroadcaster: GameMessageBroadcaster = this.player.getGame().getMessageBroadcaster();
@@ -21,6 +22,7 @@ export class Statistics {
     this.actions = new StatisticSignal(player, NumberType.ACTIONS, messageBroadcaster);
     this.buys = new StatisticSignal(player, NumberType.BUYS, messageBroadcaster);
     this.vpChips = new StatisticSignal(player, NumberType.VP_CHIPS, messageBroadcaster);
+    this.coffers = new StatisticSignal(player, NumberType.COFFERS, messageBroadcaster);
   }
 
   public communicateInitialState() {
@@ -30,6 +32,7 @@ export class Statistics {
     this.actions.forceBroadcast();
     this.buys.forceBroadcast();
     this.vpChips.forceBroadcast();
+    this.coffers.forceBroadcast();
   }
 
   public getScore(): number {
@@ -77,6 +80,10 @@ export class Statistics {
     this.coins.subtract(coinsSpent);
   }
 
+  public resetCoins(): void {
+    this.coins.update(0);
+  }
+
   public addPotions(additionalPotions: number): void {
     this.potions.add(additionalPotions);
   }
@@ -85,8 +92,9 @@ export class Statistics {
     this.potions.subtract(potionsSpent);
   }
 
-  public resetCoins(): void {
-    this.coins.update(0);
+  public spendAmount(moneyAmount: MoneyAmount): void {
+    this.spendCoins(moneyAmount.coins);
+    this.spendPotions(moneyAmount.potions);
   }
 
   public resetPotions(): void {
@@ -126,6 +134,20 @@ export class Statistics {
       type: ScoringElementType.VP_CHIP,
       totalPoints: this.vpChips.getValue(),
     };
+  }
+
+  public addCoffers(additionalCoffers: number): void {
+    this.coffers.add(additionalCoffers);
+  }
+
+  public removeCoffers(amountToRemove: number): number {
+    const amountActuallyRemoved = Math.min(this.coffers.getValue(), amountToRemove);
+    this.coffers.subtract(amountActuallyRemoved);
+    return amountActuallyRemoved;
+  }
+
+  public getCoffers(): number {
+    return this.coffers.getValue();
   }
 
   public canAfford(cost: Cost): boolean {
