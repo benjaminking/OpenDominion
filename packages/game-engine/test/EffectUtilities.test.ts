@@ -21,6 +21,12 @@ const createPlayer = (name: string, unofficialTurnNumber = 0): Player => {
     getStatistics: vi.fn(() => ({
       getUnofficialTurnNumber: vi.fn(() => unofficialTurnNumber),
     })),
+    getTurnTracker: vi.fn(() => ({
+      getCurrentTurn: vi.fn(() => ({
+        getUnofficialNumber: vi.fn(() => unofficialTurnNumber),
+        getOwner: vi.fn(() => ({ getName: () => name })),
+      })),
+    })),
   } as unknown as Player;
 };
 

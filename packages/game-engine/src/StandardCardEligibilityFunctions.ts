@@ -1,10 +1,8 @@
-import { CardLocation, CardType, Expansion } from '@dominion/common';
+import { CardLocation, CardType } from '@dominion/common';
 
 import { Card } from './card/Card';
 import { Cost } from './card/Cost';
 import { CardEligibilityFunction } from './CardEligibilityFunction';
-import { KingdomCard } from './card/KingdomCard';
-import { CardCollection } from './card/CardCollection';
 
 class AnyCard extends CardEligibilityFunction {
   public constructor() {
@@ -34,7 +32,6 @@ const isVictoryCard: CardEligibilityFunction = new MatchesType(CardType.VICTORY)
 const isCurseCard: CardEligibilityFunction = new MatchesType(CardType.CURSE);
 const isDurationCard: CardEligibilityFunction = new MatchesType(CardType.DURATION);
 const isAttackCard: CardEligibilityFunction = new MatchesType(CardType.ATTACK);
-const isRewardCard: CardEligibilityFunction = new MatchesType(CardType.REWARD);
 
 class IsSimpleTreasure extends CardEligibilityFunction {
   public constructor() {
@@ -51,24 +48,6 @@ class IsSupplyCard extends CardEligibilityFunction {
 }
 
 const isSupplyCard: CardEligibilityFunction = new IsSupplyCard();
-
-class IsKingdomCard extends CardEligibilityFunction {
-  public constructor() {
-    super((c: Card) => c instanceof KingdomCard)
-  }
-}
-
-const isKingdomCard: CardEligibilityFunction = new IsKingdomCard();
-
-class IsFromExpansion extends CardEligibilityFunction {
-  public constructor(expansion: Expansion) {
-    super((c: Card) => c instanceof KingdomCard && c.isFromExpansion(expansion));
-  }
-}
-
-const isFromExpansion = function (expansion: Expansion) {
-  return new IsFromExpansion(expansion);
-}
 
 class CostsUpTo extends CardEligibilityFunction {
   public constructor(cost: Cost) {
@@ -140,16 +119,6 @@ const costsExactlyNMoreThanCard = function (otherCard: Card, n: number) {
   return new CostsExactlyNMoreThanCard(otherCard, n);
 };
 
-class CostsUpToNMoreThanCard extends CardEligibilityFunction {
-  public constructor(otherCard: Card, n: number) {
-    super((c: Card) => c.getCost().isLessThanOrEqualTo(otherCard.getCost().plus(n)));
-  }
-}
-
-const costsUpToNMoreThanCard = function (otherCard: Card, n: number) {
-  return new CostsUpToNMoreThanCard(otherCard, n);
-};
-
 class CostsExactlyNLessThanCard extends CardEligibilityFunction {
   public constructor(otherCard: Card, n: number) {
     super(
@@ -195,16 +164,6 @@ class IsTheSameCardAs extends CardEligibilityFunction {
 const isTheSameCardAs = function (card: Card) {
   return new IsTheSameCardAs(card);
 };
-
-class IsDuplicateWith extends CardEligibilityFunction {
-  public constructor(cardCollection: CardCollection) {
-    super((c: Card) => cardCollection.numMatchingCards(isACopyOf(c)) === 0);
-  }
-}
-
-const isDuplicateWith = function (cardCollection: CardCollection) {
-  return new IsDuplicateWith(cardCollection);
-}
 
 class Both extends CardEligibilityFunction {
   public constructor(func1: CardEligibilityFunction, func2: CardEligibilityFunction) {
@@ -254,8 +213,6 @@ class CanBeDiscardedInCleanup extends CardEligibilityFunction {
 
 const canBeDiscardedInCleanup = new CanBeDiscardedInCleanup();
 
-
-
 export {
   anyCard,
   both,
@@ -269,18 +226,13 @@ export {
   costsTheSameAsCard,
   costsTheSameOrLessThanCard,
   costsUpTo,
-  costsUpToNMoreThanCard,
   either,
   isACopyOf,
   isActionCard,
   isAttackCard,
   isCurseCard,
-  isDuplicateWith,
   isDurationCard,
-  isFromExpansion,
   isInLocation,
-  isKingdomCard,
-  isRewardCard,
   isSimpleTreasure,
   isSupplyCard,
   isTheSameCardAs,

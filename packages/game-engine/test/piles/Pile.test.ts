@@ -81,6 +81,7 @@ describe('Pile', () => {
     expect(pile.getPileMetadata()).toEqual({
       name: 'Victory',
       size: 2,
+      originalCost: Cost.Simple(5).toCommonCost(),
       cost: Cost.Simple(5).toCommonCost(),
       topCard: duchy.getMetadata(),
       types: [CardType.ACTION, CardType.VICTORY],

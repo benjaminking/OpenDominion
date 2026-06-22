@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const risingSun: CardInfo[] = [
   {
-    name: 'Alley',
     category: CardCategory.CARD,
+    name: 'Alley',
     text: '+1 Card\n+1 Action Discard a card.',
     font_size: 'large',
     cost: {coins: 4},
@@ -12,8 +12,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Aristocrat',
     category: CardCategory.CARD,
+    name: 'Aristocrat',
     text: 'If the number of Aristocrats you have in play is: 1 or 5:\n+3 Actions ; 2 or 6:\n+3 Cards ; 3 or 7:\n+ $3 ; 4 or 8:\n+3 Buys .',
     font_size: 'medium',
     cost: {coins: 3},
@@ -22,8 +22,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Artist',
     category: CardCategory.CARD,
+    name: 'Artist',
     text: '+1 Action\n+1 Card per card you have exactly one copy of in play.',
     font_size: 'medium',
     cost: {coins: 0, debt: 8},
@@ -32,8 +32,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Change',
     category: CardCategory.CARD,
+    name: 'Change',
     text: 'If you have any D ,\n+ $3 . Otherwise, trash a card from your hand, and gain a card costing more $ than it. + D equal to the difference in $ .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -42,8 +42,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Craftsman',
     category: CardCategory.CARD,
+    name: 'Craftsman',
     text: '+ 2D Gain a card costing up to $5 .',
     font_size: 'large',
     cost: {coins: 3},
@@ -52,8 +52,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Daimyo',
     category: CardCategory.CARD,
+    name: 'Daimyo',
     text: '+1 Card\n+1 Action The next time you play a non-Command Action card this turn, replay it afterwards.',
     font_size: 'medium',
     cost: {coins: 0, debt: 6},
@@ -62,8 +62,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Fishmonger',
     category: CardCategory.CARD,
+    name: 'Fishmonger',
     text: '+1 Buy\n+ $1',
     font_size: 'xxlarge',
     cost: {coins: 2},
@@ -72,8 +72,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Gold Mine',
     category: CardCategory.CARD,
+    name: 'Gold Mine',
     text: '+1 Card\n+1 Action\n+1 Buy You may gain a Gold and get + 4D .',
     font_size: 'large',
     cost: {coins: 5},
@@ -82,8 +82,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Imperial Envoy',
     category: CardCategory.CARD,
+    name: 'Imperial Envoy',
     text: '+5 Cards\n+1 Buy + 2D',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -92,8 +92,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Kitsune',
     category: CardCategory.CARD,
+    name: 'Kitsune',
     text: '+1 Choose two different options:\n+2 Actions ;\n+ $2 ; each other player gains a Curse; gain a Silver.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -102,8 +102,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Litter',
     category: CardCategory.CARD,
+    name: 'Litter',
     text: '+2 Cards\n+2 Actions + 1D',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -112,8 +112,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Mountain Shrine',
     category: CardCategory.CARD,
+    name: 'Mountain Shrine',
     text: '+1\n+ $2 You may trash a card from your hand. Then if there are any Action cards in the trash,\n+2 Cards .',
     font_size: 'medium',
     cost: {coins: 0, debt: 5},
@@ -122,8 +122,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Ninja',
     category: CardCategory.CARD,
+    name: 'Ninja',
     text: '+1 Card Each other player discards down to 3 cards in hand.',
     font_size: 'large',
     cost: {coins: 4},
@@ -132,8 +132,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Poet',
     category: CardCategory.CARD,
+    name: 'Poet',
     text: '+1\n+1 Card\n+1 Action Reveal the top card of your deck.\nIf it costs $3 or less, put it into your hand.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -142,8 +142,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Rice',
     category: CardCategory.CARD,
+    name: 'Rice',
     text: '+1 Buy\n+ $1 per different type among cards you have in play.',
     font_size: 'medium',
     cost: {coins: 7},
@@ -152,8 +152,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Rice Broker',
     category: CardCategory.CARD,
+    name: 'Rice Broker',
     text: '+1 Action Trash a card from your hand.\nIf it\'s a Treasure,\n+2 Cards .\nIf it\'s an Action,\n+5 Cards .',
     font_size: 'medium',
     cost: {coins: 5},
@@ -162,8 +162,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'River Shrine',
     category: CardCategory.CARD,
+    name: 'River Shrine',
     text: '+1 Trash up to 2 cards from your hand.\nAt the start of Clean-up, if you didn\'t gain any cards in your Buy phase this turn, gain a card costing up to $4 .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -172,8 +172,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Riverboat',
     category: CardCategory.CARD,
+    name: 'Riverboat',
     text: 'At the start of your next turn, play the set aside card, leaving it there.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -182,8 +182,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Ronin',
     category: CardCategory.CARD,
+    name: 'Ronin',
     text: 'Draw until you have 7 cards in hand.',
     font_size: 'large',
     cost: {coins: 5},
@@ -192,8 +192,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Root Cellar',
     category: CardCategory.CARD,
+    name: 'Root Cellar',
     text: '+3 Cards\n+1 Action + 3D',
     font_size: 'xlarge',
     cost: {coins: 3},
@@ -202,8 +202,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Rustic Village',
     category: CardCategory.CARD,
+    name: 'Rustic Village',
     text: '+1\n+1 Card\n+2 Actions You may discard 2 cards for\n+1 Card .',
     font_size: 'large',
     cost: {coins: 4},
@@ -212,8 +212,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Samurai',
     category: CardCategory.CARD,
+    name: 'Samurai',
     text: 'Each other player discards down to 3 cards in hand (once).\nAt the start of each of your turns this game,\n+ $1 . (This stays in play.)',
     font_size: 'medium',
     cost: {coins: 6},
@@ -222,8 +222,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Snake Witch',
     category: CardCategory.CARD,
+    name: 'Snake Witch',
     text: '+1 Card\n+1 Action If your hand has no duplicate cards, you may reveal it and return this to its pile, to have each other player gain a Curse.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -232,8 +232,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Tanuki',
     category: CardCategory.CARD,
+    name: 'Tanuki',
     text: 'Trash a card from your hand. Gain a card costing up to $2 more than it.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -242,8 +242,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Tea House',
     category: CardCategory.CARD,
+    name: 'Tea House',
     text: '+1\n+1 Card\n+1 Action\n+ $2',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -252,8 +252,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Amass',
     category: CardCategory.EVENT,
+    name: 'Amass',
     text: 'If you have no Action cards in play, gain an Action card costing up to $5 .',
     font_size: 'medium',
     cost: {coins: 2},
@@ -262,8 +262,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Asceticism',
     category: CardCategory.EVENT,
+    name: 'Asceticism',
     text: 'Pay any amount of $ to trash that many cards from your hand.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -272,8 +272,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Continue',
     category: CardCategory.EVENT,
+    name: 'Continue',
     text: 'Once per turn: Gain a non-Attack Action card costing up to $4 . Return to your Action phase and play it.\n+1 Action and\n+1 Buy .',
     font_size: 'medium',
     cost: {coins: 0, debt: 8},
@@ -282,8 +282,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Credit',
     category: CardCategory.EVENT,
+    name: 'Credit',
     text: 'Gain an Action or Treasure costing up to $8 . + D equal to its cost.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -292,8 +292,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Foresight',
     category: CardCategory.EVENT,
+    name: 'Foresight',
     text: 'Reveal cards from your deck until revealing an Action. Set it aside and discard the rest. Put it into your hand at end of turn.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -302,8 +302,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Gather',
     category: CardCategory.EVENT,
+    name: 'Gather',
     text: 'Gain a card costing exactly $3 , a card costing exactly $4 , and a card costing exactly $5 .',
     font_size: 'medium',
     cost: {coins: 7},
@@ -312,8 +312,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Kintsugi',
     category: CardCategory.EVENT,
+    name: 'Kintsugi',
     text: 'Trash a card from your hand.\nIf you\'ve gained a Gold this game, gain a card costing up to $2 more than the trashed card.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -322,8 +322,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Practice',
     category: CardCategory.EVENT,
+    name: 'Practice',
     text: 'You may play an Action card from your hand twice.',
     font_size: 'large',
     cost: {coins: 3},
@@ -332,8 +332,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Receive Tribute',
     category: CardCategory.EVENT,
+    name: 'Receive Tribute',
     text: 'If you\'ve gained at least 3 cards this turn, gain up to 3 differently named Action cards you don\'t have copies of in play.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -342,8 +342,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Sea Trade',
     category: CardCategory.EVENT,
+    name: 'Sea Trade',
     text: '+1 Card per Action card you have in play. Trash up to that many cards from your hand.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -352,8 +352,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Approaching Army',
     category: CardCategory.PROPHECY,
+    name: 'Approaching Army',
     text: 'After you play an Attack card,\n+ $1 .',
     font_size: 'large',
     cost: {'coins': 0},
@@ -362,8 +362,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Biding Time',
     category: CardCategory.PROPHECY,
+    name: 'Biding Time',
     text: 'At the start of your Clean-up, set aside your hand face down.\nAt the start of your next turn, put those cards into your hand.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -372,8 +372,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Bureaucracy',
     category: CardCategory.PROPHECY,
+    name: 'Bureaucracy',
     text: 'When you gain a card that doesn\'t cost $0 , gain a Copper.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -382,8 +382,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Divine Wind',
     category: CardCategory.PROPHECY,
+    name: 'Divine Wind',
     text: 'When you remove the last , remove all Kingdom card piles from the Supply, and set up 10 new random piles.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -392,8 +392,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Enlightenment',
     category: CardCategory.PROPHECY,
+    name: 'Enlightenment',
     text: 'Treasures are also Actions.\nWhen you play a Treasure in an Action phase, instead of following its instructions,\n+1 Card and\n+1 Action .',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -402,8 +402,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Flourishing Trade',
     category: CardCategory.PROPHECY,
+    name: 'Flourishing Trade',
     text: 'Cards cost $1 less. You may use Action plays as Buys.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -412,8 +412,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Good Harvest',
     category: CardCategory.PROPHECY,
+    name: 'Good Harvest',
     text: 'The first time you play each differently named Treasure each turn, first,\n+1 Buy and\n+ $1 .',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -422,8 +422,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Great Leader',
     category: CardCategory.PROPHECY,
+    name: 'Great Leader',
     text: 'After each Action card you play,\n+1 Action .',
     font_size: 'large',
     cost: {'coins': 0},
@@ -432,8 +432,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Growth',
     category: CardCategory.PROPHECY,
+    name: 'Growth',
     text: 'When you gain a Treasure, gain a cheaper card.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -442,8 +442,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Harsh Winter',
     category: CardCategory.PROPHECY,
+    name: 'Harsh Winter',
     text: 'When you gain a card on your turn, if there\'s D on its pile, take it; otherwise put 2D on its pile.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -452,8 +452,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Kind Emperor',
     category: CardCategory.PROPHECY,
+    name: 'Kind Emperor',
     text: 'At the start of your turn, and when you remove the last : Gain an Action to your hand.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -462,8 +462,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Panic',
     category: CardCategory.PROPHECY,
+    name: 'Panic',
     text: 'When you play a Treasure,\n+2 Buys , and when you discard one from play, return it to its pile.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -472,8 +472,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Progress',
     category: CardCategory.PROPHECY,
+    name: 'Progress',
     text: 'When you gain a card, put it onto your deck.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -482,8 +482,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Rapid Expansion',
     category: CardCategory.PROPHECY,
+    name: 'Rapid Expansion',
     text: 'When you gain an Action or Treasure, set it aside, and play it at the start of your next turn.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -492,8 +492,8 @@ export const risingSun: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Sickness',
     category: CardCategory.PROPHECY,
+    name: 'Sickness',
     text: 'At the start of your turn, choose one: Gain a Curse onto your deck; or discard 3 cards.',
     font_size: 'medium',
     cost: {'coins': 0},

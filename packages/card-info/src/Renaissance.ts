@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const renaissance: CardInfo[] = [
   {
-    name: 'Acting Troupe',
     category: CardCategory.CARD,
+    name: 'Acting Troupe',
     text: '+4 Villagers Trash this.',
     font_size: 'xlarge',
     cost: {coins: 3},
@@ -12,8 +12,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Border Guard',
     category: CardCategory.CARD,
+    name: 'Border Guard',
     text: '+1 Action Reveal the top 2 cards of your deck. Put one into your hand and discard the other.\nIf both were Actions, take the Lantern or Horn.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -22,8 +22,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Cargo Ship',
     category: CardCategory.CARD,
+    name: 'Cargo Ship',
     text: '+ $2 Once this turn, when you gain a card, you may set it aside face up (on this).\nAt the start of your next turn, put it into your hand.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -32,8 +32,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Ducat',
     category: CardCategory.CARD,
+    name: 'Ducat',
     text: '+1 Coffers\n+1 Buy',
     font_size: 'xlarge',
     cost: {coins: 2},
@@ -42,8 +42,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Experiment',
     category: CardCategory.CARD,
+    name: 'Experiment',
     text: '+2 Cards\n+1 Action Return this to its pile.',
     font_size: 'large',
     cost: {coins: 3},
@@ -52,8 +52,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Flag Bearer',
     category: CardCategory.CARD,
+    name: 'Flag Bearer',
     text: '+ $2',
     font_size: 'xxlarge',
     cost: {coins: 4},
@@ -62,8 +62,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Hideout',
     category: CardCategory.CARD,
+    name: 'Hideout',
     text: '+1 Card\n+2 Actions Trash a card from your hand.\nIf it\'s a Victory card, gain a Curse.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -72,8 +72,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Improve',
     category: CardCategory.CARD,
+    name: 'Improve',
     text: '+ $2 At the start of Clean-up, you may trash an Action card you would discard from play this turn, to gain a card costing exactly $1 more than it.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -82,8 +82,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Inventor',
     category: CardCategory.CARD,
+    name: 'Inventor',
     text: 'Gain a card costing up to $4 , then cards cost $1 less this turn.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -92,8 +92,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Lackeys',
     category: CardCategory.CARD,
+    name: 'Lackeys',
     text: '+2 Cards',
     font_size: 'xxlarge',
     cost: {coins: 2},
@@ -102,8 +102,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Mountain Village',
     category: CardCategory.CARD,
+    name: 'Mountain Village',
     text: '+2 Actions Look through your discard pile and put a card from it into your hand; if you can\'t,\n+1 Card .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -112,8 +112,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Old Witch',
     category: CardCategory.CARD,
+    name: 'Old Witch',
     text: '+3 Cards Each other player gains a Curse and may trash a Curse from their hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -122,8 +122,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Patron',
     category: CardCategory.CARD,
+    name: 'Patron',
     text: '+1 Villager\n+ $2',
     font_size: 'xlarge',
     cost: {coins: 4},
@@ -132,8 +132,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Priest',
     category: CardCategory.CARD,
+    name: 'Priest',
     text: '+ $2 Trash a card from your hand. For the rest of this turn, when you trash a card,\n+ $2 .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -142,8 +142,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Recruiter',
     category: CardCategory.CARD,
+    name: 'Recruiter',
     text: '+2 Cards Trash a card from your hand.\n+1 Villager per $1 it costs.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -152,8 +152,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Research',
     category: CardCategory.CARD,
+    name: 'Research',
     text: '+1 Action Trash a card from your hand. Per $1 it costs, set aside a card from your deck face down (on this).\nAt the start of your next turn, put those cards into your hand.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -162,8 +162,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Scepter',
     category: CardCategory.CARD,
+    name: 'Scepter',
     text: 'Choose one:\n+ $2 ; or replay a non-Command Action card you played this turn that\'s still in play.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -172,8 +172,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Scholar',
     category: CardCategory.CARD,
+    name: 'Scholar',
     text: 'Discard your hand.\n+7 Cards .',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -182,8 +182,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Sculptor',
     category: CardCategory.CARD,
+    name: 'Sculptor',
     text: 'Gain a card to your hand costing up to $4 .\nIf it\'s a Treasure,\n+1 Villager .',
     font_size: 'medium',
     cost: {coins: 5},
@@ -192,8 +192,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Seer',
     category: CardCategory.CARD,
+    name: 'Seer',
     text: '+1 Card\n+1 Action Reveal the top 3 cards of your deck. Put the ones costing from $2 to $4 into your hand. Put the rest back in any order.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -202,8 +202,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Silk Merchant',
     category: CardCategory.CARD,
+    name: 'Silk Merchant',
     text: '+2 Cards\n+1 Buy',
     font_size: 'xlarge',
     cost: {coins: 4},
@@ -212,8 +212,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Spices',
     category: CardCategory.CARD,
+    name: 'Spices',
     text: '$2\n+1 Buy',
     font_size: 'xxlarge',
     cost: {coins: 5},
@@ -222,8 +222,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Swashbuckler',
     category: CardCategory.CARD,
+    name: 'Swashbuckler',
     text: '+3 Cards If your discard pile has any cards in it:\n+1 Coffers , then if you have at least 4 Coffers tokens, take the Treasure Chest.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -232,8 +232,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Treasurer',
     category: CardCategory.CARD,
+    name: 'Treasurer',
     text: '+ $3 Choose one: Trash a Treasure from your hand; or gain a Treasure from the trash to your hand; or take the Key.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -242,8 +242,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Villain',
     category: CardCategory.CARD,
+    name: 'Villain',
     text: '+2 Coffers Each other player with 5 or more cards in hand discards one costing $2 or more (or reveals they can\'t).',
     font_size: 'medium',
     cost: {coins: 5},
@@ -252,8 +252,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Academy',
     category: CardCategory.PROJECT,
+    name: 'Academy',
     text: 'When you gain an Action card,\n+1 Villager .',
     font_size: 'large',
     cost: {coins: 5},
@@ -262,8 +262,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Barracks',
     category: CardCategory.PROJECT,
+    name: 'Barracks',
     text: 'At the start of your turn,\n+1 Action .',
     font_size: 'large',
     cost: {coins: 6},
@@ -272,8 +272,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Canal',
     category: CardCategory.PROJECT,
+    name: 'Canal',
     text: 'During your turns, cards cost $1 less.',
     font_size: 'large',
     cost: {coins: 7},
@@ -282,8 +282,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Capitalism',
     category: CardCategory.PROJECT,
+    name: 'Capitalism',
     text: 'During your turns, Actions with + $ amounts in their text are also Treasures.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -292,8 +292,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Cathedral',
     category: CardCategory.PROJECT,
+    name: 'Cathedral',
     text: 'At the start of your turn, trash a card from your hand.',
     font_size: 'large',
     cost: {coins: 3},
@@ -302,8 +302,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Citadel',
     category: CardCategory.PROJECT,
+    name: 'Citadel',
     text: 'The first time you play an Action card during each of your turns, replay it afterwards.',
     font_size: 'medium',
     cost: {coins: 8},
@@ -312,8 +312,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'City Gate',
     category: CardCategory.PROJECT,
+    name: 'City Gate',
     text: 'At the start of your turn,\n+1 Card , then put a card from your hand onto your deck.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -322,8 +322,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Crop Rotation',
     category: CardCategory.PROJECT,
+    name: 'Crop Rotation',
     text: 'At the start of your turn, you may discard a Victory card for\n+2 Cards .',
     font_size: 'medium',
     cost: {coins: 6},
@@ -332,8 +332,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Exploration',
     category: CardCategory.PROJECT,
+    name: 'Exploration',
     text: 'At the end of your Buy phase, if you didn\'t gain any cards during it,\n+1 Coffers and\n+1 Villager .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -342,8 +342,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Fair',
     category: CardCategory.PROJECT,
+    name: 'Fair',
     text: 'At the start of your turn,\n+1 Buy .',
     font_size: 'large',
     cost: {coins: 4},
@@ -352,8 +352,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Fleet',
     category: CardCategory.PROJECT,
+    name: 'Fleet',
     text: 'After the game ends, there\'s an extra round of turns just for players with this.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -362,8 +362,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Guildhall',
     category: CardCategory.PROJECT,
+    name: 'Guildhall',
     text: 'When you gain a Treasure,\n+1 Coffers .',
     font_size: 'large',
     cost: {coins: 5},
@@ -372,8 +372,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Innovation',
     category: CardCategory.PROJECT,
+    name: 'Innovation',
     text: 'Once during each of your turns, when you gain an Action card, you may play it.',
     font_size: 'medium',
     cost: {coins: 6},
@@ -382,8 +382,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Pageant',
     category: CardCategory.PROJECT,
+    name: 'Pageant',
     text: 'At the end of your Buy phase, you may pay $1 for\n+1 Coffers .',
     font_size: 'medium',
     cost: {coins: 3},
@@ -392,8 +392,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Piazza',
     category: CardCategory.PROJECT,
+    name: 'Piazza',
     text: 'At the start of your turn, reveal the top card of your deck.\nIf it\'s an Action, play it.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -402,8 +402,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Road Network',
     category: CardCategory.PROJECT,
+    name: 'Road Network',
     text: 'When another player gains a Victory card,\n+1 Card .',
     font_size: 'large',
     cost: {coins: 5},
@@ -412,8 +412,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Sewers',
     category: CardCategory.PROJECT,
+    name: 'Sewers',
     text: 'When you trash a card other than with this, you may trash a card from your hand.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -422,8 +422,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Silos',
     category: CardCategory.PROJECT,
+    name: 'Silos',
     text: 'At the start of your turn, discard any number of Coppers, revealed, and draw that many cards.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -432,8 +432,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Sinister Plot',
     category: CardCategory.PROJECT,
+    name: 'Sinister Plot',
     text: 'At the start of your turn, add a token here, or remove your tokens here for\n+1 Card each.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -442,8 +442,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Star Chart',
     category: CardCategory.PROJECT,
+    name: 'Star Chart',
     text: 'When shuffling, you may pick one of the cards to go on top.',
     font_size: 'large',
     cost: {coins: 3},
@@ -452,8 +452,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Flag',
     category: CardCategory.ARTIFACT,
+    name: 'Flag',
     text: 'When drawing your hand,\n+1 Card .',
     font_size: 'large',
     cost: {'coins': 0},
@@ -462,8 +462,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Horn',
     category: CardCategory.ARTIFACT,
+    name: 'Horn',
     text: 'Once per turn, when you discard a Border Guard from play, you may put it onto your deck.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -472,8 +472,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Key',
     category: CardCategory.ARTIFACT,
+    name: 'Key',
     text: 'At the start of your turn,\n+ $1 .',
     font_size: 'large',
     cost: {'coins': 0},
@@ -482,8 +482,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Lantern',
     category: CardCategory.ARTIFACT,
+    name: 'Lantern',
     text: 'Border Guards you play reveal 3 cards and discard 2. (It takes all 3 being Actions to take the Horn.)',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -492,8 +492,8 @@ export const renaissance: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Treasure Chest',
     category: CardCategory.ARTIFACT,
+    name: 'Treasure Chest',
     text: 'At the start of your Buy phase, gain a Gold.',
     font_size: 'large',
     cost: {'coins': 0},

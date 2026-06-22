@@ -21,6 +21,8 @@ import { CardCollection } from '../../src/card/CardCollection';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
+import { TurnTracker } from '../../src/players/TurnTracker';
+import { Turn } from '../../src/turns/Turn';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 // ---------------------------------------------------------------------------
@@ -153,6 +155,12 @@ export const createCardHarness = () => {
       sharedTrash.addCards(cards);
       return cards;
     }),
+    isCopyOfCardOnTopOfPile: vi.fn((card: Card | string, pileName: string) => {
+      const topCard = piles.getTopCardOfPile(pileName);
+      if (topCard === undefined) return false;
+      if (typeof card === 'string') return topCard.getName() === card || topCard.getDisplayName() === card;
+      return topCard.getName() === (card as Card).getName();
+    }),
   } as unknown as SharedGameState;
 
   const game = {
@@ -173,6 +181,9 @@ export const createCardHarness = () => {
 
   const ownedCards = new PlayerCards(player);
   player.getOwnedCards = () => ownedCards;
+
+  const turnTracker = new TurnTracker(new Turn(player, 0, 0));
+  player.getTurnTracker = () => turnTracker;
 
   executor = new InstructionExecutor(sharedGameState, player);
   // Required by CardChoiceBuilder / ChooseOneOptionBuilder constructors.
@@ -267,6 +278,7 @@ export const createCardHarness = () => {
     player,
     ownedCards,
     stats,
+    turnTracker,
     effects,
     logger,
     broadcaster,

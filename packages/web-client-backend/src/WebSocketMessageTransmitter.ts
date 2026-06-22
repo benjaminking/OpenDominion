@@ -136,4 +136,6 @@ export class WebSocketMessageTransmitter implements GameMessageTransmitter, LogM
   sendBotCoins(_numCoins: number): void {}
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   sendBotCardCounts(_cardCountsObj: CardCount[]): void {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  sendGameConfiguration(_configuration: GameConfiguration): void {}
 }

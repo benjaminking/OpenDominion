@@ -271,6 +271,7 @@ describe('Card', () => {
 
     expect(metadata).toEqual({
       name: 'Duchy',
+      displayName: 'Duchy',
       id: 'duchy-1',
       location: CardLocation.DISCARD,
       types: [CardType.VICTORY],

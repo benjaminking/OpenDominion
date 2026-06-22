@@ -18,7 +18,7 @@ describe('Conspirator', () => {
       deckCard.setId(`deck-copper-${String(i)}`);
       testHarness.addToDeck(deckCard);
     }
-    testHarness.stats.numMatchingCardsPlayedThisTurn = vi.fn(() => 3);
+    testHarness.turnTracker.numMatchingCardsPlayedThisTurn = vi.fn(() => 3);
 
     await new Conspirator(testHarness.sharedGameState).play(testHarness.executor);
 

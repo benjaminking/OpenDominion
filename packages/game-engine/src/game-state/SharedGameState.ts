@@ -43,6 +43,7 @@ import { TurnPhase } from '../turns/TurnPhase';
 import { TurnType } from '../turns/TurnType';
 import { CardCostCache } from './CardCostCache';
 import { MechanicsInUse } from './MechanicsInUse';
+import { SetupRule } from './SetupRule';
 
 export class SharedGameState {
   private readonly messageBroadcaster: GameMessageBroadcaster;
@@ -53,6 +54,7 @@ export class SharedGameState {
   private extraCards: CardCollection = new CardCollection();
   private _trash: Trash;
   private gameResult: GameResult | undefined = undefined;
+  private setupRules: Map<string, SetupRule> = new Map<string, SetupRule>();
   private _piles: Piles = new Piles();
   private _cardCostCache: CardCostCache = new CardCostCache();
   private readonly mechanicsInUse: MechanicsInUse;
@@ -72,8 +74,19 @@ export class SharedGameState {
     card.registerUsedMechanics(this.mechanicsInUse);
   }
 
+  public addSetupRule(cardName: string, setupRule: SetupRule): void {
+    this.setupRules.set(cardName, setupRule);
+  }
+
   public async prepareForStartOfGame(): Promise<void> {
+    this.applySetupRules();
     await this.drawInitialHands();
+  }
+
+  private applySetupRules(): void {
+    for (const setupRule of this.setupRules.values()) {
+      setupRule.applySetupRules(this);
+    }
   }
 
   public async startGame(): Promise<void> {
@@ -191,9 +204,6 @@ export class SharedGameState {
   }
   public setTurnPhase(value: TurnPhase): void {
     this._turnPhase = value;
-    for (const player of this.getCurrentTurnOrder()) {
-      player.getTurnTracker().updateTurnPhase(value);
-    }
   }
 
   private async startTurn(turnType: TurnType): Promise<void> {
@@ -405,6 +415,7 @@ export class SharedGameState {
         player.getEffects().registerEndOfPlayersTurn(this.getCurrentPlayer(), this.getCurrentTurn());
         player.getEffects().removeExpiredEffects();
       }
+      this.cardsPlayedThisTurn.clear();
       this.getCurrentPlayer().getEffects().removeIneligibleEffectsByTurn(this.getCurrentTurn().nextUnofficialTurn());
       this.removeIneligibleCostModifiers();
 
@@ -457,12 +468,9 @@ export class SharedGameState {
     return turnEligibility.matches(this.getCurrentTurn());
   }
 
-  // A global effect is copied once to each player's list of effects
-  public addGlobalEffect(effect: Effect): void {
-    this.registerEffectTrigger(effect.getTrigger(), effect.getSource());
-    for (const player of this.getCurrentTurnOrder()) {
-      player.getEffects().addEffect(effect);
-    }
+  public cardsPlayedThisTurn: CardCollection = new CardCollection();
+  public addPlayedCard(card: Card): void {
+    this.cardsPlayedThisTurn.addCard(card);
   }
 
   private usedEffectTypes: Map<EffectTriggerType, Set<EffectSource>> = new Map<EffectTriggerType, Set<EffectSource>>();

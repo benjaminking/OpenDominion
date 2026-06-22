@@ -3,20 +3,17 @@ import { CardCollection } from '../card/CardCollection';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { noCard } from '../StandardCardEligibilityFunctions';
 import { Turn } from '../turns/Turn';
-import { TurnPhase } from '../turns/TurnPhase';
 
 export class TurnTracker {
   private currentTurn: Turn;
-  private currentTurnPhase: TurnPhase = TurnPhase.ACTION;
   private lastCompletedTurn: Turn | undefined = undefined;
   private cardsPlayedByUnofficialTurnNumber = new Map<number, CardCollection>();
   private cardsGainedByUnofficialTurnNumber = new Map<number, CardCollection>();
   private cardsBoughtByUnofficialTurnNumber = new Map<number, CardCollection>();
-  private cardsGainedByUnofficialTurnNumberAndPhase = new Map<number, Map<TurnPhase, CardCollection>>();
   private cleanupCardDrawOverride: number | undefined = undefined;
   private cleanupExtraCardsToDraw = 0;
 
-  public constructor(preGameplayTurn: Turn) {
+  public constructor(private readonly preGameplayTurn: Turn) {
     this.currentTurn = preGameplayTurn;
   }
 
@@ -26,10 +23,6 @@ export class TurnTracker {
 
   public getNumCardsPlayedThisTurn(): number {
     return this.cardsPlayedByUnofficialTurnNumber.get(this.currentTurn.getUnofficialNumber())?.size() ?? 0;
-  }
-
-  public updateTurnPhase(turnPhase: TurnPhase): void {
-    this.currentTurnPhase = turnPhase;
   }
 
   public endTurn(): void {
@@ -63,14 +56,8 @@ export class TurnTracker {
     const unofficialTurnNumber = this.currentTurn.getUnofficialNumber();
     if (!this.cardsGainedByUnofficialTurnNumber.has(unofficialTurnNumber)) {
       this.cardsGainedByUnofficialTurnNumber.set(unofficialTurnNumber, new CardCollection());
-      this.cardsGainedByUnofficialTurnNumberAndPhase.set(unofficialTurnNumber, new Map<TurnPhase, CardCollection>());
     }
     this.cardsGainedByUnofficialTurnNumber.get(unofficialTurnNumber)!.addCard(card);
-
-    if(!this.cardsGainedByUnofficialTurnNumberAndPhase.get(unofficialTurnNumber)!.has(this.currentTurnPhase)) {
-      this.cardsGainedByUnofficialTurnNumberAndPhase.get(unofficialTurnNumber)!.set(this.currentTurnPhase, new CardCollection());
-    }
-    this.cardsGainedByUnofficialTurnNumberAndPhase.get(unofficialTurnNumber)!.get(this.currentTurnPhase)!.addCard(card);
   }
 
   public addBoughtCard(card: Card): void {
@@ -109,15 +96,6 @@ export class TurnTracker {
     return (
       this.cardsGainedByUnofficialTurnNumber
         .get(this.currentTurn.getUnofficialNumber())
-        ?.numMatchingCards(cardEligibilityFunction) ?? 0
-    );
-  }
-
-  public numMatchingCardsGainedThisTurnByPhase(cardEligibilityFunction: CardEligibilityFunction, turnPhase: TurnPhase): number {
-    return (
-      this.cardsGainedByUnofficialTurnNumberAndPhase
-        .get(this.currentTurn.getUnofficialNumber())
-        ?.get(turnPhase)
         ?.numMatchingCards(cardEligibilityFunction) ?? 0
     );
   }

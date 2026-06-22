@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const menagerie: CardInfo[] = [
   {
-    name: 'Animal Fair',
     category: CardCategory.CARD,
+    name: 'Animal Fair',
     text: '+ $4\n+1 Buy per empty supply pile.',
     font_size: 'large',
     cost: {coins: 7, has_asterisk: true},
@@ -12,8 +12,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Barge',
     category: CardCategory.CARD,
+    name: 'Barge',
     text: 'Either now or at the start of your next turn,\n+3 Cards and\n+1 Buy .',
     font_size: 'medium',
     cost: {coins: 5},
@@ -22,8 +22,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Black Cat',
     category: CardCategory.CARD,
+    name: 'Black Cat',
     text: '+2 Cards If it isn\'t your turn, each other player gains a Curse.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -32,8 +32,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Bounty Hunter',
     category: CardCategory.CARD,
+    name: 'Bounty Hunter',
     text: '+1 Action Exile a card from your hand.\nIf you didn\'t have a copy of it in Exile,\n+ $3 .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -42,8 +42,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Camel Train',
     category: CardCategory.CARD,
+    name: 'Camel Train',
     text: 'Exile a non-Victory card from the Supply.',
     font_size: 'large',
     cost: {coins: 3},
@@ -52,8 +52,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Cardinal',
     category: CardCategory.CARD,
+    name: 'Cardinal',
     text: '+ $2 Each other player reveals the top 2 cards of their deck, Exiles one costing from $3 to $6 , and discards the rest.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -62,8 +62,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Cavalry',
     category: CardCategory.CARD,
+    name: 'Cavalry',
     text: 'Gain 2 Horses.',
     font_size: 'xxlarge',
     cost: {coins: 4},
@@ -72,8 +72,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Coven',
     category: CardCategory.CARD,
+    name: 'Coven',
     text: '+1 Action\n+ $2 Each other player Exiles a Curse from the Supply.\nIf they can\'t, they discard their Exiled Curses.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -82,8 +82,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Destrier',
     category: CardCategory.CARD,
+    name: 'Destrier',
     text: '+2 Cards\n+1 Action',
     font_size: 'xlarge',
     cost: {coins: 6, has_asterisk: true},
@@ -92,8 +92,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Displace',
     category: CardCategory.CARD,
+    name: 'Displace',
     text: 'Exile a card from your hand. Gain a differently named card costing up to $2 more than it.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -102,8 +102,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Falconer',
     category: CardCategory.CARD,
+    name: 'Falconer',
     text: 'Gain a card to your hand costing less than this.',
     font_size: 'large',
     cost: {coins: 5},
@@ -112,8 +112,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Fisherman',
     category: CardCategory.CARD,
+    name: 'Fisherman',
     text: '+1 Card\n+1 Action\n+ $1',
     font_size: 'xlarge',
     cost: {coins: 5, has_asterisk: true},
@@ -122,8 +122,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Gatekeeper',
     category: CardCategory.CARD,
+    name: 'Gatekeeper',
     text: 'At the start of your next turn,\n+ $3 .\nUntil then, when another player gains an Action or Treasure card they don\'t have an Exiled copy of, they Exile it.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -132,8 +132,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Goatherd',
     category: CardCategory.CARD,
+    name: 'Goatherd',
     text: '+1 Action You may trash a card from your hand.\n+1 Card per card the player to your right trashed on their last turn.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -142,8 +142,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Groom',
     category: CardCategory.CARD,
+    name: 'Groom',
     text: 'Gain a card costing up to $4 .\nIf it\'s an… Action card, gain a Horse; Treasure card, gain a Silver; Victory card,\n+1 Card and\n+1 Action .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -152,8 +152,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Hostelry',
     category: CardCategory.CARD,
+    name: 'Hostelry',
     text: '+1 Card\n+2 Actions',
     font_size: 'xlarge',
     cost: {coins: 4},
@@ -162,8 +162,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Hunting Lodge',
     category: CardCategory.CARD,
+    name: 'Hunting Lodge',
     text: '+1 Card\n+2 Actions You may discard your hand for\n+5 Cards .',
     font_size: 'large',
     cost: {coins: 5},
@@ -172,8 +172,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Kiln',
     category: CardCategory.CARD,
+    name: 'Kiln',
     text: '+ $2 The next time you play a card this turn, you may first gain a copy of it.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -182,8 +182,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Livery',
     category: CardCategory.CARD,
+    name: 'Livery',
     text: '+ $3 This turn, when you gain a card costing $4 or more, gain a Horse.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -192,8 +192,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Mastermind',
     category: CardCategory.CARD,
+    name: 'Mastermind',
     text: 'At the start of your next turn, you may play an Action card from your hand three times.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -202,8 +202,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Paddock',
     category: CardCategory.CARD,
+    name: 'Paddock',
     text: '+ $2 Gain 2 Horses.\n+1 Action per empty Supply pile.',
     font_size: 'large',
     cost: {coins: 5},
@@ -212,8 +212,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Sanctuary',
     category: CardCategory.CARD,
+    name: 'Sanctuary',
     text: '+1 Card\n+1 Action\n+1 Buy You may Exile a card from your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -222,8 +222,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Scrap',
     category: CardCategory.CARD,
+    name: 'Scrap',
     text: 'Trash a card from your hand. Choose a different thing per $1 it costs:\n+1 Card ;\n+1 Action ;\n+1 Buy ;\n+ $1 ; gain a Silver; gain a Horse.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -232,8 +232,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Sheepdog',
     category: CardCategory.CARD,
+    name: 'Sheepdog',
     text: '+2 Cards',
     font_size: 'xxlarge',
     cost: {coins: 3},
@@ -242,8 +242,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Sleigh',
     category: CardCategory.CARD,
+    name: 'Sleigh',
     text: 'Gain 2 Horses.',
     font_size: 'xxlarge',
     cost: {coins: 2},
@@ -252,8 +252,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Snowy Village',
     category: CardCategory.CARD,
+    name: 'Snowy Village',
     text: '+1 Card\n+4 Actions\n+1 Buy Ignore any further +Actions you get this turn.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -262,8 +262,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Stockpile',
     category: CardCategory.CARD,
+    name: 'Stockpile',
     text: '$3\n+1 Buy Exile this.',
     font_size: 'xlarge',
     cost: {coins: 3},
@@ -272,8 +272,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Supplies',
     category: CardCategory.CARD,
+    name: 'Supplies',
     text: '$1 Gain a Horse onto your deck.',
     font_size: 'large',
     cost: {coins: 2},
@@ -282,8 +282,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Village Green',
     category: CardCategory.CARD,
+    name: 'Village Green',
     text: 'Either now or at the start of your next turn,\n+1 Card and\n+2 Actions .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -292,8 +292,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Wayfarer',
     category: CardCategory.CARD,
+    name: 'Wayfarer',
     text: '+3 Cards You may gain a Silver.',
     font_size: 'large',
     cost: {coins: 6, has_asterisk: true},
@@ -302,8 +302,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    name: 'Horse',
     category: CardCategory.CARD,
+    name: 'Horse',
     text: '+2 Cards\n+1 Action Return this to its pile. (This is not in the Supply.)',
     font_size: 'medium',
     cost: {coins: 3, has_asterisk: true},
@@ -312,8 +312,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Alliance',
     category: CardCategory.EVENT,
+    name: 'Alliance',
     text: 'Gain a Province, a Duchy, an Estate, a Gold, a Silver, and a Copper.',
     font_size: 'medium',
     cost: {coins: 10},
@@ -322,8 +322,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Banish',
     category: CardCategory.EVENT,
+    name: 'Banish',
     text: 'Exile any number of cards with the same name from your hand.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -332,8 +332,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Bargain',
     category: CardCategory.EVENT,
+    name: 'Bargain',
     text: 'Gain a non-Victory card costing up to $5 . Each other player gains a Horse.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -342,8 +342,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Commerce',
     category: CardCategory.EVENT,
+    name: 'Commerce',
     text: 'Gain a Gold per differently named card you\'ve gained this turn.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -352,8 +352,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Delay',
     category: CardCategory.EVENT,
+    name: 'Delay',
     text: 'You may set aside an Action card from your hand.\nAt the start of your next turn, play it.',
     font_size: 'medium',
     cost: {coins: 0},
@@ -362,8 +362,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Demand',
     category: CardCategory.EVENT,
+    name: 'Demand',
     text: 'Gain a Horse and a card costing up to $4 , both onto your deck.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -372,8 +372,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Desperation',
     category: CardCategory.EVENT,
+    name: 'Desperation',
     text: 'Once per turn: You may gain a Curse.\nIf you do,\n+1 Buy and\n+ $2 .',
     font_size: 'medium',
     cost: {coins: 0},
@@ -382,8 +382,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Enclave',
     category: CardCategory.EVENT,
+    name: 'Enclave',
     text: 'Gain a Gold. Exile a Duchy from the Supply.',
     font_size: 'large',
     cost: {coins: 8},
@@ -392,8 +392,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Enhance',
     category: CardCategory.EVENT,
+    name: 'Enhance',
     text: 'You may trash a non-Victory card from your hand, to gain a card costing up to $2 more than it.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -402,8 +402,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Gamble',
     category: CardCategory.EVENT,
+    name: 'Gamble',
     text: '+1 Buy Discard the top card of your deck.\nIf it\'s an Action or Treasure, you may play it.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -412,8 +412,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Invest',
     category: CardCategory.EVENT,
+    name: 'Invest',
     text: 'Exile an Action card from the Supply.\nWhile it\'s in Exile, when another player gains or Invests in a copy of it,\n+2 Cards .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -422,8 +422,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'March',
     category: CardCategory.EVENT,
+    name: 'March',
     text: 'Look through your discard pile. You may play an Action card from it.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -432,8 +432,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Populate',
     category: CardCategory.EVENT,
+    name: 'Populate',
     text: 'Gain one card from each Action Supply pile.',
     font_size: 'large',
     cost: {coins: 10},
@@ -442,8 +442,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Pursue',
     category: CardCategory.EVENT,
+    name: 'Pursue',
     text: '+1 Buy Name a card. Reveal the top 4 cards from your deck. Put the matches back and discard the rest.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -452,8 +452,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Reap',
     category: CardCategory.EVENT,
+    name: 'Reap',
     text: 'Gain a Gold, setting it aside.\nAt the start of your next turn, play it.',
     font_size: 'medium',
     cost: {coins: 7},
@@ -462,8 +462,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Ride',
     category: CardCategory.EVENT,
+    name: 'Ride',
     text: 'Gain a Horse.',
     font_size: 'xxlarge',
     cost: {coins: 2},
@@ -472,8 +472,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Seize the Day',
     category: CardCategory.EVENT,
+    name: 'Seize the Day',
     text: 'Once per game: Take an extra turn after this one.',
     font_size: 'large',
     cost: {coins: 4},
@@ -482,8 +482,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Stampede',
     category: CardCategory.EVENT,
+    name: 'Stampede',
     text: 'If you have 5 or fewer cards in play, gain 5 Horses onto your deck.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -492,8 +492,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Toil',
     category: CardCategory.EVENT,
+    name: 'Toil',
     text: '+1 Buy You may play an Action card from your hand.',
     font_size: 'large',
     cost: {coins: 2},
@@ -502,8 +502,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Transport',
     category: CardCategory.EVENT,
+    name: 'Transport',
     text: 'Choose one: Exile an Action card from the Supply; or put an Action card you have in Exile onto your deck.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -512,8 +512,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Butterfly',
     category: CardCategory.WAY,
+    name: 'Way of the Butterfly',
     text: 'You may return this to its pile to gain a card costing exactly $1 more than it.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -522,8 +522,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Camel',
     category: CardCategory.WAY,
+    name: 'Way of the Camel',
     text: 'Exile a Gold from the Supply.',
     font_size: 'xlarge',
     cost: {'coins': 0},
@@ -532,8 +532,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Chameleon',
     category: CardCategory.WAY,
+    name: 'Way of the Chameleon',
     text: 'Follow this card\'s instructions; each time that would give you +Cards this turn, you get + $ instead, and vice-versa.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -542,8 +542,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Frog',
     category: CardCategory.WAY,
+    name: 'Way of the Frog',
     text: '+1 Action When you discard this from play this turn, put it onto your deck.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -552,8 +552,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Goat',
     category: CardCategory.WAY,
+    name: 'Way of the Goat',
     text: 'Trash a card from your hand.',
     font_size: 'xlarge',
     cost: {'coins': 0},
@@ -562,8 +562,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Horse',
     category: CardCategory.WAY,
+    name: 'Way of the Horse',
     text: '+2 Cards\n+1 Action Return this to its pile.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -572,8 +572,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Mole',
     category: CardCategory.WAY,
+    name: 'Way of the Mole',
     text: '+1 Action Discard your hand.\n+3 Cards .',
     font_size: 'large',
     cost: {'coins': 0},
@@ -582,8 +582,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Monkey',
     category: CardCategory.WAY,
+    name: 'Way of the Monkey',
     text: '+1 Buy\n+ $1',
     font_size: 'xxlarge',
     cost: {'coins': 0},
@@ -592,8 +592,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Mouse',
     category: CardCategory.WAY,
+    name: 'Way of the Mouse',
     text: 'Play the set-aside card, leaving it there.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -602,8 +602,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Mule',
     category: CardCategory.WAY,
+    name: 'Way of the Mule',
     text: '+1 Action\n+ $1',
     font_size: 'xxlarge',
     cost: {'coins': 0},
@@ -612,8 +612,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Otter',
     category: CardCategory.WAY,
+    name: 'Way of the Otter',
     text: '+2 Cards',
     font_size: 'xxlarge',
     cost: {'coins': 0},
@@ -622,8 +622,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Ox',
     category: CardCategory.WAY,
+    name: 'Way of the Ox',
     text: '+2 Actions',
     font_size: 'xxlarge',
     cost: {'coins': 0},
@@ -632,8 +632,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Owl',
     category: CardCategory.WAY,
+    name: 'Way of the Owl',
     text: 'Draw until you have 6 cards in hand.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -642,8 +642,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Pig',
     category: CardCategory.WAY,
+    name: 'Way of the Pig',
     text: '+1 Card\n+1 Action',
     font_size: 'xlarge',
     cost: {'coins': 0},
@@ -652,8 +652,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Rat',
     category: CardCategory.WAY,
+    name: 'Way of the Rat',
     text: 'You may discard a Treasure to gain a copy of this.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -662,8 +662,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Seal',
     category: CardCategory.WAY,
+    name: 'Way of the Seal',
     text: '+ $1 This turn, when you gain a card, you may put it onto your deck.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -672,8 +672,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Sheep',
     category: CardCategory.WAY,
+    name: 'Way of the Sheep',
     text: '+ $2',
     font_size: 'xxlarge',
     cost: {'coins': 0},
@@ -682,8 +682,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Squirrel',
     category: CardCategory.WAY,
+    name: 'Way of the Squirrel',
     text: '+2 Cards at the end of this turn.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -692,8 +692,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Turtle',
     category: CardCategory.WAY,
+    name: 'Way of the Turtle',
     text: 'Set this aside.\nIf you did, play it at the start of your next turn.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -702,8 +702,8 @@ export const menagerie: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    name: 'Way of the Worm',
     category: CardCategory.WAY,
+    name: 'Way of the Worm',
     text: 'Exile an Estate from the Supply.',
     font_size: 'large',
     cost: {'coins': 0},
