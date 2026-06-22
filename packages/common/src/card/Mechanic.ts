@@ -2,6 +2,7 @@ export enum Mechanic {
   POTIONS = 'potions',
   VP_CHIPS = 'vp_chips',
   COFFERS = 'coffers',
+  REWARDS = 'rewards',
   SPOILS = 'spoils',
   RUINS = 'ruins',
   MADMAN = 'madman',

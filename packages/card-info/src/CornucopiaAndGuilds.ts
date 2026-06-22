@@ -321,7 +321,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    mechanics: [Mechanic.COFFERS],
+    mechanics: [Mechanic.COFFERS, Mechanic.REWARDS],
     is_kingdom: true,
   },
   {
