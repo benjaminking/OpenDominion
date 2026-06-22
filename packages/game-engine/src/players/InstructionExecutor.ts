@@ -971,6 +971,141 @@ export class InstructionExecutor {
     this.player.getTurnTracker().setNumCardsToDrawInCleanup(numCardsToDrawInCleanup);
   }
 
+  public async playRisingSunCardStub(cardName: string, _sourceCard: Card): Promise<void> {
+    switch (cardName) {
+      case 'Alley':
+        await this.drawCards(1);
+        this.addActions(1);
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, 'must discard a card for Alley (stub)'),
+        );
+        return;
+      case 'Aristocrat':
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, 'Aristocrat scaling effect is currently stubbed'),
+        );
+        return;
+      case 'Artist':
+      case 'Craftsman':
+      case 'Daimyo':
+      case 'Gold Mine':
+      case 'Imperial Envoy':
+      case 'Mountain Shrine':
+      case 'River Shrine':
+      case 'Riverboat':
+      case 'Samurai':
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, `uses ${cardName} in stub mode; full behavior is pending`),
+        );
+        return;
+      case 'Change': {
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, 'Change debt/trash-gain logic is currently stubbed'),
+        );
+        return;
+      }
+      case 'Fishmonger':
+        this.addBuys(1);
+        await this.addCoins(1);
+        return;
+      case 'Kitsune':
+        await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
+          await otherIe.gainCardFromPile('Curse');
+        });
+        await this.gainCardFromPile('Silver');
+        return;
+      case 'Litter':
+        await this.drawCards(2);
+        this.addActions(2);
+        return;
+      case 'Ninja':
+        await this.drawCards(1);
+        await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
+          await otherIe.discardDownTo(3);
+        });
+        return;
+      case 'Poet':
+        await this.drawCards(1);
+        this.addActions(1);
+        return;
+      case 'Rice': {
+        this.addBuys(1);
+        const typesInPlay = new Set<CardType>();
+        for (const card of this.getMatchingCardsInPlay(new CardEligibilityFunction(() => true))) {
+          for (const type of card.getTypes()) {
+            typesInPlay.add(type);
+          }
+        }
+        await this.addCoins(typesInPlay.size);
+        return;
+      }
+      case 'Rice Broker': {
+        this.addActions(1);
+        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
+          .from(CardLocation.HAND)
+          .to(CardSelectionPurpose.TRASH)
+          .allowNoneOption()
+          .choose();
+        if (!(cardToTrash instanceof Card)) {
+          return;
+        }
+        await this.trashCardFromLocation(cardToTrash, CardLocation.HAND);
+        if (cardToTrash.hasType(CardType.TREASURE)) {
+          await this.drawCards(2);
+        }
+        if (cardToTrash.hasType(CardType.ACTION)) {
+          await this.drawCards(5);
+        }
+        return;
+      }
+      case 'Ronin':
+        await this.drawUpTo(7);
+        return;
+      case 'Root Cellar':
+        await this.drawCards(3);
+        this.addActions(1);
+        return;
+      case 'Rustic Village':
+        await this.drawCards(1);
+        this.addActions(2);
+        return;
+      case 'Snake Witch':
+        await this.drawCards(1);
+        this.addActions(1);
+        return;
+      case 'Tanuki': {
+        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
+          .from(CardLocation.HAND)
+          .to(CardSelectionPurpose.TRASH)
+          .allowNoneOption()
+          .choose();
+        if (!(cardToTrash instanceof Card)) {
+          return;
+        }
+        await this.trashCardFromLocation(cardToTrash, CardLocation.HAND);
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, 'Tanuki gain-up-to-2-more effect is currently stubbed'),
+        );
+        return;
+      }
+      case 'Tea House':
+        await this.drawCards(1);
+        this.addActions(1);
+        await this.addCoins(2);
+        return;
+      default:
+        this.logger.gameMessage(
+          this.player,
+          ServerLogMessage.publicMessage(this.player, `uses unknown Rising Sun card ${cardName} in stub mode`),
+        );
+    }
+  }
+
   public forceFullBroadcastOfDiscard(): void {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
