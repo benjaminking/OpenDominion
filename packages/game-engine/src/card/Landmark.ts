@@ -1,6 +1,6 @@
 import { CardInfo } from '@dominion/common';
 
-import { SharedGameState } from '../SharedGameState';
+import { SharedGameState } from '../game-state/SharedGameState';
 import { CardCollection } from './CardCollection';
 import { CardShapedObject } from './CardShapedObject';
 

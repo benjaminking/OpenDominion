@@ -13,21 +13,32 @@ import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 export class Farrier extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Farrier'));
-    this.addEffect(new Effect.Builder()
-      .from(this)
-      .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-      .whereCardIs(isTheSameCardAs(this))
-      .action(new EffectAction(async (ie: InstructionExecutor) => {
-        const overpayAmount: MoneyAmount = await ie.chooseOverpayAmount();
-        ie.addEffect(new Effect.Builder()
-          .from(this)
-          .triggerOn(EffectTriggerType.TURN_END, EffectSource.SELF)
-          .action(new EffectAction(async (nestedIe: InstructionExecutor) => {
-            await nestedIe.drawCards(overpayAmount.coins);
-          }))
-        .build())
-      }))
-      .build())
+    this.addEffect(
+      new Effect.Builder()
+        .from(this)
+        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
+        .whereCardIs(isTheSameCardAs(this))
+        .action(
+          new EffectAction(async (ie: InstructionExecutor) => {
+            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
+            if (overpayAmount === undefined) {
+              return;
+            }
+            ie.addEffect(
+              new Effect.Builder()
+                .from(this)
+                .triggerOn(EffectTriggerType.TURN_END, EffectSource.SELF)
+                .action(
+                  new EffectAction(async (nestedIe: InstructionExecutor) => {
+                    await nestedIe.drawCards(overpayAmount.coins);
+                  }),
+                )
+                .build(),
+            );
+          }),
+        )
+        .build(),
+    );
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {

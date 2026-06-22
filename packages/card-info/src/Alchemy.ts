@@ -2,7 +2,6 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const alchemy: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Vineyard',
     category: CardCategory.CARD,
     text: 'Worth 1 VP per 3 Action\ncards you have (round down).',
@@ -17,7 +16,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Herbalist',
     category: CardCategory.CARD,
     text: '+1 Buy\n+$1\nOnce this turn, when you\ndiscard a Treasure from play,\nyou may put it onto your deck.',
@@ -30,7 +28,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Apothecary',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\nReveal the top 4 cards of\nyour deck. Put the Coppers\nand Potions into your hand.\nPut the rest back in any order.',
@@ -45,7 +42,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Scrying Pool',
     category: CardCategory.CARD,
     text: '+1 Action\nEach player (including you) reveals\nthe top card of their deck and either\ndiscards it or puts it back, your\nchoice. Then reveal cards from your\ndeck until revealing one that isn’t\nan Action. Put all of those revealed\n cards into your hand.',
@@ -60,7 +56,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'University',
     category: CardCategory.CARD,
     text: '+2 Actions\nYou may gain an Action card\ncosting up to $5.',
@@ -75,7 +70,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Alchemist',
     category: CardCategory.CARD,
     text: '+2 Cards\n+1 Action\nAt the start of Clean-up\nthis turn, if you have a\nPotion in play, you may put\nthis onto your deck.',
@@ -90,7 +84,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Familiar',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n\nEach other player gains\na Curse.',
@@ -105,7 +98,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: "Philosopher's Stone",
     category: CardCategory.CARD,
     text: 'Count your deck and\ndiscard pile.\n+$1 per 5 cards total between\nthem (round down).',
@@ -123,7 +115,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Golem',
     category: CardCategory.CARD,
     text: 'Reveal cards from your deck\nuntil you reveal 2 Action\ncards other than Golems.\nDiscard the other cards, then\nplay the Action cards in\neither order.',
@@ -138,7 +129,6 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Apprentice',
     category: CardCategory.CARD,
     text: '+1 Action\n\nTrash a card from your hand.\n+1 Card per $1 it costs.\n+2 Cards if it has P in its cost.',
@@ -151,8 +141,8 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Transmute',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nIf it is an Action card, gain a Duchy.\nIf it is a Treasure card, gain a Transmute.\nIf it is a Victory card, gain a Gold.',
     font_size: 'medium',
     cost: {
@@ -165,8 +155,8 @@ export const alchemy: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Possession',
+    category: CardCategory.CARD,
     text: 'The player to your left takes an extra turn after this one (but not a 2nd extra turn), during which you can see all their cards and make all their decisions. They discard any cards they would have gained and you gain them instead. They also discard any VP chips they would have received.',
     font_size: 'small',
     cost: {

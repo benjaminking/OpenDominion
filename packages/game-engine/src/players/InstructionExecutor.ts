@@ -7,6 +7,7 @@ import {
   Choice,
   ChoiceType,
   ExtraTurnChoice,
+  MoneyAmount,
   MultiCardChoice,
 } from '@dominion/common';
 
@@ -134,7 +135,8 @@ export class InstructionExecutor {
   public async chooseCoffers(): Promise<number> {
     let choiceBuilder: ChooseOneOptionBuilder = this.chooseOneOption('How many coffers to spend?');
     for (let numCoffers = 0; numCoffers <= this.player.getStatistics().getCoffers(); ++numCoffers) {
-      choiceBuilder = choiceBuilder.from(new ActionChoice(numCoffers.toFixed(), () => { }))
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      choiceBuilder = choiceBuilder.from(new ActionChoice(numCoffers.toFixed(), () => {}));
     }
     const choice: ActionChoice = await choiceBuilder.choose();
     return parseInt(choice.getName());
@@ -149,14 +151,27 @@ export class InstructionExecutor {
     }
 
     for (let numCoins = 0; numCoins <= this.player.getStatistics().getCoins(); ++numCoins) {
-      choiceBuilder = choiceBuilder.from(new ActionChoice('$' + numCoins.toFixed(), () => { selectOverpay({ coins: numCoins }) }))
-      if(this.player.getStatistics().getPotions() > 0) {
-        choiceBuilder = choiceBuilder.from(new ActionChoice('$' + numCoins.toFixed() + 'P', () => { selectOverpay({ coins: numCoins, potions: 1 }) }))
+      choiceBuilder = choiceBuilder.from(
+        new ActionChoice('$' + numCoins.toFixed(), () => {
+          selectOverpay({ coins: numCoins, potions: 0 });
+        }),
+      );
+      if (this.player.getStatistics().getPotions() > 0) {
+        choiceBuilder = choiceBuilder.from(
+          new ActionChoice('$' + numCoins.toFixed() + 'P', () => {
+            selectOverpay({ coins: numCoins, potions: 1 });
+          }),
+        );
       }
     }
-    choiceBuilder = choiceBuilder.from(new ActionChoice('Don\'t overpay', () => { selectOverpay(undefined) }))
+    choiceBuilder = choiceBuilder.from(
+      new ActionChoice("Don't overpay", () => {
+        selectOverpay(undefined);
+      }),
+    );
     await choiceBuilder.choose();
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (overpayAmount !== undefined) {
       this.player.getStatistics().spendAmount(overpayAmount);
     }
@@ -164,11 +179,11 @@ export class InstructionExecutor {
   }
 
   public async chooseRewardToGain(gainLocation: CardLocation = CardLocation.DISCARD): Promise<Card | undefined> {
-    const rewardToGain = this.chooseCard("Choose a reward to gain")
+    const rewardToGain = this.chooseCard('Choose a reward to gain')
       .from(this.sharedGameState.piles.getUniqueCardsFromPile('Rewards'))
       .to(CardSelectionPurpose.GAIN)
       .choose();
-    
+
     if (!(rewardToGain instanceof Card)) {
       return;
     }

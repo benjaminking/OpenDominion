@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const plunder: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Abundance',
+    category: CardCategory.CARD,
     text: 'The next time you gain an Action card:\n+1 Buy and\n+ $3 .',
     font_size: 'large',
     cost: {coins: 4},
@@ -12,8 +12,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Buried Treasure',
+    category: CardCategory.CARD,
     text: 'At the start of your next turn,\n+1 Buy and\n+ $3 .',
     font_size: 'large',
     cost: {coins: 5},
@@ -22,8 +22,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Cabin Boy',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action At the start of your next turn, choose one:\n+ $2 ; or trash this to gain a Duration card.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -32,8 +32,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Cage',
+    category: CardCategory.CARD,
     text: 'Set aside up to 4 cards from your hand face down (on this). The next time you gain a Victory card, trash this, and put the set aside cards into your hand at end of turn.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -42,8 +42,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Crew',
+    category: CardCategory.CARD,
     text: '+3 Cards At the start of your next turn, put this onto your deck.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -52,8 +52,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Crucible',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\n+ $1 per $1 it costs.',
     font_size: 'large',
     cost: {coins: 4},
@@ -62,8 +62,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Cutthroat',
+    category: CardCategory.CARD,
     text: 'Each other player discards down to 3 cards in hand. The next time anyone gains a Treasure costing $5 or more, gain a Loot.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -72,8 +72,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Enlarge',
+    category: CardCategory.CARD,
     text: 'Now and at the start of your next turn: Trash a card from your hand, and gain one costing up to $2 more.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -82,8 +82,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Figurine',
+    category: CardCategory.CARD,
     text: '+2 Cards You may discard an Action card for\n+1 Buy and\n+ $1 .',
     font_size: 'medium',
     cost: {coins: 5},
@@ -92,8 +92,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'First Mate',
+    category: CardCategory.CARD,
     text: 'Play any number of Action cards with the same name from your hand, then draw until you have 6 cards in hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -102,8 +102,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Flagship',
+    category: CardCategory.CARD,
     text: '+ $2 The next time you play a non-Command Action card, replay it.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -112,8 +112,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Fortune Hunter',
+    category: CardCategory.CARD,
     text: '+ $2 Look at the top 3 cards of your deck. You may play a Treasure from them. Put the rest back in any order.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -122,8 +122,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Frigate',
+    category: CardCategory.CARD,
     text: '+ $3 Until the start of your next turn, each time another player plays an Action card, they discard down to 4 cards in hand afterwards.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -132,8 +132,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Gondola',
+    category: CardCategory.CARD,
     text: 'Either now or at the start of your next turn:\n+ $2 .',
     font_size: 'large',
     cost: {coins: 4},
@@ -142,8 +142,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Grotto',
+    category: CardCategory.CARD,
     text: '+1 Action Set aside up to 4 cards from your hand face down (on this).\nAt the start of your next turn, discard them, then draw as many.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -152,8 +152,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Harbor Village',
+    category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions After the next Action you play this turn, if it gave you + $ ,\n+ $1 .',
     font_size: 'medium',
     cost: {coins: 4},
@@ -162,8 +162,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Jewelled Egg',
+    category: CardCategory.CARD,
     text: '$1\n+1 Buy',
     font_size: 'xxlarge',
     cost: {coins: 2},
@@ -172,8 +172,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'King\'s Cache',
+    category: CardCategory.CARD,
     text: 'You may play a Treasure from your hand 3 times.',
     font_size: 'large',
     cost: {coins: 7},
@@ -182,8 +182,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Landing Party',
+    category: CardCategory.CARD,
     text: '+2 Cards\n+2 Actions The next time the first card you play on a turn is a Treasure, put this onto your deck afterwards.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -192,8 +192,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Longship',
+    category: CardCategory.CARD,
     text: '+2 Actions At the start of your next turn,\n+2 Cards .',
     font_size: 'large',
     cost: {coins: 5},
@@ -202,8 +202,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mapmaker',
+    category: CardCategory.CARD,
     text: 'Look at the top 4 cards of your deck. Put 2 into your hand and discard the rest.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -212,8 +212,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Maroon',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\n+2 Cards per type it has (Action, Attack, etc.).',
     font_size: 'medium',
     cost: {coins: 4},
@@ -222,8 +222,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mining Road',
+    category: CardCategory.CARD,
     text: '+1 Action\n+1 Buy\n+ $2 Once this turn, when you gain a Treasure, you may play it.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -232,8 +232,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Pendant',
+    category: CardCategory.CARD,
     text: '+ $1 per differently named Treasure you have in play.',
     font_size: 'large',
     cost: {coins: 5},
@@ -242,8 +242,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Pickaxe',
+    category: CardCategory.CARD,
     text: '$1 Trash a card from your hand.\nIf it costs $3 or more, gain a Loot to your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -252,8 +252,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Pilgrim',
+    category: CardCategory.CARD,
     text: '+4 Cards Put a card from your hand onto your deck.',
     font_size: 'large',
     cost: {coins: 5},
@@ -262,8 +262,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Quartermaster',
+    category: CardCategory.CARD,
     text: 'At the start of each of your turns for the rest of the game, choose one: Gain a card costing up to $4 , setting it aside on this; or put a card from this into your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -272,8 +272,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Rope',
+    category: CardCategory.CARD,
     text: '$1\n+1 Buy At the start of your next turn,\n+1 Card and you may trash a card from your hand.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -282,8 +282,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sack of Loot',
+    category: CardCategory.CARD,
     text: '$1\n+1 Buy Gain a Loot.',
     font_size: 'xlarge',
     cost: {coins: 6},
@@ -292,8 +292,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Search',
+    category: CardCategory.CARD,
     text: '+ $2 The next time a Supply pile empties, trash this and gain a Loot.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -302,8 +302,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Secluded Shrine',
+    category: CardCategory.CARD,
     text: '+ $1 The next time you gain a Treasure, trash up to 2 cards from your hand.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -312,8 +312,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Shaman',
+    category: CardCategory.CARD,
     text: '+1 Action\n+ $1 You may trash a card from your hand.',
     font_size: 'large',
     cost: {coins: 2},
@@ -322,8 +322,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Silver Mine',
+    category: CardCategory.CARD,
     text: 'Gain a Treasure costing less than this to your hand.',
     font_size: 'large',
     cost: {coins: 5},
@@ -332,8 +332,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Siren',
+    category: CardCategory.CARD,
     text: 'Each other player gains a Curse.\nAt the start of your next turn, draw until you have 8 cards in hand.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -342,8 +342,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Stowaway',
+    category: CardCategory.CARD,
     text: 'At the start of your next turn,\n+2 Cards.',
     font_size: 'large',
     cost: {coins: 3},
@@ -352,8 +352,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Swamp Shacks',
+    category: CardCategory.CARD,
     text: '+2 Actions\n+1 Card per 3 cards you have in play (round down).',
     font_size: 'medium',
     cost: {coins: 4},
@@ -362,8 +362,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Taskmaster',
+    category: CardCategory.CARD,
     text: '+1 Action ,\n+ $1 , and if you gain a card costing exactly $5 this turn, then at the start of your next turn, repeat this ability.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -372,8 +372,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Tools',
+    category: CardCategory.CARD,
     text: 'Gain a copy of a card anyone has in play.',
     font_size: 'large',
     cost: {coins: 4},
@@ -382,8 +382,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Trickster',
+    category: CardCategory.CARD,
     text: 'Each other player gains a Curse. Once this turn, when you discard a Treasure from play, you may set it aside. Put it in your hand at end of turn.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -392,8 +392,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Wealthy Village',
+    category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -402,8 +402,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Amphora',
+    category: CardCategory.CARD,
     text: 'Either now or at the start of your next turn:\n+1 Buy and\n+ $3 .',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -412,8 +412,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Doubloons',
+    category: CardCategory.CARD,
     text: '$3',
     font_size: 'xxlarge',
     cost: {coins: 7, has_asterisk: true},
@@ -422,8 +422,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Endless Chalice',
+    category: CardCategory.CARD,
     text: 'Now and at the start of each of your turns for the rest of the game: $1\n+1 Buy',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -432,8 +432,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Figurehead',
+    category: CardCategory.CARD,
     text: '$3 At the start of your next turn,\n+2 Cards .',
     font_size: 'large',
     cost: {coins: 7, has_asterisk: true},
@@ -442,8 +442,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Hammer',
+    category: CardCategory.CARD,
     text: '$3 Gain a card costing up to $4 .',
     font_size: 'large',
     cost: {coins: 7, has_asterisk: true},
@@ -452,8 +452,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Insignia',
+    category: CardCategory.CARD,
     text: '$3 This turn, when you gain a card, you may put it onto your deck.',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -462,8 +462,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Jewels',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy At the start of your next turn, put this on the bottom of your deck.',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -472,8 +472,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Orb',
+    category: CardCategory.CARD,
     text: 'Look through your discard pile. Choose one: Play an Action or Treasure from it; or\n+1 Buy and\n+ $3 .',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -482,8 +482,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Prize Goat',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy You may trash a card from your hand.',
     font_size: 'large',
     cost: {coins: 7, has_asterisk: true},
@@ -492,8 +492,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Puzzle Box',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy You may set aside a card from your hand face down. Put it into your hand at end of turn.',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -502,8 +502,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sextant',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy Look at the top 5 cards of your deck. Discard any number. Put the rest back in any order.',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -512,8 +512,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Shield',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy',
     font_size: 'xxlarge',
     cost: {coins: 7, has_asterisk: true},
@@ -522,8 +522,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Spell Scroll',
+    category: CardCategory.CARD,
     text: 'Trash this to gain a cheaper card.\nIf it\'s an Action or Treasure, you may play it.',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -532,8 +532,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Staff',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy You may play an Action from your hand.',
     font_size: 'large',
     cost: {coins: 7, has_asterisk: true},
@@ -542,8 +542,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sword',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy Each other player discards down to 4 cards in hand.',
     font_size: 'medium',
     cost: {coins: 7, has_asterisk: true},
@@ -552,8 +552,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Avoid',
+    category: CardCategory.EVENT,
     text: '+1 Buy The next time you shuffle this turn, pick up to 3 of those cards to put into your discard pile.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -562,8 +562,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Bury',
+    category: CardCategory.EVENT,
     text: '+1 Buy Put any card from your discard pile on the bottom of your deck.',
     font_size: 'medium',
     cost: {coins: 1},
@@ -572,8 +572,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Deliver',
+    category: CardCategory.EVENT,
     text: '+1 Buy This turn, each time you gain a card, set it aside, and put it into your hand at end of turn.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -582,8 +582,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Foray',
+    category: CardCategory.EVENT,
     text: 'Discard 3 cards, revealing them.\nIf they have 3 different names, gain a Loot.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -592,8 +592,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Invasion',
+    category: CardCategory.EVENT,
     text: 'You may play an Attack from your hand. Gain a Duchy. Gain an Action onto your deck. Gain a Loot; play it.',
     font_size: 'medium',
     cost: {coins: 10},
@@ -602,8 +602,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Journey',
+    category: CardCategory.EVENT,
     text: 'You don\'t discard cards from play in Clean-up this turn. Take an extra turn after this one (but not a 3rd turn in a row).',
     font_size: 'medium',
     cost: {coins: 4},
@@ -612,8 +612,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Launch',
+    category: CardCategory.EVENT,
     text: 'Once per turn: Return to your Action phase.\n+1 Card ,\n+1 Action , and\n+1 Buy .',
     font_size: 'medium',
     cost: {coins: 3},
@@ -622,8 +622,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Looting',
+    category: CardCategory.EVENT,
     text: 'Gain a Loot.',
     font_size: 'xxlarge',
     cost: {coins: 6},
@@ -632,8 +632,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Maelstrom',
+    category: CardCategory.EVENT,
     text: 'Trash 3 cards from your hand. Each other player with 5 or more cards in hand trashes one of them.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -642,8 +642,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Mirror',
+    category: CardCategory.EVENT,
     text: '+1 Buy The next time you gain an Action card this turn, gain a copy of it.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -652,8 +652,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Peril',
+    category: CardCategory.EVENT,
     text: 'You may trash an Action card from your hand to gain a Loot.',
     font_size: 'large',
     cost: {coins: 2},
@@ -662,8 +662,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Prepare',
+    category: CardCategory.EVENT,
     text: 'Set aside your hand face up.\nAt the start of your next turn, play those Actions and Treasures in any order, then discard the rest.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -672,8 +672,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Prosper',
+    category: CardCategory.EVENT,
     text: 'Gain a Loot, plus any number of differently named Treasures.',
     font_size: 'medium',
     cost: {coins: 10},
@@ -682,8 +682,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Rush',
+    category: CardCategory.EVENT,
     text: '+1 Buy The next time you gain an Action card this turn, play it.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -692,8 +692,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Scrounge',
+    category: CardCategory.EVENT,
     text: 'Choose one: Trash a card from your hand; or gain an Estate from the trash, and if you did, gain a card costing up to $5 .',
     font_size: 'medium',
     cost: {coins: 3},
@@ -702,8 +702,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Cheap',
+    category: CardCategory.TRAIT,
     text: 'Cheap cards cost $1 less.',
     font_size: 'xlarge',
     cost: {'coins': 0},
@@ -712,8 +712,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Cursed',
+    category: CardCategory.TRAIT,
     text: 'When you gain a Cursed card, gain a Loot and a Curse.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -722,8 +722,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Fated',
+    category: CardCategory.TRAIT,
     text: 'When shuffling, you may look through the cards and reveal Fated cards to put them on the top or bottom.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -732,8 +732,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Fawning',
+    category: CardCategory.TRAIT,
     text: 'When you gain a Province, gain a Fawning card.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -742,8 +742,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Friendly',
+    category: CardCategory.TRAIT,
     text: 'At the start of your Clean-up phase, you may discard a Friendly card to gain a Friendly card.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -752,8 +752,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Hasty',
+    category: CardCategory.TRAIT,
     text: 'When you gain a Hasty card, set it aside, and play it at the start of your next turn.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -762,8 +762,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Inherited',
+    category: CardCategory.TRAIT,
     text: 'Setup: You start the game with an Inherited card in place of a starting card you choose.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -772,8 +772,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Inspiring',
+    category: CardCategory.TRAIT,
     text: 'After playing an Inspiring card on your turn, you may play an Action from your hand that you don\'t have a copy of in play.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -782,8 +782,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Nearby',
+    category: CardCategory.TRAIT,
     text: 'When you gain a Nearby card,\n+1 Buy .',
     font_size: 'large',
     cost: {'coins': 0},
@@ -792,8 +792,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Patient',
+    category: CardCategory.TRAIT,
     text: 'At the start of your Clean-up phase, you may set aside Patient cards from your hand to play them at the start of your next turn.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -802,8 +802,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Pious',
+    category: CardCategory.TRAIT,
     text: 'When you gain a Pious card, you may trash a card from your hand.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -812,8 +812,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Reckless',
+    category: CardCategory.TRAIT,
     text: 'Follow the instructions of played Reckless cards twice.\nWhen discarding one from play, return it to its pile.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -822,8 +822,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Rich',
+    category: CardCategory.TRAIT,
     text: 'When you gain a Rich card, gain a Silver.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -832,8 +832,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Shy',
+    category: CardCategory.TRAIT,
     text: 'At the start of your turn, you may discard one Shy card for\n+2 Cards .',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -842,8 +842,8 @@ export const plunder: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.TRAIT,
     name: 'Tireless',
+    category: CardCategory.TRAIT,
     text: 'When you discard a Tireless card from play, set it aside, and put it onto your deck at end of turn.',
     font_size: 'medium',
     cost: {'coins': 0},

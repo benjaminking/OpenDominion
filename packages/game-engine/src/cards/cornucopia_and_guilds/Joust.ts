@@ -34,12 +34,18 @@ export class Joust extends KingdomCard {
     if (province instanceof Card) {
       await ie.setCardAsideFromLocation(province, CardLocation.HAND);
       await ie.chooseRewardToGain(CardLocation.HAND);
-      this.addEffect(new Effect.Builder()
-        .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.ANYONE)
-        .withExpiration(new OneTimeEffectExpirtation())
-        .makeMandatory()
-        .action(new EffectAction(async (ie: InstructionExecutor) => ie.discardCardFromLocation(province, CardLocation.SET_ASIDEs)))
-        .build());
+      this.addEffect(
+        new Effect.Builder()
+          .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.ANYONE)
+          .withExpiration(new OneTimeEffectExpirtation())
+          .makeMandatory()
+          .action(
+            new EffectAction(async (ie: InstructionExecutor) =>
+              ie.discardCardFromLocation(province, CardLocation.SET_ASIDE),
+            ),
+          )
+          .build(),
+      );
     }
   }
 }

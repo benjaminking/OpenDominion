@@ -2,7 +2,6 @@ import { CardCategory, CardInfo, CardType, Expansion } from '@dominion/common';
 
 export const basic_cards: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Copper',
     category: CardCategory.CARD,
     text: '$1',
@@ -19,7 +18,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Silver',
     category: CardCategory.CARD,
     text: '$2',
@@ -36,7 +34,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Gold',
     category: CardCategory.CARD,
     text: '$3',
@@ -53,7 +50,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Platinum',
     category: CardCategory.CARD,
     text: '$5',
@@ -70,7 +66,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Potion',
     category: CardCategory.CARD,
     text: '1P',
@@ -88,7 +83,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Estate',
     category: CardCategory.CARD,
     text: '1VP',
@@ -102,7 +96,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Duchy',
     category: CardCategory.CARD,
     text: '3VP',
@@ -116,7 +109,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Province',
     category: CardCategory.CARD,
     text: '6VP',
@@ -130,7 +122,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Colony',
     category: CardCategory.CARD,
     text: '10VP',
@@ -144,7 +135,6 @@ export const basic_cards: CardInfo[] = [
   },
 
   {
-    category: CardCategory.CARD,
     name: 'Curse',
     category: CardCategory.CARD,
     text: '-1VP',

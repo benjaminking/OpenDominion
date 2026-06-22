@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const empires: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Archive',
+    category: CardCategory.CARD,
     text: '+1 Action Set aside the top 3 cards of your deck face down (you may look at them). Now and at the start of your next two turns, put one into your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -12,8 +12,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bustling Village',
+    category: CardCategory.CARD,
     text: '+1 Card\n+3 Actions You may reveal a Settlers from your discard pile and put it into your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -22,8 +22,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Capital',
+    category: CardCategory.CARD,
     text: '$6\n+1 Buy',
     font_size: 'xxlarge',
     cost: {coins: 5},
@@ -32,8 +32,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Catapult',
+    category: CardCategory.CARD,
     text: '+ $1 Trash a card from your hand.\nIf it costs $3 or more, each other player gains a Curse.\nIf it\'s a Treasure, each other player discards down to 3 cards in hand.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -42,8 +42,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Chariot Race',
+    category: CardCategory.CARD,
     text: '+1 Action\n+1 Card , revealing it. The player to your left reveals the top card of their deck.\nIf your card costs more,\n+ $1 and +1 .',
     font_size: 'medium',
     cost: {coins: 3},
@@ -52,8 +52,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Charm',
+    category: CardCategory.CARD,
     text: 'Choose one:\n+1 Buy and\n+ $2 ; or the next time you gain a card this turn, you may also gain a differently named card with the same cost.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -62,8 +62,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'City Quarter',
+    category: CardCategory.CARD,
     text: '+2 Actions Reveal your hand.\n+1 Card per Action card revealed.',
     font_size: 'medium',
     cost: {coins: 0, debt: 8},
@@ -72,8 +72,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Crown',
+    category: CardCategory.CARD,
     text: 'If it\'s your Action phase, you may play an Action from your hand twice.\nIf it\'s your Buy phase, you may play a Treasure from your hand twice.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -82,8 +82,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Crumbling Castle',
+    category: CardCategory.CARD,
     text: '1',
     font_size: 'xxlarge',
     cost: {coins: 4},
@@ -92,8 +92,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Emporium',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+ $1',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -102,8 +102,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Encampment',
+    category: CardCategory.CARD,
     text: '+2 Cards\n+2 Actions You may reveal a Gold or Plunder from your hand.\nIf you do not, set this aside, and return it to its pile at the start of Clean-up.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -112,8 +112,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Enchantress',
+    category: CardCategory.CARD,
     text: 'Until your next turn, the first time each other player plays an Action card on their turn, they get\n+1 Card and\n+1 Action instead of following its instructions.\nAt the start of your next turn,\n+2 Cards',
     font_size: 'small',
     cost: {coins: 3},
@@ -122,8 +122,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Engineer',
+    category: CardCategory.CARD,
     text: 'Gain a card costing up to $4 . You may trash this.\nIf you do, gain a card costing up to $4 .',
     font_size: 'medium',
     cost: {coins: 0, debt: 4},
@@ -132,8 +132,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Farmers\' Market',
+    category: CardCategory.CARD,
     text: '+1 Buy If there are 4 or more on the Farmers\' Market pile, take them and trash this. Otherwise, add 1 to the pile and then\n+ $1 per 1 on the pile.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -142,8 +142,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Fortune',
+    category: CardCategory.CARD,
     text: '+1 Buy Double your $ if you haven\'t yet this turn.',
     font_size: 'large',
     cost: {coins: 8, debt: 8},
@@ -152,8 +152,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Forum',
+    category: CardCategory.CARD,
     text: '+3 Cards\n+1 Action Discard 2 cards.',
     font_size: 'large',
     cost: {coins: 5},
@@ -162,8 +162,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Gladiator',
+    category: CardCategory.CARD,
     text: '+ $2 Reveal a card from your hand. The player to your left may reveal a copy from their hand.\nIf they don\'t,\n+ $1 and trash a Gladiator from its pile.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -172,8 +172,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Grand Castle',
+    category: CardCategory.CARD,
     text: '5',
     font_size: 'xxlarge',
     cost: {coins: 9},
@@ -182,8 +182,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Groundskeeper',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action This turn, when you gain a Victory card, +1 .',
     font_size: 'medium',
     cost: {coins: 5},
@@ -192,8 +192,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Haunted Castle',
+    category: CardCategory.CARD,
     text: '2',
     font_size: 'xxlarge',
     cost: {coins: 6},
@@ -202,8 +202,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Humble Castle',
+    category: CardCategory.CARD,
     text: '$1',
     font_size: 'xxlarge',
     cost: {coins: 3},
@@ -212,8 +212,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'King\'s Castle',
+    category: CardCategory.CARD,
     text: 'Worth 2 per Castle you have.',
     font_size: 'xlarge',
     cost: {coins: 10},
@@ -222,8 +222,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Legionary',
+    category: CardCategory.CARD,
     text: '+ $3 You may reveal a Gold from your hand.\nIf you do, each other player discards down to 2 cards in hand, then draws a card.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -232,8 +232,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Opulent Castle',
+    category: CardCategory.CARD,
     text: 'Discard any number of Victory cards, revealed.\n+ $2 per card discarded.',
     font_size: 'medium',
     cost: {coins: 7},
@@ -242,8 +242,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Overlord',
+    category: CardCategory.CARD,
     text: 'Play a non-Command non-Duration Action card from the Supply costing up to $5 , leaving it there.',
     font_size: 'medium',
     cost: {coins: 0, debt: 8},
@@ -252,8 +252,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Patrician',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action Reveal the top card of your deck.\nIf it costs $5 or more, put it into your hand.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -262,8 +262,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Plunder',
+    category: CardCategory.CARD,
     text: '$2 +1',
     font_size: 'xxlarge',
     cost: {coins: 5},
@@ -272,8 +272,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Rocks',
+    category: CardCategory.CARD,
     text: '$1',
     font_size: 'xxlarge',
     cost: {coins: 4},
@@ -282,8 +282,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Royal Blacksmith',
+    category: CardCategory.CARD,
     text: '+5 Cards Reveal your hand; discard the Coppers.',
     font_size: 'large',
     cost: {coins: 0, debt: 8},
@@ -292,8 +292,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sacrifice',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nIf it\'s an… Action card,\n+2 Cards and\n+2 Actions Treasure card,\n+ $2 Victory card, +2',
     font_size: 'medium',
     cost: {coins: 4},
@@ -302,8 +302,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Settlers',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action You may reveal a Copper from your discard pile and put it into your hand.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -312,8 +312,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Small Castle',
+    category: CardCategory.CARD,
     text: 'Trash this or a Castle from your hand.\nIf you do, gain a Castle.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -322,8 +322,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sprawling Castle',
+    category: CardCategory.CARD,
     text: '4',
     font_size: 'xxlarge',
     cost: {coins: 8},
@@ -332,8 +332,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Temple',
+    category: CardCategory.CARD,
     text: '+1 Trash from 1 to 3 differently named cards from your hand. Add 1 to the Temple pile.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -342,8 +342,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Villa',
+    category: CardCategory.CARD,
     text: '+2 Actions\n+1 Buy\n+ $1',
     font_size: 'xlarge',
     cost: {coins: 4},
@@ -352,8 +352,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Wild Hunt',
+    category: CardCategory.CARD,
     text: 'Choose one:\n+3 Cards and add 1 to the Wild Hunt pile; or gain an Estate, and if you do, take the from the pile.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -362,8 +362,8 @@ export const empires: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Advance',
+    category: CardCategory.EVENT,
     text: 'You may trash an Action card from your hand.\nIf you do, gain an Action card costing up to $6 .',
     font_size: 'medium',
     cost: {coins: 0},
@@ -372,8 +372,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Annex',
+    category: CardCategory.EVENT,
     text: 'Look through your discard pile. Shuffle all but up to 5 cards from it into your deck. Gain a Duchy.',
     font_size: 'medium',
     cost: {coins: 0, debt: 8},
@@ -382,8 +382,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Banquet',
+    category: CardCategory.EVENT,
     text: 'Gain 2 Coppers and a non-Victory card costing up to $5 .',
     font_size: 'large',
     cost: {coins: 3},
@@ -392,8 +392,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Conquest',
+    category: CardCategory.EVENT,
     text: 'Gain 2 Silvers. +1 per Silver you\'ve gained this turn.',
     font_size: 'large',
     cost: {coins: 6},
@@ -402,8 +402,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Delve',
+    category: CardCategory.EVENT,
     text: '+1 Buy Gain a Silver.',
     font_size: 'xlarge',
     cost: {coins: 2},
@@ -412,8 +412,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Dominate',
+    category: CardCategory.EVENT,
     text: 'Gain a Province.\nIf you do, +9 .',
     font_size: 'large',
     cost: {coins: 14},
@@ -422,8 +422,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Donate',
+    category: CardCategory.EVENT,
     text: 'At the start of your next turn, first, put your deck and discard pile into your hand, trash any number of cards from it, then shuffle the rest into your deck and draw 5 cards.',
     font_size: 'medium',
     cost: {coins: 0, debt: 8},
@@ -432,8 +432,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Ritual',
+    category: CardCategory.EVENT,
     text: 'Gain a Curse.\nIf you do, trash a card from your hand. +1 per $1 it costs.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -442,8 +442,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Salt the Earth',
+    category: CardCategory.EVENT,
     text: '+1 Trash a Victory card from the Supply.',
     font_size: 'large',
     cost: {coins: 4},
@@ -452,8 +452,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Tax',
+    category: CardCategory.EVENT,
     text: 'Add 2D to a Supply pile.',
     font_size: 'xlarge',
     cost: {coins: 2},
@@ -462,8 +462,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Triumph',
+    category: CardCategory.EVENT,
     text: 'Gain an Estate.\nIf you did, +1 per card you\'ve gained this turn.',
     font_size: 'medium',
     cost: {coins: 0, debt: 5},
@@ -472,8 +472,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Wedding',
+    category: CardCategory.EVENT,
     text: '+1 Gain a Gold.',
     font_size: 'xlarge',
     cost: {coins: 4, debt: 3},
@@ -482,8 +482,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.EVENT,
     name: 'Windfall',
+    category: CardCategory.EVENT,
     text: 'If your deck and discard pile are empty, gain 3 Golds.',
     font_size: 'large',
     cost: {coins: 5},
@@ -492,8 +492,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Aqueduct',
+    category: CardCategory.LANDMARK,
     text: 'When you gain a Treasure, move 1 from its pile to this.\nWhen you gain a Victory card, take the from this.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -502,8 +502,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Arena',
+    category: CardCategory.LANDMARK,
     text: 'At the start of your Buy phase, you may discard an Action card.\nIf you do, take 2 from here.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -512,8 +512,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Bandit Fort',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, -2 for each Silver and each Gold you have.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -522,8 +522,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Basilica',
+    category: CardCategory.LANDMARK,
     text: 'When you gain a card in your Buy phase, if you have $2 or more, take 2 from here.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -532,8 +532,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Baths',
+    category: CardCategory.LANDMARK,
     text: 'When you end your turn without having gained a card, take 2 from here.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -542,8 +542,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Battlefield',
+    category: CardCategory.LANDMARK,
     text: 'When you gain a Victory card, take 2 from here.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -552,8 +552,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Colonnade',
+    category: CardCategory.LANDMARK,
     text: 'When you gain an Action card in your Buy phase, if you have a copy of it in play, take 2 from here.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -562,8 +562,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Defiled Shrine',
+    category: CardCategory.LANDMARK,
     text: 'When you gain an Action, move 1 from its pile to this.\nWhen you gain a Curse in your Buy phase, take the from this.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -572,8 +572,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Fountain',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 15 if you have at least 10 Coppers.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -582,8 +582,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Keep',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 5 per differently named Treasure you have, that you have more copies of than each other player, or tied for most.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -592,8 +592,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Labyrinth',
+    category: CardCategory.LANDMARK,
     text: 'When you gain a 2nd card in one of your turns, take 2 from here.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -602,8 +602,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Mountain Pass',
+    category: CardCategory.LANDMARK,
     text: 'When you are the first player to gain a Province, each player bids once, up to 40D , ending with you. High bidder gets +8 and takes the D they bid.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -612,8 +612,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Museum',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 2 per differently named card you have.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -622,8 +622,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Obelisk',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 2 per card you have from the chosen pile.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -632,8 +632,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Orchard',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 4 per differently named Action card you have 3 or more copies of.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -642,8 +642,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Palace',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 3 per set you have of Copper - Silver - Gold.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -652,8 +652,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Tomb',
+    category: CardCategory.LANDMARK,
     text: 'When you trash a card, +1 .',
     font_size: 'xlarge',
     cost: {'coins': 0},
@@ -662,8 +662,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Tower',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 1 per non-Victory card you have from an empty Supply pile.',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -672,8 +672,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Triumphal Arch',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, 3 per copy you have of the 2nd most common Action card among your cards (if it\'s a tie, count either).',
     font_size: 'medium',
     cost: {'coins': 0},
@@ -682,8 +682,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Wall',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, -1 per card you have after the first 15.',
     font_size: 'large',
     cost: {'coins': 0},
@@ -692,8 +692,8 @@ export const empires: CardInfo[] = [
     is_kingdom: false,
   },
   {
-    category: CardCategory.LANDMARK,
     name: 'Wolf Den',
+    category: CardCategory.LANDMARK,
     text: 'When scoring, -3 per card you have exactly one copy of.',
     font_size: 'large',
     cost: {'coins': 0},

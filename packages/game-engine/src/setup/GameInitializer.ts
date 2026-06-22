@@ -4,14 +4,14 @@ import { CardType, Expansion, GameResult, Mechanic, PileCategory } from '@domini
 import { Card } from '../card/Card';
 import { CardFactory } from '../card/CardFactory';
 import { Game } from '../Game';
+import { Pile } from '../piles/Pile';
 import { PileFactory } from '../piles/PileFactory';
+import { SpecialPileLookup, SpecialPileType } from '../piles/SpecialPiles';
 import { PlayerSpecification } from '../players';
 import { KingdomChooser } from './KingdomChooser';
-import { StartingDeckConfigurationBuilder } from './StartingDeckConfigurationBuilder';
 import { PileSpecification } from './PileSpecification';
-import { Pile } from '../piles/Pile';
 import { anyKingdomPileSpecification } from './StandardPileSpecifications';
-import { SpecialPileLookup, SpecialPileType } from '../piles/SpecialPiles';
+import { StartingDeckConfigurationBuilder } from './StartingDeckConfigurationBuilder';
 
 export interface GameInitializerOptions {
   useColoniesPlatinum?: boolean;
@@ -106,11 +106,7 @@ export class GameInitializer {
       pileSize,
       new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]),
     );
-    this.game
-      .getGameState()
-      .piles.addKingdomPile(
-        pile
-    );
+    this.game.getGameState().piles.addKingdomPile(pile);
     return pile;
   }
 
@@ -203,25 +199,11 @@ export class GameInitializer {
     const specialPileSpecification = this.specialPileLookup.lookUpSpecialPile(specialPileType);
     const specialPile: Pile = this.pileFactory.createSpecialPile(specialPileSpecification);
     if (specialPileSpecification.pileCategories.has(PileCategory.KINGDOM)) {
-      this.game
-        .getGameState()
-        .piles.addKingdomPile(
-          specialPile
-      );
-    }
-    else if (specialPileSpecification.pileCategories.has(PileCategory.SUPPLY) {
-      this.game
-        .getGameState()
-        .piles.addNonKingdomSupplyPile(
-          specialPile
-      );
-    }
-    else if (specialPileSpecification.pileCategories.has(PileCategory.NON_SUPPLY)) {
-      this.game
-        .getGameState()
-        .piles.addNonSupplyPile(
-          specialPile
-      );
+      this.game.getGameState().piles.addKingdomPile(specialPile);
+    } else if (specialPileSpecification.pileCategories.has(PileCategory.SUPPLY)) {
+      this.game.getGameState().piles.addNonKingdomSupplyPile(specialPile);
+    } else if (specialPileSpecification.pileCategories.has(PileCategory.NON_SUPPLY)) {
+      this.game.getGameState().piles.addNonSupplyPile(specialPile);
     }
   }
 

@@ -2,7 +2,6 @@ import { CardCategory, CardInfo, CardType, Expansion } from '@dominion/common';
 
 export const intrigue: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Baron',
     category: CardCategory.CARD,
     text: "+1 Buy\n\nYou may discard an Estate\nfor +$4. If you don't,\ngain an Estate.",
@@ -15,7 +14,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bridge',
     category: CardCategory.CARD,
     text: '+1 Buy\n+$1\n\nThis turn, cards (everywhere)\ncost $1 less.',
@@ -28,7 +26,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Conspirator',
     category: CardCategory.CARD,
     text: "+$2\n\nIf you've played 3 or more\nActions this turn (counting\nthis), +1 Card and\n+1 Action.",
@@ -41,7 +38,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Courtier',
     category: CardCategory.CARD,
     text: 'Reveal a card from your hand.\nFor each type it has (Action,\nAttack, etc.), choose one:\n+1 Action; or +1 Buy; or\n+$3; or gain a Gold. The\nchoices must be different.',
@@ -54,7 +50,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Courtyard',
     category: CardCategory.CARD,
     text: '+3 Cards\n\nPut a card from your hand\nonto your deck.',
@@ -67,7 +62,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Diplomat',
     category: CardCategory.CARD,
     text: '+2 Cards\nIf you have 5 or fewer cards in hand\n(after drawing), +2 Actions.\n-\nWhen another player plays an\nAttack card, you may first reveal this\nfrom a hand of 5 or more cards, to draw\n2 cards then discard 3.',
@@ -80,7 +74,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Duke',
     category: CardCategory.CARD,
     text: 'Worth 1VP per Duchy\nyou have.',
@@ -93,7 +86,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Farm',
     category: CardCategory.CARD,
     text: '$2\n-\n2VP',
@@ -109,7 +101,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Ironworks',
     category: CardCategory.CARD,
     text: 'Gain a card costing up to $4.\nIf the gained card is an…\n\nAction card, +1 Action\nTreasure card, +$1\nVictory card, +1 Card',
@@ -122,7 +113,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Lurker',
     category: CardCategory.CARD,
     text: '+1 Action\n\nChoose one: Trash an Action\ncard from the Supply; or gain\nan Action card from the trash.',
@@ -135,7 +125,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Masquerade',
     category: CardCategory.CARD,
     text: '+2 Cards\n\nEach player with any cards in\nhand passes one to the next\nsuch player to their left, at\nonce. Then you may trash a\ncard from your hand.',
@@ -148,7 +137,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mill',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\nYou may discard 2 cards.\nIf you do, +$2.\n-\n1VP',
@@ -161,7 +149,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mining Village',
     category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions\n\nYou may trash this for +$2.',
@@ -174,7 +161,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Minion',
     category: CardCategory.CARD,
     text: '+1 Action\n\nChoose one: +$2; or discard\nyour hand, +4 Cards, and\neach other player with at least\n5 cards in hand discards their\nhand and draws 4 cards.',
@@ -187,7 +173,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Nobles',
     category: CardCategory.CARD,
     text: 'Choose one: +3 Cards;\nor +2 Actions.\n-\n2VP',
@@ -200,7 +185,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Patrol',
     category: CardCategory.CARD,
     text: '+3 Cards\n\nReveal the top 4 cards of your\ndeck. Put the Victory cards and\nCurses into your hand. Put the\nrest back in any order.',
@@ -213,7 +197,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Pawn',
     category: CardCategory.CARD,
     text: 'Choose two: +1 Card;\n+1 Action; +1 Buy; +$1.\nThe choices must be different.',
@@ -226,7 +209,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Replace',
     category: CardCategory.CARD,
     text: "Trash a card from your hand.\nGain a card costing up to $2\nmore than it. If the gained\ncard is an Action or Treasure,\nput it onto your deck; if it's a\nVictory card, each other player\ngains a Curse.",
@@ -239,7 +221,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Secret Passage',
     category: CardCategory.CARD,
     text: '+2 Cards\n+1 Action\n\nTake a card from your hand and\nput it anywhere in your deck.',
@@ -252,7 +233,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Shanty Town',
     category: CardCategory.CARD,
     text: '+2 Actions\n\nReveal your hand. If you have\nno Action cards in hand,\n+2 Cards.',
@@ -265,7 +245,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Steward',
     category: CardCategory.CARD,
     text: 'Choose one: +2 Cards; or\n+$2; or trash 2 cards from\nyour hand.',
@@ -278,7 +257,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Swindler',
     category: CardCategory.CARD,
     text: '+$2\n\nEach other player trashes the\ntop card of their deck and gains\na card with the same cost that\nyou choose.',
@@ -291,7 +269,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Torturer',
     category: CardCategory.CARD,
     text: "+3 Cards\n\nEach other player either\ndiscards 2 cards or gains a\nCurse to their hand, their\nchoice. (They may pick an\noption they can't do.)",
@@ -304,7 +281,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Trading Post',
     category: CardCategory.CARD,
     text: 'Trash 2 cards from your hand.\nIf you did, gain a Silver\nto your hand.',
@@ -317,7 +293,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Upgrade',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n\nTrash a card from your hand.\nGain a card costing exactly\n$1 more than it.',
@@ -330,7 +305,6 @@ export const intrigue: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Wishing Well',
     category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n\nName a card, then reveal the\ntop card of your deck. If you\nnamed it, put it into your hand.',

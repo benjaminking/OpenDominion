@@ -8,16 +8,15 @@ import { CostModifier } from '../../effects/CostModifier';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { AnyTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
 import { BuyPhaseEligibility } from '../../effects/StandardTurnPhaseEligibilityFunctions';
-import { CostModifyingSetupRule } from '../../game-state/CostModifyingSetupRule';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { CostModifyingSetupRule } from '../../setup/CostModifyingSetupRule';
 import { cardNameIs, isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Peddler extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Peddler'));
-    sharedGameState.addSetupRule(
-      this.getName(),
+    this.addSetupRule(
       new CostModifyingSetupRule(
         new CostModifier.Builder()
           .setCardEligibility(cardNameIs(this.getName()))

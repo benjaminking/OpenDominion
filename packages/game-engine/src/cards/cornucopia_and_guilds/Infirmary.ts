@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice, MoneyAmount } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
@@ -15,23 +15,30 @@ export class Infirmary extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Infirmary'));
 
-    this.addEffect(new Effect.Builder()
-      .from(this)
-      .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-      .whereCardIs(isTheSameCardAs(this))
-      .action(new EffectAction(async (ie: InstructionExecutor) => {
-        const overpayAmount: MoneyAmount = await ie.chooseOverpayAmount();
-        for (let i = 0; i < overpayAmount.coins; ++i) {
-          // TODO: not sure whether this still gets played if you lose track of it
-          await ie.playCardFromLocation(this, this.getLocation());
-        }
-      }))
-      .build())
+    this.addEffect(
+      new Effect.Builder()
+        .from(this)
+        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
+        .whereCardIs(isTheSameCardAs(this))
+        .action(
+          new EffectAction(async (ie: InstructionExecutor) => {
+            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
+            if (overpayAmount === undefined) {
+              return;
+            }
+            for (let i = 0; i < overpayAmount.coins; ++i) {
+              // TODO: not sure whether this still gets played if you lose track of it
+              await ie.playCardFromLocation(this, this.getLocation());
+            }
+          }),
+        )
+        .build(),
+    );
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(1);
-    
+
     const cardToTrash: Card | Choice = await ie
       .chooseCard('You may trash a card from your hand')
       .from(CardLocation.HAND)

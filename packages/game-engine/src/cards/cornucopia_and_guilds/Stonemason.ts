@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice, MoneyAmount } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
@@ -11,22 +11,34 @@ import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { both, costsExactly, costsLessThanCard, isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import {
+  both,
+  costsExactly,
+  costsLessThanCard,
+  isActionCard,
+  isTheSameCardAs,
+} from '../../StandardCardEligibilityFunctions';
 
 export class Stonemason extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Stonemason'));
 
-    this.addEffect(new Effect.Builder()
-      .from(this)
-      .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-      .whereCardIs(isTheSameCardAs(this))
-      .action(new EffectAction(async (ie: InstructionExecutor) => {
-        const overpayAmount: MoneyAmount = await ie.chooseOverpayAmount();
-        await this.gainActionFromOverpay(ie, overpayAmount);
-        await this.gainActionFromOverpay(ie, overpayAmount);
-      }))
-      .build())
+    this.addEffect(
+      new Effect.Builder()
+        .from(this)
+        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
+        .whereCardIs(isTheSameCardAs(this))
+        .action(
+          new EffectAction(async (ie: InstructionExecutor) => {
+            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
+            if (overpayAmount !== undefined) {
+              await this.gainActionFromOverpay(ie, overpayAmount);
+              await this.gainActionFromOverpay(ie, overpayAmount);
+            }
+          }),
+        )
+        .build(),
+    );
   }
 
   private async gainActionFromOverpay(ie: InstructionExecutor, overpayAmount: MoneyAmount): Promise<void> {
@@ -36,7 +48,7 @@ export class Stonemason extends KingdomCard {
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(both(isActionCard, costsExactly(Cost.fromMoneyAmount(overpayAmount))))
       .choose();
-    
+
     if (!(cardToGain instanceof Card)) {
       return;
     }

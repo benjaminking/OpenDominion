@@ -1,11 +1,10 @@
-import { Mechanic } from '@dominion/common';
+import { CardInfo, Mechanic } from '@dominion/common';
 
-import { CardInfo } from '@dominion/card-info';
 import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
+import { MechanicsInUse } from '../game-state/MechanicsInUse';
 import { SharedGameState } from '../game-state/SharedGameState';
 import { convertToClassName, convertToFileName } from '../NameUtils';
-import { MechanicsInUse } from '../game-state/MechanicsInUse';
 import { SetupRule } from '../setup/SetupRule';
 import { SetupRules } from '../setup/SetupRules';
 

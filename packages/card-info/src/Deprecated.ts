@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const deprecated: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Adventurer',
+    category: CardCategory.CARD,
     text: 'Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards.',
     font_size: 'medium',
     cost: {coins: 6},
@@ -12,8 +12,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Chancellor',
+    category: CardCategory.CARD,
     text: '+ $2 You may immediately put your deck into your discard pile.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -22,8 +22,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Feast',
+    category: CardCategory.CARD,
     text: 'Trash this card. Gain a card costing up to $5 .',
     font_size: 'large',
     cost: {coins: 4},
@@ -32,8 +32,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Spy',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action Each player (including you) reveals the top card of their deck and either discards it or puts it back, your choice.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -42,8 +42,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Thief',
+    category: CardCategory.CARD,
     text: 'Each other player reveals the top 2 cards of their deck.\nIf they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.',
     font_size: 'small',
     cost: {coins: 4},
@@ -52,8 +52,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Woodcutter',
+    category: CardCategory.CARD,
     text: '+1 Buy\n+ $2',
     font_size: 'xxlarge',
     cost: {coins: 3},
@@ -62,8 +62,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Doctor',
+    category: CardCategory.CARD,
     text: 'Name a card. Reveal the top 3 cards of your deck. Trash the matches. Put the rest back in any order.',
     font_size: 'medium',
     cost: {coins: 3, has_plus: true},
@@ -72,8 +72,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Farming Village',
+    category: CardCategory.CARD,
     text: '+2 Actions Reveal cards from your deck until you reveal a Treasure or Action card. Put that card into your hand and discard the rest.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -82,8 +82,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Fortune Teller',
+    category: CardCategory.CARD,
     text: '+ $2 Each other player reveals cards from the top of their deck until they reveal a Victory card or a Curse. They put it on top and discard the rest.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -92,8 +92,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Harvest',
+    category: CardCategory.CARD,
     text: 'Reveal the top 4 cards of your deck, then discard them.\n+ $1 per differently named card revealed.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -102,8 +102,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Horse Traders',
+    category: CardCategory.CARD,
     text: '+1 Buy\n+ $3 Discard 2 cards.',
     font_size: 'xlarge',
     cost: {coins: 4},
@@ -112,8 +112,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Masterpiece',
+    category: CardCategory.CARD,
     text: '$1',
     font_size: 'xxlarge',
     cost: {coins: 3, has_plus: true},
@@ -122,8 +122,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Taxman',
+    category: CardCategory.CARD,
     text: 'You may trash a Treasure from your hand. Each other player with 5 or more cards in hand discards a copy of it (or reveals they can\'t). Gain a Treasure onto your deck costing up to $3 more than it.',
     font_size: 'small',
     cost: {coins: 4},
@@ -132,8 +132,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Tournament',
+    category: CardCategory.CARD,
     text: '+1 Action Each player may reveal a Province from their hand.\nIf you do, discard it and gain any Prize (from the Prize pile) or a Duchy, onto your deck.\nIf no-one else does,\n+1 Card and\n+ $1 .',
     font_size: 'small',
     cost: {coins: 4},
@@ -142,8 +142,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bag of Gold',
+    category: CardCategory.CARD,
     text: '+1 Action Gain a Gold onto your deck. (This is not in the Supply.)',
     font_size: 'medium',
     cost: {coins: 0, has_asterisk: true},
@@ -152,8 +152,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Diadem',
+    category: CardCategory.CARD,
     text: '$2\n+ $1 per unused Action you have (Action, not Action card). (This is not in the Supply.)',
     font_size: 'medium',
     cost: {coins: 0, has_asterisk: true},
@@ -162,8 +162,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Followers',
+    category: CardCategory.CARD,
     text: '+2 Cards Gain an Estate. Each other player gains a Curse and discards down to 3 cards in hand. (This is not in the Supply.)',
     font_size: 'medium',
     cost: {coins: 0, has_asterisk: true},
@@ -172,8 +172,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Princess',
+    category: CardCategory.CARD,
     text: '+1 Buy This turn, cards cost $2 less. (This is not in the Supply.)',
     font_size: 'medium',
     cost: {coins: 0, has_asterisk: true},
@@ -182,8 +182,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Trusty Steed',
+    category: CardCategory.CARD,
     text: 'Choose two:\n+2 Cards ; or\n+2 Actions ; or\n+ $2 ; or gain 4 Silvers and put your deck into your discard pile. The choices must be different. (This is not in the Supply.)',
     font_size: 'medium',
     cost: {coins: 0, has_asterisk: true},
@@ -192,8 +192,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Cache',
+    category: CardCategory.CARD,
     text: '$3',
     font_size: 'xxlarge',
     cost: {coins: 5},
@@ -202,8 +202,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Duchess',
+    category: CardCategory.CARD,
     text: '+ $2 Each player (including you) looks at the top card of their deck and may discard it.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -212,8 +212,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Embassy',
+    category: CardCategory.CARD,
     text: '+5 Cards Discard 3 cards.',
     font_size: 'xlarge',
     cost: {coins: 5},
@@ -222,8 +222,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Ill-Gotten Gains',
+    category: CardCategory.CARD,
     text: '$1 You may gain a Copper to your hand.',
     font_size: 'large',
     cost: {coins: 5},
@@ -232,8 +232,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mandarin',
+    category: CardCategory.CARD,
     text: '+ $3 Put a card from your hand onto your deck.',
     font_size: 'large',
     cost: {coins: 5},
@@ -242,8 +242,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Noble Brigand',
+    category: CardCategory.CARD,
     text: '+ $1 Each other player reveals the top 2 cards of their deck, trashes a revealed Silver or Gold you choose, discards the rest, and gains a Copper if they didn\'t reveal a Treasure. You gain the trashed cards.',
     font_size: 'small',
     cost: {coins: 4},
@@ -252,8 +252,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Nomad Camp',
+    category: CardCategory.CARD,
     text: '+1 Buy\n+ $2',
     font_size: 'xxlarge',
     cost: {coins: 4},
@@ -262,8 +262,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Oracle',
+    category: CardCategory.CARD,
     text: 'Each player (including you) reveals the top 2 cards of their deck, and discards them or puts them back, your choice (they choose the order). Then,\n+2 Cards .',
     font_size: 'medium',
     cost: {coins: 3},
@@ -272,8 +272,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Silk Road',
+    category: CardCategory.CARD,
     text: 'Worth 1 for every 4 Victory cards you have (round down).',
     font_size: 'large',
     cost: {coins: 4},
@@ -282,8 +282,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Coppersmith',
+    category: CardCategory.CARD,
     text: 'Copper produces an extra $1 this turn.',
     font_size: 'large',
     cost: {coins: 4},
@@ -292,8 +292,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Great Hall',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action',
     font_size: 'xlarge',
     cost: {coins: 3},
@@ -302,8 +302,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Saboteur',
+    category: CardCategory.CARD,
     text: 'Each other player reveals cards from the top of their deck until revealing one costing $3 or more. They trash that card and may gain a card costing at most $2 less than it. They discard the other revealed cards.',
     font_size: 'small',
     cost: {coins: 5},
@@ -312,8 +312,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Scout',
+    category: CardCategory.CARD,
     text: '+1 Action Reveal the top 4 cards of your deck. Put the revealed Victory cards into your hand. Put the other cards on top of your deck in any order.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -322,8 +322,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Secret Chamber',
+    category: CardCategory.CARD,
     text: 'Discard any number of cards.\n+ $1 per card discarded.',
     font_size: 'large',
     cost: {coins: 2},
@@ -332,8 +332,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Tribute',
+    category: CardCategory.CARD,
     text: 'The player to your left reveals then discards the top 2 cards of their deck. For each differently named card revealed, if it is an… Action Card,\n+2 Actions Treasure Card,\n+ $2 Victory Card,\n+2 Cards',
     font_size: 'small',
     cost: {coins: 5},
@@ -342,8 +342,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Contraband',
+    category: CardCategory.CARD,
     text: '$3\n+1 Buy The player to your left names a card. You can\'t buy that card this turn.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -352,8 +352,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Counting House',
+    category: CardCategory.CARD,
     text: 'Look through your discard pile, reveal any number of Coppers from it, and put them into your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -362,8 +362,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Goons',
+    category: CardCategory.CARD,
     text: '+1 Buy\n+ $2 Each other player discards down to 3 cards in hand.',
     font_size: 'medium',
     cost: {coins: 6},
@@ -372,8 +372,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Loan',
+    category: CardCategory.CARD,
     text: '$1 Reveal cards from your deck until you reveal a Treasure. Discard it or trash it. Discard the other cards.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -382,8 +382,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mountebank',
+    category: CardCategory.CARD,
     text: '+ $2 Each other player may discard a Curse.\nIf they don\'t, they gain a Curse and a Copper.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -392,8 +392,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Royal Seal',
+    category: CardCategory.CARD,
     text: '$2',
     font_size: 'xxlarge',
     cost: {coins: 5},
@@ -402,8 +402,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Talisman',
+    category: CardCategory.CARD,
     text: '$1',
     font_size: 'xxlarge',
     cost: {coins: 4},
@@ -412,8 +412,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Trade Route',
+    category: CardCategory.CARD,
     text: '+1 Buy Trash a card from your hand.\n+ $1 per Coin token on the Trade Route mat.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -422,8 +422,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Venture',
+    category: CardCategory.CARD,
     text: '$1 Reveal cards from your deck until you reveal a Treasure. Discard the other cards. Play that Treasure.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -432,8 +432,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Ambassador',
+    category: CardCategory.CARD,
     text: 'Reveal a card from your hand. Return up to 2 copies of it from your hand to the Supply. Then each other player gains a copy of it.',
     font_size: 'medium',
     cost: {coins: 3},
@@ -442,8 +442,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Embargo',
+    category: CardCategory.CARD,
     text: '+ $2 Trash this to add an Embargo token to a Supply pile. (For the rest of the game, when a player buys a card from that pile, they gain a Curse.)',
     font_size: 'medium',
     cost: {coins: 2},
@@ -452,8 +452,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Explorer',
+    category: CardCategory.CARD,
     text: 'You may reveal a Province from your hand.\nIf you do, gain a Gold to your hand.\nIf you don\'t, gain a Silver to your hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -462,8 +462,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Ghost Ship',
+    category: CardCategory.CARD,
     text: '+2 Cards Each other player with 4 or more cards in hand puts cards from their hand onto their deck until they have 3 cards in hand.',
     font_size: 'medium',
     cost: {coins: 5},
@@ -472,8 +472,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Navigator',
+    category: CardCategory.CARD,
     text: '+ $2 Look at the top 5 cards of your deck. Either discard them all, or put them back in any order.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -482,8 +482,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Pearl Diver',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action Look at the bottom card of your deck. You may put it on top.',
     font_size: 'medium',
     cost: {coins: 2},
@@ -492,8 +492,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Pirate Ship',
+    category: CardCategory.CARD,
     text: 'Choose one:\n+ $1 per Coin token on your Pirate Ship mat; or each other player reveals the top 2 cards of their deck, trashes one of those Treasures that you choose, and discards the rest, and then if anyone trashed a Treasure, you add a Coin token to your Pirate Ship mat.',
     font_size: 'small',
     cost: {coins: 4},
@@ -502,8 +502,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Sea Hag',
+    category: CardCategory.CARD,
     text: 'Each other player discards the top card of their deck, then gains a Curse onto their deck.',
     font_size: 'medium',
     cost: {coins: 4},
@@ -512,8 +512,8 @@ export const deprecated: CardInfo[] = [
     is_kingdom: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Harem',
+    category: CardCategory.CARD,
     text: '$2 2',
     font_size: 'xxlarge',
     cost: {coins: 6},
