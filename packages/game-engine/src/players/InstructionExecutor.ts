@@ -1377,8 +1377,7 @@ export class InstructionExecutor {
         await this.drawCards(3);
         return;
       case 'Crucible': {
-        const cardToTrash: Card | Choice = await this
-          .chooseCard('Choose a card to trash')
+        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
           .from(CardLocation.HAND)
           .to(CardSelectionPurpose.TRASH)
           .allowNoneOption()
@@ -1439,8 +1438,7 @@ export class InstructionExecutor {
         this.addActions(2);
         return;
       case 'Maroon': {
-        const cardToTrash: Card | Choice = await this
-          .chooseCard('Choose a card to trash')
+        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
           .from(CardLocation.HAND)
           .to(CardSelectionPurpose.TRASH)
           .allowNoneOption()
@@ -1459,7 +1457,9 @@ export class InstructionExecutor {
         return;
       case 'Pendant': {
         const treasureNamesInPlay = new Set<string>();
-        for (const card of this.getMatchingCardsInPlay(new CardEligibilityFunction((c: Card) => c.hasType(CardType.TREASURE)))) {
+        for (const card of this.getMatchingCardsInPlay(
+          new CardEligibilityFunction((c: Card) => c.hasType(CardType.TREASURE)),
+        )) {
           treasureNamesInPlay.add(card.getName());
         }
         await this.addCoins(treasureNamesInPlay.size);
@@ -1489,7 +1489,9 @@ export class InstructionExecutor {
         return;
       case 'Swamp Shacks':
         this.addActions(2);
-        await this.drawCards(Math.floor(this.getMatchingCardsInPlay(new CardEligibilityFunction(() => true)).size() / 3));
+        await this.drawCards(
+          Math.floor(this.getMatchingCardsInPlay(new CardEligibilityFunction(() => true)).size() / 3),
+        );
         return;
       case 'Taskmaster':
         this.addActions(1);
