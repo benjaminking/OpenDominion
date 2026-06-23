@@ -68,7 +68,7 @@ export class CardInfoLookup {
   public static getKingdomCardNames(): string[] {
     const instance = CardInfoLookup.getInstance();
     return [...instance.cardInfoByName.entries()]
-      .filter(([, info]) => info.is_kingdom === true)
+      .filter(([, info]) => info.has_randomizer === true)
       .map(([name]) => name)
       .sort();
   }

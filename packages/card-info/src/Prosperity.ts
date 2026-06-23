@@ -2,8 +2,8 @@ import { CardCategory, CardInfo, CardType, Expansion, Mechanic } from '@dominion
 
 export const prosperity: CardInfo[] = [
   {
-    category: CardCategory.CARD,
     name: 'Anvil',
+    category: CardCategory.CARD,
     text: '$1\n\nYou may discard a Treasure to\ngain a card costing up to $4.',
     font_size: 'medium',
     cost: {
@@ -14,11 +14,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Watchtower',
+    category: CardCategory.CARD,
     text: 'Draw until you have\n6 cards in hand.\n-\nWhen you gain a card, you may\nreveal this from your hand to\neither trash that card or put it\nonto your deck.',
     font_size: 'medium',
     cost: {
@@ -26,11 +26,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bishop',
+    category: CardCategory.CARD,
     text: '+$1\n+1 VP\nTrash a card from your hand.\n+1 VP per $2 it costs (round\ndown). Each other player may\ntrash a card from their hand.',
     font_size: 'medium',
     cost: {
@@ -39,11 +39,11 @@ export const prosperity: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Clerk',
+    category: CardCategory.CARD,
     text: '+$2\nEach other player with 5 or\nmore cards in hand puts one\nonto their deck.\n-\nAt the start of your turn, you\nmay play this from your hand.',
     font_size: 'medium',
     cost: {
@@ -51,11 +51,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Investment',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nChoose one: +$1; or trash this\nto reveal your hand for +1 VP\nper differently named Treasure\nthere.',
     font_size: 'medium',
     cost: {
@@ -67,11 +67,11 @@ export const prosperity: CardInfo[] = [
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Monument',
+    category: CardCategory.CARD,
     text: '+$2\n+1 VP',
     font_size: 'medium',
     cost: {
@@ -80,11 +80,11 @@ export const prosperity: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Quarry',
+    category: CardCategory.CARD,
     text: '$1\n\nThis turn,\nActions cost $2 less.',
     font_size: 'medium',
     cost: {
@@ -95,11 +95,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Tiara',
+    category: CardCategory.CARD,
     text: '+1 Buy\n\nThis turn, when you gain a\ncard, you may put it\nonto your deck.\n\nYou may play a Treasure from\nyour hand twice.',
     font_size: 'medium',
     cost: {
@@ -107,11 +107,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: "Worker's Village",
+    category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions\n+1 Buy',
     font_size: 'medium',
     cost: {
@@ -119,11 +119,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Charlatan',
+    category: CardCategory.CARD,
     text: '+$3\nEach other player gains a Curse.In games using this, Curse is\nalso a Treasure worth $1.',
     font_size: 'medium',
     cost: {
@@ -131,11 +131,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'City',
+    category: CardCategory.CARD,
     text: '+1 Card\n+2 Actions\n\nIf there are one or more\nempty Supply piles, +1 Card.\nIf there are two or more,\n+1 Buy and +$1',
     font_size: 'medium',
     cost: {
@@ -143,11 +143,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Collection',
+    category: CardCategory.CARD,
     text: '$2\n+1 Buy\nThis turn, when you gain an\nAction card, +1 VP.',
     font_size: 'medium',
     cost: {
@@ -156,11 +156,11 @@ export const prosperity: CardInfo[] = [
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Crystal Ball',
+    category: CardCategory.CARD,
     text: "$1\nLook at the top card of your\ndeck. You may trash it, discard\nit, or, if it's an Action or\nTreasure, play it.",
     font_size: 'medium',
     cost: {
@@ -168,11 +168,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Magnate',
+    category: CardCategory.CARD,
     text: 'Reveal your hand.\n+1 Card per Treasure in it.',
     font_size: 'medium',
     cost: {
@@ -180,11 +180,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Mint',
+    category: CardCategory.CARD,
     text: 'You may reveal a Treasure\ncard from your hand. Gain a\ncopy of it.\n-\nWhen you gain this, trash all\nnon-Duration Treasures you\nhave in play.',
     font_size: 'medium',
     cost: {
@@ -192,11 +192,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Rabble',
+    category: CardCategory.CARD,
     text: '+3 Cards\n\nEach other player reveals\nthe top 3 cards of their deck,\ndiscards the revealed Actions and\nTreasures, and puts the rest\nback in any order they choose.',
     font_size: 'medium',
     cost: {
@@ -204,11 +204,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Vault',
+    category: CardCategory.CARD,
     text: '+2 Cards\n\nDiscard any number of cards\nfor +$1 each.\n\nEach other player may discard\n2 cards, to draw a card.',
     font_size: 'medium',
     cost: {
@@ -216,11 +216,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'War Chest',
+    category: CardCategory.CARD,
     text: "The player to your left names a\ncard. Gain a card costing up to\n$5 that hasn't been named for\nWar Chest this turn.",
     font_size: 'medium',
     cost: {
@@ -228,11 +228,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Grand Market',
+    category: CardCategory.CARD,
     text: '+1 Card\n+1 Action\n+1 Buy\n+$2.\n-\nYou can’t buy this if you\nhave any Coppers in play.',
     font_size: 'medium',
     cost: {
@@ -240,11 +240,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Hoard',
+    category: CardCategory.CARD,
     text: '$2\nThis turn, when you gain a\nVictory card, if you bought\nit, gain a Gold.',
     font_size: 'medium',
     cost: {
@@ -253,11 +253,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Bank',
+    category: CardCategory.CARD,
     text: '+$1 per Treasure card you\nhave in play (counting this).',
     font_size: 'medium',
     cost: {
@@ -265,11 +265,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Expand',
+    category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nGain a card costing up to $3\nmore than it.',
     font_size: 'medium',
     cost: {
@@ -277,11 +277,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Forge',
+    category: CardCategory.CARD,
     text: 'Trash any number of cards\nfrom your hand. Gain a card\nwith cost exactly equal to the\ntotal cost in $ of the\ntrashed cards.',
     font_size: 'medium',
     cost: {
@@ -289,11 +289,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: "King's Court",
+    category: CardCategory.CARD,
     text: 'You may play an Action card\nfrom your hand three times.',
     font_size: 'medium',
     cost: {
@@ -301,11 +301,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Peddler',
+    category: CardCategory.CARD,
     text: "+1 Card\n+1 Action\n+$1\n-\nDuring a player's Buy phase,\nthis costs $2 less per Action\ncard they have in play.",
     font_size: 'medium',
     cost: {
@@ -314,11 +314,11 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.PROSPERITY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    category: CardCategory.CARD,
     name: 'Charlatan Curse',
+    category: CardCategory.CARD,
     text: '$1\n\n-1VP',
     font_size: 'xlarge',
     cost: {
@@ -329,6 +329,6 @@ export const prosperity: CardInfo[] = [
     },
     types: [CardType.CURSE, CardType.TREASURE],
     expansion: Expansion.BASE,
-    is_kingdom: false,
+    has_randomizer: false,
   },
 ];

@@ -114,16 +114,6 @@ const costsLessThanCard = function (otherCard: Card) {
   return new CostsLessThanCard(otherCard);
 };
 
-class CostsAtLeast extends CardEligibilityFunction {
-  public constructor(cost: Cost) {
-    super((c: Card) => cost.isLessThanOrEqualTo(c.getCost()));
-  }
-}
-
-const costsAtLeast = function (coins: Cost) {
-  return new CostsAtLeast(coins);
-};
-
 class CostsExactly extends CardEligibilityFunction {
   public constructor(cost: Cost) {
     super((c: Card) => c.getCost().isEqualTo(cost));

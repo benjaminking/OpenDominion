@@ -176,8 +176,8 @@ describe('PlayerCards', () => {
     expect(taken).toBeDefined();
     expect(taken?.getLocation()).toBe(CardLocation.REVEAL_LIMBO);
     expect(cards.getDiscard().size()).toBe(0);
-    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.WOULD_SHUFFLE);
-    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.SHUFFLE);
+    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.WOULD_SHUFFLE, expect.anything());
+    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.SHUFFLE, expect.anything());
     expect(logger.gameMessage).toHaveBeenCalled();
   });
 
@@ -208,7 +208,11 @@ describe('PlayerCards', () => {
 
     expect(cards.getDiscard().contains(handCard)).toBe(true);
     expect(cards.getDiscard().contains(wrongLocationCard)).toBe(false);
-    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.DISCARD, expect.any(CardCollection));
+    expect(gameState.triggerEffect).toHaveBeenCalledWith(
+      EffectTriggerType.DISCARD,
+      expect.anything(),
+      expect.any(CardCollection),
+    );
     expect(logger.gameMessage).toHaveBeenCalledTimes(2);
   });
 

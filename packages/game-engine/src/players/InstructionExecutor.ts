@@ -528,12 +528,6 @@ export class InstructionExecutor {
     }
   }
 
-  public async gainCardFromPileNTimes(cardChoice: Card | string, n: number): Promise<void> {
-    for (let i = 0; i < n; i++) {
-      await this.gainCardFromPile(cardChoice);
-    }
-  }
-
   public async gainCardFromTrash(card: Card, gainLocation = CardLocation.DISCARD): Promise<Card | undefined> {
     if (!this.sharedGameState.trash.contains(card) || card.getLocation() !== CardLocation.TRASH) {
       this.logger.gameMessage(

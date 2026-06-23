@@ -11,7 +11,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: "Fool's Gold",
@@ -26,7 +26,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.TREASURE, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Develop',
@@ -38,7 +38,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Guard Dog',
@@ -50,7 +50,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Oasis',
@@ -62,7 +62,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Scheme',
@@ -74,7 +74,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Tunnel',
@@ -86,7 +86,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.VICTORY, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Jack Of All Trades',
@@ -98,7 +98,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Nomads',
@@ -110,7 +110,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Spice Merchant',
@@ -122,7 +122,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Trader',
@@ -134,7 +134,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Trail',
@@ -146,7 +146,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Weaver',
@@ -158,7 +158,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Berserker',
@@ -170,7 +170,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Cartographer',
@@ -182,7 +182,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Cauldron',
@@ -197,7 +197,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.TREASURE, CardType.ATTACK],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Haggler',
@@ -209,7 +209,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Highway',
@@ -221,7 +221,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Inn',
@@ -233,7 +233,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Margrave',
@@ -245,7 +245,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Souk',
@@ -257,7 +257,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Stables',
@@ -269,7 +269,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Wheelwright',
@@ -281,7 +281,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: "Witch's Hut",
@@ -293,7 +293,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Border Village',
@@ -305,7 +305,7 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Farmland',
@@ -317,6 +317,6 @@ export const hinterlands: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.HINTERLANDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
 ];

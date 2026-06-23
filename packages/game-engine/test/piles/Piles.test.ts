@@ -87,7 +87,7 @@ describe('Piles', () => {
     expect(piles.isPileEmpty('Village')).toBe(true);
   });
 
-  it('returns buyable supply card choices in cost order and within the provided coin limit', () => {
+  it('returns buyable supply card choices in descending cost order', () => {
     const copperPile = createPile(
       'Copper',
       [createCard('copper-id', 'Copper', Cost.Simple(0), [CardType.TREASURE])],
@@ -107,16 +107,8 @@ describe('Piles', () => {
     piles.addKingdomPile(marketPile);
     piles.addBasicVictoryPile(provincePile);
 
-    expect(piles.getEligibleCardChoicesToBuy(4)).toEqual([
-      {
-        type: 'card',
-        card: villagePile.getTopCard()!.getMetadata(),
-      },
-      {
-        type: 'card',
-        card: copperPile.getTopCard()!.getMetadata(),
-      },
-    ]);
+    const choices = piles.getEligibleCardChoicesToBuy();
+    expect(choices.map((choice) => choice.card.name)).toEqual(['Province', 'Market', 'Village', 'Copper']);
   });
 
   it('recognizes supply piles by name', () => {

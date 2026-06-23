@@ -22,6 +22,7 @@ export enum MessageType {
   TREASURE_PHASE_CHOICE = 'treasure_phase_choice',
   BUY_PHASE_CHOICE = 'buy_phase_choice',
   RESOLVED_CHOICE = 'resolved_choice',
+  GAME_CONFIGURATION = 'game_configuration',
   GAME_RESULT = 'game_result',
   MECHANICS = 'mechanics',
 }

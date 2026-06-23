@@ -33,7 +33,7 @@ export class EndGameScorer {
       return this.constructOutcomeMapWithWinner(playersWithHighestScore.values().next().value!);
     }
 
-    const playersWithLowestTurns = this.getPlayersWithLowestTurns();
+    const playersWithLowestTurns = this.getPlayersWithLowestTurns(playersWithHighestScore);
     const playersWithHighestScoreAndLowestTurns = playersWithHighestScore.intersection(playersWithLowestTurns);
 
     if (playersWithHighestScoreAndLowestTurns.size === 1) {
@@ -75,10 +75,10 @@ export class EndGameScorer {
     return playersWithHighestScore;
   }
 
-  private getPlayersWithLowestTurns(): Set<string> {
+  private getPlayersWithLowestTurns(candidatePlayerNames: Set<string>): Set<string> {
     let lowestTurns = Infinity;
     const playersWithLowestTurns = new Set<string>();
-    for (const playerName of this.scoreByPlayerName.keys()) {
+    for (const playerName of candidatePlayerNames) {
       const turns = this.turnsByPlayerName.get(playerName)!;
       if (turns < lowestTurns) {
         lowestTurns = turns;

@@ -1,6 +1,6 @@
 import '@angular/compiler';
 import { runInInjectionContext, signal, type Signal, type WritableSignal } from '@angular/core';
-import { CardLocation, CardType, NumberType, type CardMetadata } from '@dominion/common';
+import { CardLocation, CardType, Mechanic, NumberType, type CardMetadata } from '@dominion/common';
 import { describe, expect, it } from 'vitest';
 
 import { MessageDecoderService } from '../src/app/message-decoder.service';
@@ -29,6 +29,7 @@ class FakeViewVisibilityService {
 function createCard(name: string, id: string, location: CardLocation): CardMetadata {
   return {
     name,
+    displayName: name,
     id,
     location,
     types: [CardType.ACTION],
@@ -41,6 +42,7 @@ class FakeMessageDecoderService {
   private readonly topCardCallbacks = new Map<string, (content: { topCard: CardMetadata | undefined }) => void>();
   private readonly cardsCallbacks = new Map<string, (content: { cards: CardMetadata[] }) => void>();
   private readonly statisticCallbacks = new Map<string, (content: { value: number }) => void>();
+  private mechanicsCallback?: (content: { mechanics: Mechanic[] }) => void;
 
   subscribeToCardCountUpdate(
     key: { owner: string; location: CardLocation },
@@ -70,6 +72,10 @@ class FakeMessageDecoderService {
     this.statisticCallbacks.set(`${key.owner}:${key.type}`, callback);
   }
 
+  subscribeToMechanics(callback: (content: { mechanics: Mechanic[] }) => void): void {
+    this.mechanicsCallback = callback;
+  }
+
   emitCardCount(owner: string, location: CardLocation, count: number): void {
     this.cardCountCallbacks.get(`${owner}:${location}`)?.({ count });
   }
@@ -84,6 +90,10 @@ class FakeMessageDecoderService {
 
   emitStatistic(owner: string, type: NumberType, value: number): void {
     this.statisticCallbacks.get(`${owner}:${type}`)?.({ value });
+  }
+
+  emitMechanics(mechanics: Mechanic[]): void {
+    this.mechanicsCallback?.({ mechanics });
   }
 }
 

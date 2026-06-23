@@ -13,7 +13,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.VICTORY],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Herbalist',
@@ -25,7 +25,7 @@ export const alchemy: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Apothecary',
@@ -39,7 +39,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Scrying Pool',
@@ -53,7 +53,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'University',
@@ -67,7 +67,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Alchemist',
@@ -81,7 +81,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Familiar',
@@ -95,7 +95,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: "Philosopher's Stone",
@@ -112,7 +112,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.TREASURE],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Golem',
@@ -126,7 +126,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Apprentice',
@@ -138,7 +138,7 @@ export const alchemy: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Transmute',
@@ -152,7 +152,7 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Possession',
@@ -166,6 +166,6 @@ export const alchemy: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
 ];

@@ -41,10 +41,10 @@ export class GameInitializer {
     private readonly options: GameInitializerOptions = {},
   ) {
     this.game = new Game(this.players);
-    this.game.choosePlayerOrder();
-    this.initializeGameState();
     this.pileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
     this.kingdomChooser = new KingdomChooser(new CardFactory(this.game.getGameState()), this.requiredCardNames);
+    this.game.choosePlayerOrder();
+    this.initializeGameState();
   }
 
   protected initializeGameState(): void {
