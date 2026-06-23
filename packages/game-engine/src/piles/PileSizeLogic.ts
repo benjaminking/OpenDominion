@@ -12,6 +12,7 @@ nonStandardPileSizes.set('Augurs', ALLIES_SPLIT_PILE_SIZE);
 nonStandardPileSizes.set('Clashes', ALLIES_SPLIT_PILE_SIZE);
 nonStandardPileSizes.set('Forts', ALLIES_SPLIT_PILE_SIZE);
 nonStandardPileSizes.set('Gold', 30);
+nonStandardPileSizes.set('Loot', 30);
 nonStandardPileSizes.set('Odysseys', ALLIES_SPLIT_PILE_SIZE);
 nonStandardPileSizes.set('Platinum', 12);
 nonStandardPileSizes.set('Port', 12);

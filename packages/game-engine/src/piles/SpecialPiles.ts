@@ -3,6 +3,7 @@ import { CardCategory, CardInfo, CardType, Expansion, PileCategory } from '@domi
 
 export enum SpecialPileType {
   REWARDS = 'Rewards',
+  LOOT = 'Loot',
   KNIGHTS = 'Knights',
   RUINS = 'Ruins',
   CASTLES = 'Castles',
@@ -64,6 +65,73 @@ specialPileSpecifications.set(SpecialPileType.REWARDS, {
   ],
   pileCategories: [PileCategory.NON_SUPPLY],
   isShuffled: false,
+});
+specialPileSpecifications.set(SpecialPileType.LOOT, {
+  pileName: 'Loot',
+  cardNames: [
+    {
+      cardName: 'Amphora',
+      count: 2,
+    },
+    {
+      cardName: 'Doubloons',
+      count: 2,
+    },
+    {
+      cardName: 'Endless Chalice',
+      count: 2,
+    },
+    {
+      cardName: 'Figurehead',
+      count: 2,
+    },
+    {
+      cardName: 'Hammer',
+      count: 2,
+    },
+    {
+      cardName: 'Insignia',
+      count: 2,
+    },
+    {
+      cardName: 'Jewels',
+      count: 2,
+    },
+    {
+      cardName: 'Orb',
+      count: 2,
+    },
+    {
+      cardName: 'Prize Goat',
+      count: 2,
+    },
+    {
+      cardName: 'Puzzle Box',
+      count: 2,
+    },
+    {
+      cardName: 'Sextant',
+      count: 2,
+    },
+    {
+      cardName: 'Shield',
+      count: 2,
+    },
+    {
+      cardName: 'Spell Scroll',
+      count: 2,
+    },
+    {
+      cardName: 'Staff',
+      count: 2,
+    },
+    {
+      cardName: 'Sword',
+      count: 2,
+    },
+  ],
+  pileCategories: [PileCategory.NON_SUPPLY],
+  isShuffled: true,
 });
 specialPileSpecifications.set(SpecialPileType.KNIGHTS, {
   pileName: 'Knights',
@@ -494,6 +562,19 @@ function findCardInfoForPileName(pileName: string): CardInfo {
       },
       types: [CardType.ACTION],
       expansion: Expansion.CORNUCOPIA_AND_GUILDS,
+      has_randomizer: false,
+    };
+  } else if (pileName === 'Loot') {
+    return {
+      name: 'Loot',
+      category: CardCategory.CARD,
+      text: '',
+      font_size: 'medium',
+      cost: {
+        coins: 7,
+      },
+      types: [CardType.TREASURE, CardType.LOOT],
+      expansion: Expansion.PLUNDER,
       has_randomizer: false,
     };
   }

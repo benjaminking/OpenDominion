@@ -10,6 +10,7 @@ export class Shield extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playPlunderCardStub('Shield', this);
+    await ie.addCoins(3);
+    ie.addBuys(1);
   }
 }

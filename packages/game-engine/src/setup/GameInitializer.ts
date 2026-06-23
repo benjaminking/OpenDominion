@@ -207,6 +207,9 @@ export class GameInitializer {
     if (randomizer.usesMechanic(Mechanic.MERCENARY)) {
       this.addNonSupplyPile('Mercenary');
     }
+    if (randomizer.usesMechanic(Mechanic.LOOT)) {
+      this.addSpecialPile(SpecialPileType.LOOT);
+    }
   }
 
   private addSpecialPile(specialPileType: SpecialPileType) {

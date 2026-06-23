@@ -10,6 +10,8 @@ export class SackofLoot extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playPlunderCardStub('Sack of Loot', this);
+    await ie.addCoins(1);
+    ie.addBuys(1);
+    await ie.gainLoot();
   }
 }

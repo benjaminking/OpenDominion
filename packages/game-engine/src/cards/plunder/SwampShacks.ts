@@ -1,8 +1,11 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+
+const anyCard = new CardEligibilityFunction(() => true);
 
 export class SwampShacks extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -10,6 +13,7 @@ export class SwampShacks extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playPlunderCardStub('Swamp Shacks', this);
+    ie.addActions(2);
+    await ie.drawCards(Math.floor(ie.getMatchingCardsInPlay(anyCard).size() / 3));
   }
 }
