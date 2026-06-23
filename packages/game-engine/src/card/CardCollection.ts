@@ -1,4 +1,4 @@
-import { CardMetadata } from '@dominion/common';
+import { CardMetadata, Expansion } from '@dominion/common';
 
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { CardSortingFunction } from '../CardSortingFunctions';
@@ -7,6 +7,7 @@ import { Effect } from '../effects/Effect';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import { CardCostCache } from '../game-state/CardCostCache';
 import { ArrayIterator } from '../Iterator';
+import { isFromExpansion } from '../StandardCardEligibilityFunctions';
 import { Card } from './Card';
 import { CardGroup } from './CardGroup';
 
@@ -221,6 +222,10 @@ export class CardCollection implements Iterable<Card> {
   public toCardNameEligibilityFunction(): CardEligibilityFunction {
     const cardNames = new Set<string>(this.cards.map((c) => c.getName()));
     return new CardEligibilityFunction((card: Card) => cardNames.has(card.getName()));
+  }
+
+  public getProportionFromExpansion(expansion: Expansion): number {
+    return this.numMatchingCards(isFromExpansion(expansion)) / this.size();
   }
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
