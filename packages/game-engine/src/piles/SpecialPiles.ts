@@ -1,8 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardInfo, PileCategory } from '@dominion/common';
+import { CardInfo, CardType, PileCategory } from '@dominion/common';
 
 export enum SpecialPileType {
   REWARDS = 'rewards',
+  LOOT = 'loot',
   KNIGHTS = 'knights',
   CASTLES = 'castles',
   ENCAMPMENT_PLUNDER = 'encampment_plunder',
@@ -46,19 +47,50 @@ specialPileSpecifications.set(SpecialPileType.REWARDS, {
   isShuffled: false,
 });
 
+specialPileSpecifications.set(SpecialPileType.LOOT, {
+  pileName: 'Loot',
+  cardNames: [
+    'Amphora',
+    'Doubloons',
+    'Endless Chalice',
+    'Figurehead',
+    'Hammer',
+    'Insignia',
+    'Jewels',
+    'Orb',
+    'Prize Goat',
+    'Puzzle Box',
+    'Sextant',
+    'Shield',
+    'Spell Scroll',
+    'Staff',
+    'Sword',
+  ],
+  pileCategories: [PileCategory.NON_SUPPLY],
+  isShuffled: true,
+});
+
 export interface SpecialPileSpecification {
   pileName: string;
-  randomizerCardInfo: CardInfo;
   cardInfos: CardInfo[];
+  pileTypes: Set<CardType>;
   pileCategories: Set<PileCategory>;
   isShuffled: boolean;
 }
 
 function compileSpecialPileSpecification(rawSpec: RawSpecialPileSpecification): SpecialPileSpecification {
+  const cardInfos = rawSpec.cardNames.map((name) => CardInfoLookup.lookUpCardInfo(name));
+  const pileTypes = new Set<CardType>();
+  for (const cardInfo of cardInfos) {
+    for (const type of cardInfo.types) {
+      pileTypes.add(type);
+    }
+  }
+
   return {
     pileName: rawSpec.pileName,
-    randomizerCardInfo: CardInfoLookup.lookUpCardInfo(rawSpec.pileName),
-    cardInfos: rawSpec.cardNames.map((name) => CardInfoLookup.lookUpCardInfo(name)),
+    cardInfos,
+    pileTypes,
     pileCategories: new Set<PileCategory>(rawSpec.pileCategories),
     isShuffled: rawSpec.isShuffled,
   };

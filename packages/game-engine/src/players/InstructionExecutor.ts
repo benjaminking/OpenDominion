@@ -70,6 +70,10 @@ export class InstructionExecutor {
     await this.player.getStatistics().addCoins(additionalCoins);
   }
 
+  public getCoins(): number {
+    return this.player.getStatistics().getCoins();
+  }
+
   public subtractCoins(coinsToSubtract: number): void {
     this.player.getStatistics().subtractCoins(coinsToSubtract);
   }
@@ -132,6 +136,10 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().getHand().size();
   }
 
+  public deckSize(): number {
+    return this.player.getOwnedCards().getDeck().size();
+  }
+
   public hasMatchingCardInHand(cardEligibilityFunction: CardEligibilityFunction): boolean {
     return this.player.getOwnedCards().hasMatchingCardInHand(cardEligibilityFunction);
   }
@@ -170,6 +178,14 @@ export class InstructionExecutor {
 
   public getMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
     return this.player.getOwnedCards().getMatchingCardsInPlay(cardEligibilityFunction);
+  }
+
+  public getAllCardsInPlay(): CardCollection {
+    const cardsInPlay = new CardCollection();
+    for (const otherPlayer of this.player.getGame().getPlayers().getAllPlayers()) {
+      cardsInPlay.addCards(otherPlayer.getOwnedCards().getInPlay());
+    }
+    return cardsInPlay;
   }
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
@@ -397,11 +413,15 @@ export class InstructionExecutor {
     pileName: string,
     gainLocation: CardLocation = CardLocation.DISCARD,
   ): Promise<Card | undefined> {
+    const wasSupplyPile = this.sharedGameState.piles.isSupplyPile(pileName);
     const card = this.removeTopCardFromPile(pileName);
     if (card === undefined) {
       return undefined;
     }
     await this.gain(card, gainLocation);
+    if (wasSupplyPile && this.sharedGameState.piles.getPileSizeByName(pileName) === 0) {
+      await this.sharedGameState.triggerEffect(EffectTriggerType.SUPPLY_PILE_EMPTIED, this.player, card);
+    }
     return card;
   }
 
@@ -520,6 +540,26 @@ export class InstructionExecutor {
   public topDeckCardFromSet(card: Card, set: CardCollection, hidden = false): void {
     set.removeCard(card);
     this.putCardOnDeck(card, hidden);
+  }
+
+  public putCardOnBottomOfDeckFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+    this.removeCardFromLocation(card, location);
+
+    if (card.getLocation() === location) {
+      this.player.getOwnedCards().putCardIntoDeck(card, this.player.getOwnedCards().getDeck().size());
+      this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'puts %c on the deck', card));
+      return Promise.resolve(card);
+    }
+
+    this.logger.gameMessage(
+      this.player,
+      ServerLogMessage.publicMessage(
+        this.player,
+        "has lost track of %c and can't put it on the bottom of the deck.",
+        card,
+      ),
+    );
+    return Promise.resolve(undefined);
   }
 
   public async topDeckCardsFromRevealedSet(topCards: CardCollection): Promise<void> {
@@ -981,198 +1021,9 @@ export class InstructionExecutor {
     } catch (_e) {
       this.logger.gameMessage(
         this.player,
-        ServerLogMessage.publicMessage(this.player, 'cannot gain Loot yet (Loot pile support is not implemented)'),
+        ServerLogMessage.publicMessage(this.player, 'cannot gain Loot because the Loot pile is not available'),
       );
       return undefined;
-    }
-  }
-
-  public async playPlunderCardStub(cardName: string, _sourceCard: Card): Promise<void> {
-    switch (cardName) {
-      case 'Buried Treasure':
-      case 'Gondola':
-      case 'Search':
-        await this.addCoins(2);
-        return;
-      case 'Cabin Boy':
-        await this.drawCards(1);
-        this.addActions(1);
-        return;
-      case 'Crew':
-        await this.drawCards(3);
-        return;
-      case 'Crucible': {
-        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
-          .from(CardLocation.HAND)
-          .to(CardSelectionPurpose.TRASH)
-          .allowNoneOption()
-          .choose();
-        if (!(cardToTrash instanceof Card)) {
-          return;
-        }
-        await this.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-        await this.addCoins(cardToTrash.getCost().coins);
-        return;
-      }
-      case 'Cutthroat':
-        await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
-          await otherIe.discardDownTo(3);
-        });
-        return;
-      case 'Enlarge':
-      case 'Shaman': {
-        this.addActions(1);
-        await this.addCoins(1);
-        return;
-      }
-      case 'Figurine':
-        await this.drawCards(2);
-        return;
-      case 'Fortune Hunter':
-        await this.addCoins(2);
-        return;
-      case 'Frigate':
-        await this.addCoins(3);
-        return;
-      case 'Harbor Village':
-      case 'Wealthy Village':
-        await this.drawCards(1);
-        this.addActions(2);
-        return;
-      case 'Jewelled Egg':
-      case 'Rope':
-      case 'Sack of Loot':
-        await this.addCoins(1);
-        this.addBuys(1);
-        if (cardName === 'Sack of Loot') {
-          await this.gainLoot();
-        }
-        return;
-      case "King's Cache":
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, "must choose a Treasure from hand for King's Cache (stub)"),
-        );
-        return;
-      case 'Landing Party':
-        await this.drawCards(2);
-        this.addActions(2);
-        return;
-      case 'Longship':
-      case 'Stowaway':
-        this.addActions(2);
-        return;
-      case 'Maroon': {
-        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
-          .from(CardLocation.HAND)
-          .to(CardSelectionPurpose.TRASH)
-          .allowNoneOption()
-          .choose();
-        if (!(cardToTrash instanceof Card)) {
-          return;
-        }
-        await this.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-        await this.drawCards(2 * cardToTrash.getTypes().size);
-        return;
-      }
-      case 'Mining Road':
-        this.addActions(1);
-        this.addBuys(1);
-        await this.addCoins(2);
-        return;
-      case 'Pendant': {
-        const treasureNamesInPlay = new Set<string>();
-        for (const card of this.getMatchingCardsInPlay(
-          new CardEligibilityFunction((c: Card) => c.hasType(CardType.TREASURE)),
-        )) {
-          treasureNamesInPlay.add(card.getName());
-        }
-        await this.addCoins(treasureNamesInPlay.size);
-        return;
-      }
-      case 'Pickaxe':
-        await this.addCoins(1);
-        return;
-      case 'Pilgrim':
-        await this.drawCards(4);
-        return;
-      case 'Secluded Shrine':
-        await this.addCoins(1);
-        return;
-      case 'Silver Mine':
-      case 'Tools':
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, `uses ${cardName} in stub mode; full gain selection is pending`),
-        );
-        return;
-      case 'Siren':
-      case 'Trickster':
-        await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
-          await otherIe.gainCardFromPile('Curse');
-        });
-        return;
-      case 'Swamp Shacks':
-        this.addActions(2);
-        await this.drawCards(
-          Math.floor(this.getMatchingCardsInPlay(new CardEligibilityFunction(() => true)).size() / 3),
-        );
-        return;
-      case 'Taskmaster':
-        this.addActions(1);
-        await this.addCoins(1);
-        return;
-      case 'Amphora':
-        this.addBuys(1);
-        await this.addCoins(3);
-        return;
-      case 'Doubloons':
-      case 'Figurehead':
-      case 'Hammer':
-      case 'Insignia':
-      case 'Orb':
-      case 'Spell Scroll':
-      case 'Staff':
-        await this.addCoins(3);
-        if (cardName === 'Hammer') {
-          this.logger.gameMessage(
-            this.player,
-            ServerLogMessage.publicMessage(this.player, 'Hammer gain effect is currently stubbed'),
-          );
-        }
-        return;
-      case 'Jewels':
-      case 'Prize Goat':
-      case 'Puzzle Box':
-      case 'Sextant':
-      case 'Shield':
-      case 'Sword':
-        await this.addCoins(3);
-        this.addBuys(1);
-        if (cardName === 'Sword') {
-          await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
-            await otherIe.discardDownTo(4);
-          });
-        }
-        return;
-      case 'Abundance':
-      case 'Cage':
-      case 'First Mate':
-      case 'Flagship':
-      case 'Grotto':
-      case 'Mapmaker':
-      case 'Quartermaster':
-      case 'Endless Chalice':
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, `uses ${cardName} in stub mode; full behavior is pending`),
-        );
-        return;
-      default:
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, `uses unknown Plunder card ${cardName} in stub mode`),
-        );
     }
   }
 }

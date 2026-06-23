@@ -41,11 +41,25 @@ export class PileFactory {
       cardCountsByName.set(cardInfo.name, cardCountsByName.get(cardInfo.name)! + 1);
 
       const className = convertToClassName(cardInfo.name);
-      const card: Card = this.cardFactory.createCard(className, className + '-pile-' + cardCountsByName.get(cardInfo.name)!.toFixed(), CardLocation.PILE);
+      const card: Card = this.cardFactory.createCard(
+        className,
+        className + '-pile-' + cardCountsByName.get(cardInfo.name)!.toFixed(),
+        CardLocation.PILE,
+      );
       card.setId(cardInfo.name + '_pile_' + cardCountsByName.get(cardInfo.name)!.toFixed());
       card.markAsSupplyCard();
       cards.addCard(card);
     }
-    return new Pile(specialPileSpecification.pileName, cards, new Set(specialPileSpecification.randomizerCardInfo.types), specialPileSpecification.pileCategories, this.gameMessageBroadcaster);
+    const pile = new Pile(
+      specialPileSpecification.pileName,
+      cards,
+      specialPileSpecification.pileTypes,
+      specialPileSpecification.pileCategories,
+      this.gameMessageBroadcaster,
+    );
+    if (specialPileSpecification.isShuffled) {
+      pile.shuffle();
+    }
+    return pile;
   }
 }

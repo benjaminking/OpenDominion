@@ -1,5 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
+import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
@@ -10,6 +12,17 @@ export class Shaman extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playPlunderCardStub('Shaman', this);
+    ie.addActions(1);
+    await ie.addCoins(1);
+
+    const cardToTrash: Card | Choice = await ie
+      .chooseCard('You may trash a card from your hand')
+      .from(CardLocation.HAND)
+      .to(CardSelectionPurpose.TRASH)
+      .allowNoneOption()
+      .choose();
+    if (cardToTrash instanceof Card) {
+      await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
+    }
   }
 }

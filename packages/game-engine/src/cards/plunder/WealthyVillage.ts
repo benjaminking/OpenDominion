@@ -10,6 +10,7 @@ export class WealthyVillage extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playPlunderCardStub('Wealthy Village', this);
+    await ie.drawCards(1);
+    ie.addActions(2);
   }
 }

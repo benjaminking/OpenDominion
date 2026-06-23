@@ -10,6 +10,7 @@ export class JewelledEgg extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playPlunderCardStub('Jewelled Egg', this);
+    await ie.addCoins(1);
+    ie.addBuys(1);
   }
 }
