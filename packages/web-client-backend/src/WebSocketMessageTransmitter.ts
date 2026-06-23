@@ -2,6 +2,7 @@ import {
   CardCount,
   CardLocation,
   CardMetadata,
+  GameConfiguration,
   GameMessageTransmitter,
   LogMessage,
   LogMessageTransmitter,
