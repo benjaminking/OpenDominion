@@ -169,6 +169,10 @@ export class TurnTracker {
     );
   }
 
+  public numCardsBoughtThisTurn(): number {
+    return this.cardsBoughtByUnofficialTurnNumber.get(this.currentTurn.getUnofficialNumber())?.size() ?? 0;
+  }
+
   public setNumCardsToDrawInCleanup(numCardsToDraw: number): void {
     this.cleanupCardDrawOverride = numCardsToDraw;
   }

@@ -10,6 +10,6 @@ export class Riverboat extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Riverboat', this);
+    await ie.playRiverboatCardStub(this);
   }
 }

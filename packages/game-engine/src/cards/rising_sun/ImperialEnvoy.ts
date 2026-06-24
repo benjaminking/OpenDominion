@@ -10,6 +10,8 @@ export class ImperialEnvoy extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Imperial Envoy', this);
+    await ie.drawCards(5);
+    ie.addBuys(1);
+    ie.addDebt(2);
   }
 }

@@ -10,6 +10,8 @@ export class RootCellar extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Root Cellar', this);
+    await ie.drawCards(3);
+    ie.addActions(1);
+    ie.addDebt(3);
   }
 }

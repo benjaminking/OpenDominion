@@ -10,6 +10,7 @@ export class Fishmonger extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Fishmonger', this);
+    ie.addBuys(1);
+    await ie.addCoins(1);
   }
 }
