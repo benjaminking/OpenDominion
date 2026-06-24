@@ -82,6 +82,22 @@ export class InstructionExecutor {
     this.player.getStatistics().addVP(vp);
   }
 
+  public getCoins(): number {
+    return this.player.getStatistics().getCoins();
+  }
+
+  public getDebt(): number {
+    return this.player.getStatistics().getDebt();
+  }
+
+  public addDebt(amount: number): void {
+    this.player.getStatistics().addDebt(amount);
+  }
+
+  public numCardsBoughtThisTurn(): number {
+    return this.player.getTurnTracker().numCardsBoughtThisTurn();
+  }
+
   public chooseCard(prompt: string): CardChoiceBuilder {
     return new CardChoiceBuilder(this.player, prompt);
   }
@@ -209,6 +225,14 @@ export class InstructionExecutor {
   public async playCardFromLocation(card: Card, location: CardLocation): Promise<void> {
     this.removeCardFromLocation(card, location);
     return this.playCard(this.player, card);
+  }
+
+  public async replayCard(card: Card): Promise<void> {
+    if (card.hasType(CardType.ATTACK)) {
+      await this.announceAttackCard(card);
+    }
+
+    await this.playCard(this.player, card);
   }
 
   private removeCardFromLocation(card: Card, location: CardLocation): void {
@@ -360,6 +384,7 @@ export class InstructionExecutor {
 
     this.player.getStatistics().spendCoins(card.getCost().coins);
     this.player.getStatistics().spendPotions(card.getCost().potions);
+    this.player.getStatistics().addDebt(card.getCost().debt);
     this.player.getStatistics().useBuy();
     this.player.getTurnTracker().addBoughtCard(card);
 
@@ -971,139 +996,15 @@ export class InstructionExecutor {
     this.player.getTurnTracker().setNumCardsToDrawInCleanup(numCardsToDrawInCleanup);
   }
 
-  public async playRisingSunCardStub(cardName: string, _sourceCard: Card): Promise<void> {
-    switch (cardName) {
-      case 'Alley':
-        await this.drawCards(1);
-        this.addActions(1);
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, 'must discard a card for Alley (stub)'),
-        );
-        return;
-      case 'Aristocrat':
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, 'Aristocrat scaling effect is currently stubbed'),
-        );
-        return;
-      case 'Artist':
-      case 'Craftsman':
-      case 'Daimyo':
-      case 'Gold Mine':
-      case 'Imperial Envoy':
-      case 'Mountain Shrine':
-      case 'River Shrine':
-      case 'Riverboat':
-      case 'Samurai':
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, `uses ${cardName} in stub mode; full behavior is pending`),
-        );
-        return;
-      case 'Change': {
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, 'Change debt/trash-gain logic is currently stubbed'),
-        );
-        return;
-      }
-      case 'Fishmonger':
-        this.addBuys(1);
-        await this.addCoins(1);
-        return;
-      case 'Kitsune':
-        await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
-          await otherIe.gainCardFromPile('Curse');
-        });
-        await this.gainCardFromPile('Silver');
-        return;
-      case 'Litter':
-        await this.drawCards(2);
-        this.addActions(2);
-        return;
-      case 'Ninja':
-        await this.drawCards(1);
-        await this.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
-          await otherIe.discardDownTo(3);
-        });
-        return;
-      case 'Poet':
-        await this.drawCards(1);
-        this.addActions(1);
-        return;
-      case 'Rice': {
-        this.addBuys(1);
-        const typesInPlay = new Set<CardType>();
-        for (const card of this.getMatchingCardsInPlay(new CardEligibilityFunction(() => true))) {
-          for (const type of card.getTypes()) {
-            typesInPlay.add(type);
-          }
-        }
-        await this.addCoins(typesInPlay.size);
-        return;
-      }
-      case 'Rice Broker': {
-        this.addActions(1);
-        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
-          .from(CardLocation.HAND)
-          .to(CardSelectionPurpose.TRASH)
-          .allowNoneOption()
-          .choose();
-        if (!(cardToTrash instanceof Card)) {
-          return;
-        }
-        await this.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-        if (cardToTrash.hasType(CardType.TREASURE)) {
-          await this.drawCards(2);
-        }
-        if (cardToTrash.hasType(CardType.ACTION)) {
-          await this.drawCards(5);
-        }
-        return;
-      }
-      case 'Ronin':
-        await this.drawUpTo(7);
-        return;
-      case 'Root Cellar':
-        await this.drawCards(3);
-        this.addActions(1);
-        return;
-      case 'Rustic Village':
-        await this.drawCards(1);
-        this.addActions(2);
-        return;
-      case 'Snake Witch':
-        await this.drawCards(1);
-        this.addActions(1);
-        return;
-      case 'Tanuki': {
-        const cardToTrash: Card | Choice = await this.chooseCard('Choose a card to trash')
-          .from(CardLocation.HAND)
-          .to(CardSelectionPurpose.TRASH)
-          .allowNoneOption()
-          .choose();
-        if (!(cardToTrash instanceof Card)) {
-          return;
-        }
-        await this.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, 'Tanuki gain-up-to-2-more effect is currently stubbed'),
-        );
-        return;
-      }
-      case 'Tea House':
-        await this.drawCards(1);
-        this.addActions(1);
-        await this.addCoins(2);
-        return;
-      default:
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, `uses unknown Rising Sun card ${cardName} in stub mode`),
-        );
-    }
+  public playRiverboatCardStub(_sourceCard: Card): Promise<void> {
+    this.logger.gameMessage(
+      this.player,
+      ServerLogMessage.publicMessage(
+        this.player,
+        'uses Riverboat in stub mode; setup for its set-aside card is not implemented yet',
+      ),
+    );
+    return Promise.resolve();
   }
 
   public forceFullBroadcastOfDiscard(): void {

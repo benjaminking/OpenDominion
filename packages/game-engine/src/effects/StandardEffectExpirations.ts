@@ -10,7 +10,7 @@ class OneTimeEffectExpirtation extends EffectExpiration {
   }
 
   public hasExpired(): boolean {
-    return !this.hasBeenUsed;
+    return this.hasBeenUsed;
   }
 }
 

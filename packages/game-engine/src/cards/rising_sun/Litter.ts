@@ -10,6 +10,8 @@ export class Litter extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Litter', this);
+    await ie.drawCards(2);
+    ie.addActions(2);
+    ie.addDebt(1);
   }
 }

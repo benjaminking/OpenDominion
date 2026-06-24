@@ -10,6 +10,6 @@ export class Ronin extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Ronin', this);
+    await ie.drawUpTo(7);
   }
 }

@@ -10,6 +10,9 @@ export class TeaHouse extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Tea House', this);
+    ie.addBuys(1);
+    await ie.drawCards(1);
+    ie.addActions(1);
+    await ie.addCoins(2);
   }
 }

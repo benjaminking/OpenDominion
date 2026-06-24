@@ -12,6 +12,7 @@ export class Statistics {
   private actions: StatisticSignal;
   private buys: StatisticSignal;
   private vpChips: StatisticSignal;
+  private debt: StatisticSignal;
 
   constructor(private readonly player: Player) {
     const messageBroadcaster: GameMessageBroadcaster = this.player.getGame().getMessageBroadcaster();
@@ -21,6 +22,7 @@ export class Statistics {
     this.actions = new StatisticSignal(player, NumberType.ACTIONS, messageBroadcaster);
     this.buys = new StatisticSignal(player, NumberType.BUYS, messageBroadcaster);
     this.vpChips = new StatisticSignal(player, NumberType.VP_CHIPS, messageBroadcaster);
+    this.debt = new StatisticSignal(player, NumberType.DEBT, messageBroadcaster);
   }
 
   public communicateInitialState() {
@@ -30,6 +32,7 @@ export class Statistics {
     this.actions.forceBroadcast();
     this.buys.forceBroadcast();
     this.vpChips.forceBroadcast();
+    this.debt.forceBroadcast();
   }
 
   public getScore(): number {
@@ -119,6 +122,18 @@ export class Statistics {
 
   public addVP(additionalVPChips: number): void {
     this.vpChips.add(additionalVPChips);
+  }
+
+  public getDebt(): number {
+    return this.debt.getValue();
+  }
+
+  public addDebt(amount: number): void {
+    this.debt.add(amount);
+  }
+
+  public spendDebt(amount: number): void {
+    this.debt.subtract(Math.min(amount, this.debt.getValue()));
   }
 
   public getVPChipScoringElement(): VPChipScoringElement {

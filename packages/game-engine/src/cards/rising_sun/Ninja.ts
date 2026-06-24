@@ -10,6 +10,9 @@ export class Ninja extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.playRisingSunCardStub('Ninja', this);
+    await ie.drawCards(1);
+    await ie.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
+      await otherIe.discardDownTo(3);
+    });
   }
 }
