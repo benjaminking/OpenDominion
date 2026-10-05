@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
 
 export class JunkDealer extends KingdomCard {
@@ -17,9 +17,8 @@ export class JunkDealer extends KingdomCard {
     ie.addActions(1);
     await ie.addCoins(1);
 
-    // Mandatory trash from hand
     const card: Card | Choice = await ie
-      .chooseCard('Trash a card from your hand')
+      .chooseCard('Choose a card to trash')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.TRASH)
       .whereCardIs(anyCard)

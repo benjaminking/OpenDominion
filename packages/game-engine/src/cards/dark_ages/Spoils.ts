@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Spoils extends Card {
   constructor(sharedGameState: SharedGameState) {
@@ -13,6 +13,6 @@ export class Spoils extends Card {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.addCoins(3);
-    await ie.returnCardToOwnPile(this, CardLocation.IN_PLAY);
+    ie.returnCardToPileFromLocation(this, CardLocation.IN_PLAY);
   }
 }

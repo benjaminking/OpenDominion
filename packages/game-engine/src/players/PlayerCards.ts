@@ -419,6 +419,11 @@ export class PlayerCards {
     card.setLocation(CardLocation.NATIVE_VILLAGE_MAT);
   }
 
+  public putDeckInDiscard(): void {
+    this.discard.addCards(this.deck);
+    this.deck.clear();
+  }
+
   public calculateSimpleTreasureCoinsInHand() {
     let simpleCoins = 0;
     for (const card of this.hand) {
@@ -440,11 +445,11 @@ export class PlayerCards {
   }
 
   public hasMatchingCardInHand(cardEligibilityFunction: CardEligibilityFunction): boolean {
-    return this.hand.doesAnyMatch(cardEligibilityFunction);
+    return this.hand.hasMatchingCard(cardEligibilityFunction);
   }
 
   public hasMatchingCardInPlay(cardEligibilityFunction: CardEligibilityFunction): boolean {
-    return this.inPlay.doesAnyMatch(cardEligibilityFunction);
+    return this.inPlay.hasMatchingCard(cardEligibilityFunction);
   }
 
   public numMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): number {

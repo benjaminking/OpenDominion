@@ -4,8 +4,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Scavenger extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -18,11 +18,11 @@ export class Scavenger extends KingdomCard {
     await ie
       .chooseOneOption('Do you want to put your deck into your discard pile?')
       .from(
-        new ActionChoice('Yes', async () => {
-          // TODO: moveDeckToDiscardPile stub
-          await ie.moveDeckToDiscardPile();
+        new ActionChoice('Yes', () => {
+          ie.putDeckInDiscard();
         }),
       )
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       .from(new ActionChoice('No', () => {}))
       .choose();
 
@@ -30,7 +30,6 @@ export class Scavenger extends KingdomCard {
       .chooseCard('Choose a card from your discard pile to put onto your deck')
       .from(CardLocation.DISCARD)
       .to(CardSelectionPurpose.TOPDECK)
-      .allowNoneOption()
       .choose();
     if (cardToTopdeck instanceof Card) {
       await ie.topDeckCardFromLocation(cardToTopdeck, CardLocation.DISCARD);

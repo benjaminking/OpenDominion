@@ -1,16 +1,16 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardType, Expansion, GameResult, Mechanic, PileCategory } from '@dominion/common';
+import { CardCategory, Expansion, GameResult, Mechanic, PileCategory } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardFactory } from '../card/CardFactory';
 import { Game } from '../Game';
 import { Pile } from '../piles/Pile';
 import { PileFactory } from '../piles/PileFactory';
-import { SpecialPileLookup, SpecialPileType } from '../piles/SpecialPiles';
+import { PileSizeLogic } from '../piles/PileSizeLogic';
+import { SpecialPileLookup, SpecialPileSpecification, SpecialPileType } from '../piles/SpecialPiles';
 import { PlayerSpecification } from '../players';
 import { KingdomChooser } from './KingdomChooser';
 import { PileSpecification } from './PileSpecification';
-import { anyKingdomPileSpecification } from './StandardPileSpecifications';
 import { StartingDeckConfigurationBuilder } from './StartingDeckConfigurationBuilder';
 
 export interface GameInitializerOptions {
@@ -19,21 +19,18 @@ export interface GameInitializerOptions {
 }
 
 export class GameInitializer {
-  private static readonly DEFAULT_COPPER_PILE_SIZE: number = 56;
-  private static readonly DEFAULT_SILVER_PILE_SIZE: number = 40;
-  private static readonly DEFAULT_GOLD_PILE_SIZE: number = 30;
-  private static readonly DEFAULT_PLATINUM_PILE_SIZE: number = 12;
-  private static readonly DEFAULT_POTION_PILE_SIZE: number = 16;
-  private static readonly DEFAULT_TWO_PLAYER_VICTORY_PILE_SIZE: number = 8;
-  private static readonly DEFAULT_THREE_PLAYER_VICTORY_PILE_SIZE: number = 12;
-  private static readonly DEFAULT_KINGDOM_PILE_SIZE: number = 10;
-
   private readonly game: Game;
   private readonly startingDeckConfigurationBuilder: StartingDeckConfigurationBuilder =
     new StartingDeckConfigurationBuilder();
   private readonly pileFactory: PileFactory;
   private readonly kingdomChooser: KingdomChooser;
   private readonly specialPileLookup: SpecialPileLookup = new SpecialPileLookup();
+  private readonly anyKingdomPileSpecification: PileSpecification = new PileSpecification(
+    { requiredExpansions: [], requiredCoinCosts: [], requiredTypes: [] },
+    true,
+    true,
+  );
+  private readonly pileSizeLogic: PileSizeLogic;
 
   public constructor(
     private readonly players: PlayerSpecification[],
@@ -43,6 +40,7 @@ export class GameInitializer {
     this.game = new Game(this.players);
     this.pileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
     this.kingdomChooser = new KingdomChooser(new CardFactory(this.game.getGameState()), this.requiredCardNames);
+    this.pileSizeLogic = new PileSizeLogic(players.length);
     this.game.choosePlayerOrder();
     this.initializeGameState();
   }
@@ -59,55 +57,46 @@ export class GameInitializer {
 
   protected generateKingdomCards(): void {
     while (this.kingdomChooser.hasMoreKingdomCards()) {
-      const randomizer = this.kingdomChooser.selectMatchingRandomizer(anyKingdomPileSpecification);
+      const randomizer = this.kingdomChooser.getNextKingdomRandomizer();
       if (randomizer === undefined) {
         break;
       }
-      const pileSize = this.determineKingdomPileSize(randomizer);
-      this.addKingdomPile(randomizer, pileSize);
+      this.addKingdomPile(randomizer);
     }
     this.performKingdomLevelSetup();
   }
 
-  public addPile(pileSpecification: PileSpecification): Pile | undefined {
+  public addRandomPile(pileSpecification: PileSpecification): Pile | undefined {
     const randomizer: Card | undefined = this.kingdomChooser.selectMatchingRandomizer(pileSpecification);
     if (randomizer === undefined) {
       return undefined;
     }
-    const pileSize = this.determineKingdomPileSize(randomizer);
+    this.addKingdomPile(randomizer);
+  }
 
-    this.addKingdomPile(randomizer, pileSize);
+  private addKingdomPile(randomizer: Card): Pile {
+    let pile: Pile;
+    if (this.isSpecialPile(randomizer)) {
+      pile = this.pileFactory.createSpecialPile(this.getSpecialPileSpecification(randomizer));
+    } else {
+      pile = this.pileFactory.createPile(
+        CardInfoLookup.lookUpCardInfo(randomizer.getPileName()),
+        new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]),
+      );
+    }
+    this.game.getGameState().piles.addKingdomPile(pile);
     this.handleCardMechanics(randomizer);
     this.handleInitializationSetupRules(randomizer);
-  }
-
-  private determineKingdomPileSize(randomizer: Card): number {
-    if (!randomizer.hasType(CardType.VICTORY)) {
-      return GameInitializer.DEFAULT_KINGDOM_PILE_SIZE;
-    }
-
-    return this.determineVictoryPileSize();
-  }
-
-  private determineVictoryPileSize(): number {
-    if (this.players.length >= 3) {
-      return GameInitializer.DEFAULT_THREE_PLAYER_VICTORY_PILE_SIZE;
-    }
-    return GameInitializer.DEFAULT_TWO_PLAYER_VICTORY_PILE_SIZE;
-  }
-
-  private determineCursePileSize(): number {
-    return (this.players.length - 1) * 10;
-  }
-
-  private addKingdomPile(randomizer: Card, pileSize: number): Pile {
-    const pile: Pile = this.pileFactory.createPile(
-      CardInfoLookup.lookUpCardInfo(randomizer.getPileName()),
-      pileSize,
-      new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]),
-    );
-    this.game.getGameState().piles.addKingdomPile(pile);
     return pile;
+  }
+
+  private isSpecialPile(randomizer: Card): boolean {
+    return CardInfoLookup.lookUpCardInfo(randomizer.getPileName()).category === CardCategory.RANDOMIZER_ONLY;
+  }
+
+  private getSpecialPileSpecification(randomizer: Card): SpecialPileSpecification {
+    const specialPileType: SpecialPileType = randomizer.getPileName() as SpecialPileType;
+    return this.specialPileLookup.lookUpSpecialPile(specialPileType);
   }
 
   // move the details of standard initialization to Piles
@@ -118,7 +107,6 @@ export class GameInitializer {
       .piles.addBasicTreasurePile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Copper'),
-          GameInitializer.DEFAULT_COPPER_PILE_SIZE,
           new Set<PileCategory>([PileCategory.BASIC_TREASURE, PileCategory.SUPPLY]),
         ),
       );
@@ -127,7 +115,6 @@ export class GameInitializer {
       .piles.addBasicTreasurePile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Silver'),
-          GameInitializer.DEFAULT_SILVER_PILE_SIZE,
           new Set<PileCategory>([PileCategory.BASIC_TREASURE, PileCategory.SUPPLY]),
         ),
       );
@@ -136,7 +123,6 @@ export class GameInitializer {
       .piles.addBasicTreasurePile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Gold'),
-          GameInitializer.DEFAULT_GOLD_PILE_SIZE,
           new Set<PileCategory>([PileCategory.BASIC_TREASURE, PileCategory.SUPPLY]),
         ),
       );
@@ -144,13 +130,11 @@ export class GameInitializer {
 
   protected addBasicVictoryCardsToSupply(): void {
     const pileFactory: PileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
-    const victoryPileSize = this.determineVictoryPileSize();
     this.game
       .getGameState()
       .piles.addBasicVictoryPile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Estate'),
-          victoryPileSize,
           new Set<PileCategory>([PileCategory.BASIC_VICTORY, PileCategory.SUPPLY]),
         ),
       );
@@ -159,7 +143,6 @@ export class GameInitializer {
       .piles.addBasicVictoryPile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Duchy'),
-          victoryPileSize,
           new Set<PileCategory>([PileCategory.BASIC_VICTORY, PileCategory.SUPPLY]),
         ),
       );
@@ -168,18 +151,15 @@ export class GameInitializer {
       .piles.addBasicVictoryPile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Province'),
-          victoryPileSize,
           new Set<PileCategory>([PileCategory.BASIC_VICTORY, PileCategory.SUPPLY]),
         ),
       );
 
-    const cursePileSize = this.determineCursePileSize();
     this.game
       .getGameState()
       .piles.addBasicVictoryPile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Curse'),
-          cursePileSize,
           new Set<PileCategory>([PileCategory.BASIC_VICTORY, PileCategory.SUPPLY]),
         ),
       );
@@ -193,6 +173,15 @@ export class GameInitializer {
     if (randomizer.usesMechanic(Mechanic.REWARDS)) {
       this.addSpecialPile(SpecialPileType.REWARDS);
     }
+    if (randomizer.usesMechanic(Mechanic.SPOILS)) {
+      this.addNonSupplyPile('Spoils');
+    }
+    if (randomizer.usesMechanic(Mechanic.RUINS)) {
+      this.addSpecialPile(SpecialPileType.RUINS);
+    }
+    if (randomizer.usesMechanic(Mechanic.MADMAN)) {
+      this.addNonSupplyPile('Madman');
+    }
   }
 
   private addSpecialPile(specialPileType: SpecialPileType) {
@@ -205,6 +194,14 @@ export class GameInitializer {
     } else if (specialPileSpecification.pileCategories.has(PileCategory.NON_SUPPLY)) {
       this.game.getGameState().piles.addNonSupplyPile(specialPile);
     }
+  }
+
+  private addNonSupplyPile(pileName: string): void {
+    const pile: Pile = this.pileFactory.createPile(
+      CardInfoLookup.lookUpCardInfo(pileName),
+      new Set<PileCategory>([PileCategory.NON_SUPPLY]),
+    );
+    this.game.getGameState().piles.addNonSupplyPile(pile);
   }
 
   private handleInitializationSetupRules(randomizer: Card): void {
@@ -224,7 +221,6 @@ export class GameInitializer {
       .piles.addBasicTreasurePile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Potion'),
-          GameInitializer.DEFAULT_POTION_PILE_SIZE,
           new Set<PileCategory>([PileCategory.BASIC_TREASURE, PileCategory.SUPPLY]),
         ),
       );
@@ -249,13 +245,11 @@ export class GameInitializer {
 
   private addPlatinumAndColonyToSupply(): void {
     const pileFactory: PileFactory = new PileFactory(this.game.getGameState(), this.game.getMessageBroadcaster());
-    const victoryPileSize = this.determineVictoryPileSize();
     this.game
       .getGameState()
       .piles.addBasicVictoryPile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Colony'),
-          victoryPileSize,
           new Set<PileCategory>([PileCategory.BASIC_VICTORY, PileCategory.SUPPLY]),
         ),
       );
@@ -264,7 +258,6 @@ export class GameInitializer {
       .piles.addBasicTreasurePile(
         pileFactory.createPile(
           CardInfoLookup.lookUpCardInfo('Platinum'),
-          GameInitializer.DEFAULT_PLATINUM_PILE_SIZE,
           new Set<PileCategory>([PileCategory.BASIC_TREASURE, PileCategory.SUPPLY]),
         ),
       );

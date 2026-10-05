@@ -1,16 +1,13 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose, Choice } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
-import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { cardNameIs, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class HuntingGrounds extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {

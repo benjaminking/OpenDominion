@@ -3,12 +3,12 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
-import { KnightCard } from './KnightCard';
+import { Knights } from './Knights';
 
-export class SirVander extends KnightCard {
+export class SirVander extends Knights {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Sir Vander'));
     // When you trash this, gain a Gold

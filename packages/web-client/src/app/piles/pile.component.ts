@@ -17,10 +17,11 @@ import { PotionComponent } from '../icons/potion.component';
 })
 export class PileComponent implements OnInit {
   name = input.required<string>();
-  fileName = computed<string>(() => convertToFileName(this.name()));
 
   count = model<number>(0);
   topCard = model<CardMetadata | undefined>(undefined);
+  fileName = computed<string>(() => convertToFileName(this.topCard()?.name ?? this.name()));
+  cardName = computed<string>(() => (this.name() !== 'Rewards' ? (this.topCard()?.name ?? this.name()) : this.name()));
 
   cost = input<Cost | undefined>(undefined);
   categories = input<PileCategory[]>([]);
@@ -61,6 +62,9 @@ export class PileComponent implements OnInit {
 
   isKingdom = computed<boolean>(() => this.categories().includes(PileCategory.KINGDOM));
   isSupply = computed<boolean>(() => this.categories().includes(PileCategory.SUPPLY));
+
+  isBasicTreasure = computed<boolean>(() => this.categories().includes(PileCategory.BASIC_TREASURE));
+  isBasicVictory = computed<boolean>(() => this.categories().includes(PileCategory.BASIC_VICTORY));
 
   isAction = computed<boolean>(() => this.types().includes(CardType.ACTION));
   isVictory = computed<boolean>(() => this.types().includes(CardType.VICTORY));

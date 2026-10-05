@@ -17,4 +17,5 @@ export interface CardInfo {
   expansion: Expansion;
   has_randomizer?: boolean;
   mechanics?: Mechanic[];
+  pileNameOverride?: string;
 }

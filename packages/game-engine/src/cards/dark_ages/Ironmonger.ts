@@ -1,10 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard, isTreasureCard, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 export class Ironmonger extends KingdomCard {
@@ -27,17 +26,13 @@ export class Ironmonger extends KingdomCard {
       .chooseOneOption('Do you want to discard ' + topCard.getName() + '?')
       .from(
         new ActionChoice('Yes, discard it', async () => {
-          await ie.discardCard(topCard);
+          await ie.discardTopCardOfDeck();
         }),
       )
-      .from(
-        new ActionChoice('No, keep it on top', () => {
-          ie.putCardOnDeck(topCard);
-        }),
-      )
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      .from(new ActionChoice('No, keep it on top', () => {}))
       .choose();
 
-    // Bonus based on type (regardless of discard choice)
     if (isActionCard.matches(topCard)) {
       ie.addActions(1);
     }

@@ -3,9 +3,9 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { either, exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Mercenary extends Card {
@@ -21,8 +21,9 @@ export class Mercenary extends Card {
       .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(2)))
       .choose();
 
-    if (cardsToTrash.size() === 2) {
-      await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);
+    const trashedCards = await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);
+
+    if (trashedCards.size() === 2) {
       await ie.drawCards(2);
       await ie.addCoins(2);
       await ie.performAttack(this, this.attack.bind(this));

@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
@@ -8,8 +8,8 @@ import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isAttackCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class Squire extends KingdomCard {
@@ -21,6 +21,7 @@ export class Squire extends KingdomCard {
         .triggerOn(EffectTriggerType.TRASH)
         .self()
         .whereCardIs(isTheSameCardAs(this))
+        .makeMandatory()
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
             const attackCard: Card | Choice = await ie
@@ -28,7 +29,6 @@ export class Squire extends KingdomCard {
               .from(CardSelectionLocation.SUPPLY)
               .to(CardSelectionPurpose.GAIN)
               .whereCardIs(isAttackCard)
-              .allowNoneOption()
               .choose();
             if (attackCard instanceof Card) {
               await ie.gainCardFromPile(attackCard);

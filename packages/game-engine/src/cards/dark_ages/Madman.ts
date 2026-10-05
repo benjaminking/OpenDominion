@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Madman extends Card {
   constructor(sharedGameState: SharedGameState) {
@@ -12,8 +12,11 @@ export class Madman extends Card {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     ie.addActions(2);
-    await ie.returnCardToOwnPile(this, CardLocation.IN_PLAY);
-    // Draw 1 card per card in hand; returning to pile is stubbed so we always draw here
+    const returnedCard: Card | undefined = ie.returnCardToPileFromLocation(this, CardLocation.IN_PLAY);
+    if (!(returnedCard instanceof Card)) {
+      return;
+    }
+
     const handSize = ie.handSize();
     if (handSize > 0) {
       await ie.drawCards(handSize);

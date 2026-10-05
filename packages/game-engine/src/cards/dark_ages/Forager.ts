@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Forager extends KingdomCard {
@@ -25,7 +25,7 @@ export class Forager extends KingdomCard {
       await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
     }
 
-    const numUniqueTreasures = ie.getSharedGameState().trash.getMatchingCards(isTreasureCard).cardGroups().length;
+    const numUniqueTreasures = ie.numUniqueMatchingCardsInTrash(isTreasureCard);
     await ie.addCoins(numUniqueTreasures);
   }
 }

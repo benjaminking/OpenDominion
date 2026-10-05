@@ -15,6 +15,7 @@ import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 export class Joust extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Joust'));
+    sharedGameState.registerEffectTrigger(EffectTriggerType.CLEANUP_START, EffectSource.ANYONE);
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
@@ -34,8 +35,9 @@ export class Joust extends KingdomCard {
     if (province instanceof Card) {
       await ie.setCardAsideFromLocation(province, CardLocation.HAND);
       await ie.chooseRewardToGain(CardLocation.HAND);
-      this.addEffect(
+      ie.addEffect(
         new Effect.Builder()
+          .from(this)
           .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.ANYONE)
           .withExpiration(new OneTimeEffectExpirtation())
           .makeMandatory()

@@ -25,7 +25,7 @@ export class Card extends CardShapedObject {
     super(sharedGameState, cardInfo);
     this._cost = Cost.fromCommonCost(cardInfo.cost);
     this._types = new Set(cardInfo.types);
-    this._pileName = this._properName;
+    this._pileName = cardInfo.pileNameOverride || this._properName;
     this._originalCost = this._cost;
   }
 
@@ -77,7 +77,7 @@ export class Card extends CardShapedObject {
     this._coins = value;
   }
 
-  public async play(_ie: InstructionExecutor) {
+  public async play(_ie: InstructionExecutor): Promise<void> {
     //
   }
 

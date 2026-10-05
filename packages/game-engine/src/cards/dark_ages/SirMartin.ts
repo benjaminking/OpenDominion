@@ -1,11 +1,10 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { KnightCard } from './KnightCard';
+import { Knights } from './Knights';
 
-// Note: Sir Martin costs $4 (not $5 like the other Knights)
-export class SirMartin extends KnightCard {
+export class SirMartin extends Knights {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Sir Martin'));
   }

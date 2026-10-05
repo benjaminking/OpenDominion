@@ -1,24 +1,24 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardInfo, PileCategory } from '@dominion/common';
+import { CardCategory, CardInfo, CardType, Expansion, PileCategory } from '@dominion/common';
 
 export enum SpecialPileType {
-  REWARDS = 'rewards',
-  KNIGHTS = 'knights',
-  RUINS = 'ruins',
-  CASTLES = 'castles',
-  CASTLES_MULTIPLAYER = 'castles_multiplayer',
-  ENCAMPMENT_PLUNDER = 'encampment_plunder',
-  PATRICIAN_EMPORIUM = 'patrician_emporium',
-  SETTLERS_BUSTLING_VILLAGE = 'settles_bustling_village',
-  CATAPULT_ROCKS = 'catapult_rocks',
-  GLADIATOR_FORTUNE = 'gladiator_fortune',
-  TOWNSFOLK = 'townsfolk',
-  AUGURS = 'augurs',
-  ODYSSEYS = 'odysseys',
-  WIZARDS = 'wizards',
-  CLASHES = 'clashes',
-  FORTS = 'forts',
-  SAUNA_AVANTO = 'sauna_avanto',
+  REWARDS = 'Rewards',
+  KNIGHTS = 'Knights',
+  RUINS = 'Ruins',
+  CASTLES = 'Castles',
+  CASTLES_MULTIPLAYER = 'Castles_multiplayer',
+  ENCAMPMENT_PLUNDER = 'Encampment_plunder',
+  PATRICIAN_EMPORIUM = 'Patrician/Emporium',
+  SETTLERS_BUSTLING_VILLAGE = 'Settlers/Bustling Village',
+  CATAPULT_ROCKS = 'Catapult/Rocks',
+  GLADIATOR_FORTUNE = 'Gladiator/Fortune',
+  TOWNSFOLK = 'Townsfolk',
+  AUGURS = 'Augurs',
+  ODYSSEYS = 'Odysseys',
+  WIZARDS = 'Wizards',
+  CLASHES = 'Clashes',
+  FORTS = 'Forts',
+  SAUNA_AVANTO = 'Sauna/Avanto',
 }
 
 interface SpecialPileCardCount {
@@ -136,7 +136,7 @@ specialPileSpecifications.set(SpecialPileType.RUINS, {
       count: 10,
     },
   ],
-  pileCategories: [PileCategory.SUPPLY, PileCategory.KINGDOM],
+  pileCategories: [PileCategory.SUPPLY],
   isShuffled: true,
 });
 specialPileSpecifications.set(SpecialPileType.CASTLES, {
@@ -455,9 +455,11 @@ export interface SpecialPileSpecification {
 }
 
 function compileSpecialPileSpecification(rawSpec: RawSpecialPileSpecification): SpecialPileSpecification {
+  const cardInfo = findCardInfoForPileName(rawSpec.pileName);
+
   return {
     pileName: rawSpec.pileName,
-    randomizerCardInfo: CardInfoLookup.lookUpCardInfo(rawSpec.pileName),
+    randomizerCardInfo: cardInfo,
     cardInfos: rawSpec.cardNames.flatMap((cardCount) => {
       const cardInfo = CardInfoLookup.lookUpCardInfo(cardCount.cardName);
       return Array(cardCount.count).fill(cardInfo);
@@ -465,6 +467,38 @@ function compileSpecialPileSpecification(rawSpec: RawSpecialPileSpecification): 
     pileCategories: new Set<PileCategory>(rawSpec.pileCategories),
     isShuffled: rawSpec.isShuffled,
   };
+}
+
+function findCardInfoForPileName(pileName: string): CardInfo {
+  if (pileName === 'Ruins') {
+    return {
+      name: 'Ruins',
+      category: CardCategory.CARD,
+      text: '',
+      font_size: 'medium',
+      cost: {
+        coins: 0,
+      },
+      types: [CardType.ACTION, CardType.RUINS],
+      expansion: Expansion.DARK_AGES,
+      has_randomizer: false,
+    };
+  } else if (pileName === 'Rewards') {
+    return {
+      name: 'Rewards',
+      category: CardCategory.CARD,
+      text: '',
+      font_size: 'medium',
+      cost: {
+        coins: 0,
+      },
+      types: [CardType.ACTION],
+      expansion: Expansion.CORNUCOPIA_AND_GUILDS,
+      has_randomizer: false,
+    };
+  }
+
+  return CardInfoLookup.lookUpCardInfo(pileName);
 }
 
 export class SpecialPileLookup {

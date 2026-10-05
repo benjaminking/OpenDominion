@@ -336,6 +336,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION, CardType.TREASURE, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Courser',
@@ -349,6 +350,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Demesne',
@@ -362,6 +364,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION, CardType.VICTORY, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Housecarl',
@@ -375,6 +378,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Huge Turnip',
@@ -392,6 +396,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
     has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Renown',
@@ -405,5 +410,6 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
 ];

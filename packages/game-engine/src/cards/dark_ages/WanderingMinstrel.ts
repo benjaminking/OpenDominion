@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class WanderingMinstrel extends KingdomCard {
@@ -18,10 +18,10 @@ export class WanderingMinstrel extends KingdomCard {
     const topCards = await ie.takeCardsOffDeck(3);
     await ie.revealCards(topCards);
 
+    const actions: CardCollection = topCards.getMatchingCards(isActionCard);
     const nonActions: CardCollection = topCards.getMatchingCards(not(isActionCard));
-    await ie.discardCardsFromRevealedSet(nonActions, topCards);
 
-    // Put Action cards back in any order chosen by the player
-    await ie.topDeckCardsFromRevealedSet(topCards);
+    await ie.topDeckCardsFromRevealedSet(actions);
+    await ie.discardCardsFromRevealedSet(nonActions);
   }
 }

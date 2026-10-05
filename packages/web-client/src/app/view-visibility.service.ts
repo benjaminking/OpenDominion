@@ -8,6 +8,7 @@ export class ViewVisibilityService {
     [ViewName.SET_ASIDE]: signal<boolean>(false),
     [ViewName.TRASH]: signal<boolean>(false),
     [ViewName.DISCARD]: signal<boolean>(false),
+    [ViewName.MISCELLANEOUS]: signal<boolean>(false),
   };
 
   getViewVisibilitySignal(viewName: ViewName): Signal<boolean> {

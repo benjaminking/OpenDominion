@@ -10,6 +10,7 @@ import {
   MoneyAmount,
   MultiCardChoice,
 } from '@dominion/common';
+import { EffectChoice } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
@@ -196,7 +197,7 @@ export class InstructionExecutor {
   }
 
   public async chooseRewardToGain(gainLocation: CardLocation = CardLocation.DISCARD): Promise<Card | undefined> {
-    const rewardToGain = this.chooseCard('Choose a reward to gain')
+    const rewardToGain = await this.chooseCard('Choose a reward to gain')
       .from(this.sharedGameState.piles.getUniqueCardsFromPile('Rewards'))
       .to(CardSelectionPurpose.GAIN)
       .choose();
@@ -205,7 +206,7 @@ export class InstructionExecutor {
       return;
     }
 
-    return this.gainCardFromPile(rewardToGain, gainLocation);
+    return this.gainCardFromPile(rewardToGain, gainLocation, true);
   }
 
   public handSize(): number {
@@ -236,6 +237,10 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().numMatchingCardsInPlay(cardEligibilityFunction);
   }
 
+  public numMatchingCardsInTrash(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.sharedGameState.trash.numMatchingCards(cardEligibilityFunction);
+  }
+
   public numMatchingCardsPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
     return this.player.getTurnTracker().numMatchingCardsPlayedThisTurn(cardEligibilityFunction);
   }
@@ -256,8 +261,16 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().getMatchingCardsInPlay(cardEligibilityFunction);
   }
 
+  public getMatchingCardsInTrash(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
+    return this.sharedGameState.trash.getMatchingCards(cardEligibilityFunction);
+  }
+
   public numUniqueMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
     return this.player.getOwnedCards().getInPlay().getMatchingCardsUnique(cardEligibilityFunction).size();
+  }
+
+  public numUniqueMatchingCardsInTrash(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.sharedGameState.trash.getMatchingCardsUnique(cardEligibilityFunction).size();
   }
 
   public numUniqueMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): number {
@@ -304,6 +317,9 @@ export class InstructionExecutor {
   }
 
   private removeCardFromLocation(card: Card, location: CardLocation): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (this.sharedGameState.isSharedLocation(location)) {
       this.sharedGameState.getCardsFromArea(location).removeCard(card);
     } else {
@@ -313,10 +329,8 @@ export class InstructionExecutor {
 
   // TODO: see if this is actually used
   private removeCardsFromLocation(cards: CardCollection, location: CardLocation): void {
-    if (this.sharedGameState.isSharedLocation(location)) {
-      this.sharedGameState.getCardsFromArea(location).removeCards(cards);
-    } else {
-      this.player.getOwnedCards().removeCardsFromLocation(cards, location);
+    for (const card of cards) {
+      this.removeCardFromLocation(card, location);
     }
   }
 
@@ -325,15 +339,6 @@ export class InstructionExecutor {
     card: Card,
     options: CardPlayOptions = CardPlayOptions.DEFAULT,
   ): Promise<void> {
-    /*this.messageBroadcaster.broadcastGameMessage({
-      playerName: player.getName(),
-      command: Command.PLAYED,
-      visibility: GameMessageVisibility.PUBLIC,
-      content: {
-        type: MessageContentType.CARD_METADATA,
-        value: card.getMetadata(),
-      } as CardMetadataContent,
-    });*/
     if (options.shouldLog) {
       this.logger.gameMessage(player, ServerLogMessage.publicMessage(player, 'plays %c', card));
     }
@@ -344,12 +349,22 @@ export class InstructionExecutor {
       CardCollection.fromCards([card]),
     );
     this.registerPlayedCard(card);
-    await card.play(this);
+    if (options.leaveInPlace) {
+      await this.playCardWithoutMoving(card);
+    } else {
+      await card.play(this);
+    }
     await this.sharedGameState.triggerEffect(
       EffectTriggerType.PLAYED_CARD,
       this.player,
       CardCollection.fromCards([card]),
     );
+  }
+
+  private async playCardWithoutMoving(card: Card): Promise<void> {
+    this.sharedGameState.blockCardFromMoving(card);
+    await card.play(this);
+    this.sharedGameState.releaseCardToMoveAgain(card);
   }
 
   private registerPlayedCard(card: Card): void {
@@ -470,6 +485,7 @@ export class InstructionExecutor {
   public async gainCardFromPile(
     cardChoice: Card | string,
     gainLocation: CardLocation = CardLocation.DISCARD,
+    allowNonTopCardGain = false,
   ): Promise<Card | undefined> {
     let pileName: string;
     if (typeof cardChoice === 'string' || cardChoice instanceof String) {
@@ -480,6 +496,12 @@ export class InstructionExecutor {
 
     if (this.sharedGameState.isCopyOfCardOnTopOfPile(cardChoice, pileName)) {
       return this.gainFromPile(pileName, gainLocation);
+    } else if (
+      allowNonTopCardGain &&
+      cardChoice instanceof Card &&
+      this.sharedGameState.isCardInPile(cardChoice, pileName)
+    ) {
+      return this.gainCardFromAnywhereInPile(cardChoice, gainLocation);
     }
     return undefined;
   }
@@ -489,6 +511,18 @@ export class InstructionExecutor {
     gainLocation: CardLocation = CardLocation.DISCARD,
   ): Promise<Card | undefined> {
     const card = this.removeTopCardFromPile(pileName);
+    if (card === undefined) {
+      return undefined;
+    }
+    await this.gain(card, gainLocation);
+    return card;
+  }
+
+  private async gainCardFromAnywhereInPile(
+    cardChoice: Card,
+    gainLocation: CardLocation = CardLocation.DISCARD,
+  ): Promise<Card | undefined> {
+    const card: Card | undefined = this.sharedGameState.piles.removeCardFromPile(cardChoice);
     if (card === undefined) {
       return undefined;
     }
@@ -553,6 +587,10 @@ export class InstructionExecutor {
       return;
     }
 
+    if (!this.sharedGameState.isCardAbleToMove(cardToReturn)) {
+      return;
+    }
+
     this.returnCardToPileFromLocation(cardToReturn, location);
     this.putCardInDiscard(cardToReceive);
     this.logger.gameMessage(
@@ -565,14 +603,21 @@ export class InstructionExecutor {
     );
   }
 
-  public returnCardToPileFromLocation(card: Card, location: CardLocation): void {
+  public returnCardToPileFromLocation(card: Card, location: CardLocation): Card | undefined {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return undefined;
+    }
     if (this.sharedGameState.piles.isPile(card.getPileName())) {
       this.removeCardFromLocation(card, location);
       this.sharedGameState.piles.returnCardToPile(card);
     }
+    return card;
   }
 
   private putCardInDiscard(card: Card): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     this.player.getOwnedCards().addCardToDiscard(card);
   }
 
@@ -584,7 +629,10 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().takeCardOffDeck();
   }
 
-  public topDeckCardFromLocation(card: Card, location: CardLocation, hidden = false): Promise<Card | undefined> {
+  public async topDeckCardFromLocation(card: Card, location: CardLocation, hidden = false): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return undefined;
+    }
     this.removeCardFromLocation(card, location);
 
     if (card.getLocation() === location) {
@@ -596,10 +644,13 @@ export class InstructionExecutor {
         ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't topdeck it.", card),
       );
     }
-    return Promise.resolve(undefined);
+    return undefined;
   }
 
   public putCardOnDeck(card: Card, hidden = false): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     this.player.getOwnedCards().addCardToDeck(card);
     if (hidden) {
       this.logger.gameMessage(this.player, ServerLogMessage.privateMessage(this.player, 'puts %c on the deck', card));
@@ -629,10 +680,16 @@ export class InstructionExecutor {
   }
 
   public putCardIntoDeck(card: Card, depth: number): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     this.player.getOwnedCards().putCardIntoDeck(card, depth);
   }
 
   public putCardIntoHandFromLocation(card: Card, location: CardLocation): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (card.getLocation() !== location) {
       this.removeCardFromLocation(card, location);
       this.logger.gameMessage(
@@ -718,8 +775,10 @@ export class InstructionExecutor {
 
   public async discardCardsFromRevealedSet(
     discardedCards: CardCollection,
-    cards: CardCollection,
+    cards?: CardCollection,
   ): Promise<CardCollection> {
+    cards ??= discardedCards;
+
     cards.removeCards(discardedCards);
     for (const card of discardedCards) {
       this.removeCardFromLocation(card, card.getLocation());
@@ -749,6 +808,9 @@ export class InstructionExecutor {
   }
 
   public async trashCardFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (card.getLocation() === location) {
       const trashedCards = await this.trashCardsFromLocation(CardCollection.fromCards([card]), location);
       if (trashedCards.size() > 0) {
@@ -805,7 +867,10 @@ export class InstructionExecutor {
     return undefined;
   }
 
-  public setCardAsideFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+  public async setCardAsideFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (card.getLocation() === location) {
       this.removeCardFromLocation(card, location);
       this.setCardAside(card);
@@ -816,7 +881,6 @@ export class InstructionExecutor {
         ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't set it aside.", card),
       );
     }
-    return Promise.resolve(undefined);
   }
 
   public setCardAside(card: Card, hidden = false): void {
@@ -926,34 +990,12 @@ export class InstructionExecutor {
     await this.sharedGameState.eachPlayerPassesACardToTheLeft();
   }
 
-  // TODO: implement moving only the deck stack into discard without triggering shuffle side-effects.
-  public async moveDeckToDiscardPile(): Promise<void> {
-    return Promise.resolve();
+  public putDeckInDiscard(): void {
+    this.player.getOwnedCards().putDeckInDiscard();
   }
 
-  // TODO: implement "play a Supply card leaving it there" semantics for Command cards.
-  public async playSupplyCardWithoutGaining(_card: Card): Promise<void> {
-    return Promise.resolve();
-  }
-
-  // TODO: implement returning transient cards (like Spoils/Madman) to their source pile.
-  public async returnCardToOwnPile(_card: Card, _fromLocation: CardLocation): Promise<void> {
-    return Promise.resolve();
-  }
-
-  // TODO: implement gaining a card from the shuffled Ruins pile (Dark Ages).
-  public async gainFromRuinsPile(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  // TODO: implement gaining a Spoils from the Spoils pile (Dark Ages).
-  public async gainSpoils(): Promise<void> {
-    return Promise.resolve();
-  }
-
-  // TODO: implement buy-phase gain tracking and exchange card for Madman if no cards were gained in the buy phase (Dark Ages - Hermit).
-  public async exchangeCardForMadman(_card: Card): Promise<void> {
-    return Promise.resolve();
+  public async playCardFromSupplyLeavingItThere(card: Card): Promise<void> {
+    await this.playCard(this.player, card, CardPlayOptions.LEAVING_IT_THERE);
   }
 
   public async processEffectsByType(

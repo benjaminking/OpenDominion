@@ -64,7 +64,7 @@ export const prosperity: CardInfo[] = [
     production: {
       is_variable: true,
     },
-    types: [CardType.ACTION, CardType.REACTION],
+    types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,
     mechanics: [Mechanic.VP_CHIPS],
     has_randomizer: true,

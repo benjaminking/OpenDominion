@@ -1,16 +1,14 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
-import { KnightCard } from './KnightCard';
+import { Knights } from './Knights';
 
-export class DameAnna extends KnightCard {
+export class DameAnna extends Knights {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Dame Anna'));
   }

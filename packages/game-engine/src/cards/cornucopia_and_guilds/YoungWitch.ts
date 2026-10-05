@@ -3,7 +3,6 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
-import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { ActionChoice } from '../../decisions/ActionChoice';
@@ -14,7 +13,6 @@ import { Player } from '../../players/Player';
 import { AddedPilePostAction } from '../../setup/AddedPilePostAction';
 import { PileAddingSetupRule } from '../../setup/PileAddingSetupRule';
 import { PileSpecification } from '../../setup/PileSpecification';
-import { both, costsExactly, either,isKingdomCard } from '../../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 let banePileName = '';
@@ -32,11 +30,14 @@ const isBaneCard = new IsBaneCard();
 export class YoungWitch extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Young Witch'));
-    this.addSetupRule(new PileAddingSetupRule(new PileSpecification(both(isKingdomCard, either(costsExactly(Cost.Simple(2)), costsExactly(Cost.Simple(3)))), true, true),
-      new AddedPilePostAction((pile: Pile) => {
-        banePileName = pile.name;
-      })
-    ));
+    this.addSetupRule(
+      new PileAddingSetupRule(
+        new PileSpecification({ requiredCoinCosts: [2, 3] }, true, true),
+        new AddedPilePostAction((pile: Pile) => {
+          banePileName = pile.name;
+        }),
+      ),
+    );
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
@@ -58,9 +59,7 @@ export class YoungWitch extends KingdomCard {
     let revealedBane = false;
     if (attackedIe.hasMatchingCardInHand(isBaneCard)) {
       await attackedIe
-        .chooseOneOption(
-          'Do you want to reveal a Bane?',
-        )
+        .chooseOneOption('Do you want to reveal a Bane?')
         .from(
           new ActionChoice('Yes', async () => {
             const baneCard = attackedIe.getMatchingCardsInHand(isBaneCard).getArbitraryCard();
@@ -70,7 +69,7 @@ export class YoungWitch extends KingdomCard {
         )
         .from(
           // eslint-disable-next-line @typescript-eslint/no-empty-function
-          new ActionChoice('No', async () => { }),
+          new ActionChoice('No', async () => {}),
         )
         .choose();
     }

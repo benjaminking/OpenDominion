@@ -4,11 +4,10 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
-import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Pillage extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -18,9 +17,8 @@ export class Pillage extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     const trashed = await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
     if (trashed !== undefined) {
-      // TODO: gainSpoils stub - gain 2 Spoils
-      await ie.gainSpoils();
-      await ie.gainSpoils();
+      await ie.gainFromPile('Spoils');
+      await ie.gainFromPile('Spoils');
       await ie.performAttack(this, this.attack.bind(this));
     }
   }

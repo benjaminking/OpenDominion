@@ -6,9 +6,9 @@ import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { both, costsAtLeast, costsUpTo, isActionCard } from '../../StandardCardEligibilityFunctions';
+import { costsBetween, costsUpToNMoreThanCard, isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Graverobber extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -20,14 +20,11 @@ export class Graverobber extends KingdomCard {
       .chooseOneOption('Choose one:')
       .from(
         new ActionChoice('Gain a card from the trash costing $3-$6 onto your deck', async () => {
-          const trashCards = ie
-            .getSharedGameState()
-            .trash.getMatchingCards(both(costsAtLeast(Cost.Simple(3)), costsUpTo(Cost.Simple(6))));
           const card: Card | Choice = await ie
             .chooseCard('Choose a card from the trash costing $3-$6')
-            .from(trashCards)
+            .from(CardLocation.TRASH)
             .to(CardSelectionPurpose.GAIN)
-            .allowNoneOption()
+            .whereCardIs(costsBetween(Cost.Simple(3), Cost.Simple(6)))
             .choose();
           if (card instanceof Card) {
             await ie.gainCardFromTrash(card, CardLocation.DECK);
@@ -41,21 +38,25 @@ export class Graverobber extends KingdomCard {
             .from(CardLocation.HAND)
             .to(CardSelectionPurpose.TRASH)
             .whereCardIs(isActionCard)
-            .allowNoneOption()
             .choose();
-          if (cardToTrash instanceof Card) {
-            const trashCost = cardToTrash.getCost();
-            await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-            const cardToGain: Card | Choice = await ie
-              .chooseCard('Gain a card costing up to $' + trashCost.plus(3).coins.toFixed())
-              .from(CardSelectionLocation.SUPPLY)
-              .to(CardSelectionPurpose.GAIN)
-              .whereCardIs(costsUpTo(trashCost.plus(3)))
-              .allowNoneOption()
-              .choose();
-            if (cardToGain instanceof Card) {
-              await ie.gainCardFromPile(cardToGain);
-            }
+
+          if (!(cardToTrash instanceof Card)) {
+            return;
+          }
+
+          const trashedCard = await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
+          if (!(trashedCard instanceof Card)) {
+            return;
+          }
+
+          const cardToGain: Card | Choice = await ie
+            .chooseCard('Gain a card costing up to $' + trashedCard.getCost().plus(3).toString())
+            .from(CardSelectionLocation.SUPPLY)
+            .to(CardSelectionPurpose.GAIN)
+            .whereCardIs(costsUpToNMoreThanCard(trashedCard, 3))
+            .choose();
+          if (cardToGain instanceof Card) {
+            await ie.gainCardFromPile(cardToGain);
           }
         }),
       )

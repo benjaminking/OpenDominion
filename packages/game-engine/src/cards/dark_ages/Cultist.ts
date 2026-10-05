@@ -6,9 +6,9 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class Cultist extends KingdomCard {
@@ -49,7 +49,6 @@ export class Cultist extends KingdomCard {
   }
 
   private async attack(attackedPlayer: Player, _attackingPlayer: Player): Promise<void> {
-    // TODO: gainFromRuinsPile stub - attacked player gains from Ruins pile
-    await attackedPlayer.getInstructionExecutor().gainFromRuinsPile();
+    await attackedPlayer.getInstructionExecutor().gainFromPile('Ruins');
   }
 }

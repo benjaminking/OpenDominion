@@ -1,11 +1,11 @@
-import { CardChoice, ChoiceType } from '@dominion/common';
+import { CardChoice, CardMetadata, ChoiceType } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
 import { CostSortingFunction } from '../CardSortingFunctions';
 import { CardCostCache } from '../game-state/CardCostCache';
-import { anyCard } from '../StandardCardEligibilityFunctions';
+import { anyCard, isTheSameCardAs } from '../StandardCardEligibilityFunctions';
 import { Pile } from './Pile';
 import { PileGroup } from './PileGroup';
 
@@ -114,11 +114,24 @@ export class Piles {
     return 0;
   }
 
+  public getCardFromMetadata(cardMetadata: CardMetadata, pileName: string): Card | undefined {
+    if (this.allPiles.hasPile(pileName)) {
+      return this.allPiles.getPileByName(pileName)!.getCardByMetadata(cardMetadata);
+    }
+  }
+
   public getUniqueCardsFromPile(pileName: string): CardCollection {
     if (this.allPiles.hasPile(pileName)) {
       return this.allPiles.getPileByName(pileName)!.getMatchingCardsUnique(anyCard);
     }
     return new CardCollection();
+  }
+
+  public isCardInPile(card: Card, pileName: string): boolean {
+    if (this.allPiles.hasPile(pileName)) {
+      return this.allPiles.getPileByName(pileName)!.hasMatchingCard(isTheSameCardAs(card));
+    }
+    return false;
   }
 
   public isSupplyPile(pileName: string): boolean {

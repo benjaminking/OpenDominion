@@ -1,10 +1,10 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { KnightCard } from './KnightCard';
+import { Knights } from './Knights';
 
-export class SirMichael extends KnightCard {
+export class SirMichael extends Knights {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Sir Michael'));
   }

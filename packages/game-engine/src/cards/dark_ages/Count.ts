@@ -5,8 +5,8 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
@@ -36,7 +36,6 @@ export class Count extends KingdomCard {
             .chooseCard('Choose a card from your hand to put onto your deck')
             .from(CardLocation.HAND)
             .to(CardSelectionPurpose.TOPDECK)
-            .allowNoneOption()
             .choose();
           if (card instanceof Card) {
             await ie.topDeckCardFromLocation(card, CardLocation.HAND);

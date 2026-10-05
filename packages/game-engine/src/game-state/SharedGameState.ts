@@ -3,6 +3,7 @@ import {
   CardLocation,
   CardMetadata,
   CardSelectionPurpose,
+  CardType,
   Choice,
   ChoiceType,
   GameResult,
@@ -56,6 +57,7 @@ export class SharedGameState {
   private _piles: Piles = new Piles();
   private _cardCostCache: CardCostCache = new CardCostCache();
   private readonly mechanicsInUse: MechanicsInUse;
+  private readonly numEffectsBlockingCardMoveById: Map<string, number> = new Map<string, number>();
 
   constructor(private readonly game: Game) {
     this.messageBroadcaster = game.getMessageBroadcaster();
@@ -147,8 +149,22 @@ export class SharedGameState {
     return this.previousTurns;
   }
 
-  public enableCharlatanCurseTreasureRule(): void {
-    // TODO: Make Curse behave as a Treasure worth $1 in games using Charlatan.
+  public blockCardFromMoving(card: Card): void {
+    if (!this.numEffectsBlockingCardMoveById.has(card.getId())) {
+      this.numEffectsBlockingCardMoveById.set(card.getId(), 0);
+    }
+    this.numEffectsBlockingCardMoveById.set(card.getId(), this.numEffectsBlockingCardMoveById.get(card.getId())! + 1);
+  }
+
+  public releaseCardToMoveAgain(card: Card): void {
+    this.numEffectsBlockingCardMoveById.set(card.getId(), this.numEffectsBlockingCardMoveById.get(card.getId())! - 1);
+  }
+
+  public isCardAbleToMove(card: Card): boolean {
+    return (
+      !this.numEffectsBlockingCardMoveById.has(card.getId()) ||
+      this.numEffectsBlockingCardMoveById.get(card.getId())! <= 0
+    );
   }
 
   private async drawInitialHands(): Promise<void> {
@@ -387,6 +403,10 @@ export class SharedGameState {
       return topCard.getName() === card || topCard.getDisplayName() === card;
     }
     return topCard.getName() === card.getName();
+  }
+
+  public isCardInPile(card: Card, pileName: string): boolean {
+    return this.piles.isCardInPile(card, pileName);
   }
 
   public async performCleanup() {
@@ -727,6 +747,12 @@ export class SharedGameState {
 
   public getCardByMetadata(cardMetadata: CardMetadata): Card | undefined {
     if (cardMetadata.location === CardLocation.PILE) {
+      if (cardMetadata.types.includes(CardType.REWARD)) {
+        return this.piles.getCardFromMetadata(cardMetadata, 'Rewards');
+      }
+      if (cardMetadata.types.includes(CardType.PRIZE)) {
+        return this.piles.getCardFromMetadata(cardMetadata, 'Prizes');
+      }
       return this.piles.getTopCardsOfSupplyPiles().getCardByMetadata(cardMetadata);
     }
     if (cardMetadata.location === CardLocation.TRASH) {

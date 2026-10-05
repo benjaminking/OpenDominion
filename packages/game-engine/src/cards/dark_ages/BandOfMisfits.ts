@@ -4,13 +4,20 @@ import { CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { both, isActionCard, isCommandCard, not, costsUpTo } from '../../StandardCardEligibilityFunctions';
+import {
+  both,
+  costsLessThanCard,
+  isActionCard,
+  isCommandCard,
+  isDurationCard,
+  not,
+} from '../../StandardCardEligibilityFunctions';
 
 export class BandOfMisfits extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
-    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Band of Misfits'));
+    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Band Of Misfits'));
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
@@ -18,13 +25,11 @@ export class BandOfMisfits extends KingdomCard {
       .chooseCard('Choose a non-Command Action card from the Supply costing less than $5 to play')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.PLAY_ALT)
-      .whereCardIs(both(both(isActionCard, not(isCommandCard)), costsUpTo(this.getCost().plus(-1))))
-      .allowNoneOption()
+      .whereCardIs(both(both(isActionCard, both(not(isCommandCard), not(isDurationCard))), costsLessThanCard(this)))
       .choose();
 
     if (choice instanceof Card) {
-      // TODO: playSupplyCardWithoutGaining stub - play a Supply card leaving it there
-      await ie.playSupplyCardWithoutGaining(choice);
+      await ie.playCardFromSupplyLeavingItThere(choice);
     }
   }
 }

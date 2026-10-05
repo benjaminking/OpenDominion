@@ -246,7 +246,7 @@ export const darkAges: CardInfo[] = [
     has_randomizer: true,
   },
   {
-    name: 'Band of Misfits',
+    name: 'Band Of Misfits',
     category: CardCategory.CARD,
     text: 'Play a non-Command Action\ncard from the Supply that costs\nless than this, leaving it there.',
     font_size: 'medium',
@@ -430,6 +430,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Ruined Library',
@@ -442,6 +443,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Ruined Market',
@@ -454,6 +456,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Ruined Village',
@@ -466,6 +469,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Survivors',
@@ -478,6 +482,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Dame Anna',
@@ -490,6 +495,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Josephine',
@@ -502,6 +508,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Molly',
@@ -514,6 +521,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Natalie',
@@ -526,6 +534,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Sylvia',
@@ -538,6 +547,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Bailey',
@@ -550,6 +560,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Destry',
@@ -562,6 +573,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Martin',
@@ -574,6 +586,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Michael',
@@ -586,6 +599,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Vander',
@@ -598,6 +612,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Madman',

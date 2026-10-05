@@ -3,4 +3,5 @@ export enum ViewName {
   SET_ASIDE = 'setAsideCards',
   TRASH = 'trash',
   DISCARD = 'discard',
+  MISCELLANEOUS = 'miscellaneous',
 }

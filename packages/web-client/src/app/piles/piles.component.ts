@@ -15,6 +15,7 @@ export class PilesComponent implements OnInit {
   treasurePiles = signal<PileMetadata[]>([]);
   victoryPiles = signal<PileMetadata[]>([]);
   nonSupplyPiles = signal<PileMetadata[]>([]);
+  nonKingdomSupplyPiles = signal<PileMetadata[]>([]);
   seenPileNames: Set<string> = new Set();
 
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
@@ -32,27 +33,27 @@ export class PilesComponent implements OnInit {
     }
     this.seenPileNames.add(pile.name);
 
-    for (const category of pile.categories) {
-      if (category === PileCategory.NON_SUPPLY) {
-        this.nonSupplyPiles.update((currentValue: PileMetadata[]) => {
-          return [...currentValue, pile].sort(pileSortingFunction);
-        });
-      }
-      if (category === PileCategory.KINGDOM) {
-        this.kingdomPiles.update((currentValue: PileMetadata[]) => {
-          return [...currentValue, pile].sort(pileSortingFunction);
-        });
-      }
-      if (category === PileCategory.BASIC_TREASURE) {
-        this.treasurePiles.update((currentValue: PileMetadata[]) => {
-          return [...currentValue, pile].sort(pileSortingFunction);
-        });
-      }
-      if (category === PileCategory.BASIC_VICTORY) {
-        this.victoryPiles.update((currentValue: PileMetadata[]) => {
-          return [...currentValue, pile].sort(pileSortingFunction);
-        });
-      }
+    const pileCategories = new Set<PileCategory>(pile.categories);
+    if (pileCategories.has(PileCategory.BASIC_TREASURE)) {
+      this.treasurePiles.update((currentValue: PileMetadata[]) => {
+        return [...currentValue, pile].sort(pileSortingFunction);
+      });
+    } else if (pileCategories.has(PileCategory.BASIC_VICTORY)) {
+      this.victoryPiles.update((currentValue: PileMetadata[]) => {
+        return [...currentValue, pile].sort(pileSortingFunction);
+      });
+    } else if (pileCategories.has(PileCategory.KINGDOM)) {
+      this.kingdomPiles.update((currentValue: PileMetadata[]) => {
+        return [...currentValue, pile].sort(pileSortingFunction);
+      });
+    } else if (pileCategories.has(PileCategory.SUPPLY)) {
+      this.nonKingdomSupplyPiles.update((currentValue: PileMetadata[]) => {
+        return [...currentValue, pile].sort(pileSortingFunction);
+      });
+    } else if (pileCategories.has(PileCategory.NON_SUPPLY)) {
+      this.nonSupplyPiles.update((currentValue: PileMetadata[]) => {
+        return [...currentValue, pile].sort(pileSortingFunction);
+      });
     }
   }
 

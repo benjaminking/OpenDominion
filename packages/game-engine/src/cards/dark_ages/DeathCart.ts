@@ -3,14 +3,13 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { either, isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class DeathCart extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -25,9 +24,8 @@ export class DeathCart extends KingdomCard {
         .makeMandatory()
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            // TODO: gainFromRuinsPile stub - gain from the shuffled Ruins pile
-            await ie.gainFromRuinsPile();
-            await ie.gainFromRuinsPile();
+            await ie.gainFromPile('Ruins');
+            await ie.gainFromPile('Ruins');
           }),
         )
         .build(),
@@ -35,34 +33,19 @@ export class DeathCart extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie
-      .chooseOneOption('Choose one:')
-      .from(
-        new ActionChoice('Trash this Death Cart for +$5', async () => {
-          const trashed = await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
-          if (trashed !== undefined) {
-            await ie.addCoins(5);
-          }
-        }),
-      )
-      .from(
-        new ActionChoice('Trash an Action card from your hand for +$5', async () => {
-          const cardToTrash: Card | Choice = await ie
-            .chooseCard('Choose an Action card to trash for +$5')
-            .from(CardLocation.HAND)
-            .to(CardSelectionPurpose.TRASH)
-            .whereCardIs(isActionCard)
-            .allowNoneOption()
-            .choose();
-          if (cardToTrash instanceof Card) {
-            const trashed = await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
-            if (trashed !== undefined) {
-              await ie.addCoins(5);
-            }
-          }
-        }),
-      )
-      .from(new ActionChoice('No', () => {}))
+    const cardToTrash: Card | Choice = await ie
+      .chooseCard('Choose an Action card to trash for +$5')
+      .from(CardLocation.HAND)
+      .from(CardLocation.IN_PLAY)
+      .to(CardSelectionPurpose.TRASH)
+      .whereCardIs(either(isActionCard, isTheSameCardAs(this)))
+      .allowNoneOption()
       .choose();
+    if (cardToTrash instanceof Card) {
+      const trashed = await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
+      if (trashed !== undefined) {
+        await ie.addCoins(5);
+      }
+    }
   }
 }

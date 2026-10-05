@@ -124,6 +124,16 @@ const costsExactly = function (coins: Cost) {
   return new CostsExactly(coins);
 };
 
+class CostsBetween extends CardEligibilityFunction {
+  public constructor(lowerBound: Cost, upperBound: Cost) {
+    super((c: Card) => lowerBound.isLessThanOrEqualTo(c.getCost()) && c.getCost().isLessThanOrEqualTo(upperBound));
+  }
+}
+
+const costsBetween = function (lowerBound: Cost, upperBound: Cost) {
+  return new CostsBetween(lowerBound, upperBound);
+};
+
 class CostsTheSameAsCard extends CardEligibilityFunction {
   public constructor(otherCard: Card) {
     super((c: Card) => c.getCost().isEqualTo(otherCard.getCost()));
@@ -274,6 +284,7 @@ export {
   canBeDiscardedInCleanup,
   cardNameIs,
   costsAtLeast,
+  costsBetween,
   costsExactly,
   costsExactlyNLessThanCard,
   costsExactlyNMoreThanCard,

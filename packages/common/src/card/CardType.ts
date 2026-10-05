@@ -6,7 +6,10 @@ export enum CardType {
   VICTORY = 'Victory',
   REACTION = 'Reaction',
   DURATION = 'Duration',
+  // Cornucopia & Guilds
   REWARD = 'Reward',
+  PRIZE = 'Prize',
+  // Dark Ages
   LOOTER = 'Looter',
   COMMAND = 'Command',
   RUINS = 'Ruins',

@@ -140,7 +140,7 @@ export const alchemy: CardInfo[] = [
     expansion: Expansion.ALCHEMY,
     has_randomizer: true,
   },
-  {
+  /*{
     name: 'Transmute',
     category: CardCategory.CARD,
     text: 'Trash a card from your hand.\nIf it is an Action card, gain a Duchy.\nIf it is a Treasure card, gain a Transmute.\nIf it is a Victory card, gain a Gold.',
@@ -167,5 +167,5 @@ export const alchemy: CardInfo[] = [
     expansion: Expansion.ALCHEMY,
     mechanics: [Mechanic.POTIONS],
     has_randomizer: true,
-  },
+  },*/
 ];

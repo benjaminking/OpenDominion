@@ -3,16 +3,15 @@ import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
-import { isAttackCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { both, isAttackCard, isTheSameCardAs, not } from '../../StandardCardEligibilityFunctions';
 
 export class Urchin extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -28,27 +27,18 @@ export class Urchin extends KingdomCard {
     ie.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.ABOUT_TO_PLAY_CARD, EffectSource.SELF)
-        .whereCardIs(isAttackCard)
+        .triggerOn(EffectTriggerType.PLAYED_CARD, EffectSource.SELF)
+        .whereCardIs(both(isAttackCard, not(isTheSameCardAs(this))))
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY))
-        .withExpiration(ie.createStartOfMyNextTurnEffectExpiration())
+        // TODO: this won't work with Royal Galley - need a while in play expiration
+        .withExpiration(ie.createRestOfTurnEffectExpiration())
         .action(
-          new EffectAction(async (ie: InstructionExecutor, attackCard: Card) => {
-            // Don't trigger when Urchin itself is played (e.g., via Throne Room)
-            if (isTheSameCardAs(this).matches(attackCard)) {
+          new EffectAction(async (ie: InstructionExecutor, _attackCard: Card) => {
+            const trashedCard = await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
+            if (!(trashedCard instanceof Card)) {
               return;
             }
-            await ie
-              .chooseOneOption('Trash this Urchin to gain a Mercenary from the Mercenary pile?')
-              .from(
-                new ActionChoice('Yes', async () => {
-                  await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
-                  // TODO: gain from Mercenary pile (stub - gainFromPile returns undefined if pile absent)
-                  await ie.gainFromPile('mercenary');
-                }),
-              )
-              .from(new ActionChoice('No', () => {}))
-              .choose();
+            await ie.gainFromPile('Mercenary');
           }),
         )
         .build(),

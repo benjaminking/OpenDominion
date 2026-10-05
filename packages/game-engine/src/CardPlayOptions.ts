@@ -2,11 +2,13 @@ export class CardPlayOptions {
   protected constructor(
     public readonly shouldUseAction = true,
     public readonly shouldLog = true,
+    public readonly leaveInPlace = false,
   ) {}
 
   static Builder = class {
     shouldUseAction = true;
     shouldLog = true;
+    leaveInPlace = false;
 
     public dontUseAction(): this {
       this.shouldUseAction = false;
@@ -15,6 +17,11 @@ export class CardPlayOptions {
 
     public dontLog(): this {
       this.shouldLog = false;
+      return this;
+    }
+
+    public leaveItThere(): this {
+      this.leaveInPlace = true;
       return this;
     }
 
@@ -30,5 +37,6 @@ export class CardPlayOptions {
   // quick common configurations
   public static DONT_USE_ACTION = CardPlayOptions.builder().dontUseAction().build();
   public static DONT_LOG = CardPlayOptions.builder().dontLog().build();
+  public static LEAVING_IT_THERE = CardPlayOptions.builder().dontUseAction().leaveItThere().build();
   public static DEFAULT = CardPlayOptions.builder().build();
 }

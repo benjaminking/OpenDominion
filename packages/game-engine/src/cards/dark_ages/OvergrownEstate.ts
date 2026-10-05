@@ -4,8 +4,8 @@ import { Card } from '../../card/Card';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class OvergrownEstate extends Card {

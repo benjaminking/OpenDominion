@@ -4,9 +4,15 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { both, costsExactly, isActionCard, not, isDurationCard } from '../../StandardCardEligibilityFunctions';
+import {
+  both,
+  costsExactlyNMoreThanCard,
+  isActionCard,
+  isDurationCard,
+  not,
+} from '../../StandardCardEligibilityFunctions';
 
 export class Procession extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -14,7 +20,7 @@ export class Procession extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    const choice: Card | Choice = await ie
+    const cardToPlay: Card | Choice = await ie
       .chooseCard('Choose a non-Duration Action card from your hand to play twice')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.PLAY_ALT)
@@ -22,20 +28,18 @@ export class Procession extends KingdomCard {
       .allowNoneOption()
       .choose();
 
-    if (!(choice instanceof Card)) {
+    if (!(cardToPlay instanceof Card)) {
       return;
     }
 
-    const cardCost = choice.getCost();
-    await ie.playCardFromHandNTimes(choice, 2);
-    await ie.trashCardFromLocation(choice, CardLocation.IN_PLAY);
+    await ie.playCardFromHandNTimes(cardToPlay, 2);
+    await ie.trashCardFromLocation(cardToPlay, CardLocation.IN_PLAY);
 
     const cardToGain: Card | Choice = await ie
-      .chooseCard('Gain an Action card costing exactly $' + cardCost.plus(1).coins.toFixed())
+      .chooseCard('Gain an Action card costing exactly $' + cardToPlay.getCost().toString())
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
-      .whereCardIs(both(isActionCard, costsExactly(cardCost.plus(1))))
-      .allowNoneOption()
+      .whereCardIs(both(isActionCard, costsExactlyNMoreThanCard(cardToPlay, 1)))
       .choose();
     if (cardToGain instanceof Card) {
       await ie.gainCardFromPile(cardToGain);

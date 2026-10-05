@@ -5,6 +5,7 @@ import { CardLocation } from '@dominion/common';
 import { CardDialogComponent } from '../cards/card-dialog.component';
 import { ViewName } from '../view-names';
 import { ViewVisibilityService } from '../view-visibility.service';
+import { MiscellaneousCardDialogService } from './miscellaneous-card-dialog.service';
 
 @Component({
   selector: 'shared',
@@ -15,8 +16,13 @@ import { ViewVisibilityService } from '../view-visibility.service';
 export class SharedComponent implements OnInit {
   trash = signal<CardMetadata[]>([]);
   trashViewName = ViewName.TRASH;
+
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
   private readonly viewVisibilityService = inject(ViewVisibilityService);
+  private readonly miscellaneousCardDialogService = inject(MiscellaneousCardDialogService);
+
+  miscellaneousCards = this.miscellaneousCardDialogService.getCards();
+  miscellaneousViewName = ViewName.MISCELLANEOUS;
 
   ngOnInit(): void {
     this.webSocketMessageDecoder.subscribeToSharedCardsUpdate(

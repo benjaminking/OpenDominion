@@ -7,9 +7,8 @@ import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { anyCard } from '../../StandardCardEligibilityFunctions';
 
 export class MarketSquare extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -18,12 +17,11 @@ export class MarketSquare extends KingdomCard {
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TRASH, EffectSource.SELF)
-        .whereCardIs(anyCard)
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.HAND))
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            const discarded = await ie.discardCardFromLocation(this, CardLocation.HAND);
-            if (discarded !== undefined) {
+            const discardedCard = await ie.discardCardFromLocation(this, CardLocation.HAND);
+            if (discardedCard !== undefined) {
               await ie.gainFromPile('gold');
             }
           }),

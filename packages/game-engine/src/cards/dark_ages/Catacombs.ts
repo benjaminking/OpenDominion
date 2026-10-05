@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
@@ -9,9 +9,9 @@ import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsUpTo, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { costsLessThanCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class Catacombs extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -21,7 +21,6 @@ export class Catacombs extends KingdomCard {
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TRASH)
-        .self()
         .whereCardIs(isTheSameCardAs(this))
         .makeMandatory()
         .action(
@@ -30,8 +29,7 @@ export class Catacombs extends KingdomCard {
               .chooseCard('Gain a card costing less than $' + this.getCost().coins.toFixed())
               .from(CardSelectionLocation.SUPPLY)
               .to(CardSelectionPurpose.GAIN)
-              .whereCardIs(costsUpTo(this.getCost().plus(-1)))
-              .allowNoneOption()
+              .whereCardIs(costsLessThanCard(this))
               .choose();
             if (cardToGain instanceof Card) {
               await ie.gainCardFromPile(cardToGain);
@@ -49,14 +47,13 @@ export class Catacombs extends KingdomCard {
     await ie
       .chooseOneOption('Choose one:')
       .from(
-        new ActionChoice('Put all 3 cards into your hand', () => {
+        new ActionChoice('Put them into your hand', () => {
           ie.putCardsIntoHandFromSet(topCards.clone(), topCards);
         }),
       )
       .from(
-        new ActionChoice('Discard all 3 and +3 Cards', async () => {
-          const toDiscard = topCards.clone();
-          await ie.discardCardsFromRevealedSet(toDiscard, topCards);
+        new ActionChoice('Discard them and +3 Cards', async () => {
+          await ie.discardCardsFromRevealedSet(topCards);
           await ie.drawCards(3);
         }),
       )

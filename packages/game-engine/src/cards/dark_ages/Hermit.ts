@@ -9,9 +9,9 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsUpTo, not, isTreasureCard } from '../../StandardCardEligibilityFunctions';
+import { costsUpTo, isTreasureCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class Hermit extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -19,26 +19,16 @@ export class Hermit extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    const discardCards = await ie
+    const cardToTrash = await ie
       .chooseCard('You may trash a non-Treasure card from your discard pile')
+      .from(CardLocation.HAND)
       .from(CardLocation.DISCARD)
       .to(CardSelectionPurpose.TRASH)
       .whereCardIs(not(isTreasureCard))
       .allowNoneOption()
       .choose();
-    if (discardCards instanceof Card) {
-      await ie.trashCardFromLocation(discardCards, CardLocation.DISCARD);
-    } else {
-      const handCard: Card | Choice = await ie
-        .chooseCard('You may trash a non-Treasure card from your hand')
-        .from(CardLocation.HAND)
-        .to(CardSelectionPurpose.TRASH)
-        .whereCardIs(not(isTreasureCard))
-        .allowNoneOption()
-        .choose();
-      if (handCard instanceof Card) {
-        await ie.trashCardFromLocation(handCard, CardLocation.HAND);
-      }
+    if (cardToTrash instanceof Card) {
+      await ie.trashCardFromLocation(cardToTrash, cardToTrash.getLocation());
     }
 
     const cardToGain: Card | Choice = await ie
@@ -46,7 +36,6 @@ export class Hermit extends KingdomCard {
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(costsUpTo(Cost.Simple(3)))
-      .allowNoneOption()
       .choose();
     if (cardToGain instanceof Card) {
       await ie.gainCardFromPile(cardToGain);
@@ -61,9 +50,8 @@ export class Hermit extends KingdomCard {
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            // TODO: exchangeCardForMadman checks whether any cards were gained in the buy phase
-            await ie.exchangeCardForMadman(this);
+          new EffectAction((ie: InstructionExecutor) => {
+            ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Madman');
           }),
         )
         .build(),

@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class RuinedVillage extends Card {
   constructor(sharedGameState: SharedGameState) {
@@ -11,5 +11,6 @@ export class RuinedVillage extends Card {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     ie.addActions(1);
+    return Promise.resolve();
   }
 }

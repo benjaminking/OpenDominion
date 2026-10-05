@@ -1,10 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
+import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Survivors extends Card {
   constructor(sharedGameState: SharedGameState) {
@@ -19,16 +18,18 @@ export class Survivors extends Card {
       return;
     }
 
-    const cardsToDiscard: CardCollection = await ie
-      .chooseCards('Choose any cards to discard (or put them back in any order)')
-      .from(topCards)
-      .to(CardSelectionPurpose.DISCARD)
+    await ie
+      .chooseOneOption('Choose one:')
+      .from(
+        new ActionChoice('Discard them', async () => {
+          await ie.discardCardsFromRevealedSet(topCards);
+        }),
+      )
+      .from(
+        new ActionChoice('Put them back on top', async () => {
+          await ie.topDeckCardsFromRevealedSet(topCards);
+        }),
+      )
       .choose();
-
-    if (cardsToDiscard.size() > 0) {
-      await ie.discardCardsFromRevealedSet(cardsToDiscard, topCards);
-    }
-
-    await ie.topDeckCardsFromRevealedSet(topCards);
   }
 }

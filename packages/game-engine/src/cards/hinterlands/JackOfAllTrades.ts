@@ -10,7 +10,7 @@ import { isTreasureCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class JackOfAllTrades extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
-    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Jack of All Trades'));
+    super(sharedGameState, CardInfoLookup.lookUpCardInfo('Jack Of All Trades'));
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {

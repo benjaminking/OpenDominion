@@ -87,7 +87,7 @@ export class TurnTracker {
     return (
       this.cardsPlayedByUnofficialTurnNumber
         .get(this.currentTurn.getUnofficialNumber())
-        ?.doesAnyMatch(cardEligibilityFunction) ?? false
+        ?.hasMatchingCard(cardEligibilityFunction) ?? false
     );
   }
 
@@ -95,7 +95,7 @@ export class TurnTracker {
     return (
       this.cardsGainedByUnofficialTurnNumber
         .get(this.currentTurn.getUnofficialNumber())
-        ?.doesAnyMatch(cardEligibilityFunction) ?? false
+        ?.hasMatchingCard(cardEligibilityFunction) ?? false
     );
   }
 

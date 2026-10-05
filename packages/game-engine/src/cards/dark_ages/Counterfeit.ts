@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { both, isDurationCard, isTreasureCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class Counterfeit extends KingdomCard {

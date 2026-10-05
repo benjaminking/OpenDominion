@@ -5,8 +5,8 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class Fortress extends KingdomCard {
@@ -21,8 +21,8 @@ export class Fortress extends KingdomCard {
         .whereCardIs(isTheSameCardAs(this))
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            await ie.gainCardFromTrash(this, CardLocation.HAND);
+          new EffectAction((ie: InstructionExecutor) => {
+            ie.putCardIntoHandFromLocation(this, CardLocation.TRASH);
           }),
         )
         .build(),

@@ -8,8 +8,8 @@ import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Beggar extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -22,9 +22,13 @@ export class Beggar extends KingdomCard {
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
             const discarded = await ie.discardCardFromLocation(this, CardLocation.HAND);
-            if (discarded !== undefined) {
-              await ie.gainFromPile('silver', CardLocation.DECK);
-              await ie.gainFromPile('silver');
+            if (discarded === undefined) {
+              return;
+            }
+            await ie.gainFromPile('silver');
+            const secondSilver = await ie.gainFromPile('silver');
+            if (secondSilver instanceof Card) {
+              await ie.topDeckCardFromLocation(secondSilver, secondSilver.getLocation());
             }
           }),
         )
