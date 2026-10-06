@@ -8,3 +8,4 @@ export * from './Cost';
 export * from './Expansion';
 export * from './Mechanic';
 export * from './Production';
+export * from './RandomizerRequirements';

@@ -14,12 +14,12 @@ import {
   StartOfPlayersNextTurnEffectExpiration,
 } from '../../src/effects/StandardEffectExpirations';
 import { NextTurnEligibility, ThisTurnEligibility } from '../../src/effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
 import { TurnTracker } from '../../src/players/TurnTracker';
 import { Turn } from '../../src/turns/Turn';
-import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {
   public override async play(_instructionExecutor: InstructionExecutor): Promise<void> {
@@ -100,6 +100,7 @@ const createHarness = () => {
     addVP: vi.fn(),
     getUnofficialTurnNumber: vi.fn(() => 0),
     spendCoins: vi.fn(),
+    spendPotions: vi.fn(),
     useBuy: vi.fn(),
     useAction: vi.fn(),
     setScore: vi.fn(),
@@ -223,7 +224,8 @@ const createHarness = () => {
 
 describe('InstructionExecutor', () => {
   it('forwards stats, lookup, and eligibility helpers', () => {
-    const { executor, player, ownedCards, statistics, turnTracker, sharedGameState, sharedExtraCards } = createHarness();
+    const { executor, player, ownedCards, statistics, turnTracker, sharedGameState, sharedExtraCards } =
+      createHarness();
     const forceDiscardBroadcastSpy = vi
       .spyOn(ownedCards, 'forceFullBroadcastOfDiscard')
       .mockImplementation(() => undefined);
@@ -279,7 +281,7 @@ describe('InstructionExecutor', () => {
   });
 
   it('plays cards from hand and simple treasures through the owned card zones', async () => {
-    const { executor, ownedCards, statistics, sharedGameState, logger } = createHarness();
+    const { executor, ownedCards, statistics, sharedGameState, logger, player } = createHarness();
     const actionCard = createCard('Village', 'action-0', CardType.ACTION);
     const treasureLow = createCard('Copper', 'treasure-0', CardType.TREASURE);
     const treasureHigh = createCard('Silver', 'treasure-1', CardType.TREASURE);
@@ -298,13 +300,14 @@ describe('InstructionExecutor', () => {
     expect(ownedCards.getHand().contains(actionCard)).toBe(false);
     expect(ownedCards.getInPlay().contains(actionCard)).toBe(true);
     expect(statistics.useAction).toHaveBeenCalledTimes(1);
-    expect(sharedGameState.addPlayedCard).toHaveBeenCalledWith(actionCard);
     expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.ABOUT_TO_PLAY_CARD,
+      player,
       expect.any(CardCollection),
     );
     expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.PLAYED_CARD,
+      player,
       expect.any(CardCollection),
     );
     expect(playSpy).toHaveBeenCalledTimes(1);
@@ -358,6 +361,7 @@ describe('InstructionExecutor', () => {
 
     expect(await executor.buyFromPile('gold-pile')).toBe(pileCard);
     expect(player.getStatistics().spendCoins).toHaveBeenCalledWith(0);
+    expect(player.getStatistics().spendPotions).toHaveBeenCalledWith(0);
     expect(player.getStatistics().useBuy).toHaveBeenCalled();
 
     pileCards.set('gain-pile', [gainCard]);
@@ -418,7 +422,7 @@ describe('InstructionExecutor', () => {
   });
 
   it('routes effects, attacks, turns, and effect processing', async () => {
-    const { executor, effects, sharedGameState } = createHarness();
+    const { executor, effects, sharedGameState, player } = createHarness();
     const attackCard = createCard('Militia', 'attack-0', CardType.ATTACK);
     const extraTurnCard = createCard('Outpost', 'extra-0');
     const effectAction = vi.fn(async () => undefined);
@@ -449,7 +453,11 @@ describe('InstructionExecutor', () => {
     expect(effects.addExtraTurn).toHaveBeenCalled();
     expect(effects.blockAttack).toHaveBeenCalledWith(attackCard);
     expect(sharedGameState.clearBlocksForAttackCard).toHaveBeenCalledWith(attackCard);
-    expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.ATTACK, expect.any(CardCollection));
+    expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
+      EffectTriggerType.ATTACK,
+      player,
+      expect.any(CardCollection),
+    );
     expect(sharedGameState.performAttack).toHaveBeenCalledWith(expect.anything(), attackCard, expect.any(Function));
     expect(sharedGameState.executeForEachPlayer).toHaveBeenCalled();
     expect(sharedGameState.executeForEachOtherPlayer).toHaveBeenCalled();

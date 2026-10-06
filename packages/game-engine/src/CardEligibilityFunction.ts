@@ -1,5 +1,5 @@
-import { Card } from "./card/Card";
-import { CardCollection } from "./card/CardCollection";
+import { Card } from './card/Card';
+import { CardCollection } from './card/CardCollection';
 
 export class CardEligibilityFunction {
   protected internalFunction: (c: Card) => boolean;
@@ -13,7 +13,7 @@ export class CardEligibilityFunction {
   }
 
   public matchesAny(cards: CardCollection): boolean {
-    return cards.doesAnyMatch(this);
+    return cards.hasMatchingCard(this);
   }
 
   public getMatchingCards(cards: CardCollection): CardCollection {

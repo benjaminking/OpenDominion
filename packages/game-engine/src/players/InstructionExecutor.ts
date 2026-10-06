@@ -10,6 +10,7 @@ import {
   MoneyAmount,
   MultiCardChoice,
 } from '@dominion/common';
+import { EffectChoice } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
@@ -196,7 +197,7 @@ export class InstructionExecutor {
   }
 
   public async chooseRewardToGain(gainLocation: CardLocation = CardLocation.DISCARD): Promise<Card | undefined> {
-    const rewardToGain = this.chooseCard('Choose a reward to gain')
+    const rewardToGain = await this.chooseCard('Choose a reward to gain')
       .from(this.sharedGameState.piles.getUniqueCardsFromPile('Rewards'))
       .to(CardSelectionPurpose.GAIN)
       .choose();
@@ -205,7 +206,7 @@ export class InstructionExecutor {
       return;
     }
 
-    return this.gainCardFromPile(rewardToGain, gainLocation);
+    return this.gainCardFromPile(rewardToGain, gainLocation, true);
   }
 
   public handSize(): number {
@@ -236,6 +237,10 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().numMatchingCardsInPlay(cardEligibilityFunction);
   }
 
+  public numMatchingCardsInTrash(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.sharedGameState.trash.numMatchingCards(cardEligibilityFunction);
+  }
+
   public numMatchingCardsPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): number {
     return this.player.getTurnTracker().numMatchingCardsPlayedThisTurn(cardEligibilityFunction);
   }
@@ -256,8 +261,16 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().getMatchingCardsInPlay(cardEligibilityFunction);
   }
 
+  public getMatchingCardsInTrash(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
+    return this.sharedGameState.trash.getMatchingCards(cardEligibilityFunction);
+  }
+
   public numUniqueMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
     return this.player.getOwnedCards().getInPlay().getMatchingCardsUnique(cardEligibilityFunction).size();
+  }
+
+  public numUniqueMatchingCardsInTrash(cardEligibilityFunction: CardEligibilityFunction): number {
+    return this.sharedGameState.trash.getMatchingCardsUnique(cardEligibilityFunction).size();
   }
 
   public numUniqueMatchingCardsInHand(cardEligibilityFunction: CardEligibilityFunction): number {
@@ -304,6 +317,9 @@ export class InstructionExecutor {
   }
 
   private removeCardFromLocation(card: Card, location: CardLocation): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (this.sharedGameState.isSharedLocation(location)) {
       this.sharedGameState.getCardsFromArea(location).removeCard(card);
     } else {
@@ -313,10 +329,8 @@ export class InstructionExecutor {
 
   // TODO: see if this is actually used
   private removeCardsFromLocation(cards: CardCollection, location: CardLocation): void {
-    if (this.sharedGameState.isSharedLocation(location)) {
-      this.sharedGameState.getCardsFromArea(location).removeCards(cards);
-    } else {
-      this.player.getOwnedCards().removeCardsFromLocation(cards, location);
+    for (const card of cards) {
+      this.removeCardFromLocation(card, location);
     }
   }
 
@@ -325,15 +339,6 @@ export class InstructionExecutor {
     card: Card,
     options: CardPlayOptions = CardPlayOptions.DEFAULT,
   ): Promise<void> {
-    /*this.messageBroadcaster.broadcastGameMessage({
-      playerName: player.getName(),
-      command: Command.PLAYED,
-      visibility: GameMessageVisibility.PUBLIC,
-      content: {
-        type: MessageContentType.CARD_METADATA,
-        value: card.getMetadata(),
-      } as CardMetadataContent,
-    });*/
     if (options.shouldLog) {
       this.logger.gameMessage(player, ServerLogMessage.publicMessage(player, 'plays %c', card));
     }
@@ -344,12 +349,22 @@ export class InstructionExecutor {
       CardCollection.fromCards([card]),
     );
     this.registerPlayedCard(card);
-    await card.play(this);
+    if (options.leaveInPlace) {
+      await this.playCardWithoutMoving(card);
+    } else {
+      await card.play(this);
+    }
     await this.sharedGameState.triggerEffect(
       EffectTriggerType.PLAYED_CARD,
       this.player,
       CardCollection.fromCards([card]),
     );
+  }
+
+  private async playCardWithoutMoving(card: Card): Promise<void> {
+    this.sharedGameState.blockCardFromMoving(card);
+    await card.play(this);
+    this.sharedGameState.releaseCardToMoveAgain(card);
   }
 
   private registerPlayedCard(card: Card): void {
@@ -470,6 +485,7 @@ export class InstructionExecutor {
   public async gainCardFromPile(
     cardChoice: Card | string,
     gainLocation: CardLocation = CardLocation.DISCARD,
+    allowNonTopCardGain = false,
   ): Promise<Card | undefined> {
     let pileName: string;
     if (typeof cardChoice === 'string' || cardChoice instanceof String) {
@@ -480,6 +496,12 @@ export class InstructionExecutor {
 
     if (this.sharedGameState.isCopyOfCardOnTopOfPile(cardChoice, pileName)) {
       return this.gainFromPile(pileName, gainLocation);
+    } else if (
+      allowNonTopCardGain &&
+      cardChoice instanceof Card &&
+      this.sharedGameState.isCardInPile(cardChoice, pileName)
+    ) {
+      return this.gainCardFromAnywhereInPile(cardChoice, gainLocation);
     }
     return undefined;
   }
@@ -489,6 +511,18 @@ export class InstructionExecutor {
     gainLocation: CardLocation = CardLocation.DISCARD,
   ): Promise<Card | undefined> {
     const card = this.removeTopCardFromPile(pileName);
+    if (card === undefined) {
+      return undefined;
+    }
+    await this.gain(card, gainLocation);
+    return card;
+  }
+
+  private async gainCardFromAnywhereInPile(
+    cardChoice: Card,
+    gainLocation: CardLocation = CardLocation.DISCARD,
+  ): Promise<Card | undefined> {
+    const card: Card | undefined = this.sharedGameState.piles.removeCardFromPile(cardChoice);
     if (card === undefined) {
       return undefined;
     }
@@ -553,6 +587,10 @@ export class InstructionExecutor {
       return;
     }
 
+    if (!this.sharedGameState.isCardAbleToMove(cardToReturn)) {
+      return;
+    }
+
     this.returnCardToPileFromLocation(cardToReturn, location);
     this.putCardInDiscard(cardToReceive);
     this.logger.gameMessage(
@@ -565,14 +603,21 @@ export class InstructionExecutor {
     );
   }
 
-  public returnCardToPileFromLocation(card: Card, location: CardLocation): void {
+  public returnCardToPileFromLocation(card: Card, location: CardLocation): Card | undefined {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return undefined;
+    }
     if (this.sharedGameState.piles.isPile(card.getPileName())) {
       this.removeCardFromLocation(card, location);
       this.sharedGameState.piles.returnCardToPile(card);
     }
+    return card;
   }
 
   private putCardInDiscard(card: Card): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     this.player.getOwnedCards().addCardToDiscard(card);
   }
 
@@ -584,7 +629,10 @@ export class InstructionExecutor {
     return this.player.getOwnedCards().takeCardOffDeck();
   }
 
-  public topDeckCardFromLocation(card: Card, location: CardLocation, hidden = false): Promise<Card | undefined> {
+  public async topDeckCardFromLocation(card: Card, location: CardLocation, hidden = false): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return undefined;
+    }
     this.removeCardFromLocation(card, location);
 
     if (card.getLocation() === location) {
@@ -596,10 +644,13 @@ export class InstructionExecutor {
         ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't topdeck it.", card),
       );
     }
-    return Promise.resolve(undefined);
+    return undefined;
   }
 
   public putCardOnDeck(card: Card, hidden = false): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     this.player.getOwnedCards().addCardToDeck(card);
     if (hidden) {
       this.logger.gameMessage(this.player, ServerLogMessage.privateMessage(this.player, 'puts %c on the deck', card));
@@ -629,10 +680,16 @@ export class InstructionExecutor {
   }
 
   public putCardIntoDeck(card: Card, depth: number): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     this.player.getOwnedCards().putCardIntoDeck(card, depth);
   }
 
   public putCardIntoHandFromLocation(card: Card, location: CardLocation): void {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (card.getLocation() !== location) {
       this.removeCardFromLocation(card, location);
       this.logger.gameMessage(
@@ -718,8 +775,10 @@ export class InstructionExecutor {
 
   public async discardCardsFromRevealedSet(
     discardedCards: CardCollection,
-    cards: CardCollection,
+    cards?: CardCollection,
   ): Promise<CardCollection> {
+    cards ??= discardedCards;
+
     cards.removeCards(discardedCards);
     for (const card of discardedCards) {
       this.removeCardFromLocation(card, card.getLocation());
@@ -749,6 +808,9 @@ export class InstructionExecutor {
   }
 
   public async trashCardFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (card.getLocation() === location) {
       const trashedCards = await this.trashCardsFromLocation(CardCollection.fromCards([card]), location);
       if (trashedCards.size() > 0) {
@@ -805,7 +867,10 @@ export class InstructionExecutor {
     return undefined;
   }
 
-  public setCardAsideFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+  public async setCardAsideFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return;
+    }
     if (card.getLocation() === location) {
       this.removeCardFromLocation(card, location);
       this.setCardAside(card);
@@ -816,7 +881,6 @@ export class InstructionExecutor {
         ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't set it aside.", card),
       );
     }
-    return Promise.resolve(undefined);
   }
 
   public setCardAside(card: Card, hidden = false): void {
@@ -924,6 +988,159 @@ export class InstructionExecutor {
 
   public async eachPlayerPassesACardToTheLeft(): Promise<void> {
     await this.sharedGameState.eachPlayerPassesACardToTheLeft();
+  }
+
+  public putDeckInDiscard(): void {
+    this.player.getOwnedCards().putDeckInDiscard();
+  }
+
+  public async playCardFromSupplyLeavingItThere(card: Card): Promise<void> {
+    await this.playCard(this.player, card, CardPlayOptions.LEAVING_IT_THERE);
+  }
+
+  public async processEffectsByType(
+    triggerType: EffectTriggerType,
+    targetCards: Card | CardCollection | undefined,
+    extraInformation = '',
+    usedEffectIDs: Set<string> = new Set<string>(),
+  ): Promise<void> {
+    const allEffects = this.getApplicableEffectsByType(triggerType, targetCards);
+    const optionalEffects = allEffects.filter((e: Effect) => !e.isMandatory() && !usedEffectIDs.has(e.getId()));
+    const mandatoryEffects = allEffects.filter((e: Effect) => e.isMandatory() && !usedEffectIDs.has(e.getId()));
+
+    const uniqueMandatoryEffectCardNames = new Set<string>(
+      mandatoryEffects.map((value: Effect) => value.getOwner().getName()),
+    );
+    if (optionalEffects.length === 0 && uniqueMandatoryEffectCardNames.size === 1) {
+      await mandatoryEffects[0].doAction(this, targetCards);
+      usedEffectIDs.add(mandatoryEffects[0].getId());
+      if (mandatoryEffects.length === 1) {
+        return;
+      } else {
+        return this.processEffectsByType(triggerType, targetCards, extraInformation, usedEffectIDs);
+      }
+    }
+
+    if (allEffects.length > 0) {
+      let extraMessage = '';
+      if (triggerType === EffectTriggerType.WOULD_GAIN && targetCards !== undefined) {
+        extraMessage =
+          'You would gain ' +
+          (targetCards instanceof CardCollection
+            ? targetCards.print()
+            : CardCollection.fromCards([targetCards]).print()) +
+          '.';
+      } else if (triggerType === EffectTriggerType.GAIN && targetCards !== undefined) {
+        extraMessage =
+          'You gained ' +
+          (targetCards instanceof CardCollection
+            ? targetCards.print()
+            : CardCollection.fromCards([targetCards]).print()) +
+          '.';
+      } else if (triggerType === EffectTriggerType.ATTACK && targetCards !== undefined) {
+        extraMessage =
+          'An opponent played ' +
+          (targetCards instanceof CardCollection
+            ? targetCards.print()
+            : CardCollection.fromCards([targetCards]).print()) +
+          '.';
+      }
+      const effectsById: Map<string, Effect> = this.createEffectIdMap(optionalEffects, mandatoryEffects);
+
+      const effectChoice: Choice = await this.player
+        .getDecisionService()
+        .chooseFromMultipleEvents(
+          extraMessage,
+          this.createEffectChoices(optionalEffects),
+          this.createEffectChoices(mandatoryEffects),
+        );
+      if (effectChoice.type === ChoiceType.Effect) {
+        const effect: Effect = effectsById.get((effectChoice as EffectChoice).effectId)!;
+        usedEffectIDs.add(effect.getId());
+
+        this.sharedGameState.pushActiveEffectOntoStack(effect);
+        await effect.doAction(this, targetCards);
+        this.sharedGameState.popActiveEffectOffOfStack();
+        return this.processEffectsByType(triggerType, targetCards, extraInformation, usedEffectIDs);
+      }
+    }
+  }
+
+  private createEffectChoices(effects: Effect[]): EffectChoice[] {
+    const effectChoices: EffectChoice[] = [];
+    for (const effect of effects) {
+      effectChoices.push({
+        type: ChoiceType.Effect,
+        effectName: effect.getOwner().getName(),
+        effectId: effect.getId(),
+      });
+    }
+    return effectChoices;
+  }
+
+  private createEffectIdMap(optionalEffects: Effect[], mandatoryEffects: Effect[]): Map<string, Effect> {
+    const effectIdMap: Map<string, Effect> = new Map<string, Effect>();
+    for (const optionalEffect of optionalEffects) {
+      effectIdMap.set(optionalEffect.getId(), optionalEffect);
+    }
+    for (const mandatoryEffect of mandatoryEffects) {
+      effectIdMap.set(mandatoryEffect.getId(), mandatoryEffect);
+    }
+    return effectIdMap;
+  }
+
+  private getApplicableEffectsByType(
+    trigger: EffectTriggerType,
+    targetCards: Card | CardCollection | undefined,
+  ): Effect[] {
+    const allEffects: Effect[] = [];
+    allEffects.push(...this.filterEffectsToApplicable(this.player.getEffects().getEffectsByType(trigger), targetCards));
+    allEffects.push(
+      ...this.filterEffectsToApplicable(this.player.getOwnedCards().getEffectsByType(trigger), targetCards),
+    );
+    if (targetCards !== undefined && targetCards instanceof CardCollection) {
+      allEffects.push(...this.filterEffectsToApplicable(targetCards.getEffectsByType(trigger), targetCards, true));
+    } else if (targetCards !== undefined) {
+      allEffects.push(
+        ...this.filterEffectsToApplicable(
+          CardCollection.fromCards([targetCards]).getEffectsByType(trigger),
+          targetCards,
+          true,
+        ),
+      );
+    }
+
+    if (trigger === EffectTriggerType.SHUFFLE) {
+      allEffects.push(
+        ...this.filterEffectsToApplicable(this.player.getOwnedCards().getDeckEffectsByType(trigger), targetCards),
+      );
+    }
+
+    return allEffects;
+  }
+
+  private filterEffectsToApplicable(
+    effects: Effect[],
+    targetCards: Card | CardCollection | undefined,
+    allowSelf = false,
+  ): Effect[] {
+    const applicableEffects: Effect[] = [];
+    for (const effect of effects) {
+      if (
+        (!effect.isSelf() || (allowSelf && effect.isSelf())) &&
+        (targetCards === undefined ||
+          (targetCards instanceof CardCollection && targetCards.size() === 0) ||
+          (targetCards instanceof CardCollection && effect.getCardEligibility().matchesAny(targetCards)) ||
+          (targetCards instanceof Card && effect.getCardEligibility().matches(targetCards))) &&
+        this.sharedGameState.isTurnEligibilitySatisfied(effect.getTurnEligibility()) &&
+        !effect.hasExpired() &&
+        effect.areOtherConditionsSatisfied(this)
+      ) {
+        applicableEffects.push(effect);
+      }
+    }
+
+    return applicableEffects;
   }
 
   public createThisTurnEligibilityFunction(): TurnEligibility {

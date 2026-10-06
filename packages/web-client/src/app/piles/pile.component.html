@@ -1,8 +1,10 @@
 <div
   class="pile"
   [class.kingdom-pile]="isKingdom()"
-  [class.non-kingdom-pile]="!isKingdom()"
-  [class.non-supply-pile]="!isSupply()"
+  [class.non-kingdom-pile]="!isKingdom() && !isBasicTreasure() && !isBasicVictory()"
+  [class.non-supply-pile]="!isSupply() && !isBasicTreasure() && !isBasicVictory()"
+  [class.basic-treasure-pile]="isBasicTreasure()"
+  [class.basic-victory-pile]="isBasicVictory()"
   [class.panel-action]="isAction() && !isTreasure() && !isReaction()"
   [class.panel-treasure]="isTreasure() && !isAction() && !isReaction() && !isCurse()"
   [class.panel-victory]="isVictory()"
@@ -19,9 +21,9 @@
   [ngClass]="{ selectable: isSelectable() }"
   (click)="selectPile()"
 >
-  @if ((isSupply() && isKingdom()) || !isSupply()) {
+  @if (!isBasicTreasure() && !isBasicVictory()) {
     <div class="pile-information">
-      <span class="card-name">{{ name() }}</span>
+      <span class="card-name">{{ cardName() }}</span>
     </div>
   }
   <div class="image-container">

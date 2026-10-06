@@ -206,7 +206,7 @@ describe('CardCollection', () => {
     const collection = CardCollection.fromCards([copperA, copperB, silver]);
     const copperOnly = new CardEligibilityFunction((card) => card.getName() === 'Copper');
 
-    expect(collection.doesAnyMatch(copperOnly)).toBe(true);
+    expect(collection.hasMatchingCard(copperOnly)).toBe(true);
     expect(collection.getMatchingCards(copperOnly).toCardNameArray()).toEqual(['Copper', 'Copper']);
     expect(collection.getMatchingCardsUnique(copperOnly).toCardNameArray()).toEqual(['Copper']);
     expect(collection.numMatchingCards(copperOnly)).toBe(2);

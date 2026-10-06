@@ -11,4 +11,5 @@ export enum CardCategory {
   ALLY = 'Ally',
   TRAIT = 'Trait',
   PROPHECY = 'Prophecy',
+  RANDOMIZER_ONLY = 'Randomizer Only',
 }

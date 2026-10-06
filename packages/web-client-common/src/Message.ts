@@ -6,6 +6,7 @@ import {
   Choice,
   EffectChoice,
   ExtraTurnChoice,
+  GameConfiguration,
   GameResult,
   LogMessage,
   Mechanic,
@@ -122,6 +123,11 @@ export interface StatusContent {
 export interface StatusMessage extends Message {
   type: MessageType.STATUS;
   content: StatusContent;
+}
+
+export interface GameConfigurationMessage extends Message {
+  type: MessageType.GAME_CONFIGURATION;
+  content: GameConfiguration;
 }
 
 export interface ChooseCardContent {

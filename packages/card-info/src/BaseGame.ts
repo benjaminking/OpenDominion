@@ -11,7 +11,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Bandit',
@@ -23,7 +23,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Bureaucrat',
@@ -35,7 +35,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Cellar',
@@ -47,7 +47,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Chapel',
@@ -59,7 +59,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Council Room',
@@ -71,7 +71,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Festival',
@@ -83,7 +83,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Gardens',
@@ -95,7 +95,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Harbinger',
@@ -107,7 +107,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Laboratory',
@@ -119,7 +119,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Library',
@@ -131,7 +131,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Market',
@@ -143,7 +143,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Merchant',
@@ -155,7 +155,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Militia',
@@ -167,7 +167,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Mine',
@@ -179,7 +179,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Moat',
@@ -191,7 +191,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Moneylender',
@@ -203,7 +203,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Poacher',
@@ -215,7 +215,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Remodel',
@@ -227,7 +227,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Sentry',
@@ -239,7 +239,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Smithy',
@@ -251,7 +251,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Throne Room',
@@ -263,7 +263,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Vassal',
@@ -275,7 +275,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Village',
@@ -287,7 +287,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Witch',
@@ -299,7 +299,7 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Workshop',
@@ -311,6 +311,6 @@ export const base_game: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.BASE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
 ];

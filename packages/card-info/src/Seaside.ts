@@ -14,7 +14,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.TREASURE, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Bazaar',
@@ -26,7 +26,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Blockade',
@@ -38,7 +38,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Caravan',
@@ -50,7 +50,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Corsair',
@@ -62,7 +62,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Cutpurse',
@@ -74,7 +74,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Fishing Village',
@@ -86,7 +86,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Haven',
@@ -98,7 +98,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Island',
@@ -110,7 +110,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.VICTORY],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Lighthouse',
@@ -122,7 +122,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Lookout',
@@ -134,7 +134,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Merchant Ship',
@@ -146,7 +146,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Monkey',
@@ -158,7 +158,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Native Village',
@@ -170,7 +170,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Outpost',
@@ -182,7 +182,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Pirate',
@@ -194,7 +194,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.REACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Sailor',
@@ -206,7 +206,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Salvager',
@@ -218,7 +218,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Sea Chart',
@@ -230,7 +230,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Sea Witch',
@@ -242,7 +242,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION, CardType.ATTACK],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Smugglers',
@@ -254,7 +254,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Tactician',
@@ -266,7 +266,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Tide Pools',
@@ -278,7 +278,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Treasure Map',
@@ -290,7 +290,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Treasury',
@@ -302,7 +302,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Warehouse',
@@ -314,7 +314,7 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Wharf',
@@ -326,6 +326,6 @@ export const seaside: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.DURATION],
     expansion: Expansion.SEASIDE,
-    is_kingdom: true,
+    has_randomizer: true,
   },
 ];

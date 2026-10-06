@@ -29,11 +29,15 @@ class MatchesType extends CardEligibilityFunction {
 }
 
 const isActionCard: CardEligibilityFunction = new MatchesType(CardType.ACTION);
+const isAttackCard: CardEligibilityFunction = new MatchesType(CardType.ATTACK);
+const isCommandCard: CardEligibilityFunction = new MatchesType(CardType.COMMAND);
+const isKnightCard: CardEligibilityFunction = new MatchesType(CardType.KNIGHT);
+const isRuinsCard: CardEligibilityFunction = new MatchesType(CardType.RUINS);
+const isShelterCard: CardEligibilityFunction = new MatchesType(CardType.SHELTER);
 const isTreasureCard: CardEligibilityFunction = new MatchesType(CardType.TREASURE);
 const isVictoryCard: CardEligibilityFunction = new MatchesType(CardType.VICTORY);
 const isCurseCard: CardEligibilityFunction = new MatchesType(CardType.CURSE);
 const isDurationCard: CardEligibilityFunction = new MatchesType(CardType.DURATION);
-const isAttackCard: CardEligibilityFunction = new MatchesType(CardType.ATTACK);
 const isRewardCard: CardEligibilityFunction = new MatchesType(CardType.REWARD);
 
 class IsSimpleTreasure extends CardEligibilityFunction {
@@ -80,6 +84,16 @@ const costsUpTo = function (coins: Cost) {
   return new CostsUpTo(coins);
 };
 
+class CostsAtLeast extends CardEligibilityFunction {
+  public constructor(cost: Cost) {
+    super((c: Card) => cost.isLessThanOrEqualTo(c.getCost()));
+  }
+}
+
+const costsAtLeast = function (coins: Cost) {
+  return new CostsAtLeast(coins);
+};
+
 class CostsLessThan extends CardEligibilityFunction {
   public constructor(cost: Cost) {
     super((c: Card) => c.getCost().isLessThan(cost));
@@ -108,6 +122,16 @@ class CostsExactly extends CardEligibilityFunction {
 
 const costsExactly = function (coins: Cost) {
   return new CostsExactly(coins);
+};
+
+class CostsBetween extends CardEligibilityFunction {
+  public constructor(lowerBound: Cost, upperBound: Cost) {
+    super((c: Card) => lowerBound.isLessThanOrEqualTo(c.getCost()) && c.getCost().isLessThanOrEqualTo(upperBound));
+  }
+}
+
+const costsBetween = function (lowerBound: Cost, upperBound: Cost) {
+  return new CostsBetween(lowerBound, upperBound);
 };
 
 class CostsTheSameAsCard extends CardEligibilityFunction {
@@ -259,6 +283,8 @@ export {
   both,
   canBeDiscardedInCleanup,
   cardNameIs,
+  costsAtLeast,
+  costsBetween,
   costsExactly,
   costsExactlyNLessThanCard,
   costsExactlyNMoreThanCard,
@@ -272,13 +298,17 @@ export {
   isACopyOf,
   isActionCard,
   isAttackCard,
+  isCommandCard,
   isCurseCard,
   isDuplicateWith,
   isDurationCard,
   isFromExpansion,
   isInLocation,
   isKingdomCard,
+  isKnightCard,
   isRewardCard,
+  isRuinsCard,
+  isShelterCard,
   isSimpleTreasure,
   isSupplyCard,
   isTheSameCardAs,

@@ -4,6 +4,8 @@
   width: 65px;
   display: block;
   vertical-align: middle;
+  container-name: pile;
+  container-type: size;
 }
 
 .image-container img.card-image {
@@ -88,32 +90,32 @@
   margin-left: 5px;
 }
 
-.non-supply-pile {
-  padding: 2px;
-  font-size: 9pt;
-  text-align: center;
-  width: 64px;
-  height: 46px;
-  container-name: pile;
-  container-type: size;
-}
-
-.non-supply-pile .card-name {
-  width: 65px;
-  word-wrap: break-word;
-}
-
+.non-supply-pile,
 .non-kingdom-pile {
   padding: 2px;
   font-size: 9pt;
   text-align: center;
   width: 64px;
-  height: 46px;
-  container-name: pile;
-  container-type: size;
+  min-height: 64px;
 }
 
-.non-kindgom-pile .card-name {
+.non-supply-pile .card-name,
+.non-kingdom-pile .card-name {
+  width: 65px;
+  word-wrap: break-word;
+}
+
+.basic-treasure-pile,
+.basic-victory-pile {
+  padding: 2px;
+  font-size: 9pt;
+  text-align: center;
+  width: 64px;
+  height: 46px;
+}
+
+.basic-treasure-pile .card-name,
+.basic-victory-pile .card-name {
   width: 65px;
   word-wrap: break-word;
 }

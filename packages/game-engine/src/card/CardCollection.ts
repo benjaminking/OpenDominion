@@ -159,6 +159,10 @@ export class CardCollection implements Iterable<Card> {
     return false;
   }
 
+  public hasMatchingCard(cardEligibilityFunction: CardEligibilityFunction): boolean {
+    return this.doesAnyMatch(cardEligibilityFunction);
+  }
+
   public getMatchingCards(cardEligibilityFunction: CardEligibilityFunction): CardCollection {
     const matchingCards: CardCollection = new CardCollection();
 

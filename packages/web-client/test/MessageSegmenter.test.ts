@@ -7,6 +7,7 @@ import { MessageSegmentType } from '../src/app/message/MessageSegment';
 function createCard(name: string, id: string): CardMetadata {
   return {
     name,
+    displayName: name,
     id,
     location: CardLocation.HAND,
     types: [CardType.ACTION],

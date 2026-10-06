@@ -19,6 +19,7 @@ const createPlayerStub = (
     processEffectsByType: vi.fn(async () => undefined),
   };
   const effects = {
+    processEffectsByType: vi.fn(async () => undefined),
     clearBlocksForAttackCard: vi.fn(),
     isAttackBlocked: vi.fn(() => false),
   };
@@ -38,9 +39,7 @@ const createPlayerStub = (
     })),
   } as unknown as Player;
 
-  const turnTracker = new TurnTracker(
-    new Turn(player, options?.turnNumber ?? 1, options?.unofficialTurnNumber ?? 1),
-  );
+  const turnTracker = new TurnTracker(new Turn(player, options?.turnNumber ?? 1, options?.unofficialTurnNumber ?? 1));
   (player as unknown as { getTurnTracker: () => TurnTracker }).getTurnTracker = () => turnTracker;
 
   return {
@@ -168,40 +167,40 @@ describe('SharedGameState', () => {
     const state = createSharedGameState([alice, bob, cara]);
     const cards = new CardCollection();
 
-    await state.triggerEffect(EffectTriggerType.BUY, cards);
+    await state.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
 
-    expect(alice.instructionExecutor.processEffectsByType).not.toHaveBeenCalled();
-    expect(bob.instructionExecutor.processEffectsByType).not.toHaveBeenCalled();
-    expect(cara.instructionExecutor.processEffectsByType).not.toHaveBeenCalled();
+    expect(alice.effects.processEffectsByType).not.toHaveBeenCalled();
+    expect(bob.effects.processEffectsByType).not.toHaveBeenCalled();
+    expect(cara.effects.processEffectsByType).not.toHaveBeenCalled();
 
     state.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.SELF);
-    await state.triggerEffect(EffectTriggerType.BUY, cards);
+    await state.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
 
-    expect(alice.instructionExecutor.processEffectsByType).toHaveBeenCalledTimes(1);
-    expect(alice.instructionExecutor.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, cards);
-    expect(bob.instructionExecutor.processEffectsByType).not.toHaveBeenCalled();
-    expect(cara.instructionExecutor.processEffectsByType).not.toHaveBeenCalled();
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledTimes(1);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(bob.effects.processEffectsByType).not.toHaveBeenCalled();
+    expect(cara.effects.processEffectsByType).not.toHaveBeenCalled();
 
     vi.clearAllMocks();
 
     const otherPlayersOnlyState = createSharedGameState([alice, bob, cara]);
     otherPlayersOnlyState.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.OTHER_PLAYER);
-    await otherPlayersOnlyState.triggerEffect(EffectTriggerType.BUY, cards);
+    await otherPlayersOnlyState.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
 
-    expect(alice.instructionExecutor.processEffectsByType).not.toHaveBeenCalled();
-    expect(bob.instructionExecutor.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, cards);
-    expect(cara.instructionExecutor.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, cards);
+    expect(alice.effects.processEffectsByType).not.toHaveBeenCalled();
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
 
     vi.clearAllMocks();
 
     const allPlayersState = createSharedGameState([alice, bob, cara]);
     allPlayersState.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.SELF);
     allPlayersState.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.OTHER_PLAYER);
-    await allPlayersState.triggerEffect(EffectTriggerType.BUY, cards);
+    await allPlayersState.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
 
-    expect(alice.instructionExecutor.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, cards);
-    expect(bob.instructionExecutor.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, cards);
-    expect(cara.instructionExecutor.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, cards);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
   });
 
   it('applies added cost modifiers in order using the current turn', () => {
@@ -209,6 +208,7 @@ describe('SharedGameState', () => {
     const state = createSharedGameState([alice]);
     const card = {
       getOriginalCost: vi.fn(() => Cost.Simple(8)),
+      adjustCost: vi.fn((cost: Cost) => cost),
     };
     const firstModifier: Pick<CostModifier, 'apply' | 'getCostRecalculationTriggers'> = {
       apply: vi.fn((receivedCard, receivedCost, receivedTurn) => {
@@ -233,6 +233,7 @@ describe('SharedGameState', () => {
 
     expect(firstModifier.apply).toHaveBeenCalledTimes(1);
     expect(secondModifier.apply).toHaveBeenCalledTimes(1);
+    expect(card.adjustCost).toHaveBeenCalledTimes(1);
     expect(cost.coins).toBe(5);
   });
 

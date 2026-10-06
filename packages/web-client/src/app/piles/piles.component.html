@@ -25,6 +25,16 @@
           [types]="pile.types"
         ></pile>
       }
+      @for (pile of nonKingdomSupplyPiles(); track pile.name) {
+        <pile
+          [name]="pile.name"
+          [cost]="pile.cost"
+          [count]="pile.size"
+          [topCard]="pile.topCard"
+          [categories]="pile.categories"
+          [types]="pile.types"
+        ></pile>
+      }
     </div>
     <div class="pile-group victory-pile-group">
       @for (pile of victoryPiles(); track pile.name) {

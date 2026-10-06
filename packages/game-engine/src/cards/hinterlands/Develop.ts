@@ -38,14 +38,14 @@ export class Develop extends KingdomCard {
       .choose();
 
     if (cardToGain instanceof Card) {
-      await ie.gainCardFromPile(cardToGain, CardLocation.DECK);
-
       const otherCost = costsExactlyNMoreThanCard(trashedCard, 1).matches(cardToGain)
         ? trashedCard.getCost().plus(1)
         : trashedCard.getCost().minus(1);
       const otherCardEligibilityFunction = costsExactlyNMoreThanCard(trashedCard, 1).matches(cardToGain)
         ? costsExactlyNLessThanCard(trashedCard, 1)
         : costsExactlyNMoreThanCard(trashedCard, 1);
+      await ie.gainCardFromPile(cardToGain, CardLocation.DECK);
+
       const otherCardToGain: Card | Choice = await ie
         .chooseCard('Choose a card costing exactly ' + otherCost.toString() + ' to gain')
         .from(CardSelectionLocation.SUPPLY)

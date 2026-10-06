@@ -1,11 +1,4 @@
-import {
-  CardLocation,
-  CardType,
-  ChoiceType,
-  NumberType,
-  type CardMetadata,
-  type GameConfiguration,
-} from '@dominion/common';
+import { CardLocation, CardType, ChoiceType, Mechanic, NumberType, type CardMetadata } from '@dominion/common';
 import { MessageType } from '@dominion/web-client-common';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -14,32 +7,11 @@ import { MessageDecoderService } from '../src/app/message-decoder.service';
 function createCard(name: string, id: string): CardMetadata {
   return {
     name,
+    displayName: name,
     id,
     location: CardLocation.HAND,
     types: [CardType.ACTION],
     cost: { coins: 3 },
-  };
-}
-
-function createGameConfiguration(): GameConfiguration {
-  return {
-    usingBoons: false,
-    usingCoffers: true,
-    usingDebtTokens: false,
-    usingExile: true,
-    usingFavors: false,
-    usingIslandMat: false,
-    usingHexes: false,
-    usingJourneyTokens: true,
-    usingLoot: false,
-    usingNativeVillageMat: false,
-    usingPlatinumAndColony: true,
-    usingPotions: false,
-    usingRuins: true,
-    usingShelters: false,
-    usingSpoils: true,
-    usingVillagers: false,
-    usingVPTokens: true,
   };
 }
 
@@ -111,14 +83,14 @@ describe('MessageDecoderService', () => {
     expect(nonMatchingCallback).not.toHaveBeenCalled();
   });
 
-  it('replays the latest cards, top-card, and game-configuration updates to later subscribers', () => {
+  it('replays the latest cards, top-card, and mechanics updates to later subscribers', () => {
     const service = new MessageDecoderService();
     const ws = {} as WebSocket;
     const silver = createCard('Silver', 'silver-1');
-    const configuration = createGameConfiguration();
+    const mechanics = [Mechanic.COFFERS, Mechanic.VILLAGERS];
     let latestCards: CardMetadata[] | undefined;
     let latestTopCard: CardMetadata | undefined;
-    let latestConfiguration: GameConfiguration | undefined;
+    let latestMechanics: Mechanic[] | undefined;
 
     service.connect(ws);
 
@@ -139,8 +111,8 @@ describe('MessageDecoderService', () => {
       },
     });
     dispatchMessage(ws, {
-      type: MessageType.GAME_CONFIGURATION,
-      content: configuration,
+      type: MessageType.MECHANICS,
+      content: { mechanics },
     });
 
     service.subscribeToCardsUpdate({ owner: 'Alice', location: CardLocation.HAND }, ({ cards }) => {
@@ -149,13 +121,13 @@ describe('MessageDecoderService', () => {
     service.subscribeToTopCardUpdate({ owner: 'Alice', location: CardLocation.DISCARD }, ({ topCard }) => {
       latestTopCard = topCard;
     });
-    service.subscribeToGameConfiguration((gameConfiguration) => {
-      latestConfiguration = gameConfiguration;
+    service.subscribeToMechanics((mechanicsContent) => {
+      latestMechanics = mechanicsContent.mechanics;
     });
 
     expect(latestCards).toEqual([silver]);
     expect(latestTopCard).toEqual(silver);
-    expect(latestConfiguration).toEqual(configuration);
+    expect(latestMechanics).toEqual(mechanics);
   });
 
   it('routes status, choose-effect, and extra-turn messages to their subscribers', () => {

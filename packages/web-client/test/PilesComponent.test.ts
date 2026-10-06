@@ -9,6 +9,7 @@ import { PilesComponent } from '../src/app/piles/piles.component';
 function createTopCard(name: string, id: string): CardMetadata {
   return {
     name,
+    displayName: name,
     id,
     location: CardLocation.PILE,
     types: [CardType.ACTION],
@@ -20,7 +21,7 @@ function createPile(name: string, coins: number, categories: PileCategory[]): Pi
   return {
     name,
     size: 10,
-    cost: { coins },
+    originalCost: { coins },
     topCard: createTopCard(name, `${name.toLowerCase()}-1`),
     types: [CardType.ACTION],
     categories,
@@ -56,7 +57,7 @@ describe('PilesComponent', () => {
     decoder.pileMetadataCallback?.(horseTraders);
     decoder.pileMetadataCallback?.(createPile('Village', 6, [PileCategory.KINGDOM]));
 
-    expect(component.kingdomPiles().map((pile) => pile.name)).toEqual(['Market', 'Horse Traders', 'Village']);
+    expect(component.kingdomPiles().map((pile) => pile.name)).toEqual(['Village', 'Market', 'Horse Traders']);
     expect(component.treasurePiles().map((pile) => pile.name)).toEqual(['Silver']);
     expect(component.victoryPiles().map((pile) => pile.name)).toEqual(['Duchy']);
     expect(component.nonSupplyPiles().map((pile) => pile.name)).toEqual(['Horse Traders']);

@@ -1,6 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -18,6 +17,6 @@ export class Carnival extends KingdomCard {
 
     const uniqueCards = topCards.getMatchingCardsUnique(anyCard);
     ie.putCardsIntoHandFromSet(uniqueCards, topCards);
-    await ie.discardCardsFromRevealedSet(topCards, topCards);
+    await ie.discardCardsFromRevealedSet(topCards);
   }
 }

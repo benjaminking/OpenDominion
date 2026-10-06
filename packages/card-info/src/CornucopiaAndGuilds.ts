@@ -11,7 +11,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Menagerie',
@@ -23,7 +23,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Remake',
@@ -35,7 +35,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Young Witch',
@@ -47,7 +47,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Horn of Plenty',
@@ -59,7 +59,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Hunting Party',
@@ -71,7 +71,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Jester',
@@ -83,7 +83,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Fairgrounds',
@@ -95,7 +95,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Candlestick Maker',
@@ -108,7 +108,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Stonemason',
@@ -121,7 +121,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Advisor',
@@ -133,7 +133,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Herald',
@@ -146,7 +146,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Plaza',
@@ -159,7 +159,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Baker',
@@ -172,7 +172,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Butcher',
@@ -185,7 +185,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Journeyman',
@@ -197,7 +197,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Merchant Guild',
@@ -210,7 +210,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Soothsayer',
@@ -222,7 +222,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Farrier',
@@ -235,7 +235,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Shop',
@@ -247,7 +247,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Infirmary',
@@ -260,7 +260,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Farmhands',
@@ -272,7 +272,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Carnival',
@@ -284,7 +284,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Ferryman',
@@ -296,7 +296,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Footpad',
@@ -309,7 +309,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Joust',
@@ -322,7 +322,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS, Mechanic.REWARDS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Coronet',
@@ -335,7 +335,8 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.TREASURE, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Courser',
@@ -348,7 +349,8 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Demesne',
@@ -361,7 +363,8 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.VICTORY, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Housecarl',
@@ -374,7 +377,8 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Huge Turnip',
@@ -391,7 +395,8 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     types: [CardType.TREASURE, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
     mechanics: [Mechanic.COFFERS],
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
   {
     name: 'Renown',
@@ -404,6 +409,7 @@ export const cornucopiaAndGuilds: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REWARD],
     expansion: Expansion.CORNUCOPIA_AND_GUILDS,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Rewards',
   },
 ];

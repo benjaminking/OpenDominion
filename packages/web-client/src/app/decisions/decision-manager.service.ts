@@ -32,12 +32,14 @@ import { MessageWriterService } from '../message-writer.service';
 import { MultiNamedChoice } from '@dominion/common';
 import { ViewName } from '../view-names';
 import { ViewVisibilityService } from '../view-visibility.service';
+import { MiscellaneousCardDialogService } from '../shared/miscellaneous-card-dialog.service';
 
 @Injectable({ providedIn: 'root' })
 export class DecisionManagerService {
   private readonly webSocketMessageDecoder = inject(MessageDecoderService);
   private readonly webSocketMessageWriter = inject(MessageWriterService);
   private readonly viewVisibilityService = inject(ViewVisibilityService);
+  private readonly miscellaneousCardDialogService = inject(MiscellaneousCardDialogService);
   private selectedCards: WritableSignal<CardMetadata[]> = signal([]);
   private resetSubscribers: Array<() => void> = [];
 
@@ -186,8 +188,33 @@ export class DecisionManagerService {
         this.viewVisibilityService.enableViewByName(ViewName.TRASH);
       } else if (cardChoice.card.location === CardLocation.DISCARD) {
         this.viewVisibilityService.enableViewByName(ViewName.DISCARD);
+      } else if (this.needsSpecialView(cardChoice)) {
+        this.miscellaneousCardDialogService.setCards(cardChoices.map((cardChoice) => cardChoice.card));
+        this.viewVisibilityService.enableViewByName(ViewName.MISCELLANEOUS);
       }
     }
+  }
+
+  private rewardNames: Set<string> = new Set<string>([
+    'Coronet',
+    'Courser',
+    'Demesne',
+    'Housecarl',
+    'Huge Turnip',
+    'Renown',
+  ]);
+  private prizeNames: Set<string> = new Set<string>(['Bag of Gold', 'Diadem', 'Followers', 'Princess', 'Trusty Steed']);
+  private needsSpecialView(cardChoice: CardChoice): boolean {
+    // Rewards and prizes are a special case where we need to select from among the cards in a pile,
+    // not just the top card.
+    if (this.rewardNames.has(cardChoice.card.name) && cardChoice.card.location === CardLocation.PILE) {
+      return true;
+    }
+    if (this.prizeNames.has(cardChoice.card.name) && cardChoice.card.location === CardLocation.PILE) {
+      return true;
+    }
+
+    return false;
   }
 
   private disableAllViews(): void {
@@ -195,6 +222,7 @@ export class DecisionManagerService {
     this.viewVisibilityService.disableViewByName(ViewName.SET_ASIDE);
     this.viewVisibilityService.disableViewByName(ViewName.TRASH);
     this.viewVisibilityService.disableViewByName(ViewName.DISCARD);
+    this.viewVisibilityService.disableViewByName(ViewName.MISCELLANEOUS);
   }
 
   public resolveDecisionWithCard(card: CardMetadata): void {

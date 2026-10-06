@@ -11,7 +11,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Beggar',
@@ -23,7 +23,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Squire',
@@ -35,7 +35,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Vagrant',
@@ -47,7 +47,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Forager',
@@ -59,7 +59,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Hermit',
@@ -72,7 +72,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.MADMAN],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Market Square',
@@ -84,7 +84,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.REACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Sage',
@@ -96,7 +96,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Storeroom',
@@ -108,7 +108,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Urchin',
@@ -121,7 +121,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.MERCENARY],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Armory',
@@ -133,7 +133,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Death Cart',
@@ -146,7 +146,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.LOOTER],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.RUINS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Feodum',
@@ -158,7 +158,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.VICTORY],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Fortress',
@@ -170,7 +170,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Ironmonger',
@@ -182,7 +182,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Marauder',
@@ -195,7 +195,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.LOOTER],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.SPOILS, Mechanic.RUINS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Procession',
@@ -207,7 +207,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Rats',
@@ -219,7 +219,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Scavenger',
@@ -231,7 +231,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Wandering Minstrel',
@@ -243,10 +243,10 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
-    name: 'Band of Misfits',
+    name: 'Band Of Misfits',
     category: CardCategory.CARD,
     text: 'Play a non-Command Action\ncard from the Supply that costs\nless than this, leaving it there.',
     font_size: 'medium',
@@ -255,7 +255,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.COMMAND],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Bandit Camp',
@@ -268,7 +268,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.SPOILS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Catacombs',
@@ -280,7 +280,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Count',
@@ -292,7 +292,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Counterfeit',
@@ -307,7 +307,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Cultist',
@@ -320,7 +320,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK, CardType.LOOTER],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.RUINS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Graverobber',
@@ -332,7 +332,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Junk Dealer',
@@ -344,7 +344,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Mystic',
@@ -356,7 +356,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Pillage',
@@ -369,7 +369,7 @@ export const darkAges: CardInfo[] = [
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.DARK_AGES,
     mechanics: [Mechanic.SPOILS],
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Rebuild',
@@ -381,7 +381,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Rogue',
@@ -393,7 +393,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Altar',
@@ -405,7 +405,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Hunting Grounds',
@@ -417,7 +417,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: true,
   },
   {
     name: 'Abandoned Mine',
@@ -429,7 +429,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Ruined Library',
@@ -441,7 +442,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Ruined Market',
@@ -453,7 +455,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Ruined Village',
@@ -465,7 +468,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Survivors',
@@ -477,7 +481,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.RUINS],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
+    pileNameOverride: 'Ruins',
   },
   {
     name: 'Dame Anna',
@@ -489,7 +494,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Josephine',
@@ -501,7 +507,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Molly',
@@ -513,7 +520,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Natalie',
@@ -525,7 +533,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Dame Sylvia',
@@ -537,7 +546,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Bailey',
@@ -549,7 +559,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Destry',
@@ -561,7 +572,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Martin',
@@ -573,7 +585,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Michael',
@@ -585,7 +598,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Sir Vander',
@@ -597,7 +611,8 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: true,
+    has_randomizer: false,
+    pileNameOverride: 'Knights',
   },
   {
     name: 'Madman',
@@ -610,7 +625,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
   },
   {
     name: 'Mercenary',
@@ -623,7 +638,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
   },
   {
     name: 'Spoils',
@@ -639,7 +654,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.TREASURE],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
   },
   {
     name: 'Hovel',
@@ -651,7 +666,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.REACTION, CardType.SHELTER],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
   },
   {
     name: 'Necropolis',
@@ -663,7 +678,7 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.ACTION, CardType.SHELTER],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
   },
   {
     name: 'Overgrown Estate',
@@ -675,6 +690,18 @@ export const darkAges: CardInfo[] = [
     },
     types: [CardType.VICTORY, CardType.SHELTER],
     expansion: Expansion.DARK_AGES,
-    is_kingdom: false,
+    has_randomizer: false,
+  },
+  {
+    name: 'Knights',
+    category: CardCategory.RANDOMIZER_ONLY,
+    text: 'Shuffle the Knights pile\nbefore each game with the\nKnights. Keep it face down\nexcept for the tope card, which\nis the only one that can be\nbought or gained',
+    font_size: 'medium',
+    cost: {
+      coins: 5,
+    },
+    types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
+    expansion: Expansion.DARK_AGES,
+    has_randomizer: true,
   },
 ];

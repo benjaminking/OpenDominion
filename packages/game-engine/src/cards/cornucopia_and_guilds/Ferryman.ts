@@ -14,23 +14,27 @@ import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { AddedPilePostAction } from '../../setup/AddedPilePostAction';
 import { PileAddingSetupRule } from '../../setup/PileAddingSetupRule';
 import { PileSpecification } from '../../setup/PileSpecification';
-import { both, costsExactly, either, isKingdomCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class Ferryman extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Ferryman'));
-    this.addSetupRule(new PileAddingSetupRule(new PileSpecification(both(isKingdomCard, either(costsExactly(Cost.Simple(3)), costsExactly(Cost.Simple(4))))),
-      new AddedPilePostAction((pile: Pile) => {
-        this.addEffect(
-          new Effect.Builder()
-            .from(this)
-            .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
-            .whereCardIs(isTheSameCardAs(this))
-            .makeMandatory()
-            .action(new EffectAction(async (ie: InstructionExecutor) => ie.gainCardFromPile(pile.name)))
-            .build()
-      )
-    })))
+    this.addSetupRule(
+      new PileAddingSetupRule(
+        new PileSpecification({ requiredCoinCosts: [3, 4] }),
+        new AddedPilePostAction((pile: Pile) => {
+          this.addEffect(
+            new Effect.Builder()
+              .from(this)
+              .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+              .whereCardIs(isTheSameCardAs(this))
+              .makeMandatory()
+              .action(new EffectAction(async (ie: InstructionExecutor) => ie.gainCardFromPile(pile.name)))
+              .build(),
+          );
+        }),
+      ),
+    );
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {

@@ -7,13 +7,14 @@ import { CardComponent } from '../src/app/cards/card.component';
 import { GlobalSettingsService } from '../src/app/settings/global-settings.service';
 import { setInputSignalValue } from './angular-test-utils';
 
-function createCard(name: string, id: string, types: CardType[]): CardMetadata {
+function createCard(name: string, id: string, types: CardType[], coins = 4): CardMetadata {
   return {
     name,
+    displayName: name,
     id,
     location: CardLocation.HAND,
     types,
-    cost: { coins: 4 },
+    cost: { coins },
   };
 }
 
@@ -27,7 +28,7 @@ describe('CardComponent', () => {
 
     setInputSignalValue(
       component.metadata as () => CardMetadata,
-      createCard('Copper', 'copper-1', [CardType.TREASURE]),
+      createCard('Copper', 'copper-1', [CardType.TREASURE], 0),
     );
 
     expect(component.fileName()).toBe('copper');
@@ -77,8 +78,11 @@ describe('CardComponent', () => {
     expect(component.overlayType()).toBe(component.OverlayType.REACTION);
     expect(component.productionSymbol()).toBe('?');
 
-    setInputSignalValue(component.metadata as () => CardMetadata, createCard('Hoard', 'hoard-1', [CardType.TREASURE]));
-    expect(component.coinCostSymbol()).toBe('6*');
+    setInputSignalValue(
+      component.metadata as () => CardMetadata,
+      createCard('Hoard', 'hoard-1', [CardType.TREASURE], 6),
+    );
+    expect(component.coinCostSymbol()).toBe('6');
 
     setInputSignalValue(component.metadata as () => CardMetadata, createCard('Duchy', 'duchy-1', [CardType.VICTORY]));
     expect(component.overlayType()).toBe(component.OverlayType.VICTORY);

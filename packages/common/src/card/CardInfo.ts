@@ -15,6 +15,7 @@ export interface CardInfo {
   production?: Production;
   types: CardType[];
   expansion: Expansion;
-  is_kingdom?: boolean;
+  has_randomizer?: boolean;
   mechanics?: Mechanic[];
+  pileNameOverride?: string;
 }
