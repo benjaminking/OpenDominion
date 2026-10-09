@@ -86,7 +86,6 @@ describe('Cartographer', () => {
     expect(testHarness.deck.size()).toBe(0);
   });
 
-  // BUG: Cartographer reveals the top 4 cards, but the card only lets you look at them
   it('looks at the top 4 cards without revealing them', async () => {
     const testHarness = createCardHarness();
     addCoppersToDeck(testHarness, 5);

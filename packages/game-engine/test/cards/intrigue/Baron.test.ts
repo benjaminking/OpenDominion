@@ -24,7 +24,6 @@ describe('Baron', () => {
     expect(testHarness.stats.coins).toBe(4);
   });
 
-  // BUG: gains from lowercase pile 'estate', but pile names are case-sensitive, so nothing is gained
   it('gains an Estate when no Estate is discarded', async () => {
     const testHarness = createCardHarness();
     const estate = new Estate(testHarness.sharedGameState);

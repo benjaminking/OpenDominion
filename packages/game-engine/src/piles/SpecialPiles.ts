@@ -7,7 +7,7 @@ export enum SpecialPileType {
   RUINS = 'Ruins',
   CASTLES = 'Castles',
   CASTLES_MULTIPLAYER = 'Castles_multiplayer',
-  ENCAMPMENT_PLUNDER = 'Encampment_plunder',
+  ENCAMPMENT_PLUNDER = 'Encampment/Plunder',
   PATRICIAN_EMPORIUM = 'Patrician/Emporium',
   SETTLERS_BUSTLING_VILLAGE = 'Settlers/Bustling Village',
   CATAPULT_ROCKS = 'Catapult/Rocks',

@@ -21,7 +21,7 @@ export class SirVander extends Knights {
         .makeMandatory()
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            await ie.gainFromPile('gold');
+            await ie.gainFromPile('Gold');
           }),
         )
         .build(),

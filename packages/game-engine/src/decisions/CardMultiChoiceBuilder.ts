@@ -1,6 +1,7 @@
-import { CardChoice, CardLocation, CardSelectionPurpose, DecisionService } from '@dominion/common';
+import { CardChoice, CardLocation, CardMetadata, CardSelectionPurpose, DecisionService } from '@dominion/common';
 
 import { ChoiceType } from '../../../common/dist/index.cjs';
+import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { GameMessageBroadcaster } from '../messaging/GameMessageBroadcaster';
@@ -96,6 +97,20 @@ export class CardMultiChoiceBuilder {
         choices,
       ),
     );
+    if (this.isFromSet) {
+      return this.getSetCardsByMetadata(choice.cards);
+    }
     return this.ie.getCardsByMetadata(choice.cards);
+  }
+
+  private getSetCardsByMetadata(cardsMetadata: CardMetadata[]): CardCollection {
+    const cards: CardCollection = new CardCollection();
+    for (const cardMetadata of cardsMetadata) {
+      const card: Card | undefined = this.set.getCardByMetadata(cardMetadata);
+      if (card !== undefined) {
+        cards.addCard(card);
+      }
+    }
+    return cards;
   }
 }

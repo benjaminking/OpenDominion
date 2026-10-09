@@ -33,7 +33,6 @@ const guardAgainstEndlessChoiceLoop = (testHarness: CardHarness): void => {
 const cardIds = (cards: Iterable<Card>): string[] => Array.from(cards, (card) => card.getId());
 
 describe('Golem', () => {
-  // BUG: the found Action can't be resolved for play once takeCardOffDeck has cleared limbo, so Golem loops forever
   it('discards revealed non-Actions and Golems and plays the Action it finds', async () => {
     const testHarness = createCardHarness();
     const copper = new Copper(testHarness.sharedGameState);
@@ -59,7 +58,6 @@ describe('Golem', () => {
     expect(testHarness.deck.size()).toBe(0);
   });
 
-  // BUG: Actions revealed before the last card can't be resolved for play (takeCardOffDeck clears limbo)
   it('stops after 2 non-Golem Actions and plays both of them', async () => {
     const testHarness = createCardHarness();
     const festival = new Festival(testHarness.sharedGameState);
@@ -83,7 +81,6 @@ describe('Golem', () => {
     expect(cardIds(testHarness.deck)).toEqual([silver.getId()]);
   });
 
-  // BUG: Actions revealed before the last card can't be resolved for play (takeCardOffDeck clears limbo)
   it('plays the first revealed Action first when chosen', async () => {
     const testHarness = createCardHarness();
     const village = new Village(testHarness.sharedGameState);
@@ -105,7 +102,6 @@ describe('Golem', () => {
     expect(testHarness.stats.actions).toBe(2);
   });
 
-  // BUG: Actions revealed before the last card can't be resolved for play (takeCardOffDeck clears limbo)
   it('plays the second revealed Action first when chosen', async () => {
     const testHarness = createCardHarness();
     const village = new Village(testHarness.sharedGameState);
@@ -127,7 +123,6 @@ describe('Golem', () => {
     expect(testHarness.stats.actions).toBe(2);
   });
 
-  // BUG: the found Action can't be resolved for play (limbo cleared), and playCardFromLocation never moves it into play
   it('puts the Actions it plays into play', async () => {
     const testHarness = createCardHarness();
     const copper = new Copper(testHarness.sharedGameState);

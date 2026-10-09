@@ -3,24 +3,33 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
 import { GlobalEffectSetupRule } from '../../setup/GlobalEffectSetupRule';
+import { TurnPhase } from '../../turns/TurnPhase';
 
 export class Footpad extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Footpad'));
-    this.addSetupRule(new GlobalEffectSetupRule(
-      new Effect.Builder()
-        .from(this)
-        .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
-        .makeMandatory()
-        .action(new EffectAction(async (ie: InstructionExecutor) => ie.drawCards(1)))
-        .build()
-    ));
+    this.addSetupRule(
+      new GlobalEffectSetupRule(
+        new Effect.Builder()
+          .from(this)
+          .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+          .addCondition(
+            new EffectCondition(
+              (ie: InstructionExecutor) => ie.getSharedGameState().getTurnPhase() === TurnPhase.ACTION,
+            ),
+          )
+          .makeMandatory()
+          .action(new EffectAction(async (ie: InstructionExecutor) => ie.drawCards(1)))
+          .build(),
+      ),
+    );
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {

@@ -37,7 +37,6 @@ describe('Feodum', () => {
     ).toBe(2);
   });
 
-  // BUG: gains from lowercase pile 'silver', but pile names are case-sensitive, so nothing is gained
   it('when trashed, gains 3 Silvers', async () => {
     const testHarness = createCardHarness();
     const feodum = new Feodum(testHarness.sharedGameState);
@@ -54,7 +53,6 @@ describe('Feodum', () => {
     expect(testHarness.pileCards.get('Silver')).toHaveLength(1);
   });
 
-  // BUG: gains from lowercase pile 'silver', but pile names are case-sensitive, so nothing is gained
   it('when trashed with fewer than 3 Silvers left, gains the rest', async () => {
     const testHarness = createCardHarness();
     const feodum = new Feodum(testHarness.sharedGameState);

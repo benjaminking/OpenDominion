@@ -61,7 +61,7 @@ export class GameInitializer {
       if (randomizer === undefined) {
         break;
       }
-      this.addKingdomPile(randomizer);
+      this.addRandomizerPile(randomizer, this.anyKingdomPileSpecification);
     }
     this.performKingdomLevelSetup();
   }
@@ -71,23 +71,41 @@ export class GameInitializer {
     if (randomizer === undefined) {
       return undefined;
     }
-    this.addKingdomPile(randomizer);
+    return this.addRandomizerPile(randomizer, pileSpecification);
   }
 
-  private addKingdomPile(randomizer: Card): Pile {
+  private addRandomizerPile(randomizer: Card, pileSpecification: PileSpecification): Pile {
+    const pileCategories = this.getPileCategories(pileSpecification);
     let pile: Pile;
     if (this.isSpecialPile(randomizer)) {
-      pile = this.pileFactory.createSpecialPile(this.getSpecialPileSpecification(randomizer));
+      pile = this.pileFactory.createSpecialPile({ ...this.getSpecialPileSpecification(randomizer), pileCategories });
     } else {
-      pile = this.pileFactory.createPile(
-        CardInfoLookup.lookUpCardInfo(randomizer.getPileName()),
-        new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]),
-      );
+      pile = this.pileFactory.createPile(CardInfoLookup.lookUpCardInfo(randomizer.getPileName()), pileCategories);
     }
-    this.game.getGameState().piles.addKingdomPile(pile);
+    this.addPileToGameState(pile);
     this.handleCardMechanics(randomizer);
     this.handleInitializationSetupRules(randomizer);
     return pile;
+  }
+
+  private getPileCategories(pileSpecification: PileSpecification): Set<PileCategory> {
+    if (!pileSpecification.isSupplyPile()) {
+      return new Set<PileCategory>([PileCategory.NON_SUPPLY]);
+    }
+    if (pileSpecification.isKingdomPile()) {
+      return new Set<PileCategory>([PileCategory.KINGDOM, PileCategory.SUPPLY]);
+    }
+    return new Set<PileCategory>([PileCategory.SUPPLY]);
+  }
+
+  private addPileToGameState(pile: Pile): void {
+    if (pile.getCategories().has(PileCategory.KINGDOM)) {
+      this.game.getGameState().piles.addKingdomPile(pile);
+    } else if (pile.getCategories().has(PileCategory.SUPPLY)) {
+      this.game.getGameState().piles.addNonKingdomSupplyPile(pile);
+    } else {
+      this.game.getGameState().piles.addNonSupplyPile(pile);
+    }
   }
 
   private isSpecialPile(randomizer: Card): boolean {
@@ -95,7 +113,10 @@ export class GameInitializer {
   }
 
   private getSpecialPileSpecification(randomizer: Card): SpecialPileSpecification {
-    const specialPileType: SpecialPileType = randomizer.getPileName() as SpecialPileType;
+    let specialPileType: SpecialPileType = randomizer.getPileName() as SpecialPileType;
+    if (specialPileType === SpecialPileType.CASTLES && this.players.length > 2) {
+      specialPileType = SpecialPileType.CASTLES_MULTIPLAYER;
+    }
     return this.specialPileLookup.lookUpSpecialPile(specialPileType);
   }
 
@@ -182,18 +203,14 @@ export class GameInitializer {
     if (randomizer.usesMechanic(Mechanic.MADMAN)) {
       this.addNonSupplyPile('Madman');
     }
+    if (randomizer.usesMechanic(Mechanic.MERCENARY)) {
+      this.addNonSupplyPile('Mercenary');
+    }
   }
 
   private addSpecialPile(specialPileType: SpecialPileType) {
     const specialPileSpecification = this.specialPileLookup.lookUpSpecialPile(specialPileType);
-    const specialPile: Pile = this.pileFactory.createSpecialPile(specialPileSpecification);
-    if (specialPileSpecification.pileCategories.has(PileCategory.KINGDOM)) {
-      this.game.getGameState().piles.addKingdomPile(specialPile);
-    } else if (specialPileSpecification.pileCategories.has(PileCategory.SUPPLY)) {
-      this.game.getGameState().piles.addNonKingdomSupplyPile(specialPile);
-    } else if (specialPileSpecification.pileCategories.has(PileCategory.NON_SUPPLY)) {
-      this.game.getGameState().piles.addNonSupplyPile(specialPile);
-    }
+    this.addPileToGameState(this.pileFactory.createSpecialPile(specialPileSpecification));
   }
 
   private addNonSupplyPile(pileName: string): void {

@@ -35,7 +35,6 @@ describe('Bonfire', () => {
     expect(bonfire.getCost().coins).toBe(3);
   });
 
-  // BUG: chooses Coppers from hand instead of Coppers in play
   it('trashes up to 2 chosen Coppers you have in play', async () => {
     const testHarness = createCardHarness();
     const inPlayCoppers: Copper[] = [];
@@ -53,7 +52,6 @@ describe('Bonfire', () => {
     expect(cardIds(testHarness.inPlay)).toEqual([inPlayCoppers[2].getId()]);
   });
 
-  // BUG: chooses Coppers from hand instead of Coppers in play
   it('only offers Coppers in play, up to 2 of them', async () => {
     const testHarness = createCardHarness();
     const inPlayCopper = new Copper(testHarness.sharedGameState);

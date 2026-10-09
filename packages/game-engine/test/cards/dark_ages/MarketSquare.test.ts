@@ -35,7 +35,6 @@ describe('MarketSquare', () => {
     expect(testHarness.stats.buys).toBe(1);
   });
 
-  // BUG: gains from lowercase pile 'gold', but pile names are case-sensitive, so nothing is gained
   it('when one of your cards is trashed, may be discarded from hand to gain a Gold', async () => {
     const { testHarness, marketSquare, trashedCopper, gold, onTrash } = setUpReaction();
     testHarness.addToHand(marketSquare);
@@ -61,7 +60,6 @@ describe('MarketSquare', () => {
     expect(testHarness.discard.size()).toBe(0);
   });
 
-  // BUG: gains from pile 'gold', but the real supply pile is named 'Gold' and pile lookups are case-sensitive
   it('gains from the Supply pile named "Gold"', async () => {
     const { testHarness, marketSquare, trashedCopper, gold, onTrash } = setUpReaction();
     testHarness.addToHand(marketSquare);

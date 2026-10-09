@@ -25,7 +25,7 @@ export class TreasureMap extends KingdomCard {
     if (secondMap instanceof Card) {
       await ie.trashCardFromLocation(secondMap, CardLocation.HAND);
       for (let i = 0; i < 4; i++) {
-        await ie.gainFromPile('gold', CardLocation.DECK);
+        await ie.gainFromPile('Gold', CardLocation.DECK);
       }
     }
   }

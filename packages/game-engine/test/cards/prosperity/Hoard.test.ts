@@ -59,7 +59,6 @@ describe('Hoard', () => {
     expect(gainEffect.getTurnEligibility().matches(thisTurn.nextTurn())).toBe(false);
   });
 
-  // BUG: the "bought" check is taken when Hoard is played and falls back to noCard, which matches every card
   it('does not apply to a Victory card gained without buying it', async () => {
     const testHarness = createCardHarness();
     addGoldPile(testHarness);

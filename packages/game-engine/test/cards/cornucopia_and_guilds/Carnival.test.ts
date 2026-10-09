@@ -8,7 +8,6 @@ import { Carnival } from '../../../src/cards/cornucopia_and_guilds/Carnival';
 import { createCardHarness } from '../testHarness';
 
 describe('Carnival', () => {
-  // BUG: discardCardsFromRevealedSet(topCards) empties topCards before discarding, so duplicates vanish
   it('puts one of each differently named revealed card into hand and discards the rest', async () => {
     const testHarness = createCardHarness();
     const gold = new Gold(testHarness.sharedGameState);

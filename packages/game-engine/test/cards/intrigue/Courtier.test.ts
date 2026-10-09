@@ -6,7 +6,6 @@ import { Courtier } from '../../../src/cards/intrigue/Courtier';
 import { createCardHarness } from '../testHarness';
 
 describe('Courtier', () => {
-  // BUG: gains from lowercase pile 'gold', but pile names are case-sensitive, so nothing is gained
   it('reveals the chosen hand card and executes selected options', async () => {
     const testHarness = createCardHarness();
     // Copper has 1 type (treasure), so 1 option is chosen

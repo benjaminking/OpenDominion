@@ -157,7 +157,11 @@ export class SharedGameState {
   }
 
   public releaseCardToMoveAgain(card: Card): void {
-    this.numEffectsBlockingCardMoveById.set(card.getId(), this.numEffectsBlockingCardMoveById.get(card.getId())! - 1);
+    const numEffectsBlockingCardMove = this.numEffectsBlockingCardMoveById.get(card.getId());
+    if (numEffectsBlockingCardMove === undefined || numEffectsBlockingCardMove <= 0) {
+      return;
+    }
+    this.numEffectsBlockingCardMoveById.set(card.getId(), numEffectsBlockingCardMove - 1);
   }
 
   public isCardAbleToMove(card: Card): boolean {
@@ -450,16 +454,18 @@ export class SharedGameState {
       return;
     }
 
-    this.getCurrentPlayer().getStatistics().spendCoins(card.getCost().coins);
+    const cost = card.getCost();
+    this.getCurrentPlayer().getStatistics().spendCoins(cost.coins);
+    this.getCurrentPlayer().getStatistics().spendPotions(cost.potions);
     this.getCurrentPlayer().getStatistics().useBuy();
+    this.getCurrentPlayer().getTurnTracker().addBoughtCard(card);
 
     this.logger.gameMessage(
       this.getCurrentPlayer(),
       ServerLogMessage.publicMessage(this.getCurrentPlayer(), 'buys %c', card),
     );
 
-    // TODO: does anything rely on passing the pile name here?
-    await this.triggerEffect(EffectTriggerType.BUY, this.getCurrentPlayer());
+    await this.triggerEffect(EffectTriggerType.BUY, this.getCurrentPlayer(), card);
     return this.getCurrentPlayer().getInstructionExecutor().gainFromPile(pileName);
   }
 

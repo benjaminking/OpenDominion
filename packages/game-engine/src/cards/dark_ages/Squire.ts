@@ -53,7 +53,7 @@ export class Squire extends KingdomCard {
           ie.addBuys(2);
         }),
       )
-      .from(new ActionChoice('Gain a Silver', async () => await ie.gainFromPile('silver')))
+      .from(new ActionChoice('Gain a Silver', async () => await ie.gainFromPile('Silver')))
       .choose();
   }
 }

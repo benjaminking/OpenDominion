@@ -45,7 +45,6 @@ describe('Farmhands', () => {
     expect(testHarness.stats.coins).toBe(2);
   });
 
-  // BUG: playCardFromLocation removes the card from set-aside but never puts it into play
   it('moves the set-aside card into play when it is played', async () => {
     const testHarness = createCardHarness();
     const farmhands = new Farmhands(testHarness.sharedGameState);

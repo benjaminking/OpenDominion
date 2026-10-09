@@ -53,7 +53,6 @@ describe('Survivors', () => {
     expect(idsOf(testHarness.deck)).toEqual(['gold-deck-2', 'copper-deck-0', 'silver-deck-1']);
   });
 
-  // BUG: discardCardsFromRevealedSet(topCards) empties topCards before discarding, so both cards vanish
   it('can discard the top 2 cards', async () => {
     const { testHarness } = setUp();
 
@@ -73,7 +72,6 @@ describe('Survivors', () => {
     expect(testHarness.discard.size()).toBe(0);
   });
 
-  // BUG: Survivors reveals the cards (public log + REVEAL trigger) but the card text only lets you look at them
   it('looks at the cards without revealing them', async () => {
     const { testHarness } = setUp();
 

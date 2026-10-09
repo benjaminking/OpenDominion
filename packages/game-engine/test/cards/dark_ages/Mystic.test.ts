@@ -30,7 +30,6 @@ describe('Mystic', () => {
     expect(testHarness.hand.size()).toBe(0);
   });
 
-  // BUG: compares the named card to the top card by id (equals), so a correctly named card never matches
   it('puts the revealed top card into hand when it was named', async () => {
     const { testHarness, supplySilver } = setUp();
 

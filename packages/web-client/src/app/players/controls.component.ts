@@ -226,7 +226,10 @@ export class ControlsComponent {
     }
 
     if (isTreasurePhaseDecision(decision)) {
-      if (decision.simpleTreasuresChoice !== undefined && decision.simpleTreasuresChoice.coins > 0) {
+      if (
+        decision.simpleTreasuresChoice !== undefined &&
+        (decision.simpleTreasuresChoice.coins > 0 || decision.simpleTreasuresChoice.potions > 0)
+      ) {
         return true;
       }
     }

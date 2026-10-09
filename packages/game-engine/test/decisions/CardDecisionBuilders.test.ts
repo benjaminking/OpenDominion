@@ -149,9 +149,25 @@ describe('CardChoiceBuilder', () => {
       CardSelectionPurpose.TRASH,
       'action-card',
       areaChoices,
+      undefined,
     );
     expect(chosenCard).toBe(selectedCard);
     expect(sendStatus).toHaveBeenCalledTimes(2);
+  });
+
+  it('offers a none option for non-supply locations when allowed', async () => {
+    const { decisionService, instructionExecutor, player } = createBuilderContext();
+    const selectedCard = createCard({ name: 'Village' });
+    selectedCard.setId('village-1');
+    selectedCard.setLocation(CardLocation.HAND);
+    const areaChoices: CardChoice[] = [{ type: ChoiceType.Card, card: selectedCard.getMetadata() }];
+    vi.mocked(instructionExecutor.getEligibleCardChoices).mockReturnValue(areaChoices);
+    vi.mocked(decisionService.chooseCard).mockResolvedValue({ type: ChoiceType.None });
+
+    const choice = await new CardChoiceBuilder(player).from(CardLocation.HAND).allowNoneOption().choose();
+
+    expect(vi.mocked(decisionService.chooseCard).mock.calls[0][4]).toEqual({ type: ChoiceType.None });
+    expect(choice).toEqual({ type: ChoiceType.None });
   });
 
   it('returns none or impossible immediately when no choices are available', async () => {

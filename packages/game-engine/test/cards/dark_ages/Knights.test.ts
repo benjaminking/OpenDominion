@@ -81,7 +81,6 @@ describe('Knights', () => {
     expect(testHarness.sharedTrash.size()).toBe(0);
   });
 
-  // BUG: discardCardsFromRevealedSet(topCards) empties topCards before discarding, so the rest vanish
   it('attack discards the revealed card that is not trashed', async () => {
     const { testHarness, targetHarness, knight } = setUpAttack();
     const silver = withId(new Silver(targetHarness.sharedGameState), 'silver-target-deck');
@@ -119,7 +118,6 @@ describe('Knights', () => {
     expect(targetHarness.decisionService.chooseCard).not.toHaveBeenCalled();
   });
 
-  // BUG: discardCardsFromRevealedSet(topCards) empties topCards before discarding, so both cards vanish
   it('attack discards both revealed cards when neither costs $3-$6', async () => {
     const { testHarness, targetHarness, knight } = setUpAttack();
     const estate = withId(new Estate(targetHarness.sharedGameState), 'estate-target-deck');

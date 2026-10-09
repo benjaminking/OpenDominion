@@ -28,6 +28,9 @@ export class Farrier extends KingdomCard {
               new Effect.Builder()
                 .from(this)
                 .triggerOn(EffectTriggerType.TURN_END, EffectSource.SELF)
+                .onTurn(ie.createThisTurnEligibilityFunction())
+                .withExpiration(ie.createOnceThisTurnEffectExpiration())
+                .makeMandatory()
                 .action(
                   new EffectAction(async (nestedIe: InstructionExecutor) => {
                     await nestedIe.drawCards(overpayAmount.coins);

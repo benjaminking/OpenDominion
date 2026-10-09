@@ -76,7 +76,6 @@ describe('Pillage', () => {
     expect(testHarness.decisionService.chooseCard).not.toHaveBeenCalled();
   });
 
-  // BUG: the attacker's executor resolves the chosen card among the attacker's own cards, so choosing throws
   it('attack makes a player with 5 or more cards discard the card the attacker chooses', async () => {
     const { testHarness, targetHarness, pillage, targetHand } = setUp(2, 5);
     const targetGold = targetHand[2];
@@ -88,7 +87,6 @@ describe('Pillage', () => {
     expect(targetHarness.discard.asCardArray().map((card) => card.getId())).toEqual([targetGold.getId()]);
   });
 
-  // BUG: the attacker is offered a "none" option, but the card text requires a card to be discarded
   it('attack does not let the attacker choose to discard nothing', async () => {
     const { testHarness, pillage } = setUp(2, 5);
 

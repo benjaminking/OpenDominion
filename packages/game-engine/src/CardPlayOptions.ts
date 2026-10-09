@@ -26,7 +26,7 @@ export class CardPlayOptions {
     }
 
     public build(): CardPlayOptions {
-      return new CardPlayOptions(this.shouldUseAction, this.shouldLog);
+      return new CardPlayOptions(this.shouldUseAction, this.shouldLog, this.leaveInPlace);
     }
   };
 

@@ -18,13 +18,15 @@ export class Rogue extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.addCoins(2);
 
-    const eligibleTrashCards: CardCollection = ie.getMatchingCardsInTrash(costsBetween(Cost.Simple(3), Cost.Simple(6)));
+    const costsThreeToSix = costsBetween(Cost.Simple(3), Cost.Simple(6));
+    const eligibleTrashCards: CardCollection = ie.getMatchingCardsInTrash(costsThreeToSix);
 
     if (eligibleTrashCards.size() > 0) {
       const card: Card | Choice = await ie
         .chooseCard('Gain a card from the trash costing between $3 and $6')
         .from(CardLocation.TRASH)
         .to(CardSelectionPurpose.GAIN)
+        .whereCardIs(costsThreeToSix)
         .choose();
       if (card instanceof Card) {
         await ie.gainCardFromTrash(card);

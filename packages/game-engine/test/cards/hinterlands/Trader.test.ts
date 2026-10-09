@@ -110,7 +110,6 @@ describe('Trader', () => {
     expect(testHarness.discard.asCardArray().map((card) => card.getId())).toEqual(['gold-gained']);
   });
 
-  // BUG: Trader exchanges without revealing itself, but the card requires revealing it from hand
   it('reveals itself when exchanging a gained card', async () => {
     const testHarness = createCardHarness();
     const { trader, gainedGold } = setUpTraderInHandWithGainedGold(testHarness);

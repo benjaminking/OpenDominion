@@ -22,9 +22,9 @@ export class Feodum extends KingdomCard {
         .makeMandatory()
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            await ie.gainFromPile('silver');
-            await ie.gainFromPile('silver');
-            await ie.gainFromPile('silver');
+            await ie.gainFromPile('Silver');
+            await ie.gainFromPile('Silver');
+            await ie.gainFromPile('Silver');
           }),
         )
         .build(),

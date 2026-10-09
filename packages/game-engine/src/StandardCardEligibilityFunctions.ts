@@ -16,7 +16,7 @@ const anyCard: CardEligibilityFunction = new AnyCard();
 
 class NoCard extends CardEligibilityFunction {
   public constructor() {
-    super(() => true);
+    super(() => false);
   }
 }
 
@@ -222,7 +222,7 @@ const isTheSameCardAs = function (card: Card) {
 
 class IsDuplicateWith extends CardEligibilityFunction {
   public constructor(cardCollection: CardCollection) {
-    super((c: Card) => cardCollection.numMatchingCards(isACopyOf(c)) === 0);
+    super((c: Card) => cardCollection.numMatchingCards(isACopyOf(c)) > 0);
   }
 }
 

@@ -75,7 +75,6 @@ describe('Watchtower', () => {
     expect(testHarness.discard.size()).toBe(0);
   });
 
-  // BUG: PlayerCards.drawUpTo never draws an Action card; it re-checks the same top card forever
   it('draws Action cards too', async () => {
     const testHarness = createCardHarness();
     addEstatesToHand(testHarness, 5);

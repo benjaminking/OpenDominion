@@ -5,6 +5,7 @@ import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { isACopyOf } from '../../StandardCardEligibilityFunctions';
 
 export class Mystic extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -21,7 +22,7 @@ export class Mystic extends KingdomCard {
 
     if (topCard instanceof Card) {
       await ie.revealCard(topCard);
-      if (cardGuess instanceof Card && cardGuess.equals(topCard)) {
+      if (cardGuess instanceof Card && isACopyOf(cardGuess).matches(topCard)) {
         await ie.putTopCardOfDeckIntoHand();
       }
     }

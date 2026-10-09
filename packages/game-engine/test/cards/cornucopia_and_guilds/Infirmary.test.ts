@@ -76,7 +76,6 @@ describe('Infirmary', () => {
     expect(testHarness.sharedTrash.asCardArray()).toEqual([estate, curse]);
   });
 
-  // BUG: playCardFromLocation removes Infirmary from the discard pile without putting it anywhere, so it is lost
   it('is still in the discard pile or in play after being played by overpaying', async () => {
     const testHarness = createCardHarness();
     const { infirmary } = setUpOverpay(testHarness);

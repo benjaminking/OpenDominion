@@ -312,7 +312,10 @@ export class InstructionExecutor {
   }
 
   public async playCardFromLocation(card: Card, location: CardLocation): Promise<void> {
-    this.removeCardFromLocation(card, location);
+    if (this.sharedGameState.isCardAbleToMove(card)) {
+      this.removeCardFromLocation(card, location);
+      this.player.getOwnedCards().addCardToInPlay(card);
+    }
     return this.playCard(this.player, card);
   }
 
@@ -446,10 +449,11 @@ export class InstructionExecutor {
       .from(cards)
       .to(CardSelectionPurpose.PLAY_ALT)
       .choose();
-    if (firstToPlay instanceof Card) {
-      await this.playCardFromLocation(firstToPlay, location);
-      cards.removeCard(firstToPlay);
+    if (!(firstToPlay instanceof Card)) {
+      return;
     }
+    await this.playCardFromLocation(firstToPlay, location);
+    cards.removeCard(firstToPlay);
     return this.playMultipleCardsFromLocation(cards, location);
   }
 
@@ -582,12 +586,11 @@ export class InstructionExecutor {
     if (!this.sharedGameState.piles.isPile(cardToReturn.getPileName())) {
       return;
     }
-    const cardToReceive: Card | undefined = this.removeTopCardFromPile(pileName);
-    if (cardToReceive === undefined) {
+    if (!this.sharedGameState.isCardAbleToMove(cardToReturn)) {
       return;
     }
-
-    if (!this.sharedGameState.isCardAbleToMove(cardToReturn)) {
+    const cardToReceive: Card | undefined = this.removeTopCardFromPile(pileName);
+    if (cardToReceive === undefined) {
       return;
     }
 
@@ -607,10 +610,11 @@ export class InstructionExecutor {
     if (!this.sharedGameState.isCardAbleToMove(card)) {
       return undefined;
     }
-    if (this.sharedGameState.piles.isPile(card.getPileName())) {
-      this.removeCardFromLocation(card, location);
-      this.sharedGameState.piles.returnCardToPile(card);
+    if (card.getLocation() !== location || !this.sharedGameState.piles.isPile(card.getPileName())) {
+      return undefined;
     }
+    this.removeCardFromLocation(card, location);
+    this.sharedGameState.piles.returnCardToPile(card);
     return card;
   }
 
@@ -691,12 +695,13 @@ export class InstructionExecutor {
       return;
     }
     if (card.getLocation() !== location) {
-      this.removeCardFromLocation(card, location);
       this.logger.gameMessage(
         this.player,
         ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't put it into hand", card),
       );
+      return;
     }
+    this.removeCardFromLocation(card, location);
     this.player.getOwnedCards().addCardToHand(card);
   }
 
@@ -706,20 +711,17 @@ export class InstructionExecutor {
 
   public putCardsIntoHandFromLocation(cards: CardCollection, location: CardLocation): void {
     for (const card of cards) {
-      if (card.getLocation() !== location) {
-        this.removeCardFromLocation(card, location);
-        this.logger.gameMessage(
-          this.player,
-          ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't put it into hand", card),
-        );
-      }
-      this.player.getOwnedCards().addCardToHand(card);
+      this.putCardIntoHandFromLocation(card, location);
     }
   }
 
   public putCardsIntoHandFromSet(cards: CardCollection, set: CardCollection): void {
-    set.removeCards(cards);
-    this.putCardsIntoHand(cards);
+    const cardsToPutIntoHand = CardCollection.fromCards(cards.asCardArray());
+    set.removeCards(cardsToPutIntoHand);
+    for (const card of cardsToPutIntoHand) {
+      this.removeCardFromLocation(card, card.getLocation());
+    }
+    this.putCardsIntoHand(cardsToPutIntoHand);
   }
 
   public async takeCardsOffDeck(numCards: number): Promise<CardCollection> {
@@ -777,13 +779,12 @@ export class InstructionExecutor {
     discardedCards: CardCollection,
     cards?: CardCollection,
   ): Promise<CardCollection> {
-    cards ??= discardedCards;
-
-    cards.removeCards(discardedCards);
-    for (const card of discardedCards) {
+    const cardsToDiscard = CardCollection.fromCards(discardedCards.asCardArray());
+    (cards ?? discardedCards).removeCards(cardsToDiscard);
+    for (const card of cardsToDiscard) {
       this.removeCardFromLocation(card, card.getLocation());
     }
-    return this.discardCards(discardedCards, CardLocation.REVEAL_LIMBO);
+    return this.discardCards(cardsToDiscard, CardLocation.REVEAL_LIMBO);
   }
 
   public async discardHand(): Promise<CardCollection> {
@@ -1159,10 +1160,10 @@ export class InstructionExecutor {
         return false;
       }
 
-      if (this.player.getTurnTracker().hasPlayedMatchingCardThisTurn(cardEligibilityFunction)) {
-        return false;
-      }
-      return true;
+      const firstMatchingCard = this.player
+        .getTurnTracker()
+        .getFirstMatchingCardPlayedThisTurn(cardEligibilityFunction);
+      return firstMatchingCard === undefined || firstMatchingCard.equals(playedCard);
     };
 
     const eligiblityFunction =

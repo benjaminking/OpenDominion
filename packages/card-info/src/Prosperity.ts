@@ -49,7 +49,7 @@ export const prosperity: CardInfo[] = [
     cost: {
       coins: 4,
     },
-    types: [CardType.ACTION, CardType.REACTION],
+    types: [CardType.ACTION, CardType.REACTION, CardType.ATTACK],
     expansion: Expansion.PROSPERITY,
     has_randomizer: true,
   },

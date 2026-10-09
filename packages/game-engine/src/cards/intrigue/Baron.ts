@@ -27,7 +27,7 @@ export class Baron extends KingdomCard {
         await ie.addCoins(4);
       }
     } else {
-      await ie.gainFromPile('estate');
+      await ie.gainFromPile('Estate');
     }
   }
 }

@@ -94,7 +94,6 @@ describe('Develop', () => {
     expect(testHarness.deck.size()).toBe(0);
   });
 
-  // BUG: both gain choices use allowNoneOption(), letting the player skip the mandatory gains
   it('does not offer to skip gaining when an eligible card exists', async () => {
     const testHarness = createCardHarness();
     const { silver, smithy, estate } = setUpSilverInHandWithNeighbouringCosts(testHarness);

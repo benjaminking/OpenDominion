@@ -62,7 +62,6 @@ describe('Ferryman', () => {
     expect(testHarness.discard.asCardArray()).toEqual([ferryman, village]);
   });
 
-  // BUG: the gain effect is only added to the card instance that ran setup (the randomizer), not to the pile's Ferrymen
   it('gains a card from the added pile when any Ferryman is gained, not just the one used for setup', async () => {
     const testHarness = createCardHarness();
     const village = new Village(testHarness.sharedGameState);

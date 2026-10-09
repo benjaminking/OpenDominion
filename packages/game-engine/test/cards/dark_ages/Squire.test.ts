@@ -33,7 +33,6 @@ describe('Squire', () => {
     expect(testHarness.stats.actions).toBe(0);
   });
 
-  // BUG: gains from lowercase pile 'silver', but pile names are case-sensitive, so nothing is gained
   it('gives +$1 and gains a Silver', async () => {
     const testHarness = createCardHarness();
     const supplySilver = new Silver(testHarness.sharedGameState);
@@ -49,7 +48,6 @@ describe('Squire', () => {
     expect(testHarness.stats.buys).toBe(0);
   });
 
-  // BUG: gains from pile 'silver', but the real supply pile is named 'Silver' and pile lookups are case-sensitive
   it('gains from the Supply pile named "Silver"', async () => {
     const testHarness = createCardHarness();
     const supplySilver = new Silver(testHarness.sharedGameState);

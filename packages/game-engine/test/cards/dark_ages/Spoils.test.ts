@@ -21,7 +21,6 @@ describe('Spoils', () => {
     expect(spoils.getCoins()).toBe(3);
   });
 
-  // BUG: Piles.returnCardToPile never sets the returned card's location to Pile
   it('gives +$3 and returns itself to the Spoils pile', async () => {
     const { testHarness, spoils } = setUp();
 
@@ -44,7 +43,6 @@ describe('Spoils', () => {
     expect(testHarness.pileCards.get('Spoils')).toHaveLength(0);
   });
 
-  // BUG: returnCardToPileFromLocation does not check the card's location, so a replay adds it to the pile again
   it('gives +$3 again but is not returned twice when played a second time (e.g. Crown)', async () => {
     const { testHarness, spoils } = setUp();
 

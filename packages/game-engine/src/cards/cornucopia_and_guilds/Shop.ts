@@ -3,6 +3,7 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardPlayOptions } from '../../CardPlayOptions';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { both, isActionCard } from '../../StandardCardEligibilityFunctions';
@@ -24,7 +25,7 @@ export class Shop extends KingdomCard {
       .allowNoneOption()
       .choose();
     if (eligibleAction instanceof Card) {
-      await ie.playCardFromHand(eligibleAction);
+      await ie.playCardFromHand(eligibleAction, CardPlayOptions.DONT_USE_ACTION);
     }
   }
 }

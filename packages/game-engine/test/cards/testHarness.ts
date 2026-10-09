@@ -154,7 +154,7 @@ export const createCardHarness = () => {
     returnCardToPile: vi.fn((card: Card) => {
       const pile = pileCards.get(card.getPileName());
       if (pile === undefined) return;
-      // Like the real Piles, this does not update the card's location.
+      card.setLocation(CardLocation.PILE);
       pile.unshift(card);
     }),
     getUniqueCardsFromPile: vi.fn((pileName: string) => {

@@ -10,6 +10,7 @@ import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { Player } from '../../players/Player';
 
 export class Clerk extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -30,19 +31,22 @@ export class Clerk extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.addCoins(2);
-    await ie.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
-      if (otherIe.handSize() < 5) {
-        return;
-      }
+    await ie.performAttack(this, this.attack.bind(this));
+  }
 
-      const cardToTopDeck: Card | Choice = await otherIe
-        .chooseCard('Choose a card to put onto your deck')
-        .from(CardLocation.HAND)
-        .to(CardSelectionPurpose.TOPDECK)
-        .choose();
-      if (cardToTopDeck instanceof Card) {
-        await otherIe.topDeckCardFromLocation(cardToTopDeck, CardLocation.HAND);
-      }
-    });
+  public async attack(attackedPlayer: Player, _attackingPlayer: Player): Promise<void> {
+    const ie = attackedPlayer.getInstructionExecutor();
+    if (ie.handSize() < 5) {
+      return;
+    }
+
+    const cardToTopDeck: Card | Choice = await ie
+      .chooseCard('Choose a card to put onto your deck')
+      .from(CardLocation.HAND)
+      .to(CardSelectionPurpose.TOPDECK)
+      .choose();
+    if (cardToTopDeck instanceof Card) {
+      await ie.topDeckCardFromLocation(cardToTopDeck, CardLocation.HAND);
+    }
   }
 }

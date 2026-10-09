@@ -138,7 +138,6 @@ describe('PilesComponent', () => {
     expect(component.nonSupplyPiles()[0]).toBe(updatedRewards);
   });
 
-  // BUG: updateExistingPile() never updates nonKingdomSupplyPiles, so updates to e.g. the Ruins pile are dropped.
   it('replaces an already-seen non-kingdom supply pile in place when its metadata is updated', () => {
     const { component, decoder } = createComponent();
     const updatedRuins = {

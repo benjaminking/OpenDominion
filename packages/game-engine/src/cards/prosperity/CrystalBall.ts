@@ -16,7 +16,7 @@ export class CrystalBall extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.addCoins(1);
 
-    const topCard: Card | undefined = await ie.takeCardOffDeck();
+    const topCard: Card | undefined = await ie.lookAtTopCardOfDeck();
     if (topCard === undefined) {
       return;
     }
@@ -27,22 +27,24 @@ export class CrystalBall extends KingdomCard {
       .chooseOneOption('What do you want to do with ' + topCard.getName() + '?')
       .from(
         new ActionChoice('Trash it', async () => {
-          await ie.trashCard(topCard);
+          await ie.trashCardFromLocation(topCard, CardLocation.DECK);
         }),
       )
       .from(
         new ActionChoice('Discard it', async () => {
-          await ie.discardCard(topCard);
+          await ie.discardCardFromLocation(topCard, CardLocation.DECK);
         }),
       );
 
     if (either(isActionCard, isTreasureCard).matches(topCard)) {
       choiceBuilder.from(
         new ActionChoice('Play it', async () => {
-          await ie.playCardFromLocation(topCard, CardLocation.REVEAL_LIMBO);
+          await ie.playCardFromLocation(topCard, CardLocation.DECK);
         }),
       );
     }
+
+    choiceBuilder.from(new ActionChoice('Leave it on top'));
 
     await choiceBuilder.choose();
   }

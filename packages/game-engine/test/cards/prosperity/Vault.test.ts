@@ -79,7 +79,6 @@ describe('Vault', () => {
     expect(targetHarness.stats.coins).toBe(0);
   });
 
-  // BUG: only a discard of exactly 2 cards is accepted; a player with 1 card in hand can't discard it
   it('lets another player with only 1 card in hand discard it, without drawing', async () => {
     const testHarness = createCardHarness();
     const targetHarness = createCardHarness();

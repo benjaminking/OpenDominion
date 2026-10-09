@@ -58,7 +58,6 @@ describe('DameJosephine', () => {
     expect(dameJosephine.score([CardCollection.fromCards([dameJosephine])])).toBe(2);
   });
 
-  // BUG: card-info lists Dame Josephine as Action-Attack-Knight only; the official card is also a Victory card
   it('is a Victory card', () => {
     const testHarness = createCardHarness();
     const dameJosephine = new DameJosephine(testHarness.sharedGameState);

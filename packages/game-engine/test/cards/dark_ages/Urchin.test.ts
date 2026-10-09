@@ -62,7 +62,7 @@ describe('Urchin', () => {
     militia.setId('militia-in-play');
 
     await urchin.play(testHarness.executor);
-    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.PLAYED_CARD);
+    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.ABOUT_TO_PLAY_CARD);
     expect(onAttackPlayed.isMandatory()).toBe(false);
     expect(onAttackPlayed.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
     await onAttackPlayed.doAction(testHarness.executor, militia);
@@ -83,7 +83,7 @@ describe('Urchin', () => {
     otherUrchin.setId('urchin-other');
 
     await urchin.play(testHarness.executor);
-    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.PLAYED_CARD);
+    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.ABOUT_TO_PLAY_CARD);
 
     expect(onAttackPlayed.getCardEligibility().matches(militia)).toBe(true);
     expect(onAttackPlayed.getCardEligibility().matches(otherUrchin)).toBe(true);
@@ -97,7 +97,7 @@ describe('Urchin', () => {
     militia.setId('militia-in-play');
 
     await urchin.play(testHarness.executor);
-    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.PLAYED_CARD);
+    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.ABOUT_TO_PLAY_CARD);
     testHarness.inPlay.removeCard(urchin);
     testHarness.addToDiscard(urchin);
 
@@ -108,7 +108,6 @@ describe('Urchin', () => {
     expect(idsOf(testHarness.discard)).toEqual(['urchin-in-play']);
   });
 
-  // BUG: the effect fires on PLAYED_CARD (after the Attack resolves), but the card says "you may first trash this"
   it('offers the trash-for-Mercenary before the other Attack card resolves', async () => {
     const { testHarness, urchin } = setUp(0);
 

@@ -42,7 +42,6 @@ describe('Sage', () => {
     expect(idsOf(testHarness.deck)).toEqual(['gold-deck-3']);
   });
 
-  // BUG: putCardsIntoHandFromLocation only removes cards that are NOT at the location, so it stays in the reveal zone
   it('moves the card into hand rather than leaving a copy among the revealed cards', async () => {
     const testHarness = createCardHarness();
     stackDeck(testHarness, [

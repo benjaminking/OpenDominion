@@ -128,7 +128,6 @@ describe('JackOfAllTrades', () => {
     expect(testHarness.hand.size()).toBe(5);
   });
 
-  // BUG: Jack of All Trades reveals the top card, but the card only lets you look at it
   it('looks at the top card without revealing it', async () => {
     const testHarness = createCardHarness();
     addSilverPile(testHarness);
@@ -144,7 +143,6 @@ describe('JackOfAllTrades', () => {
     expect(revealTriggers.length).toBe(0);
   });
 
-  // BUG: PlayerCards.drawUpTo never draws an Action on top of the deck; it re-checks the same card forever
   it('draws Action cards while drawing until 5 cards in hand', async () => {
     const testHarness = createCardHarness();
     addSilverPile(testHarness);

@@ -23,7 +23,6 @@ describe('CardPlayOptions', () => {
     expect(CardPlayOptions.DONT_LOG.leaveInPlace).toBe(false);
   });
 
-  // BUG: CardPlayOptions.Builder.build() never passes leaveInPlace to the constructor, so it is always false
   it('leaves cards in place for the leaving-it-there preset and the leaveItThere builder option', () => {
     expect(CardPlayOptions.LEAVING_IT_THERE.leaveInPlace).toBe(true);
     expect(CardPlayOptions.builder().leaveItThere().build().leaveInPlace).toBe(true);

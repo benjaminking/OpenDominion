@@ -358,7 +358,6 @@ describe('GameInitializer', () => {
     expect(pileNamed(gameState.piles.addKingdomPile, 'Ruins')).toBeUndefined();
   });
 
-  // BUG: handleCardMechanics ignores Mechanic.MERCENARY, so Urchin has no Mercenary pile to gain from
   it('adds the Mercenary pile outside the Supply when a kingdom card uses Mercenaries', () => {
     createInitializer([createRandomizer('Urchin', { mechanics: [Mechanic.MERCENARY] })]);
 
@@ -508,7 +507,6 @@ describe('GameInitializer', () => {
       expect(pileNamed(gameState.piles.addKingdomPile, 'Moat')?.size()).toBe(10);
     });
 
-    // BUG: addRandomPile adds the pile but never returns it
     it('returns the pile it adds', () => {
       const initializer = createInitializer([]);
       kingdomChooserState.extraPileRandomizers = [createRandomizer('Moat')];
@@ -519,7 +517,6 @@ describe('GameInitializer', () => {
       expect(pile).toBe(pileNamed(gameState.piles.addKingdomPile, 'Moat'));
     });
 
-    // BUG: addRandomPile never returns the pile, so PileAddingSetupRule post actions (Bane, Ferryman) never run
     it("runs a kingdom card's pile-adding post action on the pile added during setup", () => {
       const postAction = vi.fn();
       const setupRules = new SetupRules();
@@ -537,7 +534,6 @@ describe('GameInitializer', () => {
       expect(postAction).toHaveBeenCalledWith(pileNamed(gameState.piles.addKingdomPile, 'Moat'));
     });
 
-    // BUG: the supply/kingdom flags of PileSpecification are ignored, so Ferryman's pile is put in the Supply
     it('adds the matching pile outside the Supply for a non-supply pile specification', () => {
       const initializer = createInitializer([]);
       kingdomChooserState.extraPileRandomizers = [createRandomizer('Moat')];
@@ -550,7 +546,6 @@ describe('GameInitializer', () => {
     });
   });
 
-  // BUG: the randomizer name 'Castles' always maps to the 8-card 2-player Castles pile, even with 3+ players
   it('uses the 12-card Castles pile in games with 3 or more players', () => {
     createInitializer([createRandomizer('Castles')], { numPlayers: 3 });
 

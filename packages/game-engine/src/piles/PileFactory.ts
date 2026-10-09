@@ -29,7 +29,9 @@ export class PileFactory {
     for (let i = 0; i < pileSize; i++) {
       const card: Card = this.cardFactory.createCard(className, className + '-pile-' + i.toFixed(), CardLocation.PILE);
       card.setId(cardInfo.name + '_pile_' + i.toFixed());
-      card.markAsSupplyCard();
+      if (categories.has(PileCategory.SUPPLY)) {
+        card.markAsSupplyCard();
+      }
       cards.addCard(card);
     }
     return new Pile(cardInfo.name, cards, new Set(cardInfo.types), categories, this.gameMessageBroadcaster);
@@ -51,7 +53,9 @@ export class PileFactory {
         CardLocation.PILE,
       );
       card.setId(cardInfo.name + '_pile_' + cardCountsByName.get(cardInfo.name)!.toFixed());
-      card.markAsSupplyCard();
+      if (specialPileSpecification.pileCategories.has(PileCategory.SUPPLY)) {
+        card.markAsSupplyCard();
+      }
       cards.push(card);
     }
 
@@ -61,6 +65,9 @@ export class PileFactory {
 
     const pileSize = this.pileSizeLogic.getPileSize(specialPileSpecification.randomizerCardInfo);
     cards = cards.slice(0, pileSize);
+
+    // the top of a pile is the end of its card array, so the first-listed cards must go last
+    cards.reverse();
 
     return new Pile(
       specialPileSpecification.pileName,

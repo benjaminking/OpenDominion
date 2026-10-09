@@ -38,7 +38,6 @@ describe('Torturer', () => {
     expect(targetHarness.discard.size()).toBe(2);
   });
 
-  // BUG: gains from lowercase pile 'curse', but pile names are case-sensitive, so nothing is gained
   it("attack: gain curse option places a Curse in target's hand", async () => {
     const testHarness = createCardHarness();
     const targetHarness = createCardHarness();

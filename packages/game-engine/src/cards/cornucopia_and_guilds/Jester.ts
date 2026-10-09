@@ -27,7 +27,7 @@ export class Jester extends KingdomCard {
     }
 
     if (isVictoryCard.matches(discardedCard)) {
-      await attackedIe.gainFromPile('curse');
+      await attackedIe.gainFromPile('Curse');
     } else {
       await attackingIe
         .chooseOneOption(

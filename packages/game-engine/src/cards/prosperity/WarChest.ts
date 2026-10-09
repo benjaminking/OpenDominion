@@ -8,9 +8,11 @@ import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { Turn } from '../../turns/Turn';
 
 export class WarChest extends KingdomCard {
-  private static readonly namedCardsByTurnNumber = new Map<number, Set<string>>();
+  // Keyed by the Turn object, which is unique to each player's turn in each game
+  private static readonly namedCardsByTurn = new WeakMap<Turn, Set<string>>();
 
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('War Chest'));
@@ -37,20 +39,17 @@ export class WarChest extends KingdomCard {
   }
 
   private static addNamedCardForCurrentTurn(cardName: string, sharedGameState: SharedGameState): void {
-    const unofficialTurnNumber = sharedGameState.getCurrentTurn().getUnofficialNumber();
-    if (!WarChest.namedCardsByTurnNumber.has(unofficialTurnNumber)) {
-      WarChest.namedCardsByTurnNumber.set(unofficialTurnNumber, new Set<string>());
-    }
-    WarChest.namedCardsByTurnNumber.get(unofficialTurnNumber)!.add(cardName);
+    const currentTurn = sharedGameState.getCurrentTurn();
+    const namedCards = WarChest.namedCardsByTurn.get(currentTurn) ?? new Set<string>();
+    namedCards.add(cardName);
+    WarChest.namedCardsByTurn.set(currentTurn, namedCards);
   }
 
   public static getNotNamedForWarChestEligibilityFunction(sharedGameState: SharedGameState): CardEligibilityFunction {
     return new CardEligibilityFunction(
       (card: Card) =>
         card.getCost().isLessThanOrEqualTo(Cost.Simple(5)) &&
-        !WarChest.namedCardsByTurnNumber
-          .get(sharedGameState.getCurrentTurn().getUnofficialNumber())!
-          .has(card.getName()),
+        !(WarChest.namedCardsByTurn.get(sharedGameState.getCurrentTurn())?.has(card.getName()) ?? false),
     );
   }
 }

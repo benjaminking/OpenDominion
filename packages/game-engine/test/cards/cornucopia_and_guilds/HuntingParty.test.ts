@@ -8,7 +8,6 @@ import { HuntingParty } from '../../../src/cards/cornucopia_and_guilds/HuntingPa
 import { createCardHarness } from '../testHarness';
 
 describe('HuntingParty', () => {
-  // BUG: createIsNotDuplicateWithHandCardEligibilityFunction is inverted, so it stops at the first duplicate
   it('puts the first revealed card that is not a copy of a hand card into hand and discards the rest', async () => {
     const testHarness = createCardHarness();
     const handCopper = new Copper(testHarness.sharedGameState);

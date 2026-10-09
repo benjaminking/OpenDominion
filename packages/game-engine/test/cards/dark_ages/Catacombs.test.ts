@@ -29,7 +29,6 @@ describe('Catacombs', () => {
     expect(testHarness.discard.size()).toBe(0);
   });
 
-  // BUG: discardCardsFromRevealedSet(topCards) empties the set before discarding, so the 3 cards vanish
   it('discards the top 3 cards and draws 3 more', async () => {
     const testHarness = createCardHarness();
     const lowerCards = [];

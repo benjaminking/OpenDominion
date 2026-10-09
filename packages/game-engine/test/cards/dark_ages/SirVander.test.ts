@@ -32,7 +32,6 @@ describe('SirVander', () => {
     expect(testHarness.hand.size()).toBe(0);
   });
 
-  // BUG: gains from lowercase pile 'gold', but pile names are case-sensitive, so nothing is gained
   it('gains a Gold when trashed', async () => {
     const testHarness = createCardHarness();
     const sirVander = new SirVander(testHarness.sharedGameState);
@@ -62,7 +61,6 @@ describe('SirVander', () => {
     expect(onTrash.getCardEligibility().matches(otherSirVander)).toBe(false);
   });
 
-  // BUG: gains from pile 'gold', but the real supply pile is named 'Gold' and pile lookups are case-sensitive
   it('gains a Gold from the Supply pile named "Gold" when trashed', async () => {
     const testHarness = createCardHarness();
     const sirVander = new SirVander(testHarness.sharedGameState);

@@ -82,7 +82,6 @@ describe('GuardDog', () => {
     expect(testHarness.deck.size()).toBe(1);
   });
 
-  // BUG: the reaction triggers on PLAYED_CARD (after the Attack resolves) instead of ATTACK (before it resolves)
   it('reacts when the Attack is played, before it resolves', () => {
     const testHarness = createCardHarness();
     const { guardDog } = setUpGuardDogInHand(testHarness);
@@ -90,7 +89,6 @@ describe('GuardDog', () => {
     expect(testHarness.getCardEffects(guardDog, EffectTriggerType.ATTACK)).toHaveLength(1);
   });
 
-  // BUG: ie.playCardFromLocation removes the card from its location but never puts it into play
   it('is in play after playing itself as a reaction', async () => {
     const testHarness = createCardHarness();
     const { guardDog, militia } = setUpGuardDogInHand(testHarness);

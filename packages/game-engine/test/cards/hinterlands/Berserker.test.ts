@@ -105,7 +105,6 @@ describe('Berserker', () => {
     expect(onGain.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
   });
 
-  // BUG: ie.playCardFromLocation removes the card from its location but never puts it into play
   it('is in play after playing itself on gain', async () => {
     const testHarness = createCardHarness();
     const { berserker, silver } = setUpGainedBerserkerWithActionInPlay(testHarness);

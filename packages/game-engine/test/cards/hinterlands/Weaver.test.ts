@@ -91,7 +91,6 @@ describe('Weaver', () => {
     expect(onDiscard.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
   });
 
-  // BUG: the "card costing up to $4" choice uses allowNoneOption(), letting the player skip the mandatory gain
   it('does not offer to skip gaining a card costing up to $4 when one is available', async () => {
     const testHarness = createCardHarness();
     const smithy = new Smithy(testHarness.sharedGameState);
@@ -107,7 +106,6 @@ describe('Weaver', () => {
     expect((gainCall as unknown[])[4]).toBeUndefined();
   });
 
-  // BUG: ie.playCardFromLocation removes the card from its location but never puts it into play
   it('is in play after being played when discarded', async () => {
     const testHarness = createCardHarness();
     const { weaver, onDiscard } = setUpDiscardedWeaver(testHarness);

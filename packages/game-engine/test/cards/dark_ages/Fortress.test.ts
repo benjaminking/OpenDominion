@@ -22,7 +22,6 @@ describe('Fortress', () => {
     expect(testHarness.stats.actions).toBe(2);
   });
 
-  // BUG: putCardIntoHandFromLocation only removes the card when it is NOT at the given location (inverted check)
   it('when trashed, moves from the trash into hand', async () => {
     const testHarness = createCardHarness();
     const fortress = new Fortress(testHarness.sharedGameState);

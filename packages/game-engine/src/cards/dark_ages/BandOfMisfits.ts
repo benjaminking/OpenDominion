@@ -6,14 +6,7 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import {
-  both,
-  costsLessThanCard,
-  isActionCard,
-  isCommandCard,
-  isDurationCard,
-  not,
-} from '../../StandardCardEligibilityFunctions';
+import { both, costsLessThanCard, isActionCard, isCommandCard, not } from '../../StandardCardEligibilityFunctions';
 
 export class BandOfMisfits extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -25,7 +18,7 @@ export class BandOfMisfits extends KingdomCard {
       .chooseCard('Choose a non-Command Action card from the Supply costing less than $5 to play')
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.PLAY_ALT)
-      .whereCardIs(both(both(isActionCard, both(not(isCommandCard), not(isDurationCard))), costsLessThanCard(this)))
+      .whereCardIs(both(both(isActionCard, not(isCommandCard)), costsLessThanCard(this)))
       .choose();
 
     if (choice instanceof Card) {

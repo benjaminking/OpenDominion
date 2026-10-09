@@ -60,7 +60,6 @@ describe('YoungWitch', () => {
     expect(testHarness.discard.asCardArray()).toEqual([estate, copper]);
   });
 
-  // BUG: gains from lowercase pile 'curse', but pile names are case-sensitive, so nothing is gained
   it('each other player without a Bane in hand gains a Curse', async () => {
     const testHarness = createCardHarness();
     const { targetHarness, curse } = setUpTarget((harness) => {
@@ -98,7 +97,6 @@ describe('YoungWitch', () => {
     expect(targetHarness.hand.size()).toBe(1);
   });
 
-  // BUG: gains from lowercase pile 'curse', but pile names are case-sensitive, so nothing is gained
   it('a player may choose not to reveal their Bane and gain a Curse', async () => {
     const testHarness = createCardHarness();
     setUpBane(testHarness, 'Hamlet');

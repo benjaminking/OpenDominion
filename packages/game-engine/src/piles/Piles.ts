@@ -1,4 +1,4 @@
-import { CardChoice, CardMetadata, ChoiceType } from '@dominion/common';
+import { CardChoice, CardLocation, CardMetadata, ChoiceType } from '@dominion/common';
 
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
@@ -143,7 +143,12 @@ export class Piles {
   }
 
   public returnCardToPile(card: Card): void {
-    this.allPiles.getPileByName(card.getPileName())?.addCard(card);
+    const pile = this.allPiles.getPileByName(card.getPileName());
+    if (pile === undefined) {
+      return;
+    }
+    pile.addCard(card);
+    card.setLocation(CardLocation.PILE);
   }
 
   public getEligibleCardChoicesToBuy(): CardChoice[] {

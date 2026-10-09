@@ -1,7 +1,7 @@
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
-import { noCard } from '../StandardCardEligibilityFunctions';
+import { isTheSameCardAs, noCard } from '../StandardCardEligibilityFunctions';
 import { Turn } from '../turns/Turn';
 import { TurnPhase } from '../turns/TurnPhase';
 
@@ -91,6 +91,13 @@ export class TurnTracker {
     );
   }
 
+  public getFirstMatchingCardPlayedThisTurn(cardEligibilityFunction: CardEligibilityFunction): Card | undefined {
+    return this.cardsPlayedByUnofficialTurnNumber
+      .get(this.currentTurn.getUnofficialNumber())
+      ?.asCardArray()
+      .find((card: Card) => cardEligibilityFunction.matches(card));
+  }
+
   public hasGainedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {
     return (
       this.cardsGainedByUnofficialTurnNumber
@@ -133,11 +140,13 @@ export class TurnTracker {
     );
   }
 
+  // Checked when the function is used, so cards bought after it was created are included
   public getCardsBoughtThisTurnEligibilityFunction(): CardEligibilityFunction {
-    return (
-      this.cardsBoughtByUnofficialTurnNumber
-        .get(this.currentTurn.getUnofficialNumber())
-        ?.toCardNameEligibilityFunction() ?? noCard
+    return new CardEligibilityFunction(
+      (card: Card) =>
+        this.cardsBoughtByUnofficialTurnNumber
+          .get(this.currentTurn.getUnofficialNumber())
+          ?.hasMatchingCard(isTheSameCardAs(card)) ?? false,
     );
   }
 

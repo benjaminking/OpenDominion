@@ -119,13 +119,13 @@ export class CardChoiceBuilder {
     }
 
     if (possibleChoices.length === 1 && !this.noneOption) {
-      const card = this.ie.getCardByMetadata(possibleChoices[0].card);
+      const card = this.set.getCardByMetadata(possibleChoices[0].card);
       return card!;
     }
 
     // if all cards have the same name, automatically select the first one
     if (possibleChoices.every((choice) => choice.card.name === possibleChoices[0].card.name) && !this.noneOption) {
-      const card = this.ie.getCardByMetadata(possibleChoices[0].card);
+      const card = this.set.getCardByMetadata(possibleChoices[0].card);
       return card!;
     }
 
@@ -140,7 +140,7 @@ export class CardChoiceBuilder {
     );
 
     if (isCardChoice(choice)) {
-      const card = this.ie.getCardByMetadata(choice.card);
+      const card = this.set.getCardByMetadata(choice.card);
       if (card !== undefined) {
         return card;
       } else {
@@ -195,7 +195,13 @@ export class CardChoiceBuilder {
     }
 
     const choice = await wrapWithWaitingStatus(this.messageBroadcaster, this.player, () =>
-      this.decisionService.chooseCard(this.prompt, this.selectionType, this.name, possibleChoices),
+      this.decisionService.chooseCard(
+        this.prompt,
+        this.selectionType,
+        this.name,
+        possibleChoices,
+        this.noneOption ? { type: ChoiceType.None } : undefined,
+      ),
     );
 
     if (isCardChoice(choice)) {

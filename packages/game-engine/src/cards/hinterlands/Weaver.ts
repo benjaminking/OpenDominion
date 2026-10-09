@@ -46,7 +46,6 @@ export class Weaver extends KingdomCard {
             .from(CardSelectionLocation.SUPPLY)
             .to(CardSelectionPurpose.GAIN)
             .whereCardIs(costsUpTo(Cost.Simple(4)))
-            .allowNoneOption()
             .choose();
           if (cardToGain instanceof Card) {
             await ie.gainCardFromPile(cardToGain);

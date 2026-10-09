@@ -134,7 +134,6 @@ describe('PileFactory', () => {
       expect(sizeOf('Potion')).toBe(16);
     });
 
-    // BUG: there are no Platinum or Colony card classes, so their piles cannot be created
     it('creates Platinum and Colony piles for games using them', () => {
       const pileFactory = createPileFactory(2);
 
@@ -239,7 +238,6 @@ describe('PileFactory', () => {
     });
   });
 
-  // BUG: PileFactory marks every card as a supply card, even in non-supply piles (so e.g. Rewards can be bought)
   it('does not mark cards in non-supply piles as supply cards', () => {
     const pileFactory = createPileFactory(2);
 

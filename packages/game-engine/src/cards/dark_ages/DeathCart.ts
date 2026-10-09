@@ -9,7 +9,7 @@ import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { either, isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { both, either, isActionCard, isInLocation, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class DeathCart extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -34,15 +34,15 @@ export class DeathCart extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     const cardToTrash: Card | Choice = await ie
-      .chooseCard('Choose an Action card to trash for +$5')
+      .chooseCard('You may trash this or an Action card from your hand for +$5')
       .from(CardLocation.HAND)
       .from(CardLocation.IN_PLAY)
       .to(CardSelectionPurpose.TRASH)
-      .whereCardIs(either(isActionCard, isTheSameCardAs(this)))
+      .whereCardIs(either(both(isActionCard, isInLocation(CardLocation.HAND)), isTheSameCardAs(this)))
       .allowNoneOption()
       .choose();
     if (cardToTrash instanceof Card) {
-      const trashed = await ie.trashCardFromLocation(cardToTrash, CardLocation.HAND);
+      const trashed = await ie.trashCardFromLocation(cardToTrash, cardToTrash.getLocation());
       if (trashed !== undefined) {
         await ie.addCoins(5);
       }

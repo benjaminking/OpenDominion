@@ -32,7 +32,6 @@ describe('Shop', () => {
     expect(testHarness.inPlay.asCardArray()).toEqual([shop]);
   });
 
-  // BUG: the duplicate check is inverted so this Action is not offered, and playCardFromHand would also use an Action
   it('plays an Action from hand that has no copy in play, without using an Action', async () => {
     const testHarness = createCardHarness();
     const shop = putShopInPlay(testHarness);
@@ -54,7 +53,6 @@ describe('Shop', () => {
     expect(testHarness.stats.actions).toBe(2);
   });
 
-  // BUG: the duplicate check is inverted, so an Action with a copy in play is offered and played
   it('cannot play an Action that already has a copy in play', async () => {
     const testHarness = createCardHarness();
     const shop = putShopInPlay(testHarness);

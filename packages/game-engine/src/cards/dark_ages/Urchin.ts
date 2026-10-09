@@ -23,11 +23,11 @@ export class Urchin extends KingdomCard {
     ie.addActions(1);
     await ie.performAttack(this, this.attack.bind(this));
 
-    // When you play another Attack card with this in play, you may trash this to gain a Mercenary
+    // When you play another Attack card with this in play, you may first trash this to gain a Mercenary
     ie.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.PLAYED_CARD, EffectSource.SELF)
+        .triggerOn(EffectTriggerType.ABOUT_TO_PLAY_CARD, EffectSource.SELF)
         .whereCardIs(both(isAttackCard, not(isTheSameCardAs(this))))
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY))
         // TODO: this won't work with Royal Galley - need a while in play expiration

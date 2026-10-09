@@ -224,8 +224,8 @@ export class TextBasedDecisionService implements DecisionService {
     const choicesByCardName: Map<string, CardChoice[]> = new Map<string, CardChoice[]>();
 
     for (const card of options) {
-      if (choicesByCardName.has(card.card.name)) {
-        continue;
+      if (!choicesByCardName.has(card.card.name)) {
+        choicesByCardName.set(card.card.name, []);
       }
       choicesByCardName.get(card.card.name)!.push({
         type: ChoiceType.Card,

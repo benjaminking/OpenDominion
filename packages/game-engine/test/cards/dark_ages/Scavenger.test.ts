@@ -52,7 +52,6 @@ describe('Scavenger', () => {
     expect(idsOf(testHarness.discard).sort()).toEqual(['copper-deck-0', 'estate-discard-0', 'gold-deck-1']);
   });
 
-  // BUG: putDeckInDiscard does not update card locations, so former deck cards can't be chosen from the discard
   it('can put a card that was in the deck back on top after putting the deck into the discard pile', async () => {
     const { testHarness, deckCopper, deckGold } = setUp();
 

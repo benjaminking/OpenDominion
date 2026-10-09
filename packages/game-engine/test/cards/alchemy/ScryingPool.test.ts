@@ -32,7 +32,6 @@ describe('Scrying Pool', () => {
     expect(testHarness.stats.actions).toBe(1);
   });
 
-  // BUG: reveals the whole deck for Actions instead of stopping at the first non-Action, and discards the non-Actions
   it('discards your own top card when chosen, then reveals into hand', async () => {
     const testHarness = createCardHarness();
     const estate = new Estate(testHarness.sharedGameState);
@@ -51,7 +50,6 @@ describe('Scrying Pool', () => {
     expect(deckIdsTopToBottom(testHarness)).toEqual(['silver-deck']);
   });
 
-  // BUG: reveals the whole deck for Actions instead of stopping at the first non-Action, and discards the non-Actions
   it('puts your own top card back when chosen, then reveals it into hand', async () => {
     const testHarness = createCardHarness();
     const copper = new Copper(testHarness.sharedGameState);
@@ -68,7 +66,6 @@ describe('Scrying Pool', () => {
     expect(testHarness.discard.size()).toBe(0);
   });
 
-  // BUG: reveals the whole deck for Actions instead of stopping at the first non-Action, and discards the non-Actions
   it('reveals until a non-Action and puts all revealed cards into hand', async () => {
     const testHarness = createCardHarness();
     const village = new Village(testHarness.sharedGameState);

@@ -10,4 +10,12 @@ export class PileSpecification {
   public getRandomizerRequirements(): RandomizerRequirements {
     return this.randomizerRequirements;
   }
+
+  public isSupplyPile(): boolean {
+    return this.isSupply;
+  }
+
+  public isKingdomPile(): boolean {
+    return this.isKingdom;
+  }
 }

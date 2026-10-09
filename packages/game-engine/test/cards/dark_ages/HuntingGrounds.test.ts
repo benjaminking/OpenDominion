@@ -30,7 +30,6 @@ describe('HuntingGrounds', () => {
     expect(testHarness.deck.size()).toBe(1);
   });
 
-  // BUG: gains from lowercase pile 'duchy', but pile names are case-sensitive, so nothing is gained
   it('when trashed, may gain a Duchy', async () => {
     const testHarness = createCardHarness();
     const huntingGrounds = new HuntingGrounds(testHarness.sharedGameState);
@@ -48,7 +47,6 @@ describe('HuntingGrounds', () => {
     expect(testHarness.pileCards.get('Estate')).toHaveLength(3);
   });
 
-  // BUG: gains from lowercase pile 'estate', but pile names are case-sensitive, so nothing is gained
   it('when trashed, may gain 3 Estates', async () => {
     const testHarness = createCardHarness();
     const huntingGrounds = new HuntingGrounds(testHarness.sharedGameState);
@@ -68,7 +66,6 @@ describe('HuntingGrounds', () => {
     expect(testHarness.pileCards.get('Duchy')).toEqual([duchy]);
   });
 
-  // BUG: gains from lowercase pile 'estate', but pile names are case-sensitive, so nothing is gained
   it('when trashed with fewer than 3 Estates left, gains the remaining Estates', async () => {
     const testHarness = createCardHarness();
     const huntingGrounds = new HuntingGrounds(testHarness.sharedGameState);

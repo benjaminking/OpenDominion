@@ -219,6 +219,10 @@ export class PlayerCards {
           .getGame()
           .getGameState()
           .triggerEffect(EffectTriggerType.REVEALED_ACTION_DURING_DTX, this.player, card);
+        // If no effect (e.g. Library) dealt with the Action, it is drawn like any other card
+        if ((await this.lookAtTopCardOfDeck())?.equals(card)) {
+          await this.drawCards(1);
+        }
         return this.drawUpToHelper(size, revealedDrawUpToCards);
       } else {
         await this.drawCards(1);
@@ -422,6 +426,7 @@ export class PlayerCards {
   public putDeckInDiscard(): void {
     this.discard.addCards(this.deck);
     this.deck.clear();
+    this.discard.updateLocationForAll(CardLocation.DISCARD);
   }
 
   public calculateSimpleTreasureCoinsInHand() {

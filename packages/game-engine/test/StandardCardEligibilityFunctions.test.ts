@@ -82,7 +82,6 @@ describe('StandardCardEligibilityFunctions', () => {
   });
 
   describe('noCard', () => {
-    // BUG: NoCard is constructed with `() => true`, so it matches every card instead of none
     it('should not match any card', () => {
       const card = createMockCard();
       expect(noCard.matches(card)).toBe(false);
@@ -964,7 +963,6 @@ describe('StandardCardEligibilityFunctions', () => {
   });
 
   describe('isDuplicateWith', () => {
-    // BUG: IsDuplicateWith checks `numMatchingCards(isACopyOf(c)) === 0`, so it matches cards with no copy in the collection
     it('matches cards that have a copy in the collection', () => {
       const hand = CardCollection.fromCards([
         createMockCard({ getId: vi.fn(() => 'copper-hand'), getName: vi.fn(() => 'Copper') }),

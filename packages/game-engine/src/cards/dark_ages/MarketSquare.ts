@@ -22,7 +22,7 @@ export class MarketSquare extends KingdomCard {
           new EffectAction(async (ie: InstructionExecutor) => {
             const discardedCard = await ie.discardCardFromLocation(this, CardLocation.HAND);
             if (discardedCard !== undefined) {
-              await ie.gainFromPile('gold');
+              await ie.gainFromPile('Gold');
             }
           }),
         )

@@ -36,7 +36,6 @@ describe('Herald', () => {
     expect(testHarness.deck.size()).toBe(0);
   });
 
-  // BUG: playCardFromLocation removes the card from the deck but never puts it into play
   it('moves the revealed Action into play', async () => {
     const testHarness = createCardHarness();
     const { village } = setUpDeckWithVillage(testHarness);
@@ -62,7 +61,6 @@ describe('Herald', () => {
     expect(testHarness.deck.asCardArray()).toEqual([estate]);
   });
 
-  // BUG: the overpay card choice is not awaited, so the chosen card is never put onto the deck
   it('overpay puts a card from the discard pile onto the deck per $1 overpaid', async () => {
     const testHarness = createCardHarness();
     const herald = new Herald(testHarness.sharedGameState);

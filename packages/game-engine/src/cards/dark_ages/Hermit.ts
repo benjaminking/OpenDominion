@@ -51,7 +51,9 @@ export class Hermit extends KingdomCard {
         .makeMandatory()
         .action(
           new EffectAction((ie: InstructionExecutor) => {
-            ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Madman');
+            if (ie.getNumCardsGainedInThisTurnsBuyPhase() === 0) {
+              ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Madman');
+            }
           }),
         )
         .build(),

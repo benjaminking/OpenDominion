@@ -18,7 +18,6 @@ export class JackOfAllTrades extends KingdomCard {
 
     const topCard = await ie.lookAtTopCardOfDeck();
     if (topCard !== undefined) {
-      await ie.revealCard(topCard);
       await ie
         .chooseOneOption('What do you want to do with ' + topCard.getName() + '?')
         .from(

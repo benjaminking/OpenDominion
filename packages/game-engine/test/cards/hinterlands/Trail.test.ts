@@ -100,7 +100,6 @@ describe('Trail', () => {
     ]);
   });
 
-  // BUG: ie.playCardFromLocation removes the card from its location but never puts it into play
   it('is in play after being played when gained', async () => {
     const testHarness = createCardHarness();
     addCopperToDeck(testHarness);

@@ -33,7 +33,10 @@ export class Investment extends KingdomCard {
       )
       .from(
         new ActionChoice('Trash this for VP', async () => {
-          await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
+          const trashedCard: Card | undefined = await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
+          if (trashedCard === undefined) {
+            return;
+          }
           await ie.revealHand();
           const differentlyNamedTreasures = new Set<string>();
           for (const treasure of ie.getMatchingCardsInHand(isTreasureCard)) {

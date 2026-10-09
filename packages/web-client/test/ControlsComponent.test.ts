@@ -183,7 +183,6 @@ describe('ControlsComponent', () => {
     expect(component.simpleTreasurePotions()).toBe(0);
   });
 
-  // BUG: canPlaySimpleTreasures() only checks coins > 0, hiding the button when the simple treasures are only Potions.
   it('offers to play simple treasures when they produce potions but no coins', () => {
     const { component, decisionManager } = createComponent();
 

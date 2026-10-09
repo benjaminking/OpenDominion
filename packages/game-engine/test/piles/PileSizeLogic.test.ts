@@ -76,7 +76,6 @@ describe('PileSizeLogic', () => {
     }
   });
 
-  // BUG: the Copper pile is a fixed 56 cards; Dominion uses the 60 Coppers minus the 7 dealt to each player
   it('puts the Coppers left after dealing starting decks in the Copper pile', () => {
     const copperInfo = CardInfoLookup.lookUpCardInfo('Copper');
 

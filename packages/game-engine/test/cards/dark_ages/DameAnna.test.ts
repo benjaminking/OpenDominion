@@ -100,7 +100,6 @@ describe('DameAnna', () => {
     expect(targetHarness.deck.size()).toBe(0);
   });
 
-  // BUG: discardCardsFromRevealedSet(topCards) empties the set before discarding, so the other cards vanish
   it('attack discards the revealed cards that are not trashed', async () => {
     const testHarness = createCardHarness();
     const targetHarness = createCardHarness();

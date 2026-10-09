@@ -24,15 +24,19 @@ export class Vault extends KingdomCard {
     await ie.addCoins(discardedCards.size());
 
     await ie.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
+      // A player with only 1 card in hand may discard it, but doesn't draw
+      const numToDiscard = Math.min(2, otherIe.handSize());
       const otherDiscards: CardCollection = await otherIe
         .chooseCards('You may discard 2 cards to draw a card')
         .from(CardLocation.HAND)
         .to(CardSelectionPurpose.DISCARD)
-        .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(2)))
+        .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(numToDiscard)))
         .choose();
-      if (otherDiscards.size() === 2) {
+      if (otherDiscards.size() > 0 && otherDiscards.size() === numToDiscard) {
         await otherIe.discardCardsFromLocation(otherDiscards, CardLocation.HAND);
-        await otherIe.drawCards(1);
+        if (otherDiscards.size() === 2) {
+          await otherIe.drawCards(1);
+        }
       }
     });
   }

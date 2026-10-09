@@ -40,7 +40,7 @@ export class Courtier extends KingdomCard {
           await ie.addCoins(3);
         }),
       )
-      .from(new ActionChoice('Gain a Gold', async () => await ie.gainFromPile('gold')))
+      .from(new ActionChoice('Gain a Gold', async () => await ie.gainFromPile('Gold')))
       .choose(numTypes);
   }
 }

@@ -15,7 +15,6 @@ describe('Jester', () => {
     expect(testHarness.stats.coins).toBe(2);
   });
 
-  // BUG: gains from lowercase pile 'curse', but pile names are case-sensitive, so nothing is gained
   it('a player who discards a Victory card gains a Curse', async () => {
     const testHarness = createCardHarness();
     const targetHarness = createCardHarness();

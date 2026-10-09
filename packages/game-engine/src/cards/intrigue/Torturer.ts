@@ -34,7 +34,7 @@ export class Torturer extends KingdomCard {
         }),
       )
       .from(
-        new ActionChoice('Gain a Curse to your hand', async () => await ie.gainFromPile('curse', CardLocation.HAND)),
+        new ActionChoice('Gain a Curse to your hand', async () => await ie.gainFromPile('Curse', CardLocation.HAND)),
       )
       .choose();
   }

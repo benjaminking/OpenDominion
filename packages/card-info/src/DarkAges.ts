@@ -505,7 +505,7 @@ export const darkAges: CardInfo[] = [
     cost: {
       coins: 5,
     },
-    types: [CardType.ACTION, CardType.ATTACK, CardType.KNIGHT],
+    types: [CardType.ACTION, CardType.ATTACK, CardType.VICTORY, CardType.KNIGHT],
     expansion: Expansion.DARK_AGES,
     has_randomizer: false,
     pileNameOverride: 'Knights',

@@ -18,7 +18,7 @@ export class GuardDog extends KingdomCard {
     this.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.PLAYED_CARD, EffectSource.OTHER_PLAYER)
+        .triggerOn(EffectTriggerType.ATTACK, EffectSource.OTHER_PLAYER)
         .whereCardIs(isAttackCard)
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.HAND))
         .action(new EffectAction(this.reaction.bind(this)))

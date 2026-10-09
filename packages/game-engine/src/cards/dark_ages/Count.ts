@@ -43,8 +43,8 @@ export class Count extends KingdomCard {
         }),
       )
       .from(
-        new ActionChoice('Gain a Copper to your hand', async () => {
-          await ie.gainFromPile('copper', CardLocation.HAND);
+        new ActionChoice('Gain a Copper', async () => {
+          await ie.gainFromPile('Copper');
         }),
       )
       .choose();
@@ -65,7 +65,7 @@ export class Count extends KingdomCard {
       )
       .from(
         new ActionChoice('Gain a Duchy', async () => {
-          await ie.gainFromPile('duchy');
+          await ie.gainFromPile('Duchy');
         }),
       )
       .choose();

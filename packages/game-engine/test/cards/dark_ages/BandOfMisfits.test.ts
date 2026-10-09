@@ -55,7 +55,6 @@ describe('BandOfMisfits', () => {
     expect(testHarness.stats.coins).toBe(0);
   });
 
-  // BUG: Duration Action cards are excluded, but the card text only excludes Command cards
   it('can play a Duration Action card from the Supply', async () => {
     const testHarness = createCardHarness();
     const fishingVillage = new FishingVillage(testHarness.sharedGameState);
@@ -70,7 +69,6 @@ describe('BandOfMisfits', () => {
     expect(testHarness.pileCards.get('Fishing Village')).toEqual([fishingVillage]);
   });
 
-  // BUG: CardPlayOptions.Builder.build() drops leaveItThere, so the played card is never blocked from moving
   it('keeps the played card locked in the Supply while it is being played', async () => {
     const testHarness = createCardHarness();
     const village = new Village(testHarness.sharedGameState);

@@ -76,7 +76,7 @@ export class YoungWitch extends KingdomCard {
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!revealedBane) {
-      await attackedIe.gainFromPile('curse');
+      await attackedIe.gainFromPile('Curse');
     }
   }
 }

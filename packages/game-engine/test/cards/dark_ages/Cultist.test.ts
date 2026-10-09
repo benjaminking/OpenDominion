@@ -90,7 +90,6 @@ describe('Cultist', () => {
     expect(testHarness.inPlay.size()).toBe(0);
   });
 
-  // BUG: playing a Cultist via Cultist uses playCardFromHand's default options, which spend an Action
   it('playing another Cultist from hand does not use an Action', async () => {
     const testHarness = createCardHarness();
     const secondCultist = new Cultist(testHarness.sharedGameState);

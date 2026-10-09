@@ -51,7 +51,6 @@ describe('Clerk', () => {
     expect(targetHarness.decisionService.chooseCard).not.toHaveBeenCalled();
   });
 
-  // BUG: Clerk is an Action–Reaction–Attack in 2E, but it is typed without Attack and uses eachOtherPlayer
   it('is an Attack, so its effect on other players goes through the attack', async () => {
     const testHarness = createCardHarness();
     const targetHarness = createCardHarness();
@@ -86,7 +85,6 @@ describe('Clerk', () => {
     expect(testHarness.hand.contains(clerk)).toBe(false);
   });
 
-  // BUG: playCardFromLocation removes Clerk from hand but never puts it into play, so it vanishes
   it('is in play after being played from hand at the start of your turn', async () => {
     const testHarness = createCardHarness();
     const targetHarness = createCardHarness();

@@ -59,7 +59,6 @@ describe('DeathCart', () => {
     expect(testHarness.hand.asCardArray()).toEqual([copper]);
   });
 
-  // BUG: the chosen card is always trashed "from HAND", so trashing this Death Cart from play fails
   it('may trash itself from play for +$5', async () => {
     const testHarness = createCardHarness();
     const deathCart = new DeathCart(testHarness.sharedGameState);
@@ -74,7 +73,6 @@ describe('DeathCart', () => {
     expect(testHarness.inPlay.size()).toBe(0);
   });
 
-  // BUG: every Action card in play is offered, not just this Death Cart
   it('offers only itself and Action cards in hand', async () => {
     const testHarness = createCardHarness();
     const deathCart = new DeathCart(testHarness.sharedGameState);

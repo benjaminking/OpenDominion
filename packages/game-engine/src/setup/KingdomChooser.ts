@@ -26,6 +26,7 @@ export class KingdomChooser {
   ) {
     for (const requiredCardName of requiredCardNames) {
       this.requiredCardRandomizers.push(this.createRandomizer(requiredCardName));
+      this.usedCardNames.add(requiredCardName);
     }
   }
 
@@ -37,6 +38,7 @@ export class KingdomChooser {
     if (this.requiredCardRandomizers.length > 0) {
       const requiredRandomizer = this.requiredCardRandomizers.pop()!;
       this.kingdomCardsGenerated.addCard(requiredRandomizer);
+      this.allCardsGenerated.addCard(requiredRandomizer);
       return requiredRandomizer;
     }
     const randomizer = this.selectMatchingRandomizer(this.anyKingdomPileSpecification);
@@ -54,7 +56,10 @@ export class KingdomChooser {
     if (randomCardName === undefined) {
       return undefined;
     }
-    return this.createRandomizer(randomCardName);
+    this.usedCardNames.add(randomCardName);
+    const randomizer = this.createRandomizer(randomCardName);
+    this.allCardsGenerated.addCard(randomizer);
+    return randomizer;
   }
 
   private createRandomizer(cardName: string): Card {
@@ -69,7 +74,7 @@ export class KingdomChooser {
   public applyGameStateSetupRules(sharedGameState: SharedGameState): void {
     for (const randomizer of this.allCardsGenerated) {
       if (!randomizer.getSetupRules().hasAnyGameStateSetupRules()) {
-        return;
+        continue;
       }
 
       while (randomizer.getSetupRules().hasAnyGameStateSetupRules()) {

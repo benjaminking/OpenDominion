@@ -14,12 +14,12 @@ export class Bonfire extends Event {
 
   public async onBuy(ie: InstructionExecutor): Promise<void> {
     const cards = await ie
-      .chooseCards('Choose up to 4 cards to trash')
-      .from(CardLocation.HAND)
+      .chooseCards('Choose up to 2 Coppers in play to trash')
+      .from(CardLocation.IN_PLAY)
       .to(CardSelectionPurpose.TRASH)
       .whereNumCardsIs(upToNChecked(2))
       .whereCardIs(cardNameIs('Copper'))
       .choose();
-    await ie.trashCardsFromLocation(cards, CardLocation.HAND);
+    await ie.trashCardsFromLocation(cards, CardLocation.IN_PLAY);
   }
 }

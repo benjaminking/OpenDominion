@@ -26,7 +26,7 @@ export class Herald extends KingdomCard {
               return;
             }
             for (let i = 0; i < overpayAmount.coins; ++i) {
-              const cardToTopDeck = ie
+              const cardToTopDeck = await ie
                 .chooseCard('Choose a card to put on your deck')
                 .from(CardLocation.DISCARD)
                 .to(CardSelectionPurpose.TOPDECK)

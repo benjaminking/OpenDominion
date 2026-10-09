@@ -13,7 +13,6 @@ export class KingdomCard extends Card {
   public constructor(sharedGameState: SharedGameState, cardInfo: CardInfo) {
     super(sharedGameState, cardInfo);
     this._expansion = cardInfo.expansion;
-    this.markAsSupplyCard();
   }
 
   // TODO: there are non-kingdom cards that have an expansion

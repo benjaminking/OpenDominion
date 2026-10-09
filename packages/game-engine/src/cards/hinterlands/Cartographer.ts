@@ -16,7 +16,6 @@ export class Cartographer extends KingdomCard {
     ie.addActions(1);
 
     const topCards = await ie.takeCardsOffDeck(4);
-    await ie.revealCards(topCards);
 
     const toDiscard: CardCollection = await ie
       .chooseCards('Choose any number of cards to discard')

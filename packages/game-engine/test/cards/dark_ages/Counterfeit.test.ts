@@ -53,7 +53,6 @@ describe('Counterfeit', () => {
     expect(testHarness.sharedTrash.size()).toBe(0);
   });
 
-  // BUG: returnCardToPileFromLocation doesn't check the card's location, so the 2nd play returns Spoils to its pile again
   it('plays a Spoils twice; it returns to its pile once and is not trashed', async () => {
     const testHarness = createCardHarness();
     const spoils = new Spoils(testHarness.sharedGameState);

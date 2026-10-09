@@ -102,16 +102,18 @@ describe('TurnTracker', () => {
     expect(tracker.getCardsGainedOnTurnEligibilityFunction(tracker.getCurrentTurn().nextTurn())).toBe(noCard);
   });
 
-  it('builds a name-based eligibility function for the cards bought this turn', () => {
+  it('matches the cards bought this turn, including ones bought after the function was created', () => {
     const tracker = createTracker();
     tracker.startNewStandardTurn();
-
-    expect(tracker.getCardsBoughtThisTurnEligibilityFunction()).toBe(noCard);
-
-    tracker.addBoughtCard(createCard('Province'));
     const boughtThisTurn = tracker.getCardsBoughtThisTurnEligibilityFunction();
+    const province = createCard('Province');
 
-    expect(boughtThisTurn.matches(createCard('Province'))).toBe(true);
+    expect(boughtThisTurn.matches(province)).toBe(false);
+
+    tracker.addBoughtCard(province);
+
+    expect(boughtThisTurn.matches(province)).toBe(true);
+    expect(boughtThisTurn.matches(createCard('Province'))).toBe(false);
     expect(boughtThisTurn.matches(createCard('Duchy'))).toBe(false);
   });
 

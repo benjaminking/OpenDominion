@@ -12,7 +12,6 @@ export class Survivors extends Card {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     const topCards = await ie.takeCardsOffDeck(2);
-    await ie.revealCards(topCards);
 
     if (topCards.size() === 0) {
       return;

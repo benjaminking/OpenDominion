@@ -26,14 +26,14 @@ export class HuntingGrounds extends KingdomCard {
               .chooseOneOption('Choose one:')
               .from(
                 new ActionChoice('Gain a Duchy', async () => {
-                  await ie.gainFromPile('duchy');
+                  await ie.gainFromPile('Duchy');
                 }),
               )
               .from(
                 new ActionChoice('Gain 3 Estates', async () => {
-                  await ie.gainFromPile('estate');
-                  await ie.gainFromPile('estate');
-                  await ie.gainFromPile('estate');
+                  await ie.gainFromPile('Estate');
+                  await ie.gainFromPile('Estate');
+                  await ie.gainFromPile('Estate');
                 }),
               )
               .choose();

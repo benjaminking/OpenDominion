@@ -170,7 +170,6 @@ describe('special pile definitions for expansions that are not loaded yet', () =
     expect(lookup.lookUpSpecialPile(randomizerName as SpecialPileType).pileName).toBe(randomizerName);
   });
 
-  // BUG: SpecialPileType.ENCAMPMENT_PLUNDER is 'Encampment_plunder', not the randomizer name 'Encampment/Plunder'
   it('looks up the Encampment/Plunder special pile by its randomizer name', () => {
     expect(lookup.lookUpSpecialPile('Encampment/Plunder' as SpecialPileType).pileName).toBe('Encampment/Plunder');
   });
@@ -198,7 +197,6 @@ describe('creating special piles for expansions that are not loaded yet', () => 
     }
   });
 
-  // BUG: createSpecialPile puts the first-listed cards at the bottom, so e.g. Plunder ends up on top of Encampment
   it('puts the first-listed cards on top of unshuffled special piles', () => {
     const splitPile = createPileFactory(2).createSpecialPile(
       lookup.lookUpSpecialPile(SpecialPileType.ENCAMPMENT_PLUNDER),
@@ -212,7 +210,6 @@ describe('creating special piles for expansions that are not loaded yet', () => 
     expect(castlesPile.asCardArray()[0].getName()).toBe(convertToClassName("King's Castle"));
   });
 
-  // BUG: the 16-card Allies split piles are trimmed to the default pile size of 10
   it('keeps all sixteen cards of an Allies split pile', () => {
     const pile = createPileFactory(2).createSpecialPile(lookup.lookUpSpecialPile(SpecialPileType.TOWNSFOLK));
 

@@ -713,7 +713,6 @@ describe('InstructionExecutor', () => {
       );
     });
 
-    // BUG: playCardFromLocation removes the card from its zone but never adds it to play, so the card vanishes
     it('puts a card played from another location into play', async () => {
       const { executor, ownedCards } = createHarness();
       const card = createCard('Village', 'vassal-target');
@@ -774,7 +773,6 @@ describe('InstructionExecutor', () => {
       );
     });
 
-    // BUG: CardPlayOptions.Builder.build() drops leaveInPlace, so LEAVING_IT_THERE never blocks the card from moving
     it('keeps a supply card from moving itself while it is played leaving it there', async () => {
       const pileCard = createCard('Pillage', 'pillage-pile-0');
       const pile = createPile('Pillage', [pileCard]);
@@ -848,7 +846,6 @@ describe('InstructionExecutor', () => {
       expect(ownedCards.getDiscard().size()).toBe(0);
     });
 
-    // BUG: the other pile's top card is removed before the movement check, so it vanishes when the returned card is blocked
     it('takes nothing from the other pile when the card being returned is blocked from moving', () => {
       const { executor, ownedCards, madmanPile, madmanTop, hermit, sharedGameState } = createExchangeHarness();
       sharedGameState.blockCardFromMoving(hermit);
@@ -884,7 +881,6 @@ describe('InstructionExecutor', () => {
       expect(card.getLocation()).toBe(CardLocation.IN_PLAY);
     });
 
-    // BUG: returning a card to its pile never resets its location, so the pile's top card still reports IN_PLAY
     it('marks a returned card as being in its pile', () => {
       const spoilsPile = createPile('Spoils', []);
       const { executor, ownedCards } = createHarness({ piles: createPiles(spoilsPile) });
@@ -1212,7 +1208,6 @@ describe('InstructionExecutor', () => {
       expect(ownedCards.getCardsFromArea(CardLocation.REVEAL_LIMBO).contains(cards[2])).toBe(false);
     });
 
-    // BUG: with no separate set, `cards ??= discardedCards` makes removeCards empty discardedCards before discarding
     it('discards every revealed card when no separate set is given', async () => {
       const { executor, ownedCards } = createHarness();
       ownedCards.addCardToDeck(createCard('Copper', 'copper-0', CardType.TREASURE));
@@ -1321,7 +1316,6 @@ describe('InstructionExecutor', () => {
       expect(loggedTemplates(logger).some((message) => message.includes('lost track'))).toBe(true);
     });
 
-    // BUG: putCardIntoHandFromLocation's location check is inverted, so a card found there is never removed from it
     it('moves a card from the given location into hand', () => {
       const { executor, ownedCards } = createHarness();
       const card = createCard('Gold', 'gold-0', CardType.TREASURE);
@@ -1333,7 +1327,6 @@ describe('InstructionExecutor', () => {
       expect(ownedCards.getCardsFromArea(CardLocation.SET_ASIDE).contains(card)).toBe(false);
     });
 
-    // BUG: same inverted check; a card that has left the location is still put into hand after logging "lost track"
     it('does not put a card into hand when it is no longer at the given location', () => {
       const { executor, ownedCards, logger } = createHarness();
       const card = createCard('Gold', 'gold-0', CardType.TREASURE);
@@ -1346,7 +1339,6 @@ describe('InstructionExecutor', () => {
       expect(ownedCards.getDeck().contains(card)).toBe(true);
     });
 
-    // BUG: putCardsIntoHandFromLocation has the same inverted check, leaving each card in its source zone as well
     it('moves several cards from the given location into hand', async () => {
       const { executor, ownedCards } = createHarness();
       ownedCards.addCardToDeck(createCard('Copper', 'copper-0', CardType.TREASURE));
@@ -1438,7 +1430,6 @@ describe('InstructionExecutor', () => {
       expect(executor.getNumCardsGainedInThisTurnsBuyPhase()).toBe(2);
     });
 
-    // BUG: the played card is registered before PLAYED_CARD fires, so the first matching card already counts as played
     it('matches only the first matching card played this turn', async () => {
       const { executor, ownedCards, sharedGameState } = createHarness();
       const firstSilver = createCard('Silver', 'silver-0', CardType.TREASURE);
@@ -1488,7 +1479,6 @@ describe('InstructionExecutor', () => {
       expect(executor.createPlayerToTheLeftGainedOnTheirLastTurnCardEligibilityFunction()).toBe(noCard);
     });
 
-    // BUG: isDuplicateWith matches cards with no copy in the collection, so not(isDuplicateWith(...)) matches duplicates
     it('matches only cards that have no copy in hand or in play', () => {
       const { executor, ownedCards } = createHarness();
       ownedCards.addCardToHand(createCard('Copper', 'copper-hand', CardType.TREASURE));

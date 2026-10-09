@@ -52,7 +52,6 @@ describe('Count', () => {
     expect(testHarness.sharedTrash.contains(copper)).toBe(true);
   });
 
-  // BUG: gains from lowercase pile 'duchy', but pile names are case-sensitive, so nothing is gained
   it('gains a Duchy', async () => {
     const testHarness = createCardHarness();
     const handCards: Copper[] = [];
@@ -92,14 +91,13 @@ describe('Count', () => {
     expect(testHarness.sharedTrash.size()).toBe(0);
   });
 
-  // BUG: the card text gains the Copper normally (to the discard pile), but it is gained to hand
   it('gains a Copper to the discard pile', async () => {
     const testHarness = createCardHarness();
     const copper = new Copper(testHarness.sharedGameState);
     copper.setId('copper-supply-0');
     testHarness.addSupplyPile(copper);
 
-    testHarness.pickOption('Gain a Copper to your hand');
+    testHarness.pickOption('Gain a Copper');
     testHarness.pickOption('+$3');
     await new Count(testHarness.sharedGameState).play(testHarness.executor);
 

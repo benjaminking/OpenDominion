@@ -73,7 +73,6 @@ describe('Investment', () => {
     expect(testHarness.sharedTrash.size()).toBe(0);
   });
 
-  // BUG: VP is given even when Investment could not be trashed (here: already trashed by its first play)
   it('gives no VP when it cannot trash itself', async () => {
     const testHarness = createCardHarness();
     for (let cardIndex = 0; cardIndex < 2; cardIndex++) {

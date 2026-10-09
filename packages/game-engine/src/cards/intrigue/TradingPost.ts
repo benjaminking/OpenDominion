@@ -23,7 +23,7 @@ export class TradingPost extends KingdomCard {
     const trashedCards: CardCollection = await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);
 
     if (trashedCards.size() >= 2) {
-      await ie.gainFromPile('silver', CardLocation.HAND);
+      await ie.gainFromPile('Silver', CardLocation.HAND);
     }
   }
 }

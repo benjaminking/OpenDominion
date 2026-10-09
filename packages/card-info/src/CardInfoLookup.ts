@@ -96,21 +96,24 @@ export class CardInfoLookup {
 
     if (randomizerRequirements?.requiredExpansions && randomizerRequirements.requiredExpansions.length > 0) {
       for (const expansion of randomizerRequirements.requiredExpansions) {
-        const namesForExpansion = instance.cardNamesByExpansion.get(expansion)!;
+        const namesForExpansion = instance.cardNamesByExpansion.get(expansion) ?? new Set<string>();
         matchingRandomizerNames = matchingRandomizerNames.intersection(namesForExpansion);
       }
     }
 
     if (randomizerRequirements?.requiredCoinCosts && randomizerRequirements.requiredCoinCosts.length > 0) {
+      // a card matches if it costs any one of the required coin costs
+      let namesForAnyCoinCost = new Set<string>();
       for (const coinCost of randomizerRequirements.requiredCoinCosts) {
-        const namesForCoinCost = instance.cardNamesByCoinCost.get(coinCost)!;
-        matchingRandomizerNames = matchingRandomizerNames.intersection(namesForCoinCost);
+        const namesForCoinCost = instance.cardNamesByCoinCost.get(coinCost) ?? new Set<string>();
+        namesForAnyCoinCost = namesForAnyCoinCost.union(namesForCoinCost);
       }
+      matchingRandomizerNames = matchingRandomizerNames.intersection(namesForAnyCoinCost);
     }
 
     if (randomizerRequirements?.requiredTypes && randomizerRequirements.requiredTypes.length > 0) {
       for (const cardType of randomizerRequirements.requiredTypes) {
-        const namesForCardType = instance.cardNamesByType.get(cardType)!;
+        const namesForCardType = instance.cardNamesByType.get(cardType) ?? new Set<string>();
         matchingRandomizerNames = matchingRandomizerNames.intersection(namesForCardType);
       }
     }

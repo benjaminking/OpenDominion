@@ -14,7 +14,7 @@ export class Bureaucrat extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.gainFromPile('silver', CardLocation.DECK);
+    await ie.gainFromPile('Silver', CardLocation.DECK);
     await ie.performAttack(this, this.attack.bind(this));
   }
 

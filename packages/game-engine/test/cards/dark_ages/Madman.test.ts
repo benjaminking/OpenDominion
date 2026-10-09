@@ -25,7 +25,6 @@ const setUp = (numHandCards: number, numDeckCards: number) => {
 };
 
 describe('Madman', () => {
-  // BUG: Piles.returnCardToPile never sets the returned card's location to Pile
   it('gives +2 Actions, returns itself to the Madman pile and draws a card per card in hand', async () => {
     const { testHarness, madman } = setUp(3, 5);
 
@@ -62,7 +61,6 @@ describe('Madman', () => {
     expect(testHarness.hand.size()).toBe(2);
   });
 
-  // BUG: returnCardToPileFromLocation returns the card even when it was not at that location, so a replay redraws
   it('gives +2 Actions but draws nothing when played again after it was already returned (e.g. Throne Room)', async () => {
     const { testHarness, madman } = setUp(2, 10);
 

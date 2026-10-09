@@ -36,10 +36,9 @@ export class Pillage extends KingdomCard {
         .chooseCard("Choose a card from opponent's hand to discard")
         .from(hand)
         .to(CardSelectionPurpose.DISCARD)
-        .allowNoneOption()
         .choose();
       if (cardToDiscard instanceof Card) {
-        await attackedIe.discardCard(cardToDiscard);
+        await attackedIe.discardCardFromLocation(cardToDiscard, CardLocation.HAND);
       }
     }
   }

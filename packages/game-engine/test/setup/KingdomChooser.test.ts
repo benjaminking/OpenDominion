@@ -81,12 +81,13 @@ describe('KingdomChooser', () => {
 
   it('creates a randomizer for a card matching the pile specification', () => {
     const { cardFactory } = createFakeCardFactory();
-    const chooser = new KingdomChooser(cardFactory, []);
     const matchingClassNames = new Map(
       CardInfoLookup.getKingdomCardNames().map((name) => [convertToClassName(name), name] as const),
     );
 
+    // a chooser never selects the same card twice, so each attempt uses a fresh one
     for (let attempt = 0; attempt < 10; attempt++) {
+      const chooser = new KingdomChooser(cardFactory, []);
       const randomizer = chooser.selectMatchingRandomizer(
         new PileSpecification({
           requiredExpansions: [Expansion.BASE],
@@ -154,7 +155,6 @@ describe('KingdomChooser', () => {
     expect(chooser.getProportionFromExpansion(Expansion.PROSPERITY)).toBe(0);
   });
 
-  // BUG: KingdomChooser never adds chosen cards to usedCardNames, so kingdom cards can repeat
   it('never chooses a card that is already in the kingdom', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
     const firstCandidate = CardInfoLookup.findMatchingRandomizerName()!;
@@ -174,7 +174,6 @@ describe('KingdomChooser', () => {
     expect(new Set(pileNames).size).toBe(10);
   });
 
-  // BUG: KingdomChooser never adds chosen cards to usedCardNames, so an extra pile (e.g. Bane) can repeat a kingdom card
   it('does not choose an extra pile that is already in the kingdom', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0);
     const firstCandidate = CardInfoLookup.findMatchingRandomizerName()!;
@@ -187,7 +186,6 @@ describe('KingdomChooser', () => {
     expect(extraPileRandomizer?.getPileName()).not.toBe(convertToClassName(firstCandidate));
   });
 
-  // BUG: allCardsGenerated is never populated, so game-state setup rules (Baker, Footpad, Peddler) are never applied
   it('applies the game-state setup rules of every generated randomizer, including extra piles', () => {
     const villageRule = createGameStateRule();
     const smithyRule = createGameStateRule();
@@ -221,7 +219,6 @@ describe('KingdomChooser', () => {
     expect(createdRules[0].applySetupRule).toHaveBeenCalledWith(sharedGameState);
   });
 
-  // BUG: applyGameStateSetupRules returns at the first randomizer without game-state rules instead of continuing
   it('keeps applying game-state setup rules after a randomizer that has none', () => {
     const smithyRule = createGameStateRule();
     const { cardFactory } = createFakeCardFactory({ Smithy: setupRulesWith(smithyRule) });

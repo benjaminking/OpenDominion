@@ -126,7 +126,6 @@ describe('Hermit', () => {
     expect(testHarness.pileCards.get('Hermit')).toEqual([]);
   });
 
-  // BUG: the end-of-Buy-phase effect never checks whether a card was gained during the Buy phase
   it('does not exchange itself if a card was gained during the Buy phase', async () => {
     const testHarness = createCardHarness();
     const hermit = new Hermit(testHarness.sharedGameState);

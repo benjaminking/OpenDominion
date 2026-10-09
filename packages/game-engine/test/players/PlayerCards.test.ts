@@ -392,7 +392,6 @@ describe('PlayerCards', () => {
     expect(cards.getDiscard().contains(deckCards[1])).toBe(true);
   });
 
-  // BUG: putDeckInDiscard leaves each moved card's location as DECK, so later lookups in the discard pile fail
   it('marks cards moved from the deck into the discard pile as being in the discard pile', () => {
     const { cards } = createPlayerCards();
     const deckCard = createCard('Copper', 'deck-0', CardType.TREASURE);

@@ -3,6 +3,7 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardPlayOptions } from '../../CardPlayOptions';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
@@ -44,7 +45,7 @@ export class Cultist extends KingdomCard {
       .allowNoneOption()
       .choose();
     if (choice instanceof Card) {
-      await ie.playCardFromHand(choice);
+      await ie.playCardFromHand(choice, CardPlayOptions.DONT_USE_ACTION);
     }
   }
 

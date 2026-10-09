@@ -9,7 +9,6 @@ import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
 describe('Beggar', () => {
-  // BUG: gains from lowercase pile 'copper', but pile names are case-sensitive, so nothing is gained
   it('gains 3 Coppers to hand', async () => {
     const testHarness = createCardHarness();
     for (let cardIndex = 0; cardIndex < 4; cardIndex++) {
@@ -26,7 +25,6 @@ describe('Beggar', () => {
     expect(testHarness.pileCards.get('Copper')).toHaveLength(1);
   });
 
-  // BUG: gains from lowercase pile 'copper', but pile names are case-sensitive, so nothing is gained
   it('gains only as many Coppers as remain in the pile', async () => {
     const testHarness = createCardHarness();
     const supplyCopper = new Copper(testHarness.sharedGameState);
@@ -55,7 +53,6 @@ describe('Beggar', () => {
     expect(reaction.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
   });
 
-  // BUG: gains from lowercase pile 'silver', but pile names are case-sensitive, so nothing is gained
   it('reaction discards it to gain 2 Silvers, putting one onto the deck', async () => {
     const testHarness = createCardHarness();
     const beggar = new Beggar(testHarness.sharedGameState);

@@ -38,6 +38,7 @@ describe('Farrier', () => {
     expect(testHarness.hand.size()).toBe(0);
 
     const [turnEndEffect] = testHarness.getAddedEffects(EffectTriggerType.TURN_END);
+    expect(turnEndEffect.isMandatory()).toBe(true);
     await turnEndEffect.doAction(testHarness.executor, undefined);
 
     expect(testHarness.hand.size()).toBe(2);
@@ -58,7 +59,6 @@ describe('Farrier', () => {
     expect(testHarness.getAddedEffects()).toHaveLength(0);
   });
 
-  // BUG: the end-of-turn draw effect has no expiration or turn restriction, so it repeats on every later turn
   it('only draws at the end of the turn it was bought on', async () => {
     const testHarness = createCardHarness();
     for (let cardIndex = 0; cardIndex < 3; cardIndex++) {

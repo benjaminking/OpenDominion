@@ -100,7 +100,6 @@ describe('CrystalBall', () => {
     expect(testHarness.stats.coins).toBe(1);
   });
 
-  // BUG: playCardFromLocation takes the card out of limbo but never puts it into play, so it vanishes
   it('puts a card played from the deck into play', async () => {
     const testHarness = createCardHarness();
     const silver = new Silver(testHarness.sharedGameState);
@@ -113,7 +112,6 @@ describe('CrystalBall', () => {
     expect(testHarness.inPlay.contains(silver)).toBe(true);
   });
 
-  // BUG: trashing, discarding and playing are all optional, but there is no option to leave the card on the deck
   it('lets you leave the top card on your deck', async () => {
     const testHarness = createCardHarness();
     const estate = new Estate(testHarness.sharedGameState);

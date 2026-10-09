@@ -45,7 +45,6 @@ describe('WanderingMinstrel', () => {
     expect(idsOf(testHarness.deck)).toEqual(['gold-deck-4', 'smithy-deck-3', 'village-deck-1']);
   });
 
-  // BUG: discardCardsFromRevealedSet(nonActions) empties nonActions before discarding, so they vanish
   it('discards the revealed non-Action cards', async () => {
     const testHarness = createCardHarness();
     stackDeck(testHarness, [

@@ -371,7 +371,6 @@ describe('SharedGameState', () => {
       expect(state.isCardAbleToMove(sameIdCard)).toBe(false);
     });
 
-    // BUG: releasing a card that was never blocked stores NaN (undefined - 1), so the card can never move again
     it('leaves a card that was never blocked able to move when it is released', () => {
       const state = createSharedGameState([createPlayerStub('Alice')]);
       const card = createCard('Village', 'village-0');
@@ -523,7 +522,6 @@ describe('SharedGameState', () => {
       expect(pile.size()).toBe(0);
     });
 
-    // BUG: SharedGameState.buyFromPile (used by the buy phase) spends only coins, never the potion in a card's cost
     it("spends the potion in a card's cost when it is bought", async () => {
       const { alice, state } = setUpBuy(Cost.Potion(3));
 
@@ -533,7 +531,6 @@ describe('SharedGameState', () => {
       expect(alice.statistics.spendPotions).toHaveBeenCalledWith(1);
     });
 
-    // BUG: SharedGameState.buyFromPile neither records the bought card nor passes it to BUY effects
     it('records the bought card for the buyer and passes it to buy effects', async () => {
       const { alice, state, card } = setUpBuy(Cost.Simple(4));
       state.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.SELF);

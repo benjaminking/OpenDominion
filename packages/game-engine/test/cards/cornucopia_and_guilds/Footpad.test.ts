@@ -70,7 +70,6 @@ describe('Footpad', () => {
     expect(testHarness.hand.asCardArray()).toEqual([copper]);
   });
 
-  // BUG: the global gain effect has no Action-phase condition, so it also draws for gains in the Buy phase
   it('does not give +1 Card for gaining a card outside an Action phase', async () => {
     const testHarness = createCardHarness();
     const copper = new Copper(testHarness.sharedGameState);

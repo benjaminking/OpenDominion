@@ -60,7 +60,6 @@ describe('Haggler', () => {
     expect(testHarness.discard.size()).toBe(1);
   });
 
-  // BUG: the bought-card filter is snapshotted when Haggler is played (and noCard matches everything), so non-bought gains trigger it
   it('does not trigger when you gain a card you did not buy', async () => {
     const testHarness = createCardHarness();
     await new Haggler(testHarness.sharedGameState).play(testHarness.executor);

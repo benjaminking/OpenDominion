@@ -34,7 +34,6 @@ export class Develop extends KingdomCard {
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(either(costsExactlyNLessThanCard(trashedCard, 1), costsExactlyNMoreThanCard(trashedCard, 1)))
-      .allowNoneOption()
       .choose();
 
     if (cardToGain instanceof Card) {
@@ -51,7 +50,6 @@ export class Develop extends KingdomCard {
         .from(CardSelectionLocation.SUPPLY)
         .to(CardSelectionPurpose.GAIN)
         .whereCardIs(otherCardEligibilityFunction)
-        .allowNoneOption()
         .choose();
 
       if (otherCardToGain instanceof Card) {

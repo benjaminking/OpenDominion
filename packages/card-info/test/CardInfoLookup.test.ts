@@ -198,7 +198,6 @@ describe('CardInfoLookup', () => {
       ).toBeUndefined();
     });
 
-    // BUG: multiple required coin costs are intersected, so "costs $2 or $3" (Young Witch's Bane) never matches
     it('chooses a randomizer costing any one of several required coin costs', () => {
       const matches = allMatchingRandomizerNames({ requiredCoinCosts: [2, 3] });
 
@@ -211,7 +210,6 @@ describe('CardInfoLookup', () => {
       expect(matches.has('Village')).toBe(true);
     });
 
-    // BUG: a requirement that no loaded card satisfies crashes on an undefined index set instead of returning undefined
     it('returns undefined for requirements that no loaded card can satisfy', () => {
       expect(CardInfoLookup.findMatchingRandomizerName({ requiredCoinCosts: [99] })).toBeUndefined();
       expect(CardInfoLookup.findMatchingRandomizerName({ requiredExpansions: [Expansion.EMPIRES] })).toBeUndefined();

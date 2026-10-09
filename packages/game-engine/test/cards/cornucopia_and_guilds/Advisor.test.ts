@@ -8,7 +8,6 @@ import { Advisor } from '../../../src/cards/cornucopia_and_guilds/Advisor';
 import { createCardHarness } from '../testHarness';
 
 describe('Advisor', () => {
-  // BUG: putCardsIntoHandFromSet(topCards, topCards) empties topCards first, so the unchosen cards never reach hand
   it('gives +1 Action, discards the chosen revealed card and puts the rest into hand', async () => {
     const testHarness = createCardHarness();
     const estate = new Estate(testHarness.sharedGameState);
@@ -46,7 +45,6 @@ describe('Advisor', () => {
     expect(testHarness.discard.size()).toBe(0);
   });
 
-  // BUG: the left player's choice is resolved against their own cards, so it cannot find the revealed card
   it('lets the player to the left choose which revealed card is discarded', async () => {
     const testHarness = createCardHarness();
     const leftHarness = createCardHarness();

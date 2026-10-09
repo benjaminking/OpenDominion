@@ -25,8 +25,8 @@ export class Beggar extends KingdomCard {
             if (discarded === undefined) {
               return;
             }
-            await ie.gainFromPile('silver');
-            const secondSilver = await ie.gainFromPile('silver');
+            await ie.gainFromPile('Silver');
+            const secondSilver = await ie.gainFromPile('Silver');
             if (secondSilver instanceof Card) {
               await ie.topDeckCardFromLocation(secondSilver, secondSilver.getLocation());
             }
@@ -37,8 +37,8 @@ export class Beggar extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.gainFromPile('copper', CardLocation.HAND);
-    await ie.gainFromPile('copper', CardLocation.HAND);
-    await ie.gainFromPile('copper', CardLocation.HAND);
+    await ie.gainFromPile('Copper', CardLocation.HAND);
+    await ie.gainFromPile('Copper', CardLocation.HAND);
+    await ie.gainFromPile('Copper', CardLocation.HAND);
   }
 }

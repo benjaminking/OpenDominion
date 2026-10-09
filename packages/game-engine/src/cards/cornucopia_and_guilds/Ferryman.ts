@@ -2,10 +2,10 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -16,6 +16,10 @@ import { PileAddingSetupRule } from '../../setup/PileAddingSetupRule';
 import { PileSpecification } from '../../setup/PileSpecification';
 import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
+// Setup runs on a single Ferryman (the randomizer), but every Ferryman in the game
+// needs to know which pile was added, so the pile name is recorded per game.
+const addedPileNames = new WeakMap<SharedGameState, string>();
+
 export class Ferryman extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Ferryman'));
@@ -23,17 +27,26 @@ export class Ferryman extends KingdomCard {
       new PileAddingSetupRule(
         new PileSpecification({ requiredCoinCosts: [3, 4] }),
         new AddedPilePostAction((pile: Pile) => {
-          this.addEffect(
-            new Effect.Builder()
-              .from(this)
-              .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
-              .whereCardIs(isTheSameCardAs(this))
-              .makeMandatory()
-              .action(new EffectAction(async (ie: InstructionExecutor) => ie.gainCardFromPile(pile.name)))
-              .build(),
-          );
+          addedPileNames.set(sharedGameState, pile.name);
         }),
       ),
+    );
+    this.addEffect(
+      new Effect.Builder()
+        .from(this)
+        .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+        .whereCardIs(isTheSameCardAs(this))
+        .addCondition(new EffectCondition(() => addedPileNames.has(sharedGameState)))
+        .makeMandatory()
+        .action(
+          new EffectAction(async (ie: InstructionExecutor) => {
+            const addedPileName = addedPileNames.get(sharedGameState);
+            if (addedPileName !== undefined) {
+              await ie.gainFromPile(addedPileName);
+            }
+          }),
+        )
+        .build(),
     );
   }
 

@@ -63,7 +63,7 @@ export class Blockade extends KingdomCard {
           )
           .action(
             new EffectAction(async (ie: InstructionExecutor, _attackCard: Card) => {
-              await ie.gainFromPile('curse');
+              await ie.gainFromPile('Curse');
             }),
           )
           .build(),

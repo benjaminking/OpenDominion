@@ -43,7 +43,8 @@ export class Trader extends KingdomCard {
     await ie.gainCardFromPileNTimes('Silver', trashedCard.getCost().coins);
   }
 
-  private reaction(ie: InstructionExecutor, gainedCard: Card): void {
+  private async reaction(ie: InstructionExecutor, gainedCard: Card): Promise<void> {
+    await ie.revealCard(this);
     ie.exchangeCardFromLocation(gainedCard, gainedCard.getLocation(), 'Silver');
   }
 }

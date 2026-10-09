@@ -6,7 +6,6 @@ import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { createCardHarness } from '../testHarness';
 
 describe('Bureaucrat', () => {
-  // BUG: gains from lowercase pile 'silver', but pile names are case-sensitive, so nothing is gained
   it('gains a Silver onto deck when played', async () => {
     const testHarness = createCardHarness();
     const silver = new Silver(testHarness.sharedGameState);

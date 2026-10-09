@@ -55,7 +55,6 @@ describe('Rogue', () => {
     expect(targetHarness.sharedTrash.size()).toBe(0);
   });
 
-  // BUG: the trash choice has no whereCardIs filter, so cards outside $3-$6 are offered too
   it('only offers trash cards costing $3-$6', async () => {
     const { testHarness } = setUp();
     putInTrash(testHarness, withId(new Province(testHarness.sharedGameState), 'province-trash-0'));
@@ -116,7 +115,6 @@ describe('Rogue', () => {
     expect(targetHarness.deck.size()).toBe(0);
   });
 
-  // BUG: discardCardsFromRevealedSet(topCards) empties topCards before discarding, so the rest vanish
   it('attack discards the revealed cards that are not trashed', async () => {
     const { testHarness, targetHarness } = setUp();
     stackDeck(targetHarness, [

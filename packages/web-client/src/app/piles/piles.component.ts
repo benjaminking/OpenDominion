@@ -61,6 +61,7 @@ export class PilesComponent implements OnInit {
     updateExistingPileInGroup(pile, this.kingdomPiles);
     updateExistingPileInGroup(pile, this.treasurePiles);
     updateExistingPileInGroup(pile, this.victoryPiles);
+    updateExistingPileInGroup(pile, this.nonKingdomSupplyPiles);
     updateExistingPileInGroup(pile, this.nonSupplyPiles);
   }
 }

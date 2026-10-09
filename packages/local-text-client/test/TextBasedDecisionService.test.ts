@@ -196,7 +196,6 @@ describe('TextBasedDecisionService', () => {
     expect(prompts[0]).toContain('1) Familiar');
   });
 
-  // BUG: numberMultiCardOptions() calls get(name)!.push() only when the name is absent, so it always throws.
   it('groups same-named cards for chooseCards and returns one card per selected marker occurrence', async () => {
     const service = new TextBasedDecisionService(new ClientGameState());
     const cellar1 = { ...createCardChoice('Cellar'), card: createCardMetadata('Cellar', 'cellar-1') };

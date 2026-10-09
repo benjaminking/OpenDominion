@@ -9,7 +9,7 @@ import { WarChest } from '../../../src/cards/prosperity/WarChest';
 import { Turn } from '../../../src/turns/Turn';
 import { CardHarness, createCardHarness } from '../testHarness';
 
-// War Chest remembers named cards per turn number in static state, so each test uses its own turn numbers.
+// War Chest remembers named cards per Turn object, so each call starts a new turn.
 const setCurrentTurn = (testHarness: CardHarness, turnNumber: number): void => {
   vi.mocked(testHarness.sharedGameState.getCurrentTurn).mockReturnValue(
     new Turn(testHarness.player, turnNumber, turnNumber),
@@ -113,7 +113,6 @@ describe('WarChest', () => {
     ]);
   });
 
-  // BUG: named cards are kept in static state keyed only by the per-player turn number, so they leak between players
   it("does not exclude cards named on another player's turn", async () => {
     // Each player's turns are numbered separately, so both players are on their own turn 105
     const firstPlayerHarness = createCardHarness();
