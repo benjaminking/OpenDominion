@@ -52,4 +52,32 @@ describe('EndGameScorer', () => {
     expect(byName.get('Bob')?.outcome).toBe(GameOutcome.LOSS);
     expect(byName.get('Cara')?.outcome).toBe(GameOutcome.LOSS);
   });
+
+  it('ignores the turn counts of players who are not tied for the highest score', () => {
+    const scorer = new EndGameScorer();
+
+    scorer.addPlayerScoreReport('Alice', createScore(30), 18);
+    scorer.addPlayerScoreReport('Bob', createScore(30), 18);
+    scorer.addPlayerScoreReport('Cara', createScore(12), 17);
+
+    const byName = new Map(scorer.getGameResult().playerResults.map((r) => [r.playerName, r]));
+
+    expect(byName.get('Alice')?.outcome).toBe(GameOutcome.TIE);
+    expect(byName.get('Bob')?.outcome).toBe(GameOutcome.TIE);
+    expect(byName.get('Cara')?.outcome).toBe(GameOutcome.LOSS);
+  });
+
+  it('shares the tie among the top scorers with the fewest turns', () => {
+    const scorer = new EndGameScorer();
+
+    scorer.addPlayerScoreReport('Alice', createScore(30), 17);
+    scorer.addPlayerScoreReport('Bob', createScore(30), 17);
+    scorer.addPlayerScoreReport('Cara', createScore(30), 18);
+
+    const byName = new Map(scorer.getGameResult().playerResults.map((r) => [r.playerName, r]));
+
+    expect(byName.get('Alice')?.outcome).toBe(GameOutcome.TIE);
+    expect(byName.get('Bob')?.outcome).toBe(GameOutcome.TIE);
+    expect(byName.get('Cara')?.outcome).toBe(GameOutcome.LOSS);
+  });
 });

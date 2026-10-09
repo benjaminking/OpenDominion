@@ -10,10 +10,16 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 
 import { DecisionManagerService } from '../src/app/decisions/decision-manager.service';
-import { isActionPhaseDecision, isChooseCardsDecision, isTreasurePhaseDecision } from '../src/app/decisions/Decision';
+import {
+  isActionPhaseDecision,
+  isChooseCardDecision,
+  isChooseCardsDecision,
+  isTreasurePhaseDecision,
+} from '../src/app/decisions/Decision';
 import { DecisionType } from '../src/app/decisions/DecisionType';
 import { MessageDecoderService } from '../src/app/message-decoder.service';
 import { MessageWriterService } from '../src/app/message-writer.service';
+import { MiscellaneousCardDialogService } from '../src/app/shared/miscellaneous-card-dialog.service';
 import { ViewVisibilityService } from '../src/app/view-visibility.service';
 import { ViewName } from '../src/app/view-names';
 
@@ -23,6 +29,7 @@ class FakeViewVisibilityService {
     [ViewName.SET_ASIDE]: signal(false),
     [ViewName.TRASH]: signal(false),
     [ViewName.DISCARD]: signal(false),
+    [ViewName.MISCELLANEOUS]: signal(false),
   };
 
   getViewVisibilitySignal(viewName: ViewName): Signal<boolean> {
@@ -139,17 +146,19 @@ function createService() {
     sendChoice: vi.fn(),
   };
   const viewVisibilityService = new FakeViewVisibilityService();
+  const miscellaneousCardDialogService = new MiscellaneousCardDialogService();
   const injector = Injector.create({
     providers: [
       { provide: MessageDecoderService, useValue: decoder },
       { provide: MessageWriterService, useValue: writer },
       { provide: ViewVisibilityService, useValue: viewVisibilityService },
+      { provide: MiscellaneousCardDialogService, useValue: miscellaneousCardDialogService },
     ],
   });
 
   const service = runInInjectionContext(injector, () => new DecisionManagerService());
 
-  return { service, decoder, writer, viewVisibilityService };
+  return { service, decoder, writer, viewVisibilityService, miscellaneousCardDialogService };
 }
 
 describe('DecisionManagerService', () => {
@@ -322,5 +331,90 @@ describe('DecisionManagerService', () => {
       cardChoices: [createCardChoice({ ...createCard('Silver', 'silver-1'), location: CardLocation.DISCARD })],
     });
     expect(viewVisibilityService.getViewVisibilitySignal(ViewName.DISCARD)()).toBe(true);
+  });
+
+  it('opens the miscellaneous view with every offered card when choosing among Rewards in a pile', () => {
+    const { decoder, service, viewVisibilityService, miscellaneousCardDialogService } = createService();
+    const coronet = { ...createCard('Coronet', 'coronet-1'), location: CardLocation.PILE };
+    const renown = { ...createCard('Renown', 'renown-1'), location: CardLocation.PILE };
+    const hugeTurnip = { ...createCard('Huge Turnip', 'huge-turnip-1'), location: CardLocation.PILE };
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Gain a Reward',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [createCardChoice(coronet), createCardChoice(renown), createCardChoice(hugeTurnip)],
+    });
+
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.MISCELLANEOUS)()).toBe(true);
+    expect(miscellaneousCardDialogService.getCards()()).toEqual([coronet, renown, hugeTurnip]);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.REVEALED_LIMBO)()).toBe(false);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.SET_ASIDE)()).toBe(false);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.TRASH)()).toBe(false);
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.DISCARD)()).toBe(false);
+
+    const decision = service.currentDecision();
+    expect(isChooseCardDecision(decision)).toBe(true);
+    if (decision !== undefined && isChooseCardDecision(decision)) {
+      expect([...decision.eligibleCardIds]).toEqual(['coronet-1', 'renown-1', 'huge-turnip-1']);
+    }
+  });
+
+  it('opens the miscellaneous view for Prizes in a pile, including multi-card decisions', () => {
+    const { decoder, viewVisibilityService, miscellaneousCardDialogService } = createService();
+    const bagOfGold = { ...createCard('Bag of Gold', 'bag-of-gold-1'), location: CardLocation.PILE };
+    const princess = { ...createCard('Princess', 'princess-1'), location: CardLocation.PILE };
+
+    decoder.chooseCardsCallback?.({
+      prompt: 'Choose Prizes',
+      selectionType: CardSelectionPurpose.GAIN,
+      numSelectedEligibility: [1],
+      cardChoices: [createCardChoice(bagOfGold), createCardChoice(princess)],
+    });
+
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.MISCELLANEOUS)()).toBe(true);
+    expect(miscellaneousCardDialogService.getCards()()).toEqual([bagOfGold, princess]);
+  });
+
+  it('does not open the miscellaneous view for Reward/Prize names outside a pile or for ordinary pile cards', () => {
+    const { decoder, viewVisibilityService, miscellaneousCardDialogService } = createService();
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Choose a card',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [
+        createCardChoice({ ...createCard('Coronet', 'coronet-1'), location: CardLocation.HAND }),
+        createCardChoice({ ...createCard('Followers', 'followers-1'), location: CardLocation.IN_PLAY }),
+        createCardChoice({ ...createCard('Silver', 'silver-1'), location: CardLocation.PILE }),
+      ],
+    });
+
+    expect(viewVisibilityService.getViewVisibilitySignal(ViewName.MISCELLANEOUS)()).toBe(false);
+    expect(miscellaneousCardDialogService.getCards()()).toEqual([]);
+  });
+
+  it('closes every special view, including the miscellaneous view, when a single card is chosen', () => {
+    const { decoder, service, viewVisibilityService } = createService();
+    const coronet = { ...createCard('Coronet', 'coronet-1'), location: CardLocation.PILE };
+
+    decoder.chooseCardCallback?.({
+      prompt: 'Choose a card',
+      selectionType: CardSelectionPurpose.GAIN,
+      cardChoices: [
+        createCardChoice({ ...createCard('Imp', 'imp-1'), location: CardLocation.REVEAL_LIMBO }),
+        createCardChoice({ ...createCard('Horse', 'horse-1'), location: CardLocation.SET_ASIDE }),
+        createCardChoice({ ...createCard('Copper', 'copper-1'), location: CardLocation.TRASH }),
+        createCardChoice({ ...createCard('Silver', 'silver-1'), location: CardLocation.DISCARD }),
+        createCardChoice(coronet),
+      ],
+    });
+    for (const viewName of Object.values(ViewName)) {
+      expect(viewVisibilityService.getViewVisibilitySignal(viewName)()).toBe(true);
+    }
+
+    service.resolveDecisionWithCard(coronet);
+
+    for (const viewName of Object.values(ViewName)) {
+      expect(viewVisibilityService.getViewVisibilitySignal(viewName)()).toBe(false);
+    }
   });
 });

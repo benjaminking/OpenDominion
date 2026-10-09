@@ -19,6 +19,6 @@ describe('KingdomChooser required cards', () => {
 
     expect(first?.getPileName()).toBe('Village');
     expect(chooser.hasMoreKingdomCards()).toBe(true);
-    expect(createCard).toHaveBeenCalledWith('Village', 'Village_randomizer', CardLocation.PILE);
+    expect(createCard).toHaveBeenCalledWith('Village', 'Village-randomizer', CardLocation.PILE);
   });
 });

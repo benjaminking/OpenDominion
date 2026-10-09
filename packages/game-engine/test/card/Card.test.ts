@@ -1,4 +1,4 @@
-import { CardInfo, CardLocation, CardType, Expansion, Mechanic } from '@dominion/common';
+import { CardCategory, CardInfo, CardLocation, CardType, Expansion, Mechanic } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
@@ -8,6 +8,8 @@ import { Effect } from '../../src/effects/Effect';
 import { EffectSource } from '../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
+import { InstructionExecutor } from '../../src/players/InstructionExecutor';
+import { SetupRule, SetupRuleType } from '../../src/setup/SetupRule';
 
 interface SharedGameStateMock {
   cost: ReturnType<typeof vi.fn>;
@@ -25,6 +27,7 @@ class TestCard extends Card {
 }
 
 const createCardInfo = (overrides?: Partial<CardInfo>): CardInfo => ({
+  category: CardCategory.CARD,
   name: "Witch's Hut",
   text: 'Test card text',
   font_size: 'small',
@@ -283,5 +286,56 @@ describe('Card', () => {
     });
     expect(metadata.cost.coins).not.toBe(card.getOriginalCost().coins);
     expect(shared.cost.mock.calls).toContainEqual([card]);
+  });
+
+  it('uses the pile name override from its card info when present', () => {
+    const card = createCard({ name: 'Coronet', pileNameOverride: 'Rewards' });
+
+    expect(card.getName()).toBe('Coronet');
+    expect(card.getPileName()).toBe('Rewards');
+  });
+
+  it('falls back to its own name for the pile name when the override is empty', () => {
+    const card = createCard({ name: 'Village', pileNameOverride: '' });
+
+    expect(card.getPileName()).toBe('Village');
+  });
+
+  it('leaves a cost unchanged by default when asked to adjust it', () => {
+    const card = createCard();
+    const cost = Cost.Potion(3);
+
+    expect(card.adjustCost(cost, {} as InstructionExecutor)).toBe(cost);
+  });
+
+  it('can be bought by default', () => {
+    expect(createCard().canBeBought({} as InstructionExecutor)).toBe(true);
+  });
+
+  it('collects setup rules by type', () => {
+    const card = createCard();
+    const gameStateRule: SetupRule = { setupRuleType: SetupRuleType.GAME_STATE, applySetupRule: vi.fn() };
+    const initializationRule: SetupRule = {
+      setupRuleType: SetupRuleType.GAME_INITIALIZATION,
+      applySetupRule: vi.fn(),
+    };
+
+    expect(card.getSetupRules().hasAnyGameStateSetupRules()).toBe(false);
+    expect(card.getSetupRules().hasAnyGameInitializationSetupRules()).toBe(false);
+
+    card.addSetupRule(gameStateRule);
+    card.addSetupRule(initializationRule);
+
+    expect(card.getSetupRules().getNextGameStateSetupRule()).toBe(gameStateRule);
+    expect(card.getSetupRules().getNextGameInitializationSetupRule()).toBe(initializationRule);
+  });
+
+  it('keeps setup rules separate for each card', () => {
+    const cardWithRule = createCard();
+    const otherCard = createCard();
+
+    cardWithRule.addSetupRule({ setupRuleType: SetupRuleType.GAME_STATE, applySetupRule: vi.fn() });
+
+    expect(otherCard.getSetupRules().hasAnyGameStateSetupRules()).toBe(false);
   });
 });

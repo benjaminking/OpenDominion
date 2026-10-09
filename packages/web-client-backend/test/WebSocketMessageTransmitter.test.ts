@@ -1,7 +1,7 @@
-import { ChoiceType, StatusAction } from '@dominion/common';
+import { ChoiceType, type GameConfiguration, StatusAction } from '@dominion/common';
 import { MessageType } from '@dominion/web-client-common';
-import { WebSocket } from 'ws';
 import { describe, expect, it } from 'vitest';
+import { WebSocket } from 'ws';
 
 import { WebClient } from '../src/WebClient';
 import { WebSocketMessageTransmitter } from '../src/WebSocketMessageTransmitter';
@@ -53,6 +53,39 @@ describe('WebSocketMessageTransmitter', () => {
     expect(sentMessages[1].content).toEqual({ name: 'alice' });
     expect(sentMessages[2].content).toEqual({ names: ['bob', 'carol'] });
     expect(sentMessages[11].content).toEqual({ status: 'waiting', action: StatusAction.REPLACE });
+  });
+});
+
+describe('WebSocketMessageTransmitter game configuration', () => {
+  it('sends the game configuration unchanged as a game configuration message', () => {
+    const socket = new TestSocket();
+    const writer = new WebSocketMessageWriter(socket as unknown as WebSocket);
+    const transmitter = new WebSocketMessageTransmitter(writer);
+    const configuration: GameConfiguration = {
+      randomizerSeed: 'seed-1',
+      usingPotions: true,
+      usingRuins: true,
+      usingShelters: false,
+      usingPlatinumAndColony: true,
+    };
+
+    transmitter.sendGameConfiguration(configuration);
+
+    expect(parseMessages(socket)).toEqual([
+      {
+        type: MessageType.GAME_CONFIGURATION,
+        content: configuration,
+      },
+    ]);
+  });
+
+  it('sends an empty game configuration as an empty content object', () => {
+    const socket = new TestSocket();
+    const transmitter = new WebSocketMessageTransmitter(new WebSocketMessageWriter(socket as unknown as WebSocket));
+
+    transmitter.sendGameConfiguration({});
+
+    expect(parseMessages(socket)).toEqual([{ type: MessageType.GAME_CONFIGURATION, content: {} }]);
   });
 });
 

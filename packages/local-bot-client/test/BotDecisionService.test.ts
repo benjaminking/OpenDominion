@@ -91,7 +91,22 @@ describe('BotDecisionService', () => {
 
     await expect(service.makeActionPhaseChoice([actionChoice] as never)).resolves.toBe(actionChoice);
     await expect(service.makeTreasurePhaseChoice([treasureChoice] as never, undefined)).resolves.toBe(treasureChoice);
-    await expect(service.makeBuyPhaseChoice([buyChoice] as never, 1, 6)).resolves.toBe(buyChoice);
+    await expect(service.makeBuyPhaseChoice([buyChoice] as never, 1, 6, 0)).resolves.toBe(buyChoice);
+  });
+
+  it('passes buy phase options, buys, and coins through to the bot when potions are available', async () => {
+    const buyChoice = createCardChoice('Familiar');
+    const makeBuyPhaseChoice = vi.fn(() => buyChoice);
+    const bot = {
+      useGameState: vi.fn(),
+      makeBuyPhaseChoice,
+    } as never;
+    const service = new BotDecisionService({} as never, bot);
+
+    await expect(service.makeBuyPhaseChoice([buyChoice] as never, 2, 3, 1)).resolves.toBe(buyChoice);
+
+    expect(makeBuyPhaseChoice).toHaveBeenCalledTimes(1);
+    expect(makeBuyPhaseChoice.mock.calls[0].slice(0, 3)).toEqual([[buyChoice], 2, 3]);
   });
 
   it('throws for currently unimplemented decision methods', async () => {

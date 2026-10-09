@@ -1,12 +1,12 @@
-import { CardInfo, CardType, Expansion, PileCategory } from '@dominion/common';
+import { CardCategory, CardInfo, CardType, Expansion, PileCategory } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
 import { CardCollection } from '../../src/card/CardCollection';
 import { Cost } from '../../src/card/Cost';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { Pile } from '../../src/piles/Pile';
-import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 class TestCard extends Card {}
 
@@ -21,6 +21,7 @@ const createSharedGameStateMock = (cost?: Cost) => {
 const createCard = (options: { id: string; name: string; cost: Cost; types?: CardType[] }): Card => {
   const card = new TestCard(createSharedGameStateMock(options.cost), {
     name: options.name,
+    category: CardCategory.CARD,
     text: 'Test card text',
     font_size: 'small',
     cost: options.cost.toCommonCost(),

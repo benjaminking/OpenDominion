@@ -1,4 +1,5 @@
 import {
+  CardCategory,
   CardChoice,
   CardInfo,
   CardLocation,
@@ -16,10 +17,10 @@ import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { CardChoiceBuilder } from '../../src/decisions/CardChoiceBuilder';
 import { CardMultiChoiceBuilder } from '../../src/decisions/CardMultiChoiceBuilder';
 import { CardSelectionLocation } from '../../src/decisions/CardSelectionLocation';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
-import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { exactlyNChecked } from '../../src/StandardNumberEligibilityFunctions';
 
 class TestCard extends Card {}
@@ -33,6 +34,7 @@ const createSharedGameStateMock = () => {
 
 const createCard = (overrides?: Partial<CardInfo>): Card => {
   const cardInfo: CardInfo = {
+    category: CardCategory.CARD,
     name: 'Test Card',
     text: 'Test card text',
     font_size: 'small',

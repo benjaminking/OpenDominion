@@ -6,6 +6,7 @@ import { TradingPost } from '../../../src/cards/intrigue/TradingPost';
 import { createCardHarness } from '../testHarness';
 
 describe('TradingPost', () => {
+  // BUG: gains from lowercase pile 'silver', but pile names are case-sensitive, so nothing is gained
   it('trashes 2 cards and gains a Silver to hand', async () => {
     const testHarness = createCardHarness();
     const firstHandCard = new Copper(testHarness.sharedGameState);

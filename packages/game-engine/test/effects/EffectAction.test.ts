@@ -1,13 +1,14 @@
-import { CardInfo, CardType, Expansion } from '@dominion/common';
+import { CardCategory, CardInfo, CardType, Expansion } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
 import { CardCollection } from '../../src/card/CardCollection';
 import { EffectAction } from '../../src/effects/EffectAction';
-import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
+import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 
 const createCardInfo = (): CardInfo => ({
+  category: CardCategory.CARD,
   name: 'Copper',
   text: 'Treasure',
   font_size: 'small',

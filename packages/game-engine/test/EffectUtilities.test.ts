@@ -11,9 +11,10 @@ import {
   NextTurnEligibility,
   ThisTurnEligibility,
 } from '../src/effects/StandardTurnEligibilityFunctions';
-import { Player } from '../src/players/Player';
 import { SharedGameState } from '../src/game-state/SharedGameState';
+import { Player } from '../src/players/Player';
 import { Turn } from '../src/turns/Turn';
+import { TurnPhase } from '../src/turns/TurnPhase';
 
 const createPlayer = (name: string, unofficialTurnNumber = 0): Player => {
   return {
@@ -66,11 +67,11 @@ describe('effect utility modules', () => {
       .build();
     const startingCost = Cost.Simple(7);
 
-    expect(modifier.apply(eligibleCard, startingCost, eligibleTurn).toCommonCost()).toEqual(
+    expect(modifier.apply(eligibleCard, startingCost, eligibleTurn, TurnPhase.BUY).toCommonCost()).toEqual(
       Cost.Simple(4).toCommonCost(),
     );
-    expect(modifier.apply(otherCard, startingCost, eligibleTurn)).toBe(startingCost);
-    expect(modifier.apply(eligibleCard, startingCost, ineligibleTurn)).toBe(startingCost);
+    expect(modifier.apply(otherCard, startingCost, eligibleTurn, TurnPhase.BUY)).toBe(startingCost);
+    expect(modifier.apply(eligibleCard, startingCost, ineligibleTurn, TurnPhase.BUY)).toBe(startingCost);
     expect(modifier.isEligibleOnTurn(eligibleTurn)).toBe(true);
     expect(modifier.isEligibleOnTurn(ineligibleTurn)).toBe(false);
   });

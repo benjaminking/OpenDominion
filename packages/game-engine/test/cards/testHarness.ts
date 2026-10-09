@@ -18,12 +18,14 @@ import { vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
 import { CardCollection } from '../../src/card/CardCollection';
+import { Effect } from '../../src/effects/Effect';
+import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
 import { TurnTracker } from '../../src/players/TurnTracker';
 import { Turn } from '../../src/turns/Turn';
-import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 // ---------------------------------------------------------------------------
 // Accumulating statistics so tests can inspect stats.coins, stats.actions etc.
@@ -31,12 +33,20 @@ import { SharedGameState } from '../../src/game-state/SharedGameState';
 
 export class TrackingStats {
   coins = 0;
+  potions = 0;
   actions = 0;
   buys = 0;
   vp = 0;
+  coffers = 0;
 
   addCoins = async (n: number): Promise<void> => {
     this.coins += n;
+  };
+  subtractCoins = (n: number): void => {
+    this.coins = Math.max(0, this.coins - n);
+  };
+  addPotions = (n: number): void => {
+    this.potions += n;
   };
   addActions = (n: number): void => {
     this.actions += n;
@@ -47,8 +57,23 @@ export class TrackingStats {
   addVP = (n: number): void => {
     this.vp += n;
   };
+  addCoffers = (n: number): void => {
+    this.coffers += n;
+  };
+  removeCoffers = (n: number): number => {
+    const removed = Math.min(n, this.coffers);
+    this.coffers -= removed;
+    return removed;
+  };
   spendCoins = (n: number): void => {
     this.coins -= n;
+  };
+  spendPotions = (n: number): void => {
+    this.potions -= n;
+  };
+  spendAmount = (amount: { coins: number; potions: number }): void => {
+    this.coins -= amount.coins;
+    this.potions -= amount.potions;
   };
   useBuy = (): void => {
     this.buys -= 1;
@@ -56,6 +81,11 @@ export class TrackingStats {
   useAction = (): void => {
     this.actions -= 1;
   };
+  getCoins = (): number => this.coins;
+  getPotions = (): number => this.potions;
+  getActions = (): number => this.actions;
+  getBuys = (): number => this.buys;
+  getCoffers = (): number => this.coffers;
 
   // Rarely-called helpers – kept as spies for convenience
   setScore = vi.fn();
@@ -107,12 +137,42 @@ export const createCardHarness = () => {
   const topCardsOfSupplyPiles = new CardCollection();
   const sharedCardsById = new Map<string, Card>();
 
+  // Pile arrays are ordered top-first: index 0 is the top card.
   const piles = {
     getTopCardOfPile: vi.fn((pileName: string) => pileCards.get(pileName)?.[0]),
     isPileEmpty: vi.fn((pileName: string) => (pileCards.get(pileName)?.length ?? 0) === 0),
+    isPile: vi.fn((pileName: string) => pileCards.has(pileName)),
+    getPileSizeByName: vi.fn((pileName: string) => pileCards.get(pileName)?.length ?? 0),
     removeTopCardFromPile: vi.fn((pileName: string) => pileCards.get(pileName)?.shift()),
+    removeCardFromPile: vi.fn((card: Card) => {
+      const pile = pileCards.get(card.getPileName());
+      const index = pile?.indexOf(card) ?? -1;
+      if (pile === undefined || index < 0) return undefined;
+      return pile.splice(index, 1)[0];
+    }),
+    isCardInPile: vi.fn((card: Card, pileName: string) => pileCards.get(pileName)?.includes(card) ?? false),
+    returnCardToPile: vi.fn((card: Card) => {
+      const pile = pileCards.get(card.getPileName());
+      if (pile === undefined) return;
+      // Like the real Piles, this does not update the card's location.
+      pile.unshift(card);
+    }),
+    getUniqueCardsFromPile: vi.fn((pileName: string) => {
+      const unique = new CardCollection();
+      const seenNames = new Set<string>();
+      for (const card of pileCards.get(pileName) ?? []) {
+        if (!seenNames.has(card.getName())) {
+          seenNames.add(card.getName());
+          unique.addCard(card);
+        }
+      }
+      return unique;
+    }),
     getTopCardsOfSupplyPiles: vi.fn(() => topCardsOfSupplyPiles),
   };
+
+  // Mirrors SharedGameState's reference-counted "leave it in place" blocking.
+  const numBlocksById = new Map<string, number>();
 
   // Forward reference so the sharedGameState closure can reference executor.
   // The executor is assigned below after it is created.
@@ -122,7 +182,6 @@ export const createCardHarness = () => {
   const sharedGameState = {
     piles,
     trash: sharedTrash,
-    cardsPlayedThisTurn: new CardCollection(),
     triggerEffect: vi.fn(async () => undefined),
     registerEffectTrigger: vi.fn(),
     cost: vi.fn((card: Card) => card.getOriginalCost()),
@@ -136,10 +195,19 @@ export const createCardHarness = () => {
     getCurrentTurn: vi.fn(() => ({}) as never),
     getAllExtraCards: vi.fn(() => sharedExtraCards),
     getCurrentPlayer: vi.fn(() => player),
-    isTurnEligibilitySatisfied: vi.fn(() => true),
-    addPlayedCard: vi.fn((card: Card) => {
-      sharedGameState.cardsPlayedThisTurn.addCard(card);
+    getPlayerLeftOfCurrent: vi.fn(() => player),
+    getPlayerLeftOfPlayer: vi.fn(() => player),
+    getCurrentTurnOrder: vi.fn(() => [player]),
+    getNumPlayers: vi.fn(() => 2),
+    blockCardFromMoving: vi.fn((card: Card) => {
+      numBlocksById.set(card.getId(), (numBlocksById.get(card.getId()) ?? 0) + 1);
     }),
+    releaseCardToMoveAgain: vi.fn((card: Card) => {
+      numBlocksById.set(card.getId(), (numBlocksById.get(card.getId()) ?? 0) - 1);
+    }),
+    isCardAbleToMove: vi.fn((card: Card) => (numBlocksById.get(card.getId()) ?? 0) <= 0),
+    isCardInPile: vi.fn((card: Card, pileName: string) => piles.isCardInPile(card, pileName)),
+    isTurnEligibilitySatisfied: vi.fn(() => true),
     clearBlocksForAttackCard: vi.fn(),
     performAttack: vi.fn(async () => undefined),
     executeForEachPlayer: vi.fn(async (fn: (ie: InstructionExecutor) => Promise<void>) => {
@@ -153,13 +221,16 @@ export const createCardHarness = () => {
     popActiveEffectOffOfStack: vi.fn(),
     trashCards: vi.fn(async (_player: unknown, cards: CardCollection) => {
       sharedTrash.addCards(cards);
+      for (const card of cards) {
+        card.setLocation(CardLocation.TRASH);
+      }
       return cards;
     }),
     isCopyOfCardOnTopOfPile: vi.fn((card: Card | string, pileName: string) => {
       const topCard = piles.getTopCardOfPile(pileName);
       if (topCard === undefined) return false;
       if (typeof card === 'string') return topCard.getName() === card || topCard.getDisplayName() === card;
-      return topCard.getName() === (card as Card).getName();
+      return topCard.getName() === card.getName();
     }),
   } as unknown as SharedGameState;
 
@@ -175,7 +246,10 @@ export const createCardHarness = () => {
     getEffects: () => effects,
     getDecisionService: () => decisionService,
     getName: () => 'Alice',
-    getBotStatistics: () => ({ addCardToStatistics: vi.fn() }),
+    getBotStatistics: () => ({
+      addCardToStatistics: vi.fn(),
+      removeCardFromStatistics: vi.fn(),
+    }),
     calculateScore: vi.fn(),
   } as unknown as Player;
 
@@ -224,12 +298,8 @@ export const createCardHarness = () => {
     const pileName = card.getPileName();
     const existing = pileCards.get(pileName) ?? [];
     existing.push(card);
+    // Pile names are case-sensitive, as in the real Piles.
     pileCards.set(pileName, existing);
-    // Also register by lowercase name so cards can be looked up by either case
-    const lowerName = pileName.toLowerCase();
-    if (lowerName !== pileName) {
-      pileCards.set(lowerName, existing);
-    }
     topCardsOfSupplyPiles.addCard(card);
     sharedCardsById.set(card.getId(), card);
   };
@@ -273,6 +343,54 @@ export const createCardHarness = () => {
     decisionService.chooseMultipleOptions.mockResolvedValueOnce({ names });
   };
 
+  /**
+   * Makes `ie.performAttack(...)` run the attack against each target harness's
+   * player (in order), with this harness's player as the attacker.
+   */
+  const routeAttacksTo = (...targets: { player: Player }[]): void => {
+    vi.mocked(sharedGameState.performAttack).mockImplementation(
+      async (
+        _attackingPlayer: Player,
+        _attackCard: Card,
+        sharedInstruction: (attackedPlayer: Player, attackingPlayer: Player) => Promise<void>,
+      ) => {
+        for (const target of targets) {
+          await sharedInstruction(target.player, player);
+        }
+      },
+    );
+  };
+
+  /**
+   * Makes `ie.eachOtherPlayer(...)` run against each target harness's executor
+   * instead of this harness's own executor.
+   */
+  const routeOtherPlayersTo = (...targets: { executor: InstructionExecutor }[]): void => {
+    vi.mocked(sharedGameState.executeForEachOtherPlayer).mockImplementation(
+      async (sharedInstruction: (ie: InstructionExecutor) => Promise<void>) => {
+        for (const target of targets) {
+          await sharedInstruction(target.executor);
+        }
+      },
+    );
+  };
+
+  /**
+   * Returns the effects a card registered on itself (e.g. "when you trash this")
+   * for the given trigger type. Call `.doAction(executor, card)` to fire one.
+   */
+  const getCardEffects = (card: Card, trigger: EffectTriggerType): Effect[] =>
+    card.getEffects().filter((effect: Effect) => effect.getTrigger() === trigger);
+
+  /**
+   * Returns the effects added to this player via `ie.addEffect(...)`, optionally
+   * filtered to one trigger type.
+   */
+  const getAddedEffects = (trigger?: EffectTriggerType): Effect[] =>
+    effects.addEffect.mock.calls
+      .map((call: unknown[]) => call[0] as Effect)
+      .filter((effect: Effect) => trigger === undefined || effect.getTrigger() === trigger);
+
   return {
     executor,
     player,
@@ -306,6 +424,10 @@ export const createCardHarness = () => {
     pickCards,
     pickOption,
     pickOptions,
+    routeAttacksTo,
+    routeOtherPlayersTo,
+    getCardEffects,
+    getAddedEffects,
   };
 };
 

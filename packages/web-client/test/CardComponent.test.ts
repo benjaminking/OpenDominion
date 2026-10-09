@@ -114,4 +114,65 @@ describe('CardComponent', () => {
     setInputSignalValue(component.metadata as () => CardMetadata, createCard('Curse', 'curse-1', [CardType.CURSE]));
     expect(component.overlayType()).toBe(component.OverlayType.CURSE);
   });
+
+  it('reports a potion cost only when the card metadata cost includes potions', () => {
+    const injector = Injector.create({
+      providers: [{ provide: GlobalSettingsService, useValue: new GlobalSettingsService() }],
+    });
+    const component = runInInjectionContext(injector, () => new CardComponent());
+
+    setInputSignalValue(component.metadata as () => CardMetadata, {
+      ...createCard('Vineyard', 'vineyard-1', [CardType.VICTORY]),
+      cost: { coins: 0, potions: 1 },
+    });
+    expect(component.hasPotionCost()).toBe(true);
+    expect(component.coinCostSymbol()).toBe('0');
+
+    setInputSignalValue(component.metadata as () => CardMetadata, {
+      ...createCard('Familiar', 'familiar-1', [CardType.ACTION, CardType.ATTACK]),
+      cost: { coins: 3, potions: 1 },
+    });
+    expect(component.hasPotionCost()).toBe(true);
+    expect(component.coinCostSymbol()).toBe('3');
+
+    setInputSignalValue(component.metadata as () => CardMetadata, {
+      ...createCard('Village', 'village-1', [CardType.ACTION]),
+      cost: { coins: 3, potions: 0 },
+    });
+    expect(component.hasPotionCost()).toBe(false);
+
+    setInputSignalValue(
+      component.metadata as () => CardMetadata,
+      createCard('Smithy', 'smithy-1', [CardType.ACTION], 4),
+    );
+    expect(component.hasPotionCost()).toBe(false);
+  });
+
+  it('reports potion production from card info, with a zero coin production symbol for Potion', () => {
+    const injector = Injector.create({
+      providers: [{ provide: GlobalSettingsService, useValue: new GlobalSettingsService() }],
+    });
+    const component = runInInjectionContext(injector, () => new CardComponent());
+
+    setInputSignalValue(
+      component.metadata as () => CardMetadata,
+      createCard('Potion', 'potion-1', [CardType.TREASURE], 4),
+    );
+    expect(component.hasPotionProduction()).toBe(true);
+    expect(component.productionSymbol()).toBe('0');
+    expect(component.layoutType()).toBe(component.LayoutType.PORTRAIT_FULL);
+
+    setInputSignalValue(
+      component.metadata as () => CardMetadata,
+      createCard('Silver', 'silver-1', [CardType.TREASURE], 3),
+    );
+    expect(component.hasPotionProduction()).toBe(false);
+    expect(component.productionSymbol()).toBe('2');
+
+    setInputSignalValue(
+      component.metadata as () => CardMetadata,
+      createCard('Village', 'village-1', [CardType.ACTION]),
+    );
+    expect(component.hasPotionProduction()).toBe(false);
+  });
 });

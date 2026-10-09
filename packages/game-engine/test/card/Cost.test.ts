@@ -97,4 +97,26 @@ describe('Cost', () => {
 
     expect(() => cost.toString()).toThrow('Unsupported cost combination');
   });
+
+  it('builds from a money amount with no debt', () => {
+    expect(Cost.fromMoneyAmount({ coins: 3, potions: 1 }).toCommonCost()).toEqual({
+      coins: 3,
+      potions: 1,
+      debt: 0,
+      has_asterisk: false,
+    });
+    expect(Cost.fromMoneyAmount({ coins: 2, potions: 0 }).isEqualTo(Cost.Simple(2))).toBe(true);
+  });
+
+  it('subtracts coins without going below zero', () => {
+    expect(Cost.Potion(4).minus(3).toCommonCost()).toEqual(Cost.Potion(1).toCommonCost());
+    expect(Cost.Debt(2, 5).minus(10).toCommonCost()).toEqual(Cost.Debt(0, 5).toCommonCost());
+  });
+
+  it('does not treat a potion cost as less than a higher coin cost without a potion', () => {
+    expect(Cost.Potion(2).isLessThan(Cost.Simple(5))).toBe(false);
+    expect(Cost.Potion(2).isLessThanOrEqualTo(Cost.Simple(5))).toBe(false);
+    expect(Cost.Simple(5).isLessThan(Cost.Potion(5))).toBe(true);
+    expect(Cost.Potion(2).isLessThan(Cost.Potion(2))).toBe(false);
+  });
 });

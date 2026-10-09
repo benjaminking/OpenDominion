@@ -5,6 +5,7 @@ import { TreasureMap } from '../../../src/cards/seaside/TreasureMap';
 import { createCardHarness } from '../testHarness';
 
 describe('TreasureMap', () => {
+  // BUG: gains from lowercase pile 'gold', but pile names are case-sensitive, so nothing is gained
   it('trashes itself and a second Treasure Map from hand, then gains 4 Golds to deck', async () => {
     const testHarness = createCardHarness();
     const secondMap = new TreasureMap(testHarness.sharedGameState);

@@ -29,6 +29,7 @@ import {
 const sampleCard = {
   id: 'village-id',
   name: 'Village',
+  displayName: 'Village',
   types: [CardType.ACTION],
   location: CardLocation.HAND,
   cost: {
@@ -46,7 +47,7 @@ describe('Choice type guards', () => {
     const multiCardChoice: MultiCardChoice = { type: ChoiceType.MultiCard, cards: [sampleCard] };
     const namedChoice: NamedChoice = { type: ChoiceType.ChooseOne, name: 'Option A' };
     const multiNamedChoice: MultiNamedChoice = { type: ChoiceType.ChooseMultiple, names: ['A', 'B'] };
-    const simpleTreasuresChoice: SimpleTreasuresChoice = { type: ChoiceType.SimpleTreasures, coins: 4 };
+    const simpleTreasuresChoice: SimpleTreasuresChoice = { type: ChoiceType.SimpleTreasures, coins: 4, potions: 1 };
     const extraTurnChoice: ExtraTurnChoice = { type: ChoiceType.ExtraTurn, card: sampleCard, name: 'Outpost' };
 
     expect(isNoneChoice(noneChoice)).toBe(true);

@@ -1,4 +1,4 @@
-import { CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
+import { CardCategory, CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 const cardFactoryState = vi.hoisted(() => ({
@@ -16,11 +16,11 @@ vi.mock('../../src/card/CardFactory', () => ({
 import { Card } from '../../src/card/Card';
 import { CardCollection } from '../../src/card/CardCollection';
 import { Cost } from '../../src/card/Cost';
+import { PrivacyType } from '../../src/card/PrivacyType';
 import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
-import { PrivacyType } from '../../src/card/PrivacyType';
-import { PlayerCards } from '../../src/players/PlayerCards';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
+import { PlayerCards } from '../../src/players/PlayerCards';
 
 class TestCard extends Card {
   public setCoinsForTest(value: number): void {
@@ -39,6 +39,7 @@ const createCard = (name: string, id: string, type: CardType = CardType.ACTION):
   } as unknown as SharedGameState;
 
   const cardInfo: CardInfo = {
+    category: CardCategory.CARD,
     name,
     text: `${name} text`,
     font_size: 'small',
@@ -85,6 +86,7 @@ const createPlayerCards = () => {
 
   return {
     cards,
+    player,
     gameState,
     logger,
     broadcaster,
@@ -333,5 +335,101 @@ describe('PlayerCards', () => {
       PrivacyType.SIZE_VISIBLE_TO_OPPONENTS,
       cards.getDiscard(),
     ]);
+  });
+
+  it('passes the owning player when triggering shuffle effects', async () => {
+    const { cards, player, gameState } = createPlayerCards();
+    cards.addCardToDiscard(createCard('Village', 'discard-0'));
+
+    await cards.drawCards(1);
+
+    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.WOULD_SHUFFLE, player);
+    expect(gameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.SHUFFLE, player);
+  });
+
+  it('discards the top card of the deck and fires a discard trigger for it', async () => {
+    const { cards, player, gameState } = createPlayerCards();
+    const bottom = createCard('Copper', 'deck-0', CardType.TREASURE);
+    const top = createCard('Estate', 'deck-1', CardType.VICTORY);
+    cards.addCardToDeck(bottom);
+    cards.addCardToDeck(top);
+
+    expect(await cards.discardTopCardOfDeck()).toBe(top);
+
+    expect(cards.getDeck().asCardArray()).toEqual([bottom]);
+    expect(cards.getDiscard().asCardArray()).toEqual([top]);
+    expect(top.getLocation()).toBe(CardLocation.DISCARD);
+    expect(cards.getCardsFromArea(CardLocation.REVEAL_LIMBO).size()).toBe(0);
+    expect(gameState.triggerEffect).toHaveBeenCalledWith(
+      EffectTriggerType.DISCARD,
+      player,
+      CardCollection.fromCards([top]),
+    );
+  });
+
+  it('discards nothing from an empty deck and discard pile', async () => {
+    const { cards, gameState } = createPlayerCards();
+
+    expect(await cards.discardTopCardOfDeck()).toBeUndefined();
+
+    expect(cards.getDiscard().size()).toBe(0);
+    expect(gameState.triggerEffect).not.toHaveBeenCalled();
+  });
+
+  it('moves the whole deck into the discard pile', () => {
+    const { cards } = createPlayerCards();
+    const deckCards = [createCard('Copper', 'deck-0', CardType.TREASURE), createCard('Estate', 'deck-1')];
+    cards.addCardToDiscard(createCard('Silver', 'discard-0', CardType.TREASURE));
+    for (const card of deckCards) {
+      cards.addCardToDeck(card);
+    }
+
+    cards.putDeckInDiscard();
+
+    expect(cards.getDeck().size()).toBe(0);
+    expect(cards.getDiscard().size()).toBe(3);
+    expect(cards.getDiscard().contains(deckCards[0])).toBe(true);
+    expect(cards.getDiscard().contains(deckCards[1])).toBe(true);
+  });
+
+  // BUG: putDeckInDiscard leaves each moved card's location as DECK, so later lookups in the discard pile fail
+  it('marks cards moved from the deck into the discard pile as being in the discard pile', () => {
+    const { cards } = createPlayerCards();
+    const deckCard = createCard('Copper', 'deck-0', CardType.TREASURE);
+    cards.addCardToDeck(deckCard);
+
+    cards.putDeckInDiscard();
+
+    expect(deckCard.getLocation()).toBe(CardLocation.DISCARD);
+    expect(cards.getCardByMetadata(deckCard.getMetadata())).toBe(deckCard);
+  });
+
+  it('shuffles the deck in place without changing which cards it holds', () => {
+    const { cards } = createPlayerCards();
+    const deckCards = ['Copper', 'Silver', 'Gold', 'Estate'].map((name, index) =>
+      createCard(name, `deck-${index.toFixed()}`, CardType.TREASURE),
+    );
+    for (const card of deckCards) {
+      cards.addCardToDeck(card);
+    }
+
+    cards.shuffleDeck();
+
+    expect(cards.getDeck().toCardNameArray().sort()).toEqual(['Copper', 'Estate', 'Gold', 'Silver']);
+    expect(cards.getDiscard().size()).toBe(0);
+  });
+
+  it('counts Potions in hand separately from simple treasure coins', () => {
+    const { cards } = createPlayerCards();
+    const copper = createCard('Copper', 'copper-0', CardType.TREASURE);
+    copper.markSimpleTreasureForTest();
+    copper.setCoinsForTest(1);
+    cards.addCardToHand(copper);
+    cards.addCardToHand(createCard('Potion', 'potion-0', CardType.TREASURE));
+    cards.addCardToHand(createCard('Potion', 'potion-1', CardType.TREASURE));
+    cards.addCardToInPlay(createCard('Potion', 'potion-2', CardType.TREASURE));
+
+    expect(cards.calculateSimpleTreasurePotionsInHand()).toBe(2);
+    expect(cards.calculateSimpleTreasureCoinsInHand()).toBe(1);
   });
 });

@@ -3,7 +3,16 @@ import { ChoiceType } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { TextBasedDecisionService } from '../src/TextBasedDecisionService';
-import { createCardChoice, createEffectChoice, createExtraTurnChoice, createNamedChoice } from './TestFixtures';
+import {
+  createCardChoice,
+  createCardMetadata,
+  createEffectChoice,
+  createExtraTurnChoice,
+  createNamedChoice,
+} from './TestFixtures';
+
+// Every test replaces rlObj, so avoid attaching a real readline interface (and its listeners) to stdin.
+vi.mock('readline', () => ({ createInterface: () => ({ question: vi.fn(), close: vi.fn() }) }));
 
 const setAnswers = (service: TextBasedDecisionService, answers: string[]) => {
   const queue = [...answers];
@@ -164,7 +173,44 @@ describe('TextBasedDecisionService', () => {
     expect(treasureChoice.type).toBe(ChoiceType.SimpleTreasures);
 
     setAnswers(service, ['B']);
-    const buyChoice = await service.makeBuyPhaseChoice([createCardChoice('Gold')] as never, 1, 6);
+    const buyChoice = await service.makeBuyPhaseChoice([createCardChoice('Gold')] as never, 1, 6, 0);
     expect(buyChoice.type).toBe(ChoiceType.EndBuyPhase);
+  });
+
+  it('prompts with the number of buys and coins and returns the chosen card in the buy phase', async () => {
+    const service = new TextBasedDecisionService(new ClientGameState());
+    const prompts: string[] = [];
+    (service as unknown as { rlObj: { question: (prompt: string, cb: (answer: string) => void) => void } }).rlObj = {
+      question: (prompt: string, callback: (answer: string) => void) => {
+        prompts.push(prompt);
+        callback('1');
+      },
+    };
+    const familiar = createCardChoice('Familiar');
+
+    const choice = await service.makeBuyPhaseChoice([familiar] as never, 2, 3, 1);
+
+    expect(choice).toBe(familiar);
+    expect(prompts).toHaveLength(1);
+    expect(prompts[0]).toContain('You have 2 buys and $3. You may buy a card.');
+    expect(prompts[0]).toContain('1) Familiar');
+  });
+
+  // BUG: numberMultiCardOptions() calls get(name)!.push() only when the name is absent, so it always throws.
+  it('groups same-named cards for chooseCards and returns one card per selected marker occurrence', async () => {
+    const service = new TextBasedDecisionService(new ClientGameState());
+    const cellar1 = { ...createCardChoice('Cellar'), card: createCardMetadata('Cellar', 'cellar-1') };
+    const cellar2 = { ...createCardChoice('Cellar'), card: createCardMetadata('Cellar', 'cellar-2') };
+    const village = { ...createCardChoice('Village'), card: createCardMetadata('Village', 'village-1') };
+
+    setAnswers(service, ['1,1,2']);
+    const choice = await service.chooseCards('Discard cards', 'discard' as never, 'decision', [3], [
+      cellar1,
+      village,
+      cellar2,
+    ] as never);
+
+    expect(choice.type).toBe(ChoiceType.MultiCard);
+    expect(choice.cards.map((card) => card.id)).toEqual(['cellar-1', 'cellar-2', 'village-1']);
   });
 });

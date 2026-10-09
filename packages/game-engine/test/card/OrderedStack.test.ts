@@ -1,4 +1,4 @@
-import { CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
+import { CardCategory, CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
@@ -10,13 +10,13 @@ import { OwnedUnorderedCardCollection } from '../../src/card/OwnedUnorderedCardC
 import { PrivacyType } from '../../src/card/PrivacyType';
 import { SharedOrderedStack } from '../../src/card/SharedOrderedStack';
 import { SharedUnorderedCardCollection } from '../../src/card/SharedUnorderedCardCollection';
+import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { CardCollectionSignal } from '../../src/messaging/CardCollectionSignal';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { Deck } from '../../src/players/Deck';
 import { Discard } from '../../src/players/Discard';
 import { Hand } from '../../src/players/Hand';
 import { InPlay } from '../../src/players/InPlay';
-import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { Trash } from '../../src/Trash';
 
 class TestCard extends Card {}
@@ -54,6 +54,7 @@ const createSharedGameStateMock = (cost?: Cost) => {
 };
 
 const createCardInfo = (name: string, cost: Cost): CardInfo => ({
+  category: CardCategory.CARD,
   name,
   text: 'Test card text',
   font_size: 'small',

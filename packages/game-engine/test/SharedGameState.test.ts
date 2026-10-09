@@ -1,15 +1,23 @@
-import { CardLocation } from '@dominion/common';
+import { CardCategory, CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
+import { Card } from '../src/card/Card';
 import { CardCollection } from '../src/card/CardCollection';
 import { Cost } from '../src/card/Cost';
 import { CostModifier } from '../src/effects/CostModifier';
+import { Effect } from '../src/effects/Effect';
 import { EffectSource } from '../src/effects/EffectSource';
 import { EffectTriggerType } from '../src/effects/EffectTriggerType';
+import { Game } from '../src/Game';
+import { SharedGameState } from '../src/game-state/SharedGameState';
+import { GameMessageBroadcaster } from '../src/messaging/GameMessageBroadcaster';
+import { Pile } from '../src/piles/Pile';
+import { AllPlayers } from '../src/players/AllPlayers';
 import { Player } from '../src/players/Player';
 import { TurnTracker } from '../src/players/TurnTracker';
+import { anyCard } from '../src/StandardCardEligibilityFunctions';
 import { Turn } from '../src/turns/Turn';
-import { SharedGameState } from '../src/game-state/SharedGameState';
+import { TurnPhase } from '../src/turns/TurnPhase';
 
 const createPlayerStub = (
   name: string,
@@ -17,16 +25,30 @@ const createPlayerStub = (
 ) => {
   const instructionExecutor = {
     processEffectsByType: vi.fn(async () => undefined),
+    gainFromPile: vi.fn(async (_pileName: string): Promise<Card | undefined> => undefined),
   };
   const effects = {
-    processEffectsByType: vi.fn(async () => undefined),
+    processEffectsByType: vi.fn(
+      async (_trigger: EffectTriggerType, _triggeringPlayer: Player, _cards?: Card | CardCollection) => undefined,
+    ),
     clearBlocksForAttackCard: vi.fn(),
     isAttackBlocked: vi.fn(() => false),
+    addEffect: vi.fn(),
   };
   const statistics = {
     getTurnNumber: vi.fn(() => options?.turnNumber ?? 1),
     getUnofficialTurnNumber: vi.fn(() => options?.unofficialTurnNumber ?? 1),
     getScore: vi.fn(() => options?.score ?? 0),
+    spendCoins: vi.fn(),
+    spendPotions: vi.fn(),
+    useBuy: vi.fn(),
+  };
+  const ownedCards = {
+    reportCardCosts: vi.fn(),
+    getCardByMetadata: vi.fn((_metadata: { id: string }): Card | undefined => undefined),
+  };
+  const botStatistics = {
+    removeCardFromStatistics: vi.fn(),
   };
 
   const player = {
@@ -34,9 +56,8 @@ const createPlayerStub = (
     getInstructionExecutor: vi.fn(() => instructionExecutor),
     getEffects: vi.fn(() => effects),
     getStatistics: vi.fn(() => statistics),
-    getOwnedCards: vi.fn(() => ({
-      reportCardCosts: vi.fn(),
-    })),
+    getOwnedCards: vi.fn(() => ownedCards),
+    getBotStatistics: vi.fn(() => botStatistics),
   } as unknown as Player;
 
   const turnTracker = new TurnTracker(new Turn(player, options?.turnNumber ?? 1, options?.unofficialTurnNumber ?? 1));
@@ -47,23 +68,14 @@ const createPlayerStub = (
     instructionExecutor,
     effects,
     statistics,
+    ownedCards,
     turnTracker,
   };
 };
 
 const createSharedGameState = (playerStubs: ReturnType<typeof createPlayerStub>[]) => {
   const players = playerStubs.map((stub) => stub.player);
-  const playersCollection = {
-    numTotalPlayers: vi.fn(() => players.length),
-    getPlayerAtIndex: vi.fn((index: number) => players[index]),
-    getPlayerByName: vi.fn((name: string) => players.find((player) => player.getName() === name)),
-    getPlayerToTheLeftByName: vi.fn((name: string) => {
-      const idx = players.findIndex((p) => p.getName() === name);
-      return players[(idx + 1) % players.length];
-    }),
-    getAllPlayers: vi.fn(() => players),
-    [Symbol.iterator]: () => players[Symbol.iterator](),
-  };
+  const playersCollection = new AllPlayers(players, {} as Game);
 
   const game = {
     getMessageBroadcaster: vi.fn(() => ({
@@ -77,6 +89,34 @@ const createSharedGameState = (playerStubs: ReturnType<typeof createPlayerStub>[
   };
 
   return new SharedGameState(game as never);
+};
+
+const createCard = (name: string, id: string, types: CardType[] = [CardType.ACTION], cost: Cost = Cost.Simple(0)) => {
+  const cardInfo: CardInfo = {
+    category: CardCategory.CARD,
+    name,
+    text: `${name} text`,
+    font_size: 'small',
+    cost: cost.toCommonCost(),
+    types,
+    expansion: Expansion.TESTING,
+    mechanics: [],
+  };
+  const card = new Card(
+    { cost: vi.fn(() => cost), registerEffectTrigger: vi.fn() } as unknown as SharedGameState,
+    cardInfo,
+  );
+  card.setId(id);
+  return card;
+};
+
+// The last card in the array is the top card of the pile.
+const createPile = (name: string, cardsBottomToTop: Card[]): Pile => {
+  for (const card of cardsBottomToTop) {
+    card.setLocation(CardLocation.PILE);
+  }
+  const broadcaster = { sendPileMetadata: vi.fn() } as unknown as GameMessageBroadcaster;
+  return new Pile(name, CardCollection.fromCards(cardsBottomToTop), new Set(), new Set(), broadcaster);
 };
 
 const findPlayerNameByInstructionExecutor = (
@@ -287,5 +327,225 @@ describe('SharedGameState', () => {
 
     expect(clearedPlayers).toEqual(['Bob', 'Cara', 'Alice']);
     expect(attackedPlayers).toEqual(['Cara', 'Alice']);
+  });
+
+  it('reports the number of players and the player to the left of any player, wrapping around', () => {
+    const alice = createPlayerStub('Alice');
+    const bob = createPlayerStub('Bob');
+    const cara = createPlayerStub('Cara');
+    const state = createSharedGameState([alice, bob, cara]);
+
+    expect(state.getNumPlayers()).toBe(3);
+    expect(state.getPlayerLeftOfPlayer(alice.player)).toBe(bob.player);
+    expect(state.getPlayerLeftOfPlayer(cara.player)).toBe(alice.player);
+    expect(state.getCurrentTurnOrder()).toEqual([alice.player, bob.player, cara.player]);
+  });
+
+  describe('card movement blocking', () => {
+    it('lets cards move until they are blocked and counts nested blocks per card', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      const bandOfMisfits = createCard('Band of Misfits', 'misfits-0');
+      const otherCard = createCard('Village', 'village-0');
+
+      expect(state.isCardAbleToMove(bandOfMisfits)).toBe(true);
+
+      state.blockCardFromMoving(bandOfMisfits);
+      state.blockCardFromMoving(bandOfMisfits);
+      expect(state.isCardAbleToMove(bandOfMisfits)).toBe(false);
+      expect(state.isCardAbleToMove(otherCard)).toBe(true);
+
+      state.releaseCardToMoveAgain(bandOfMisfits);
+      expect(state.isCardAbleToMove(bandOfMisfits)).toBe(false);
+
+      state.releaseCardToMoveAgain(bandOfMisfits);
+      expect(state.isCardAbleToMove(bandOfMisfits)).toBe(true);
+    });
+
+    it('tracks blocks by card id rather than by object', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      const card = createCard('Village', 'village-0');
+      const sameIdCard = createCard('Village', 'village-0');
+
+      state.blockCardFromMoving(card);
+
+      expect(state.isCardAbleToMove(sameIdCard)).toBe(false);
+    });
+
+    // BUG: releasing a card that was never blocked stores NaN (undefined - 1), so the card can never move again
+    it('leaves a card that was never blocked able to move when it is released', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      const card = createCard('Village', 'village-0');
+
+      state.releaseCardToMoveAgain(card);
+
+      expect(state.isCardAbleToMove(card)).toBe(true);
+    });
+  });
+
+  describe('piles', () => {
+    it('checks whether the top card of a pile is a copy of a card or matches a name', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      state.piles.addKingdomPile(createPile('Village', [createCard('Village', 'village-pile-0')]));
+      state.piles.addKingdomPile(createPile('Smithy', []));
+
+      expect(state.isCopyOfCardOnTopOfPile('Village', 'Village')).toBe(true);
+      expect(state.isCopyOfCardOnTopOfPile(createCard('Village', 'village-elsewhere'), 'Village')).toBe(true);
+      expect(state.isCopyOfCardOnTopOfPile(createCard('Smithy', 'smithy-elsewhere'), 'Village')).toBe(false);
+      expect(state.isCopyOfCardOnTopOfPile('Smithy', 'Smithy')).toBe(false);
+      expect(state.isCopyOfCardOnTopOfPile('Gold', 'Gold')).toBe(false);
+    });
+
+    it('checks whether a specific card is anywhere in a pile', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      const coronet = createCard('Coronet', 'coronet-0', [CardType.REWARD]);
+      const courser = createCard('Courser', 'courser-0', [CardType.REWARD]);
+      state.piles.addNonSupplyPile(createPile('Rewards', [coronet, courser]));
+
+      expect(state.isCardInPile(coronet, 'Rewards')).toBe(true);
+      expect(state.isCardInPile(createCard('Coronet', 'coronet-1', [CardType.REWARD]), 'Rewards')).toBe(false);
+      expect(state.isCardInPile(coronet, 'Prizes')).toBe(false);
+    });
+  });
+
+  describe('getCardByMetadata', () => {
+    it('finds any reward or prize in its own pile, not just the top card', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      const coronet = createCard('Coronet', 'coronet-0', [CardType.ACTION, CardType.REWARD]);
+      const courser = createCard('Courser', 'courser-0', [CardType.ACTION, CardType.REWARD]);
+      const bagOfGold = createCard('Bag of Gold', 'bag-0', [CardType.ACTION, CardType.PRIZE]);
+      const princess = createCard('Princess', 'princess-0', [CardType.ACTION, CardType.PRIZE]);
+      state.piles.addNonSupplyPile(createPile('Rewards', [coronet, courser]));
+      state.piles.addNonSupplyPile(createPile('Prizes', [bagOfGold, princess]));
+
+      expect(state.getCardByMetadata(coronet.getMetadata())).toBe(coronet);
+      expect(state.getCardByMetadata(bagOfGold.getMetadata())).toBe(bagOfGold);
+      expect(state.getCardByMetadata(princess.getMetadata())).toBe(princess);
+    });
+
+    it('only finds the top cards of supply piles', () => {
+      const state = createSharedGameState([createPlayerStub('Alice')]);
+      const bottomVillage = createCard('Village', 'village-pile-0');
+      const topVillage = createCard('Village', 'village-pile-1');
+      state.piles.addKingdomPile(createPile('Village', [bottomVillage, topVillage]));
+
+      expect(state.getCardByMetadata(topVillage.getMetadata())).toBe(topVillage);
+      expect(state.getCardByMetadata(bottomVillage.getMetadata())).toBeUndefined();
+    });
+
+    it('looks up trashed cards in the trash and other cards among the current player owned cards', () => {
+      const alice = createPlayerStub('Alice');
+      const bob = createPlayerStub('Bob');
+      const state = createSharedGameState([alice, bob]);
+      const trashed = createCard('Estate', 'estate-0', [CardType.VICTORY]);
+      state.trash.addCard(trashed);
+      trashed.setLocation(CardLocation.TRASH);
+      const inHand = createCard('Copper', 'copper-0', [CardType.TREASURE]);
+      inHand.setLocation(CardLocation.HAND);
+      bob.ownedCards.getCardByMetadata.mockReturnValue(inHand);
+      state.switchToPlayer(bob.player);
+
+      expect(state.getCardByMetadata(trashed.getMetadata())).toBe(trashed);
+      expect(state.getCardByMetadata(inHand.getMetadata())).toBe(inHand);
+      expect(bob.ownedCards.getCardByMetadata).toHaveBeenCalledWith(inHand.getMetadata());
+      expect(alice.ownedCards.getCardByMetadata).not.toHaveBeenCalled();
+    });
+  });
+
+  it('records the turn phase on every player when it changes', () => {
+    const alice = createPlayerStub('Alice');
+    const bob = createPlayerStub('Bob');
+    const state = createSharedGameState([alice, bob]);
+
+    state.setTurnPhase(TurnPhase.BUY);
+    alice.turnTracker.addGainedCard(createCard('Gold', 'gold-0', [CardType.TREASURE]));
+    bob.turnTracker.addGainedCard(createCard('Curse', 'curse-0', [CardType.CURSE]));
+
+    expect(state.getTurnPhase()).toBe(TurnPhase.BUY);
+    expect(alice.turnTracker.numMatchingCardsGainedThisTurnByPhase(anyCard, TurnPhase.BUY)).toBe(1);
+    expect(bob.turnTracker.numMatchingCardsGainedThisTurnByPhase(anyCard, TurnPhase.BUY)).toBe(1);
+    expect(bob.turnTracker.numMatchingCardsGainedThisTurnByPhase(anyCard, TurnPhase.ACTION)).toBe(0);
+  });
+
+  it('copies a global effect to every player and registers its trigger', async () => {
+    const alice = createPlayerStub('Alice');
+    const bob = createPlayerStub('Bob');
+    const state = createSharedGameState([alice, bob]);
+    const effect = {
+      getTrigger: () => EffectTriggerType.GAIN,
+      getSource: () => EffectSource.ANYONE,
+    } as unknown as Effect;
+
+    state.addGlobalEffect(effect);
+    await state.triggerEffect(EffectTriggerType.GAIN, bob.player);
+
+    expect(alice.effects.addEffect).toHaveBeenCalledWith(effect);
+    expect(bob.effects.addEffect).toHaveBeenCalledWith(effect);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.GAIN, bob.player, undefined);
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.GAIN, bob.player, undefined);
+  });
+
+  it('trashes cards, updates their location, and passes the trashing player to trash effects', async () => {
+    const alice = createPlayerStub('Alice');
+    const bob = createPlayerStub('Bob');
+    const state = createSharedGameState([alice, bob]);
+    const estate = createCard('Estate', 'estate-0', [CardType.VICTORY]);
+    const cards = CardCollection.fromCards([estate]);
+    state.registerEffectTrigger(EffectTriggerType.TRASH, EffectSource.ANYONE);
+
+    expect(await state.trashCards(bob.player, cards)).toBe(cards);
+
+    expect(state.trash.contains(estate)).toBe(true);
+    expect(estate.getLocation()).toBe(CardLocation.TRASH);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.TRASH, bob.player, cards);
+  });
+
+  describe('buyFromPile', () => {
+    const setUpBuy = (cost: Cost) => {
+      const alice = createPlayerStub('Alice');
+      const state = createSharedGameState([alice]);
+      const card = createCard('Alchemist', 'alchemist-pile-0', [CardType.ACTION], cost);
+      const pile = createPile('Alchemist', [card]);
+      state.piles.addKingdomPile(pile);
+      alice.instructionExecutor.gainFromPile.mockImplementation(async (pileName: string) =>
+        state.piles.removeTopCardFromPile(pileName),
+      );
+      return { alice, state, card, pile };
+    };
+
+    it('spends the coins and a buy, then gains the card for the current player', async () => {
+      const { alice, state, card, pile } = setUpBuy(Cost.Simple(4));
+
+      expect(await state.buyFromPile('Alchemist')).toBe(card);
+
+      expect(alice.statistics.spendCoins).toHaveBeenCalledWith(4);
+      expect(alice.statistics.useBuy).toHaveBeenCalledTimes(1);
+      expect(alice.instructionExecutor.gainFromPile).toHaveBeenCalledWith('Alchemist');
+      expect(pile.size()).toBe(0);
+    });
+
+    // BUG: SharedGameState.buyFromPile (used by the buy phase) spends only coins, never the potion in a card's cost
+    it("spends the potion in a card's cost when it is bought", async () => {
+      const { alice, state } = setUpBuy(Cost.Potion(3));
+
+      await state.buyFromPile('Alchemist');
+
+      expect(alice.statistics.spendCoins).toHaveBeenCalledWith(3);
+      expect(alice.statistics.spendPotions).toHaveBeenCalledWith(1);
+    });
+
+    // BUG: SharedGameState.buyFromPile neither records the bought card nor passes it to BUY effects
+    it('records the bought card for the buyer and passes it to buy effects', async () => {
+      const { alice, state, card } = setUpBuy(Cost.Simple(4));
+      state.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.SELF);
+      const addBoughtCardSpy = vi.spyOn(alice.turnTracker, 'addBoughtCard');
+
+      await state.buyFromPile('Alchemist');
+
+      const buyTargets = alice.effects.processEffectsByType.mock.calls
+        .filter(([trigger]) => trigger === EffectTriggerType.BUY)
+        .map(([, , cards]) => (cards instanceof CardCollection ? cards.asCardArray() : [cards]));
+      expect(buyTargets).toEqual([[card]]);
+      expect(addBoughtCardSpy).toHaveBeenCalledWith(card);
+    });
   });
 });

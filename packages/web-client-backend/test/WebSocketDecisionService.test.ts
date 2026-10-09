@@ -116,7 +116,7 @@ describe('WebSocketDecisionService', () => {
     });
     await expect(treasurePending).resolves.toEqual({ type: ChoiceType.SimpleTreasures, coins: 2 });
 
-    const buyPending = service.makeBuyPhaseChoice([{ card: { id: 'duchy-1' } }] as never, 1, 5);
+    const buyPending = service.makeBuyPhaseChoice([{ card: { id: 'duchy-1' } }] as never, 1, 5, 0);
     expect(parseLastSentMessage(socket).type).toBe(MessageType.BUY_PHASE_CHOICE);
     socket.emitMessage({
       type: MessageType.RESOLVED_CHOICE,
@@ -134,5 +134,26 @@ describe('WebSocketDecisionService', () => {
     expect(() => service.resolveChoice({ type: ChoiceType.None } as never)).toThrow(
       'Got a web socket response when no decision was pending',
     );
+  });
+
+  it('sends only the card choices for buy phase decisions, regardless of buys, coins, and potions', async () => {
+    const socket = new TestSocket();
+    const decoder = new WebSocketMessageDecoder(socket as unknown as WebSocket);
+    const writer = new WebSocketMessageWriter(socket as unknown as WebSocket);
+    const service = new WebSocketDecisionService(decoder, writer);
+    const cardChoices = [{ type: ChoiceType.Card, card: { id: 'familiar-1', name: 'Familiar' } }];
+
+    const buyPending = service.makeBuyPhaseChoice(cardChoices as never, 2, 3, 1);
+
+    expect(parseLastSentMessage(socket)).toEqual({
+      type: MessageType.BUY_PHASE_CHOICE,
+      content: { cardChoices },
+    });
+
+    socket.emitMessage({
+      type: MessageType.RESOLVED_CHOICE,
+      content: cardChoices[0],
+    });
+    await expect(buyPending).resolves.toEqual(cardChoices[0]);
   });
 });

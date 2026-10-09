@@ -149,4 +149,67 @@ describe('ControlsComponent', () => {
     expect(decisionManager.resolveDecisionWithCards).toHaveBeenCalledTimes(1);
     expect(decisionManager.resetSelectedCards).toHaveBeenCalledTimes(1);
   });
+
+  it('exposes the potions produced by simple treasures only during the treasure phase', () => {
+    const { component, decisionManager } = createComponent();
+
+    expect(component.simpleTreasurePotions()).toBe(0);
+
+    decisionManager.currentDecision.set({
+      type: DecisionType.TREASURE_PHASE_CHOICE,
+      prompt: 'Play treasures',
+      selectionType: 'play',
+      eligibleCardIds: new Set(['silver-1', 'potion-1']),
+      simpleTreasuresChoice: { type: ChoiceType.SimpleTreasures, coins: 2, potions: 2 },
+    });
+    expect(component.canPlaySimpleTreasures()).toBe(true);
+    expect(component.simpleTreasureCoins()).toBe(2);
+    expect(component.simpleTreasurePotions()).toBe(2);
+
+    decisionManager.currentDecision.set({
+      type: DecisionType.TREASURE_PHASE_CHOICE,
+      prompt: 'Play treasures',
+      selectionType: 'play',
+      eligibleCardIds: new Set(),
+    });
+    expect(component.simpleTreasurePotions()).toBe(0);
+
+    decisionManager.currentDecision.set({
+      type: DecisionType.BUY_PHASE_CHOICE,
+      prompt: 'Buy a card',
+      selectionType: 'play',
+      eligibleCardIds: new Set(['gold-1']),
+    });
+    expect(component.simpleTreasurePotions()).toBe(0);
+  });
+
+  // BUG: canPlaySimpleTreasures() only checks coins > 0, hiding the button when the simple treasures are only Potions.
+  it('offers to play simple treasures when they produce potions but no coins', () => {
+    const { component, decisionManager } = createComponent();
+
+    decisionManager.currentDecision.set({
+      type: DecisionType.TREASURE_PHASE_CHOICE,
+      prompt: 'Play treasures',
+      selectionType: 'play',
+      eligibleCardIds: new Set(['potion-1']),
+      simpleTreasuresChoice: { type: ChoiceType.SimpleTreasures, coins: 0, potions: 1 },
+    });
+
+    expect(component.simpleTreasurePotions()).toBe(1);
+    expect(component.canPlaySimpleTreasures()).toBe(true);
+  });
+
+  it('does not offer to play simple treasures when they produce neither coins nor potions', () => {
+    const { component, decisionManager } = createComponent();
+
+    decisionManager.currentDecision.set({
+      type: DecisionType.TREASURE_PHASE_CHOICE,
+      prompt: 'Play treasures',
+      selectionType: 'play',
+      eligibleCardIds: new Set(['venture-1']),
+      simpleTreasuresChoice: { type: ChoiceType.SimpleTreasures, coins: 0, potions: 0 },
+    });
+
+    expect(component.canPlaySimpleTreasures()).toBe(false);
+  });
 });

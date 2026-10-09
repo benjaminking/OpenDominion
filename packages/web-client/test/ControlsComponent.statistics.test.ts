@@ -86,4 +86,54 @@ describe('ControlsComponent statistics', () => {
     expect(component.currentPlayerCoins()).toBe(8);
     expect(component.isMainPlayersTurn()).toBe(false);
   });
+
+  it('tracks potions and debt per player and derives the current player values', () => {
+    const { component, decoder, effectScheduler } = createComponent();
+
+    setInputSignalValue(component.playerNames as () => string[], ['Alice', 'Bob']);
+    setInputSignalValue(component.mainPlayerName as () => string, 'Alice');
+    setInputSignalValue(component.currentPlayerName as () => string, 'Alice');
+    effectScheduler.flush();
+
+    expect(component.currentPlayerPotions()).toBe(0);
+    expect(component.currentPlayerDebt()).toBe(0);
+
+    decoder.emitStatistic('Alice', NumberType.POTIONS, 2);
+    decoder.emitStatistic('Alice', NumberType.DEBT, 3);
+    decoder.emitStatistic('Bob', NumberType.POTIONS, 1);
+    decoder.emitStatistic('Bob', NumberType.DEBT, 5);
+
+    expect(component.playerPotions().get('Alice')?.()).toBe(2);
+    expect(component.playerDebt().get('Alice')?.()).toBe(3);
+    expect(component.playerPotions().get('Bob')?.()).toBe(1);
+    expect(component.playerDebt().get('Bob')?.()).toBe(5);
+    expect(component.currentPlayerPotions()).toBe(2);
+    expect(component.currentPlayerDebt()).toBe(3);
+    expect(component.currentPlayerCoins()).toBe(0);
+
+    setInputSignalValue(component.currentPlayerName as () => string, 'Bob');
+    expect(component.currentPlayerPotions()).toBe(1);
+    expect(component.currentPlayerDebt()).toBe(5);
+  });
+
+  it('reports zero for every counter when the current player is not a known player', () => {
+    const { component, decoder, effectScheduler } = createComponent();
+
+    setInputSignalValue(component.playerNames as () => string[], ['Alice']);
+    setInputSignalValue(component.currentPlayerName as () => string, 'Alice');
+    effectScheduler.flush();
+    decoder.emitStatistic('Alice', NumberType.ACTIONS, 2);
+    decoder.emitStatistic('Alice', NumberType.BUYS, 3);
+    decoder.emitStatistic('Alice', NumberType.COINS, 4);
+    decoder.emitStatistic('Alice', NumberType.POTIONS, 1);
+    decoder.emitStatistic('Alice', NumberType.DEBT, 6);
+
+    setInputSignalValue(component.currentPlayerName as () => string, 'Mallory');
+
+    expect(component.currentPlayerActions()).toBe(0);
+    expect(component.currentPlayerBuys()).toBe(0);
+    expect(component.currentPlayerCoins()).toBe(0);
+    expect(component.currentPlayerPotions()).toBe(0);
+    expect(component.currentPlayerDebt()).toBe(0);
+  });
 });

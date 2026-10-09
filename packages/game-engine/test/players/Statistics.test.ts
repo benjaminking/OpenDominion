@@ -105,4 +105,85 @@ describe('Statistics', () => {
     expect(statistics.canAfford(Cost.Simple(4))).toBe(true);
     expect(statistics.canAfford(Cost.Simple(5))).toBe(false);
   });
+
+  it('broadcasts potions and coffers along with the other statistics in the initial state', () => {
+    const broadcaster = createBroadcaster();
+    const player = createPlayer(broadcaster);
+    const statistics = new Statistics(player);
+
+    statistics.communicateInitialState();
+
+    expect(broadcaster.updateStatistic).toHaveBeenCalledWith(player, NumberType.POTIONS, 0);
+    expect(broadcaster.updateStatistic).toHaveBeenCalledWith(player, NumberType.COFFERS, 0);
+  });
+
+  it('tracks potions and resets them with the other per-turn resources while coffers persist', async () => {
+    const broadcaster = createBroadcaster();
+    const player = createPlayer(broadcaster);
+    const statistics = new Statistics(player);
+
+    statistics.addPotions(2);
+    statistics.spendPotions(1);
+    statistics.addCoffers(3);
+    await statistics.addCoins(5);
+    expect(statistics.getPotions()).toBe(1);
+    expect(broadcaster.updateStatistic).toHaveBeenCalledWith(player, NumberType.POTIONS, 1);
+
+    statistics.reset();
+
+    expect(statistics.getPotions()).toBe(0);
+    expect(statistics.getCoins()).toBe(0);
+    expect(statistics.getActions()).toBe(1);
+    expect(statistics.getBuys()).toBe(1);
+    expect(statistics.getCoffers()).toBe(3);
+  });
+
+  it('subtracts coins without going below zero', async () => {
+    const statistics = new Statistics(createPlayer(createBroadcaster()));
+    await statistics.addCoins(3);
+
+    statistics.subtractCoins(2);
+    expect(statistics.getCoins()).toBe(1);
+
+    statistics.subtractCoins(4);
+    expect(statistics.getCoins()).toBe(0);
+  });
+
+  it('spends a money amount of coins and potions', async () => {
+    const statistics = new Statistics(createPlayer(createBroadcaster()));
+    await statistics.addCoins(5);
+    statistics.addPotions(1);
+
+    statistics.spendAmount({ coins: 3, potions: 1 });
+
+    expect(statistics.getCoins()).toBe(2);
+    expect(statistics.getPotions()).toBe(0);
+  });
+
+  it('removes at most the coffers available and reports how many were removed', () => {
+    const broadcaster = createBroadcaster();
+    const player = createPlayer(broadcaster);
+    const statistics = new Statistics(player);
+    statistics.addCoffers(3);
+
+    expect(statistics.removeCoffers(2)).toBe(2);
+    expect(statistics.getCoffers()).toBe(1);
+    expect(statistics.removeCoffers(5)).toBe(1);
+    expect(statistics.getCoffers()).toBe(0);
+    expect(statistics.removeCoffers(1)).toBe(0);
+    expect(broadcaster.updateStatistic).toHaveBeenCalledWith(player, NumberType.COFFERS, 3);
+  });
+
+  it('requires both enough coins and enough potions to afford a cost', async () => {
+    const statistics = new Statistics(createPlayer(createBroadcaster()));
+    await statistics.addCoins(4);
+
+    expect(statistics.canAfford(Cost.Potion(2))).toBe(false);
+
+    statistics.addPotions(1);
+
+    expect(statistics.canAfford(Cost.Potion(2))).toBe(true);
+    expect(statistics.canAfford(Cost.Potion(5))).toBe(false);
+    expect(statistics.canAfford(Cost.Simple(4))).toBe(true);
+  });
 });

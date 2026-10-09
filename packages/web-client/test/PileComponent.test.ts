@@ -150,4 +150,53 @@ describe('PileComponent', () => {
 
     consoleLogSpy.mockRestore();
   });
+
+  it('flags basic treasure and basic victory piles from their categories', () => {
+    const { component } = createComponent();
+
+    expect(component.isBasicTreasure()).toBe(true);
+    expect(component.isBasicVictory()).toBe(false);
+
+    setInputSignalValue(component.categories as () => PileCategory[], [
+      PileCategory.SUPPLY,
+      PileCategory.BASIC_VICTORY,
+    ]);
+    expect(component.isBasicTreasure()).toBe(false);
+    expect(component.isBasicVictory()).toBe(true);
+
+    setInputSignalValue(component.categories as () => PileCategory[], [PileCategory.NON_SUPPLY]);
+    expect(component.isBasicTreasure()).toBe(false);
+    expect(component.isBasicVictory()).toBe(false);
+    expect(component.isSupply()).toBe(false);
+  });
+
+  it('names and images mixed piles after their current top card, falling back to the pile name', () => {
+    const { component } = createComponent();
+
+    setInputSignalValue(component.name as () => string, 'Ruins');
+    setInputSignalValue(component.categories as () => PileCategory[], [PileCategory.SUPPLY]);
+    component.topCard.set(createCard('Abandoned Mine', 'abandoned-mine-1', [CardType.ACTION, CardType.RUINS]));
+
+    expect(component.cardName()).toBe('Abandoned Mine');
+    expect(component.fileName()).toBe('abandoned_mine');
+
+    component.topCard.set(createCard('Ruined Library', 'ruined-library-1', [CardType.ACTION, CardType.RUINS]));
+    expect(component.cardName()).toBe('Ruined Library');
+    expect(component.fileName()).toBe('ruined_library');
+
+    component.topCard.set(undefined);
+    expect(component.cardName()).toBe('Ruins');
+    expect(component.fileName()).toBe('ruins');
+  });
+
+  it('keeps the Rewards pile label while showing the top Reward card image', () => {
+    const { component } = createComponent();
+
+    setInputSignalValue(component.name as () => string, 'Rewards');
+    setInputSignalValue(component.categories as () => PileCategory[], [PileCategory.NON_SUPPLY]);
+    component.topCard.set(createCard('Huge Turnip', 'huge-turnip-1', [CardType.TREASURE, CardType.REWARD]));
+
+    expect(component.cardName()).toBe('Rewards');
+    expect(component.fileName()).toBe('huge_turnip');
+  });
 });

@@ -4,6 +4,7 @@ import {
   EndOfPlayersNextTurnEffectExpiration,
   NoEffectExpiration,
   OnceThisTurnEffectExpiration,
+  OneTimeEffectExpirtation,
   RestOfTurnEffectExpiration,
   StartOfPlayersNextTurnEffectExpiration,
 } from '../../src/effects/StandardEffectExpirations';
@@ -88,5 +89,19 @@ describe('StandardEffectExpirations', () => {
 
   it('never expires no-effect expirations', () => {
     expect(new NoEffectExpiration().hasExpired()).toBe(false);
+  });
+
+  it('expires one-time effects only once they have been used', () => {
+    const alice = createPlayer('Alice');
+    const expiration = new OneTimeEffectExpirtation();
+
+    expect(expiration.hasExpired()).toBe(false);
+
+    expiration.registerEndOfPlayersTurn(alice, new Turn(alice, 1, 1));
+    expiration.registerStartOfPlayersTurn(alice, new Turn(alice, 2, 2));
+    expect(expiration.hasExpired()).toBe(false);
+
+    expiration.registerUse();
+    expect(expiration.hasExpired()).toBe(true);
   });
 });

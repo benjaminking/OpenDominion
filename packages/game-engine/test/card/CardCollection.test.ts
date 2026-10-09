@@ -1,9 +1,10 @@
-import { CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
+import { CardCategory, CardInfo, CardLocation, CardType, Expansion } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
 import { CardCollection } from '../../src/card/CardCollection';
 import { Cost } from '../../src/card/Cost';
+import { KingdomCard } from '../../src/card/KingdomCard';
 import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { NameSortingFunction } from '../../src/CardSortingFunctions';
 import { ChangeListener } from '../../src/ChangeListener';
@@ -22,6 +23,7 @@ const createSharedGameStateMock = (cost?: Cost) => {
 };
 
 const createCardInfo = (overrides?: Partial<CardInfo>): CardInfo => ({
+  category: CardCategory.CARD,
   name: 'Test Card',
   text: 'Test card text',
   font_size: 'small',
@@ -280,5 +282,42 @@ describe('CardCollection', () => {
 
     expect(collection.size()).toBe(0);
     expect(collection.toCardNameArray()).toEqual([]);
+  });
+
+  it('reports no matching card when nothing in the collection matches', () => {
+    const collection = CardCollection.fromCards([createCard({ id: 'copper-id', name: 'Copper' })]);
+
+    expect(collection.hasMatchingCard(new CardEligibilityFunction((card) => card.getName() === 'Gold'))).toBe(false);
+    expect(CardCollection.emptyCollection().hasMatchingCard(new CardEligibilityFunction(() => true))).toBe(false);
+  });
+
+  it('builds an eligibility function that matches any card sharing a name with the collection', () => {
+    const collection = CardCollection.fromCards([
+      createCard({ id: 'silver-a', name: 'Silver' }),
+      createCard({ id: 'duchy-a', name: 'Duchy' }),
+    ]);
+
+    const sameName = collection.toCardNameEligibilityFunction();
+
+    expect(sameName.matches(createCard({ id: 'silver-b', name: 'Silver' }))).toBe(true);
+    expect(sameName.matches(createCard({ id: 'gold-a', name: 'Gold' }))).toBe(false);
+  });
+
+  it('reports the proportion of kingdom cards from an expansion', () => {
+    const createKingdomCard = (name: string, expansion: Expansion): KingdomCard => {
+      const card = new KingdomCard(createSharedGameStateMock(), createCardInfo({ name, expansion }));
+      card.setId(`${name}-id`);
+      return card;
+    };
+    const collection = CardCollection.fromCards([
+      createKingdomCard('Platinum Mine', Expansion.PROSPERITY),
+      createKingdomCard('Bank', Expansion.PROSPERITY),
+      createKingdomCard('Hermit', Expansion.DARK_AGES),
+      createCard({ id: 'copper-id', name: 'Copper' }),
+    ]);
+
+    expect(collection.getProportionFromExpansion(Expansion.PROSPERITY)).toBe(0.5);
+    expect(collection.getProportionFromExpansion(Expansion.DARK_AGES)).toBe(0.25);
+    expect(collection.getProportionFromExpansion(Expansion.ALCHEMY)).toBe(0);
   });
 });

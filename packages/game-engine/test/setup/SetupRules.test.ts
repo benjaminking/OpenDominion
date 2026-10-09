@@ -11,10 +11,10 @@ describe('SetupRules', () => {
     const stateA = { setupRuleType: SetupRuleType.GAME_STATE, applySetupRule: () => undefined };
     const stateB = { setupRuleType: SetupRuleType.GAME_STATE, applySetupRule: () => undefined };
 
-    rules.add(initA as never);
-    rules.add(stateA as never);
-    rules.add(initB as never);
-    rules.add(stateB as never);
+    rules.add(initA);
+    rules.add(stateA);
+    rules.add(initB);
+    rules.add(stateB);
 
     expect(rules.hasAnyGameInitializationSetupRules()).toBe(true);
     expect(rules.hasAnyGameStateSetupRules()).toBe(true);
@@ -22,6 +22,27 @@ describe('SetupRules', () => {
     expect(rules.getNextGameInitializationSetupRule()).toBe(initA);
     expect(rules.getNextGameStateSetupRule()).toBe(stateB);
     expect(rules.getNextGameStateSetupRule()).toBe(stateA);
+  });
+
+  it('has no rules when new and none left after every rule has been taken', () => {
+    const rules = new SetupRules();
+    const initializationRule = { setupRuleType: SetupRuleType.GAME_INITIALIZATION, applySetupRule: () => undefined };
+    const gameStateRule = { setupRuleType: SetupRuleType.GAME_STATE, applySetupRule: () => undefined };
+
+    expect(rules.hasAnyGameInitializationSetupRules()).toBe(false);
+    expect(rules.hasAnyGameStateSetupRules()).toBe(false);
+
+    rules.add(initializationRule);
+    expect(rules.hasAnyGameInitializationSetupRules()).toBe(true);
+    expect(rules.hasAnyGameStateSetupRules()).toBe(false);
+
+    rules.add(gameStateRule);
+    rules.getNextGameInitializationSetupRule();
+    expect(rules.hasAnyGameInitializationSetupRules()).toBe(false);
+    expect(rules.hasAnyGameStateSetupRules()).toBe(true);
+
+    rules.getNextGameStateSetupRule();
+    expect(rules.hasAnyGameStateSetupRules()).toBe(false);
   });
 
   it('throws when requesting a rule from an empty list', () => {

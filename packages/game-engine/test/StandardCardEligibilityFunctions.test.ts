@@ -1,28 +1,49 @@
-import { CardLocation, CardType } from '@dominion/common';
+import { CardCategory, CardLocation, CardType, Expansion } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../src/card/Card';
+import { CardCollection } from '../src/card/CardCollection';
 import { Cost } from '../src/card/Cost';
+import { KingdomCard } from '../src/card/KingdomCard';
+import { SharedGameState } from '../src/game-state/SharedGameState';
 import {
   anyCard,
   both,
   canBeDiscardedInCleanup,
   cardNameIs,
+  costsAtLeast,
+  costsBetween,
   costsExactly,
+  costsExactlyNLessThanCard,
+  costsExactlyNMoreThanCard,
+  costsLessThan,
+  costsLessThanCard,
   costsTheSameAsCard,
+  costsTheSameOrLessThanCard,
   costsUpTo,
+  costsUpToNMoreThanCard,
   either,
   isACopyOf,
   isActionCard,
+  isAttackCard,
+  isCommandCard,
   isCurseCard,
+  isDuplicateWith,
   isDurationCard,
+  isFromExpansion,
   isInLocation,
+  isKingdomCard,
+  isKnightCard,
+  isRewardCard,
+  isRuinsCard,
+  isShelterCard,
   isSimpleTreasure,
   isSupplyCard,
   isTheSameCardAs,
   isTreasureCard,
   isVictoryCard,
   noCard,
+  not,
 } from '../src/StandardCardEligibilityFunctions';
 
 // Mock Card and CardInfo
@@ -61,9 +82,10 @@ describe('StandardCardEligibilityFunctions', () => {
   });
 
   describe('noCard', () => {
+    // BUG: NoCard is constructed with `() => true`, so it matches every card instead of none
     it('should not match any card', () => {
       const card = createMockCard();
-      expect(noCard.matches(card)).toBe(true);
+      expect(noCard.matches(card)).toBe(false);
     });
   });
 
@@ -802,6 +824,159 @@ describe('StandardCardEligibilityFunctions', () => {
 
       // This test verifies the Cost constructor accepts multiple components
       expect(card.getCost()).toBeDefined();
+    });
+  });
+
+  describe('additional card type predicates', () => {
+    it.each([
+      ['isAttackCard', isAttackCard, CardType.ATTACK],
+      ['isCommandCard', isCommandCard, CardType.COMMAND],
+      ['isKnightCard', isKnightCard, CardType.KNIGHT],
+      ['isRuinsCard', isRuinsCard, CardType.RUINS],
+      ['isShelterCard', isShelterCard, CardType.SHELTER],
+      ['isRewardCard', isRewardCard, CardType.REWARD],
+    ])('%s matches only cards with that type', (_name, predicate, type) => {
+      const matchingCard = createMockCard({ getTypes: vi.fn(() => new Set([CardType.ACTION, type])) });
+      const otherCard = createMockCard({ getTypes: vi.fn(() => new Set([CardType.ACTION])) });
+
+      expect(predicate.matches(matchingCard)).toBe(true);
+      expect(predicate.matches(otherCard)).toBe(false);
+    });
+  });
+
+  describe('kingdom and expansion predicates', () => {
+    const createKingdomCard = (expansion: Expansion): KingdomCard =>
+      new KingdomCard({ cost: vi.fn(() => Cost.Simple(3)) } as unknown as SharedGameState, {
+        category: CardCategory.CARD,
+        name: 'Test Kingdom Card',
+        text: '',
+        font_size: 'small',
+        cost: { coins: 3 },
+        types: [CardType.ACTION],
+        expansion,
+      });
+
+    it('isKingdomCard matches kingdom cards only', () => {
+      expect(isKingdomCard.matches(createKingdomCard(Expansion.PROSPERITY))).toBe(true);
+      expect(isKingdomCard.matches(createMockCard())).toBe(false);
+    });
+
+    it('isFromExpansion matches kingdom cards from that expansion only', () => {
+      const prosperityCard = createKingdomCard(Expansion.PROSPERITY);
+
+      expect(isFromExpansion(Expansion.PROSPERITY).matches(prosperityCard)).toBe(true);
+      expect(isFromExpansion(Expansion.DARK_AGES).matches(prosperityCard)).toBe(false);
+      expect(isFromExpansion(Expansion.PROSPERITY).matches(createMockCard())).toBe(false);
+    });
+  });
+
+  describe('cost comparisons', () => {
+    const cardCosting = (cost: Cost): Card => createMockCard({ getCost: vi.fn(() => cost) });
+
+    it('costsAtLeast matches cards costing the same or more in every component', () => {
+      const atLeast3 = costsAtLeast(Cost.Simple(3));
+
+      expect(atLeast3.matches(cardCosting(Cost.Simple(3)))).toBe(true);
+      expect(atLeast3.matches(cardCosting(Cost.Simple(5)))).toBe(true);
+      expect(atLeast3.matches(cardCosting(Cost.Potion(3)))).toBe(true);
+      expect(atLeast3.matches(cardCosting(Cost.Simple(2)))).toBe(false);
+      expect(costsAtLeast(Cost.Potion(2)).matches(cardCosting(Cost.Simple(6)))).toBe(false);
+    });
+
+    it('costsLessThan matches strictly cheaper cards and never cards with a potion the bound lacks', () => {
+      const lessThan5 = costsLessThan(Cost.Simple(5));
+
+      expect(lessThan5.matches(cardCosting(Cost.Simple(4)))).toBe(true);
+      expect(lessThan5.matches(cardCosting(Cost.Simple(5)))).toBe(false);
+      expect(lessThan5.matches(cardCosting(Cost.Potion(2)))).toBe(false);
+    });
+
+    it('costsLessThanCard compares against the other card cost when evaluated', () => {
+      const referenceCost = { current: Cost.Simple(5) };
+      const reference = createMockCard({ getCost: vi.fn(() => referenceCost.current) });
+      const cheaperThanReference = costsLessThanCard(reference);
+
+      expect(cheaperThanReference.matches(cardCosting(Cost.Simple(4)))).toBe(true);
+      expect(cheaperThanReference.matches(cardCosting(Cost.Simple(5)))).toBe(false);
+
+      referenceCost.current = Cost.Simple(4);
+      expect(cheaperThanReference.matches(cardCosting(Cost.Simple(4)))).toBe(false);
+    });
+
+    it('costsBetween includes both bounds', () => {
+      const between3And5 = costsBetween(Cost.Simple(3), Cost.Simple(5));
+
+      expect(between3And5.matches(cardCosting(Cost.Simple(2)))).toBe(false);
+      expect(between3And5.matches(cardCosting(Cost.Simple(3)))).toBe(true);
+      expect(between3And5.matches(cardCosting(Cost.Simple(5)))).toBe(true);
+      expect(between3And5.matches(cardCosting(Cost.Simple(6)))).toBe(false);
+    });
+
+    it('costsTheSameOrLessThanCard includes cards costing exactly the same', () => {
+      const reference = cardCosting(Cost.Potion(3));
+      const upToReference = costsTheSameOrLessThanCard(reference);
+
+      expect(upToReference.matches(cardCosting(Cost.Potion(3)))).toBe(true);
+      expect(upToReference.matches(cardCosting(Cost.Simple(3)))).toBe(true);
+      expect(upToReference.matches(cardCosting(Cost.Simple(4)))).toBe(false);
+    });
+
+    it('costsExactlyNMoreThanCard matches only the exact coin difference with the same potions', () => {
+      const reference = cardCosting(Cost.Simple(3));
+      const exactlyOneMore = costsExactlyNMoreThanCard(reference, 1);
+
+      expect(exactlyOneMore.matches(cardCosting(Cost.Simple(4)))).toBe(true);
+      expect(exactlyOneMore.matches(cardCosting(Cost.Simple(3)))).toBe(false);
+      expect(exactlyOneMore.matches(cardCosting(Cost.Simple(5)))).toBe(false);
+      expect(exactlyOneMore.matches(cardCosting(Cost.Potion(4)))).toBe(false);
+    });
+
+    it('costsUpToNMoreThanCard matches anything up to the raised cost', () => {
+      const upToTwoMore = costsUpToNMoreThanCard(cardCosting(Cost.Simple(3)), 2);
+
+      expect(upToTwoMore.matches(cardCosting(Cost.Simple(0)))).toBe(true);
+      expect(upToTwoMore.matches(cardCosting(Cost.Simple(5)))).toBe(true);
+      expect(upToTwoMore.matches(cardCosting(Cost.Simple(6)))).toBe(false);
+      expect(upToTwoMore.matches(cardCosting(Cost.Potion(2)))).toBe(false);
+    });
+
+    it('costsExactlyNLessThanCard matches only the exact coin difference with the same potions and debt', () => {
+      const reference = cardCosting(Cost.Potion(4));
+      const exactlyOneLess = costsExactlyNLessThanCard(reference, 1);
+
+      expect(exactlyOneLess.matches(cardCosting(Cost.Potion(3)))).toBe(true);
+      expect(exactlyOneLess.matches(cardCosting(Cost.Simple(3)))).toBe(false);
+      expect(exactlyOneLess.matches(cardCosting(Cost.Potion(2)))).toBe(false);
+      expect(costsExactlyNLessThanCard(cardCosting(Cost.Simple(0)), 1).matches(cardCosting(Cost.Simple(0)))).toBe(
+        false,
+      );
+    });
+  });
+
+  describe('not', () => {
+    it('inverts the wrapped predicate', () => {
+      const actionCard = createMockCard({ getTypes: vi.fn(() => new Set([CardType.ACTION])) });
+      const treasureCard = createMockCard({ getTypes: vi.fn(() => new Set([CardType.TREASURE])) });
+
+      expect(not(isActionCard).matches(actionCard)).toBe(false);
+      expect(not(isActionCard).matches(treasureCard)).toBe(true);
+    });
+  });
+
+  describe('isDuplicateWith', () => {
+    // BUG: IsDuplicateWith checks `numMatchingCards(isACopyOf(c)) === 0`, so it matches cards with no copy in the collection
+    it('matches cards that have a copy in the collection', () => {
+      const hand = CardCollection.fromCards([
+        createMockCard({ getId: vi.fn(() => 'copper-hand'), getName: vi.fn(() => 'Copper') }),
+      ]);
+      const duplicateOfHand = isDuplicateWith(hand);
+
+      expect(
+        duplicateOfHand.matches(createMockCard({ getId: vi.fn(() => 'copper-deck'), getName: vi.fn(() => 'Copper') })),
+      ).toBe(true);
+      expect(
+        duplicateOfHand.matches(createMockCard({ getId: vi.fn(() => 'silver-deck'), getName: vi.fn(() => 'Silver') })),
+      ).toBe(false);
     });
   });
 });

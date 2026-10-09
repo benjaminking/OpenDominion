@@ -370,4 +370,38 @@ describe('MessageDecoderService', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it('accepts game configuration messages without notifying other subscribers or disrupting later messages', () => {
+    const service = new MessageDecoderService();
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const ws = {} as WebSocket;
+    const mechanicsCallback = vi.fn();
+    const statusCallback = vi.fn();
+    const playerNameCallback = vi.fn();
+
+    service.subscribeToMechanics(mechanicsCallback);
+    service.subscribeToStatus(statusCallback);
+    service.subscribeToMainPlayerName(playerNameCallback);
+    service.connect(ws);
+
+    dispatchMessage(ws, {
+      type: MessageType.GAME_CONFIGURATION,
+      content: { usingPotions: true, usingRuins: true, randomizerSeed: 'seed-1' },
+    });
+
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(mechanicsCallback).not.toHaveBeenCalled();
+    expect(statusCallback).not.toHaveBeenCalled();
+    expect(playerNameCallback).not.toHaveBeenCalled();
+
+    dispatchMessage(ws, {
+      type: MessageType.PLAYER_NAME,
+      content: { name: 'Alice' },
+    });
+    expect(playerNameCallback).toHaveBeenCalledWith({ name: 'Alice' });
+
+    consoleErrorSpy.mockRestore();
+    consoleLogSpy.mockRestore();
+  });
 });
