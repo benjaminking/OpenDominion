@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
@@ -25,7 +25,7 @@ export class Bat extends Card {
       await ie.trashCardFromLocation(card, CardLocation.HAND);
     }
     if (cardsToTrash.size() > 0) {
-      await ie.exchangeCard(this, 'Vampire');
+      ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Vampire');
     }
   }
 }

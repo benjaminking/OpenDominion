@@ -1,10 +1,10 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
-import { CardCollection } from '../../card/CardCollection';
 import { Boon } from '../../card/Boon';
+import { CardCollection } from '../../card/CardCollection';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class TheWindsGift extends Boon {

@@ -2,12 +2,12 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsUpTo } from '../../StandardCardEligibilityFunctions';
-import { Cost } from '../../card/Cost';
+import { anyCard, costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 // Devil's Workshop (Night): If you gained 2+ cards this turn: gain an Imp.
 // If you gained exactly 1: gain a card costing up to $4.
@@ -18,7 +18,7 @@ export class DevilsWorkshop extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    const numGained = ie.getNumCardsGainedThisTurn();
+    const numGained = ie.numMatchingCardsGainedThisTurn(anyCard);
     if (numGained >= 2) {
       await ie.gainFromSpiritPile('Imp');
     } else if (numGained === 1) {

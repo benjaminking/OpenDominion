@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Fool (Action/Fate): If you aren't the player with Lost in the Woods: take it, take 3 Boons, receive them.
 // State card management and 3-Boon selection require engine support.

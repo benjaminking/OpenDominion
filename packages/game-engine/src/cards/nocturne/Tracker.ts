@@ -5,10 +5,11 @@ import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard } from '../../StandardCardEligibilityFunctions';
 
 // Tracker (Action/Fate): +$1. This turn, when you gain a card, you may put it onto your deck.
@@ -27,7 +28,8 @@ export class Tracker extends KingdomCard {
         .onTurn(ie.createThisTurnEligibilityFunction())
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, gainedCard: Card) => {
+          new EffectAction(async (effectIe: InstructionExecutor, effectContext: EffectContext) => {
+            const gainedCard = effectContext.getTargetCard()!;
             const choice: Card | Choice = await effectIe
               .chooseCard('Put gained card onto your deck?')
               .from(CardLocation.DISCARD)
@@ -36,7 +38,7 @@ export class Tracker extends KingdomCard {
               .allowNoneOption()
               .choose();
             if (choice instanceof Card) {
-              await effectIe.topDeckCardFromLocation(gainedCard, CardLocation.DISCARD);
+              await effectIe.topDeckCardFromLocation(gainedCard, effectContext.getGainLocation()!);
             }
           }),
         )

@@ -5,9 +5,9 @@ import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardPlayOptions } from '../../CardPlayOptions';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { isActionCard, isACopyOf } from '../../StandardCardEligibilityFunctions';
+import { isACopyOf, isActionCard } from '../../StandardCardEligibilityFunctions';
 
 // Conclave: +$2. You may play an Action card from your hand that you don't have a copy of in play.
 // If you do, +1 Action.

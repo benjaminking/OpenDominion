@@ -4,8 +4,8 @@ import { CardLocation, CardSelectionPurpose, CardType, Choice } from '@dominion/
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 const isSpiritCard = new CardEligibilityFunction((c: Card) => c.hasType(CardType.SPIRIT));
 

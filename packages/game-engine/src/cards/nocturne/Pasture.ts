@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 // Pasture (Treasure/Victory/Heirloom): $1.

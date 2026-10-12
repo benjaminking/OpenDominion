@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Hex } from '../../card/Hex';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 // Bad Omens: Put your deck into your discard pile. Look through it and put 2 Coppers from it onto your deck (or reveal you can't).

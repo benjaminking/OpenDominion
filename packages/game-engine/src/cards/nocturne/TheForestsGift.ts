@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Boon } from '../../card/Boon';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // The Forest's Gift: +1 Buy, +$1 (keep this until Clean-up).
 // The Duration-like "keep until cleanup" part requires engine support; the immediate effect is applied here.

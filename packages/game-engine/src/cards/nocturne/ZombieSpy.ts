@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Zombie Spy (Action/Zombie): +1 Card, +1 Action.
 // Look at the top card of your deck. Discard it or put it back.

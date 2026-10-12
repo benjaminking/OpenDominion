@@ -3,8 +3,8 @@ import { CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Night Watchman (Night): Look at the top 5 cards of your deck, discard any number,
 // and put the rest back in any order.

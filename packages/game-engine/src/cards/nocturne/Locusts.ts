@@ -1,13 +1,13 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { Cost } from '../../card/Cost';
 import { Hex } from '../../card/Hex';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs, costsUpTo, either } from '../../StandardCardEligibilityFunctions';
-import { Cost } from '../../card/Cost';
-import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 // Locusts: Trash the top card of your deck. If it's Copper or Estate, gain a Curse.
 // Otherwise, gain a cheaper card that shares a type with it.

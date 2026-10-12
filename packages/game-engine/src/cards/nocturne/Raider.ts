@@ -5,9 +5,9 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 
 // Raider (Night/Duration/Attack): Each other player with 5+ cards in hand discards a copy of
 // a card you have in play (or reveals they can't). At the start of your next turn, +$3.

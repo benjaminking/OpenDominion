@@ -2,13 +2,13 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
-import { Cost } from '../../card/Cost';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 const isNotVampire = new CardEligibilityFunction((c: Card) => c.getName() !== 'Vampire');
@@ -32,7 +32,7 @@ export class Vampire extends KingdomCard {
     if (cardToGain instanceof Card) {
       await ie.gainCardFromPile(cardToGain.getPileName());
     }
-    await ie.exchangeCard(this, 'Bat');
+    ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Bat');
   }
 
   public async hexAttack(attackedPlayer: Player, _attackingPlayer: Player): Promise<void> {

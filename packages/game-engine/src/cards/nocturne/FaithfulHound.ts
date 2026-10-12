@@ -1,14 +1,14 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isInLocation } from '../../StandardCardEligibilityFunctions';
 
 // Faithful Hound (Action/Reaction): +2 Cards.
@@ -31,7 +31,7 @@ export class FaithfulHound extends KingdomCard {
     await ie.drawCards(2);
   }
 
-  private async reaction(ie: InstructionExecutor, _discardedCard: Card): Promise<void> {
+  private async reaction(ie: InstructionExecutor, _effectContext: EffectContext): Promise<void> {
     ie.setCardAside(this);
     ie.addEffect(
       new Effect.Builder()

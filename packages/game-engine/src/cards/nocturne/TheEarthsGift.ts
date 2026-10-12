@@ -1,13 +1,13 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { Boon } from '../../card/Boon';
-import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsUpTo, isTreasureCard } from '../../StandardCardEligibilityFunctions';
+import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
+import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { costsUpTo, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class TheEarthsGift extends Boon {
   constructor(sharedGameState: SharedGameState) {

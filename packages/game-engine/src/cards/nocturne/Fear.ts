@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Hex } from '../../card/Hex';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { either, isActionCard, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 // Fear: If you have at least 5 cards in hand, discard an Action or Treasure (or reveal you can't).

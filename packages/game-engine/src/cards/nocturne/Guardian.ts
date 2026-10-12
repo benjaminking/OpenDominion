@@ -1,13 +1,13 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Guardian (Night/Duration): At the start of your next turn, +$1.
 // Until then, when another player plays an Attack, it doesn't affect you.
@@ -39,8 +39,8 @@ export class Guardian extends KingdomCard {
         .withExpiration(ie.createStartOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction((_effectIe: InstructionExecutor, attackCard: Card) => {
-            _effectIe.blockAttack(attackCard);
+          new EffectAction((effectIe: InstructionExecutor, effectContext: EffectContext) => {
+            effectIe.blockAttack(effectContext.getTargetCard()!);
           }),
         )
         .build(),

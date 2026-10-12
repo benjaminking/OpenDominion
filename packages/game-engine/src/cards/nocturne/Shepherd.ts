@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 // Shepherd: +1 Action. Discard any number of Victory cards, revealing them. +2 Cards per card discarded.

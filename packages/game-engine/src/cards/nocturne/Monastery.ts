@@ -4,8 +4,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { anyCard, cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 // Monastery (Night): For each card you've gained this turn, you may trash a card from
@@ -16,7 +16,7 @@ export class Monastery extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    const numGained = ie.getNumCardsGainedThisTurn();
+    const numGained = ie.numMatchingCardsGainedThisTurn(anyCard);
     for (let i = 0; i < numGained; i++) {
       await ie
         .chooseOneOption('Trash a card from your hand, a Copper in play, or neither?')

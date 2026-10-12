@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
 import { Hex } from '../../card/Hex';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Plague: Gain a Curse to your hand.
 export class Plague extends Hex {

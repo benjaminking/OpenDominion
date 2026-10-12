@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { Hex } from '../../card/Hex';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // War: Reveal cards from your deck until revealing one costing $3 or $4. Trash it and discard the rest.
 export class War extends Hex {

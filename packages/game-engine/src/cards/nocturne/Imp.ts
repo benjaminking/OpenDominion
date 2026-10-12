@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard, isInLocation } from '../../StandardCardEligibilityFunctions';
 
 // Imp (Action/Spirit): +2 Cards. You may play an Action card from your hand that you

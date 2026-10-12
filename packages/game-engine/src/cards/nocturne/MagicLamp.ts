@@ -2,8 +2,8 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Magic Lamp (Treasure/Heirloom): $1.
 // When you play this, if there are 6 or more differently-named cards in play (counting this),

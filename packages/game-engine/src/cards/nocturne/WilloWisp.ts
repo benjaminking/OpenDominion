@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Will-o'-Wisp (Action/Spirit): +1 Card, +1 Action.
 // Reveal the top card of your deck. If it costs $2 or less, put it into your hand.

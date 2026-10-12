@@ -1368,13 +1368,6 @@ export class InstructionExecutor {
     void spiritName;
   }
 
-  /** Exchange a card in play for a card from the named pile (e.g. Vampire→Bat). */
-  public async exchangeCard(card: Card, targetPileName: string): Promise<void> {
-    // TODO: implement exchange mechanic
-    void card;
-    void targetPileName;
-  }
-
   /** Play a face-up non-Duration Action card from the trash, flipping it face-down for the turn. */
   public async playCardFromTrash(card: Card): Promise<void> {
     // TODO: implement play-from-trash mechanic (Necromancer)
@@ -1408,15 +1401,5 @@ export class InstructionExecutor {
   /** Shuffle a collection of cards into this player's deck. */
   public async shuffleCardsIntoDeck(_cards: CardCollection): Promise<void> {
     // TODO: implement shuffle-into-deck (Famine hex)
-  }
-
-  /** Count cards in play matching the eligibility function. */
-  public numMatchingCardsInPlay(cardEligibilityFunction: CardEligibilityFunction): number {
-    return this.player.getOwnedCards().getInPlay().numMatchingCards(cardEligibilityFunction);
-  }
-
-  /** Count cards gained by this player this turn. */
-  public getNumCardsGainedThisTurn(): number {
-    return this.player.getStatistics().getNumCardsGainedThisTurn();
   }
 }
