@@ -1,9 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Event } from '../../card/Event';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../game-state/SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 export class Raid extends Event {

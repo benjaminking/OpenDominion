@@ -5,10 +5,10 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { Event } from '../../card/Event';
 import { ActionChoice } from '../../decisions/ActionChoice';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { isAttackCard, isCurseCard } from '../../StandardCardEligibilityFunctions';
-import { upToNChecked, exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
+import { exactlyNChecked,upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Quest extends Event {
   public constructor(sharedGameState: SharedGameState) {

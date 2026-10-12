@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Event } from '../../card/Event';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
 
 export class Save extends Event {
   public constructor(sharedGameState: SharedGameState) {

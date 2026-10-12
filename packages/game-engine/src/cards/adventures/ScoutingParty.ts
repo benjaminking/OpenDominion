@@ -3,9 +3,9 @@ import { CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { Event } from '../../card/Event';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../game-state/SharedGameState';
-import { upToNChecked, exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { exactlyNChecked,upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class ScoutingParty extends Event {
   public constructor(sharedGameState: SharedGameState) {

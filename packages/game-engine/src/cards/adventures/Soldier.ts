@@ -2,9 +2,9 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../game-state/SharedGameState';
 import { isAttackCard } from '../../StandardCardEligibilityFunctions';
 
 export class Soldier extends Card {

@@ -2,13 +2,13 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../game-state/SharedGameState';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { NoEffectExpiration } from '../../effects/StandardEffectExpirations';
+import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
 
 export class Champion extends Card {
   constructor(sharedGameState: SharedGameState) {

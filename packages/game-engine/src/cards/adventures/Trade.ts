@@ -3,8 +3,8 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { Event } from '../../card/Event';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Trade extends Event {

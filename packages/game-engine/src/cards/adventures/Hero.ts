@@ -3,8 +3,8 @@ import { CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Hero extends Card {

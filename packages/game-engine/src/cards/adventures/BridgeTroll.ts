@@ -3,15 +3,15 @@ import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { CostModifier } from '../../effects/CostModifier';
-import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
-import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
+import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../game-state/SharedGameState';
 
 export class BridgeTroll extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
