@@ -7,6 +7,7 @@ import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { OneTimeEffectExpirtation } from '../../effects/StandardEffectExpirations';
@@ -36,9 +37,9 @@ export class Daimyo extends KingdomCard {
         .addCondition(new EffectCondition(() => !hasReplayed))
         .makeMandatory()
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, targetCard: Card) => {
+          new EffectAction(async (effectIe: InstructionExecutor, effectContext: EffectContext) => {
             hasReplayed = true;
-            await effectIe.replayCard(targetCard);
+            await effectIe.replayCard(effectContext.getTargetCard()!);
           }),
         )
         .build(),

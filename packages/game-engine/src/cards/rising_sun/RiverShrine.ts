@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardLocation, CardSelectionPurpose, TurnPhase } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
@@ -31,30 +31,15 @@ export class RiverShrine extends KingdomCard {
       .choose();
     await ie.trashCardsFromLocation(trashedCards, CardLocation.HAND);
 
-    let gainedCardInBuyPhase = false;
-    ie.addEffect(
-      new Effect.Builder()
-        .from(this)
-        .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
-        .onTurn(ie.createThisTurnEligibilityFunction())
-        .withExpiration(ie.createOnceThisTurnEffectExpiration())
-        .action(
-          new EffectAction((effectIe: InstructionExecutor) => {
-            if (effectIe.getSharedGameState().getTurnPhase() === TurnPhase.BUY) {
-              gainedCardInBuyPhase = true;
-            }
-          }),
-        )
-        .build(),
-    );
-
     ie.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.SELF)
         .onTurn(ie.createThisTurnEligibilityFunction())
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
-        .addCondition(new EffectCondition(() => !gainedCardInBuyPhase))
+        .addCondition(
+          new EffectCondition((effectIe: InstructionExecutor) => effectIe.getNumCardsGainedInThisTurnsBuyPhase() === 0),
+        )
         .makeMandatory()
         .action(
           new EffectAction(async (effectIe: InstructionExecutor) => {

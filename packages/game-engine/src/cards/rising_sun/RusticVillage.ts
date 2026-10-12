@@ -5,7 +5,7 @@ import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
+import { either, exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class RusticVillage extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -25,8 +25,7 @@ export class RusticVillage extends KingdomCard {
       .chooseCards('You may discard 2 cards for +1 Card')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(exactlyNChecked(2))
-      .allowNoneOption()
+      .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(2)))
       .choose();
     if (discardedCards.size() === 2) {
       await ie.discardCardsFromLocation(discardedCards, CardLocation.HAND);

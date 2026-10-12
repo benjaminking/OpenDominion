@@ -337,11 +337,8 @@ export class InstructionExecutor {
     return this.playCard(this.player, card);
   }
 
+  // playCard announces Attacks itself, so a replayed Attack is announced once
   public async replayCard(card: Card): Promise<void> {
-    if (card.hasType(CardType.ATTACK)) {
-      await this.announceAttackCard(card);
-    }
-
     await this.playCard(this.player, card);
   }
 
@@ -512,7 +509,9 @@ export class InstructionExecutor {
 
     this.player.getStatistics().spendCoins(card.getCost().coins);
     this.player.getStatistics().spendPotions(card.getCost().potions);
-    this.player.getStatistics().addDebt(card.getCost().debt);
+    if (card.getCost().debt > 0) {
+      this.player.getStatistics().addDebt(card.getCost().debt);
+    }
     this.player.getStatistics().useBuy();
     this.player.getTurnTracker().addBoughtCard(card);
 
