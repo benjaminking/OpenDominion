@@ -413,7 +413,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.DURATION, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Doubloons',
@@ -423,7 +424,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Endless Chalice',
@@ -433,7 +435,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.DURATION, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Figurehead',
@@ -443,7 +446,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.DURATION, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Hammer',
@@ -453,7 +457,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Insignia',
@@ -463,7 +468,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Jewels',
@@ -473,7 +479,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.DURATION, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Orb',
@@ -483,7 +490,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Prize Goat',
@@ -493,7 +501,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Puzzle Box',
@@ -503,7 +512,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Sextant',
@@ -513,7 +523,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Shield',
@@ -523,7 +534,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.REACTION, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Spell Scroll',
@@ -533,7 +545,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.ACTION, CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Staff',
@@ -543,7 +556,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Sword',
@@ -553,7 +567,8 @@ export const plunder: CardInfo[] = [
     cost: { coins: 7, has_asterisk: true },
     types: [CardType.TREASURE, CardType.ATTACK, CardType.LOOT],
     expansion: Expansion.PLUNDER,
-    has_randomizer: true,
+    has_randomizer: false,
+    pileNameOverride: 'Loot',
   },
   {
     name: 'Avoid',

@@ -3,6 +3,7 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -27,8 +28,13 @@ export class MiningRoad extends KingdomCard {
         .whereCardIs(isTreasureCard)
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, gainedCard) => {
-            await effectIe.playCardFromLocation(gainedCard, gainedCard.getLocation());
+          new EffectAction(async (effectIe: InstructionExecutor, effectContext: EffectContext) => {
+            const gainedCard = effectContext.getTargetCard()!;
+            if (!effectContext.getLocationExpectation()!.isMet(gainedCard)) {
+              effectIe.sendLostTrackMessage(gainedCard);
+              return;
+            }
+            await effectIe.playCardFromLocation(gainedCard, effectContext.getGainLocation()!);
           }),
         )
         .build(),

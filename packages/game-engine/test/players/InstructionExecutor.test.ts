@@ -202,6 +202,8 @@ const createHarness = (options: { piles?: Piles } = {}) => {
     removeTopCardFromPile: vi.fn((pileName: string) => pileCards.get(pileName)?.shift()),
     getTopCardsOfSupplyPiles: vi.fn(() => topCardsOfSupplyPiles),
     isPile: vi.fn((pileName: string) => pileCards.has(pileName)),
+    isSupplyPile: vi.fn((pileName: string) => pileCards.has(pileName)),
+    getPileSizeByName: vi.fn((pileName: string) => pileCards.get(pileName)?.length ?? 0),
     isCardInPile: vi.fn((card: Card, pileName: string) => pileCards.get(pileName)?.includes(card) ?? false),
   };
   const currentPiles: Piles | typeof piles = options.piles ?? piles;

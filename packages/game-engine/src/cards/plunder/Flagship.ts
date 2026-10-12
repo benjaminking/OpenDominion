@@ -1,11 +1,11 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardType } from '@dominion/common';
 
-import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { OneTimeEffectExpirtation } from '../../effects/StandardEffectExpirations';
@@ -32,8 +32,9 @@ export class Flagship extends KingdomCard {
         .withExpiration(new OneTimeEffectExpirtation())
         .makeMandatory()
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, card: Card) => {
-            await effectIe.playCardFromLocation(card, CardLocation.IN_PLAY);
+          new EffectAction(async (effectIe: InstructionExecutor, effectContext: EffectContext) => {
+            const playedCard = effectContext.getTargetCard()!;
+            await effectIe.playCardFromLocation(playedCard, CardLocation.IN_PLAY);
             this.markAsFinished();
           }),
         )

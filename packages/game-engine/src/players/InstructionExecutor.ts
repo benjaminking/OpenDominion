@@ -559,7 +559,11 @@ export class InstructionExecutor {
     }
     await this.gain(card, gainLocation);
     if (wasSupplyPile && this.sharedGameState.piles.getPileSizeByName(pileName) === 0) {
-      await this.sharedGameState.triggerEffect(EffectTriggerType.SUPPLY_PILE_EMPTIED, this.player, card);
+      await this.sharedGameState.triggerEffect(
+        EffectTriggerType.SUPPLY_PILE_EMPTIED,
+        this.player,
+        new EffectContextBuilder().withTargetCard(card).build(),
+      );
     }
     return card;
   }
@@ -728,11 +732,17 @@ export class InstructionExecutor {
   }
 
   public putCardOnBottomOfDeckFromLocation(card: Card, location: CardLocation): Promise<Card | undefined> {
+    if (!this.sharedGameState.isCardAbleToMove(card)) {
+      return Promise.resolve(undefined);
+    }
     this.removeCardFromLocation(card, location);
 
     if (card.getLocation() === location) {
       this.player.getOwnedCards().putCardIntoDeck(card, this.player.getOwnedCards().getDeck().size());
-      this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'puts %c on the deck', card));
+      this.logger.gameMessage(
+        this.player,
+        ServerLogMessage.publicMessage(this.player, 'puts %c on the bottom of the deck', card),
+      );
       return Promise.resolve(card);
     }
 
@@ -1390,15 +1400,8 @@ export class InstructionExecutor {
     this.player.getOwnedCards().forceFullBroadcastOfDiscard();
   }
 
-  public async gainLoot(gainLocation = CardLocation.DISCARD): Promise<Card | undefined> {
-    try {
-      return await this.gainCardFromPile('Loot', gainLocation);
-    } catch (_e) {
-      this.logger.gameMessage(
-        this.player,
-        ServerLogMessage.publicMessage(this.player, 'cannot gain Loot because the Loot pile is not available'),
-      );
-      return undefined;
-    }
+  // The Loot pile is shuffled and holds differently named cards, so the top card is gained whatever its name
+  public async gainLoot(gainLocation: CardLocation = CardLocation.DISCARD): Promise<Card | undefined> {
+    return this.gainFromPile('Loot', gainLocation);
   }
 }

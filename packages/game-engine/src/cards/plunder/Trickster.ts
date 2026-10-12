@@ -2,18 +2,17 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { OnceThisTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
+import { both, canBeDiscardedInCleanup, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Trickster extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -23,28 +22,26 @@ export class Trickster extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.performAttack(this, this.attack.bind(this));
 
+    // By the time "when you discard" abilities resolve, the cards are already in the discard pile, so the Treasure is
+    // chosen as Clean-up starts instead (as Herbalist does)
     ie.addEffect(
       new Effect.Builder()
         .from(this)
         .onTurn(ie.createThisTurnEligibilityFunction())
-        .triggerOn(EffectTriggerType.DISCARD, EffectSource.SELF)
-        .whereCardIs(
-          new CardEligibilityFunction(
-            (card) => isTreasureCard.matches(card) && card.getLocation() === CardLocation.IN_PLAY,
+        .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.SELF)
+        .withExpiration(ie.createOnceThisTurnEffectExpiration())
+        .addCondition(
+          new EffectCondition((effectIe: InstructionExecutor) =>
+            effectIe.hasMatchingCardInPlay(both(isTreasureCard, canBeDiscardedInCleanup)),
           ),
         )
-        .withExpiration(new OnceThisTurnEffectExpiration(ie.getSharedGameState().getCurrentTurn()))
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, discardedCards: CardCollection) => {
-            const treasuresInPlay = discardedCards.getMatchingCards(
-              new CardEligibilityFunction(
-                (card) => isTreasureCard.matches(card) && card.getLocation() === CardLocation.IN_PLAY,
-              ),
-            );
+          new EffectAction(async (effectIe: InstructionExecutor) => {
             const cardToSetAside: Card | Choice = await effectIe
-              .chooseCard('You may set aside a discarded Treasure from play')
-              .from(treasuresInPlay)
+              .chooseCard('You may set aside a Treasure you would discard from play')
+              .from(CardLocation.IN_PLAY)
               .to(CardSelectionPurpose.OTHER)
+              .whereCardIs(both(isTreasureCard, canBeDiscardedInCleanup))
               .allowNoneOption()
               .choose();
             if (!(cardToSetAside instanceof Card)) {

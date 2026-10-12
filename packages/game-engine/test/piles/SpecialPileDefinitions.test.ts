@@ -83,6 +83,24 @@ const castleNames = [
   "King's Castle",
 ];
 
+const lootNames = [
+  'Amphora',
+  'Doubloons',
+  'Endless Chalice',
+  'Figurehead',
+  'Hammer',
+  'Insignia',
+  'Jewels',
+  'Orb',
+  'Prize Goat',
+  'Puzzle Box',
+  'Sextant',
+  'Shield',
+  'Spell Scroll',
+  'Staff',
+  'Sword',
+];
+
 const lookup = new SpecialPileLookup();
 
 describe('special pile definitions for expansions that are not loaded yet', () => {
@@ -152,6 +170,19 @@ describe('special pile definitions for expansions that are not loaded yet', () =
     expect(specification.isShuffled).toBe(false);
   });
 
+  it('defines the Loot pile as two of each Loot, shuffled and outside the Supply', () => {
+    const specification = lookup.lookUpSpecialPile(SpecialPileType.LOOT);
+
+    expect(specification.pileName).toBe('Loot');
+    expect(specification.randomizerCardInfo.name).toBe('Loot');
+    expect(specification.randomizerCardInfo.types).toEqual([CardType.TREASURE, CardType.LOOT]);
+    expect(specification.cardInfos.map((cardInfo) => cardInfo.name)).toEqual(
+      lootNames.flatMap((cardName) => repeat(cardName, 2)),
+    );
+    expect(specification.pileCategories).toEqual(new Set([PileCategory.NON_SUPPLY]));
+    expect(specification.isShuffled).toBe(true);
+  });
+
   it.each([
     'Knights',
     'Castles',
@@ -208,6 +239,19 @@ describe('creating special piles for expansions that are not loaded yet', () => 
     expect(splitPile.getTopCard()?.getName()).toBe('Encampment');
     expect(castlesPile.getTopCard()?.getName()).toBe(convertToClassName('Humble Castle'));
     expect(castlesPile.asCardArray()[0].getName()).toBe(convertToClassName("King's Castle"));
+  });
+
+  it('creates a 30-card Loot pile for any number of players', () => {
+    for (const numPlayers of [2, 4]) {
+      const pile = createPileFactory(numPlayers).createSpecialPile(lookup.lookUpSpecialPile(SpecialPileType.LOOT));
+
+      expect(pile.name).toBe('Loot');
+      expect(pile.size()).toBe(30);
+      expect(pile.getCategories()).toEqual(new Set([PileCategory.NON_SUPPLY]));
+      expect([...pile.toCardNameArray()].sort()).toEqual(
+        lootNames.flatMap((cardName) => repeat(convertToClassName(cardName), 2)).sort(),
+      );
+    }
   });
 
   it('keeps all sixteen cards of an Allies split pile', () => {

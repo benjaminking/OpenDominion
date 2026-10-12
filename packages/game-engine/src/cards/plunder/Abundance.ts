@@ -1,5 +1,4 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { Card } from '../../card/Card';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
@@ -25,7 +24,7 @@ export class Abundance extends KingdomCard {
         .withExpiration(new OneTimeEffectExpirtation())
         .makeMandatory()
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, _card: Card) => {
+          new EffectAction(async (effectIe: InstructionExecutor) => {
             effectIe.addBuys(1);
             await effectIe.addCoins(3);
             this.markAsFinished();

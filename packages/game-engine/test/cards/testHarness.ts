@@ -143,6 +143,8 @@ export const createCardHarness = () => {
     getTopCardOfPile: vi.fn((pileName: string) => pileCards.get(pileName)?.[0]),
     isPileEmpty: vi.fn((pileName: string) => (pileCards.get(pileName)?.length ?? 0) === 0),
     isPile: vi.fn((pileName: string) => pileCards.has(pileName)),
+    // Every pile a test registers is a Supply pile (see addSupplyPile)
+    isSupplyPile: vi.fn((pileName: string) => pileCards.has(pileName)),
     getPileSizeByName: vi.fn((pileName: string) => pileCards.get(pileName)?.length ?? 0),
     removeTopCardFromPile: vi.fn((pileName: string) => pileCards.get(pileName)?.shift()),
     removeCardFromPile: vi.fn((card: Card) => {
