@@ -3,16 +3,17 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsTheSameAs, isVictoryCard } from '../../StandardCardEligibilityFunctions';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { costsTheSameAsCard, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 export class Charm extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -38,13 +39,14 @@ export class Charm extends KingdomCard {
               .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
               .withExpiration(ie.createOnceThisTurnEffectExpiration())
               .action(
-                new EffectAction(async (ie: InstructionExecutor, gainedCard: Card | undefined) => {
+                new EffectAction(async (ie: InstructionExecutor, effectContext: EffectContext) => {
+                  const gainedCard = effectContext.getTargetCard();
                   if (!(gainedCard instanceof Card)) {
                     return;
                   }
                   const differentName = new CardEligibilityFunction(
                     (c: Card) =>
-                      costsTheSameAs(gainedCard).matches(c) &&
+                      costsTheSameAsCard(gainedCard).matches(c) &&
                       c.getName().toLowerCase() !== gainedCard.getName().toLowerCase(),
                   );
                   const extra: Card | Choice = await ie

@@ -1,8 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Event } from '../../card/Event';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Windfall extends Event {
   public constructor(sharedGameState: SharedGameState) {

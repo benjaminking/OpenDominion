@@ -2,7 +2,7 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { CardCollection } from '../../card/CardCollection';
 import { Landmark } from '../../card/Landmark';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 export class Fountain extends Landmark {

@@ -3,12 +3,12 @@ import { CardSelectionPurpose, CardType, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
+import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo, isActionCard, isDurationCard } from '../../StandardCardEligibilityFunctions';
-import { KingdomCard } from '../../card/KingdomCard';
 
 const isEligibleForOverlord = new CardEligibilityFunction(
   (c: Card) =>

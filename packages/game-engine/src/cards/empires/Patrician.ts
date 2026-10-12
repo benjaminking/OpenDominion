@@ -2,12 +2,12 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { KingdomCard } from '../../card/KingdomCard';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsUpTo } from '../../StandardCardEligibilityFunctions';
 import { Cost } from '../../card/Cost';
+import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 export class Patrician extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {

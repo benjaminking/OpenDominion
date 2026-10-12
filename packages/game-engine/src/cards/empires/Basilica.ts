@@ -2,7 +2,7 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { CardCollection } from '../../card/CardCollection';
 import { Landmark } from '../../card/Landmark';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 export class Basilica extends Landmark {
   constructor(sharedGameState: SharedGameState) {

@@ -3,7 +3,6 @@ import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
-import { CardShapedObject } from '../../card/CardShapedObject';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
@@ -29,7 +28,7 @@ export class Library extends KingdomCard {
     this.setAsideExpectations = new Map<Card, LocationExpectation>();
     this.addEffect(
       new Effect.Builder()
-        .from(this as unknown as CardShapedObject)
+        .from(this)
         .triggerOn(EffectTriggerType.REVEALED_ACTION_DURING_DTX, EffectSource.SELF)
         .makeMandatory()
         .action(

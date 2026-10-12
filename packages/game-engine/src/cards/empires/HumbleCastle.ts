@@ -2,7 +2,7 @@ import { CardInfoLookup } from '@dominion/card-info';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { isCastleCard } from '../../StandardCardEligibilityFunctions';
 
 export class HumbleCastle extends KingdomCard {

@@ -2,12 +2,12 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Cost } from '../../card/Cost';
 import { Event } from '../../card/Event';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 const isNotVictoryCard = new CardEligibilityFunction((card) => !isVictoryCard.matches(card));

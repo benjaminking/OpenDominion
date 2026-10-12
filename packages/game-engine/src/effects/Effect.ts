@@ -21,7 +21,7 @@ let nextEffectNumber = 0;
 export class Effect {
   private _id = '';
   private _numTimesUsed = 0;
-  private owner: CardShapedObject | Card | undefined = undefined;
+  private owner: CardShapedObject | undefined = undefined;
   private expiration: EffectExpiration = new NoEffectExpiration();
   private type: EffectTriggerType = EffectTriggerType.NEVER;
   private source: EffectSource = EffectSource.ANYONE;
@@ -49,7 +49,7 @@ export class Effect {
     return this._id;
   }
 
-  public getOwner(): CardShapedObject | Card {
+  public getOwner(): CardShapedObject {
     return this.owner!;
   }
 
@@ -105,7 +105,7 @@ export class Effect {
   public static Builder = class {
     effect: Effect = new Effect();
 
-    public from(owner: CardShapedObject | Card): this {
+    public from(owner: CardShapedObject): this {
       this.effect.owner = owner;
       return this;
     }
