@@ -3,9 +3,9 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 
 // Duchess (Action): +$2. Each player (including you) looks at the top card of their deck.
 // Each player may discard it.

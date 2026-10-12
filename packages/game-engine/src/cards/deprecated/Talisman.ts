@@ -1,16 +1,17 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
 import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectCondition } from '../../effects/EffectCondition';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { costsUpTo, isVictoryCard } from '../../StandardCardEligibilityFunctions';
+import { both, costsUpTo, isVictoryCard, not } from '../../StandardCardEligibilityFunctions';
 
 // Talisman (Treasure): $1. While this is in play, when you buy a non-Victory card costing up to $4, gain a copy of it.
 export class Talisman extends KingdomCard {
@@ -25,16 +26,15 @@ export class Talisman extends KingdomCard {
     ie.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
         .onTurn(ie.createThisTurnEligibilityFunction())
-        .withExpiration(ie.createStartOfMyNextTurnEffectExpiration())
+        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
+        .whereCardIs(both(not(isVictoryCard), costsUpTo(Cost.Simple(4))))
+        .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY))
+        .withExpiration(ie.createRestOfTurnEffectExpiration())
+        .makeMandatory()
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, boughtCards: CardCollection) => {
-            for (const bought of boughtCards) {
-              if (!isVictoryCard.matches(bought) && costsUpTo(Cost.Simple(4)).matches(bought)) {
-                await effectIe.gainCardFromPile(bought.getPileName());
-              }
-            }
+          new EffectAction(async (effectIe: InstructionExecutor, effectContext: EffectContext) => {
+            await effectIe.gainCardFromPile(effectContext.getTargetCard()!.getPileName());
           }),
         )
         .build(),

@@ -3,8 +3,8 @@ import { CardLocation } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Harvest (Action): Reveal the top 4 cards of your deck, then discard them.
 // +$1 per differently named card revealed.

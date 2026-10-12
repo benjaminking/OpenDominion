@@ -1,9 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Card } from '../../card/Card';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 
 // Followers (Action/Attack/Reward, non-supply): +2 Cards. Gain an Estate.
 // Each other player gains a Curse and discards down to 3 cards in hand.

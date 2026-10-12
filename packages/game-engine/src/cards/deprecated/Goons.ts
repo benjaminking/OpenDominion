@@ -1,9 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 
 // Goons (Action/Attack): +1 Buy, +$2. Each other player discards down to 3 cards in hand.
 // When you buy a card, +1 VP token. (VP token mechanic not implemented)

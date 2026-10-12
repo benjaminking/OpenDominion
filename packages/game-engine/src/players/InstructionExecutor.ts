@@ -1368,13 +1368,6 @@ export class InstructionExecutor {
     // TODO: Implement Copper value bonus
   }
 
-  /** Names a card by having the player select from all card names in the game.
-   *  Returns the chosen name, or '' if none chosen (stub). */
-  public async chooseCardByName(_prompt: string): Promise<string> {
-    // TODO: Implement named card selection UI
-    return '';
-  }
-
   /** Adds a coin token to the named mat (e.g. 'Pirate Ship', 'Trade Route'). */
   public addCoinTokenToMat(_matName: string): void {
     // TODO: Implement coin token mat
@@ -1391,18 +1384,13 @@ export class InstructionExecutor {
     // TODO: Implement buy restriction
   }
 
-  /** Moves all cards in the player's deck to their discard pile (for Chancellor, Trusty Steed). */
-  public moveDeckToDiscard(): void {
-    // TODO: Implement move deck to discard
-  }
-
   /** Adds an Embargo token to the named supply pile (for Embargo). */
   public addEmbargoToken(_pileName: string): void {
     // TODO: Implement Embargo token mechanic
   }
 
   /** Looks at the bottom card of the player's deck without removing it. */
-  public async lookAtBottomCardOfDeck(): Promise<import('../card/Card').Card | undefined> {
+  public async lookAtBottomCardOfDeck(): Promise<Card | undefined> {
     // TODO: Implement look at bottom card of deck
     return undefined;
   }

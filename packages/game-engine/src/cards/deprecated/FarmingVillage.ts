@@ -4,8 +4,8 @@ import { CardLocation, CardType } from '@dominion/common';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 const isActionOrTreasure = new CardEligibilityFunction((c) => isActionCard.matches(c) || isTreasureCard.matches(c));

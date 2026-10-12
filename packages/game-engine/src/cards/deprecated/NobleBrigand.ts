@@ -5,10 +5,10 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
-import { isTreasureCard, cardNameIs } from '../../StandardCardEligibilityFunctions';
+import { cardNameIs, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 const isSilverOrGold = new CardEligibilityFunction(
   (c: Card) => cardNameIs('Silver').matches(c) || cardNameIs('Gold').matches(c),

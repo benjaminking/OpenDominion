@@ -4,8 +4,8 @@ import { CardLocation } from '@dominion/common';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Spy (Action/Attack): +1 Card, +1 Action.
 // Each player (including you) reveals the top card of their deck

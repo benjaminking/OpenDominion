@@ -1,16 +1,15 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectCondition } from '../../effects/EffectCondition';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Royal Seal (Treasure): $2. While this is in play, when you gain a card, you may put it onto your deck.
 export class RoyalSeal extends KingdomCard {
@@ -25,24 +24,27 @@ export class RoyalSeal extends KingdomCard {
     ie.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.GAIN, EffectSource.ANYONE)
         .onTurn(ie.createThisTurnEligibilityFunction())
-        .withExpiration(ie.createStartOfMyNextTurnEffectExpiration())
+        .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+        // Only while this is in play, for a card gained to the discard pile or hand, while it's still there
+        .addCondition(
+          new EffectCondition((_ie: InstructionExecutor, effectContext: EffectContext) => {
+            const gainLocation = effectContext.getGainLocation();
+            return (
+              this.getLocation() === CardLocation.IN_PLAY &&
+              (gainLocation === CardLocation.DISCARD || gainLocation === CardLocation.HAND)
+            );
+          }),
+        )
+        .withExpiration(ie.createRestOfTurnEffectExpiration())
         .action(
-          new EffectAction(async (effectIe: InstructionExecutor, gainedCards: CardCollection) => {
-            for (const gained of gainedCards) {
-              if (gained.getLocation() === CardLocation.DISCARD) {
-                await effectIe
-                  .chooseOneOption(`Royal Seal: Put ${gained.getName()} onto your deck?`)
-                  .from(
-                    new ActionChoice('Put onto deck', async () => {
-                      await effectIe.topDeckCardFromLocation(gained, CardLocation.DISCARD);
-                    }),
-                  )
-                  .from(new ActionChoice('Leave in discard'))
-                  .choose();
-              }
+          new EffectAction(async (effectIe: InstructionExecutor, effectContext: EffectContext) => {
+            const gainedCard = effectContext.getTargetCard()!;
+            if (!effectContext.getLocationExpectation()!.isMet(gainedCard)) {
+              effectIe.sendLostTrackMessage(gainedCard);
+              return;
             }
+            await effectIe.topDeckCardFromLocation(gainedCard, effectContext.getGainLocation()!);
           }),
         )
         .build(),

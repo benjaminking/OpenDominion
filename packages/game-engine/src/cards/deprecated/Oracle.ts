@@ -4,9 +4,9 @@ import { CardLocation } from '@dominion/common';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 
 // Oracle (Action/Attack): Each player (including you) reveals the top 2 cards of their deck;
 // you choose whether they discard them or put them back in any order. Then +2 Cards.

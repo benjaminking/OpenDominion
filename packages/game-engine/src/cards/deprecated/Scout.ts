@@ -4,8 +4,8 @@ import { CardLocation } from '@dominion/common';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 // Scout (Action): +1 Action. Reveal the top 4 cards of your deck.

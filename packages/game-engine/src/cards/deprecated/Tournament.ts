@@ -6,10 +6,10 @@ import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
-import { isVictoryCard, cardNameIs } from '../../StandardCardEligibilityFunctions';
+import { cardNameIs, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 // Tournament (Action): +1 Action. Each player may reveal a Province from their hand.
 // If you do, gain a Prize (or Duchy) onto your deck.

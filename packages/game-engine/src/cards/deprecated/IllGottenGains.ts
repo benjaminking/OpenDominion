@@ -3,8 +3,8 @@ import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Ill-Gotten Gains (Treasure): $1. When you play this, you may gain a Copper to your hand.
 // When you gain this, each other player gains a Curse (on-gain effect not implemented).

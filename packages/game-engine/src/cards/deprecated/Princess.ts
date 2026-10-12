@@ -4,8 +4,8 @@ import { Card } from '../../card/Card';
 import { CostModifier } from '../../effects/CostModifier';
 import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
 import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Princess (Action/Reward, non-supply): +1 Buy. Cards cost $2 less this turn.
 export class Princess extends Card {

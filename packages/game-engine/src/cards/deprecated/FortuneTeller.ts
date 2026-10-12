@@ -5,10 +5,10 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
-import { isVictoryCard, cardNameIs } from '../../StandardCardEligibilityFunctions';
+import { cardNameIs, isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 const isVictoryOrCurse = new CardEligibilityFunction(
   (c: Card) => isVictoryCard.matches(c) || cardNameIs('Curse').matches(c),

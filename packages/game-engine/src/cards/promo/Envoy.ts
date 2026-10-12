@@ -4,8 +4,8 @@ import { CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 // Envoy: Reveal the top 5 cards of your deck. The player to your left chooses one.
 // Discard that one and put the rest into your hand.

@@ -5,9 +5,9 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
 // Ambassador (Action/Attack): Reveal a card from your hand. Return up to 2 copies of it from your hand to the supply.
