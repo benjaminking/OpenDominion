@@ -4,8 +4,8 @@ import { CardSelectionPurpose } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { Event } from '../../card/Event';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Invest extends Event {

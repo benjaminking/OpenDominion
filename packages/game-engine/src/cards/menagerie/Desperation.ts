@@ -1,9 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Event } from '../../card/Event';
+import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Desperation extends Event {
   constructor(sharedGameState: SharedGameState) {

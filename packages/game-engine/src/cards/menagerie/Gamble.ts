@@ -1,10 +1,10 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Event } from '../../card/Event';
+import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { either, isActionCard, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Gamble extends Event {

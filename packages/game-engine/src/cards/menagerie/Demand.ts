@@ -5,8 +5,8 @@ import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
 import { Event } from '../../card/Event';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 export class Demand extends Event {

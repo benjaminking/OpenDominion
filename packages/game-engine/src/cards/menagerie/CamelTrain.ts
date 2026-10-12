@@ -2,11 +2,11 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardSelectionPurpose, CardType } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { KingdomCard } from '../../card/KingdomCard';
 import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
-import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 class IsNotVictoryCard extends CardEligibilityFunction {
   constructor() {

@@ -5,9 +5,9 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { costsBetween } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 

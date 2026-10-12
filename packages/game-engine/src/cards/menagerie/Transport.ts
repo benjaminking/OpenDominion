@@ -1,12 +1,12 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardSelectionPurpose } from '@dominion/common';
 
-import { ActionChoice } from '../../decisions/ActionChoice';
 import { Card } from '../../card/Card';
 import { Event } from '../../card/Event';
+import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Transport extends Event {

@@ -4,8 +4,8 @@ import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { Event } from '../../card/Event';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Pursue extends Event {
   constructor(sharedGameState: SharedGameState) {

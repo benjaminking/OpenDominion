@@ -1,14 +1,14 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Kiln extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -26,7 +26,8 @@ export class Kiln extends KingdomCard {
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction(async (ie2: InstructionExecutor, card: Card) => {
+          new EffectAction(async (ie2: InstructionExecutor, effectContext: EffectContext) => {
+            const card = effectContext.getTargetCard()!;
             await ie2
               .chooseOneOption('You may gain a copy of that card')
               .from(

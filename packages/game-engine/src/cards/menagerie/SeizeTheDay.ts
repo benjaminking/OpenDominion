@@ -1,9 +1,8 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Event } from '../../card/Event';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { NoThirdConsecutiveTurnPrecondition } from '../../turns/ExtraTurnPreconditions';
 
 export class SeizetheDay extends Event {
   constructor(sharedGameState: SharedGameState) {
@@ -15,7 +14,8 @@ export class SeizetheDay extends Event {
       return;
     }
 
-    ie.addExtraTurn(this, [new NoThirdConsecutiveTurnPrecondition()]);
+    // TODO: take an extra turn after this one (not a 3rd turn in a row). ExtraTurn only accepts a Card as its
+    // initiator, so an Event can't start one yet (the same gap as Adventures' Mission).
     ie.markUsedOncePerGame('seize_the_day');
   }
 }
