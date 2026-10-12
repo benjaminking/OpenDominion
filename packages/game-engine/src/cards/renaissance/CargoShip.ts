@@ -5,10 +5,11 @@ import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class CargoShip extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -28,9 +29,13 @@ export class CargoShip extends KingdomCard {
         .onTurn(ie.createThisTurnEligibilityFunction())
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
         .action(
-          new EffectAction(async (ie: InstructionExecutor, card: Card) => {
-            setAsideCard = card;
-            await ie.setCardAsideFromLocation(card, card.getLocation());
+          new EffectAction(async (ie: InstructionExecutor, effectContext: EffectContext) => {
+            const gainedCard = effectContext.getTargetCard()!;
+            if (!effectContext.getLocationExpectation()!.isMet(gainedCard)) {
+              ie.sendLostTrackMessage(gainedCard);
+              return;
+            }
+            setAsideCard = await ie.setCardAsideFromLocation(gainedCard, effectContext.getGainLocation()!);
           }),
         )
         .build(),

@@ -5,8 +5,8 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class BorderGuard extends KingdomCard {

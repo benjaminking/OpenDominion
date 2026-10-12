@@ -6,18 +6,16 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Piazza extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Piazza'));
-  }
 
-  public async onBuy(ie: InstructionExecutor): Promise<void> {
     // At the start of your turn, reveal the top card of your deck. If it's an Action, play it.
-    ie.addEffect(
+    this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)

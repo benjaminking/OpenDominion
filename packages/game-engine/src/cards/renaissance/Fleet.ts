@@ -1,8 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Project } from '../../card/Project';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Fleet: After the game ends, there's an extra round of turns just for players
@@ -14,9 +13,7 @@ import { SharedGameState } from '../../SharedGameState';
 export class Fleet extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Fleet'));
-  }
 
-  public async onBuy(_ie: InstructionExecutor): Promise<void> {
     // stub: end-of-game extra-round not yet implemented
   }
 }

@@ -7,17 +7,15 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Cathedral extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Cathedral'));
-  }
 
-  public async onBuy(ie: InstructionExecutor): Promise<void> {
     // At the start of your turn, trash a card from your hand.
-    ie.addEffect(
+    this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)

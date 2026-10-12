@@ -1,7 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Artifact } from '../../card/Artifact';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Horn: Once per turn, when you discard a Border Guard from play, you may put

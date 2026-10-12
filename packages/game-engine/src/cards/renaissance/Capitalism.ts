@@ -1,8 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Project } from '../../card/Project';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Capitalism: During your turns, Action cards with +$ amounts in their text
@@ -14,9 +13,7 @@ import { SharedGameState } from '../../SharedGameState';
 export class Capitalism extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Capitalism'));
-  }
 
-  public async onBuy(_ie: InstructionExecutor): Promise<void> {
     // stub: runtime card-type modification not implemented
   }
 }

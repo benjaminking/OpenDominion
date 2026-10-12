@@ -8,17 +8,15 @@ import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
 import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Canal extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Canal'));
-  }
 
-  public async onBuy(ie: InstructionExecutor): Promise<void> {
     // At the start of each of your turns, cards cost $1 less this turn.
-    ie.addEffect(
+    this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)

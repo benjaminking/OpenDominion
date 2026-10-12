@@ -1377,11 +1377,6 @@ export class InstructionExecutor {
     /* stub */
   }
 
-  /** Stub: return a card from the player's possession back to its supply pile. */
-  public returnCardToPile(_card: Card): void {
-    /* stub */
-  }
-
   /**
    * Replay the effect of an already-in-play card without moving it.
    * Stub: proper Command card tracking is not yet implemented.

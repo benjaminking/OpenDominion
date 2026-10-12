@@ -8,8 +8,8 @@ import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { CostModifier } from '../../effects/CostModifier';
 import { CoinCostReduction } from '../../effects/StandardCostChangeFunctions';
 import { ThisTurnEligibility } from '../../effects/StandardTurnEligibilityFunctions';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 export class Inventor extends KingdomCard {

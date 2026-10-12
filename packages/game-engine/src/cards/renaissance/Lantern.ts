@@ -1,7 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Artifact } from '../../card/Artifact';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Lantern: Border Guards you play reveal 3 cards and discard 2.

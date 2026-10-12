@@ -2,14 +2,14 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Priest extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -39,8 +39,8 @@ export class Priest extends KingdomCard {
         .withExpiration(ie.createStartOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor, cards: CardCollection) => {
-            await ie.addCoins(2 * cards.size());
+          new EffectAction(async (ie: InstructionExecutor, effectContext: EffectContext) => {
+            await ie.addCoins(2 * effectContext.getTargetCards()!.size());
           }),
         )
         .build(),

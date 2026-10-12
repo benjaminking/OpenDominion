@@ -1,8 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Project } from '../../card/Project';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Exploration: At the end of your Buy phase, if you didn't gain any cards
@@ -15,9 +14,7 @@ import { SharedGameState } from '../../SharedGameState';
 export class Exploration extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Exploration'));
-  }
 
-  public async onBuy(ie: InstructionExecutor): Promise<void> {
     // stub: "no gains during Buy phase" condition not yet implemented
   }
 }

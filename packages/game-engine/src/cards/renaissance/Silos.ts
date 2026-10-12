@@ -7,18 +7,16 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { cardNameIs } from '../../StandardCardEligibilityFunctions';
 
 export class Silos extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Silos'));
-  }
 
-  public async onBuy(ie: InstructionExecutor): Promise<void> {
     // At the start of your turn, discard any number of Coppers (revealed), draw that many.
-    ie.addEffect(
+    this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)

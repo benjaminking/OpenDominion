@@ -1,8 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Project } from '../../card/Project';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Citadel: The first time you play an Action card during each of your turns,
@@ -14,9 +13,7 @@ import { SharedGameState } from '../../SharedGameState';
 export class Citadel extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Citadel'));
-  }
 
-  public async onBuy(_ie: InstructionExecutor): Promise<void> {
     // stub: first-Action-replay not yet implemented
   }
 }

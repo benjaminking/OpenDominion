@@ -5,18 +5,16 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Guildhall extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Guildhall'));
-  }
 
-  public async onBuy(ie: InstructionExecutor): Promise<void> {
     // When you gain a Treasure, +1 Coffers.
-    ie.addEffect(
+    this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)

@@ -3,14 +3,14 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { both, canBeDiscardedInCleanup, costsExactly, isActionCard } from '../../StandardCardEligibilityFunctions';
-import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 
 export class Improve extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {

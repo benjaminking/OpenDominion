@@ -1,8 +1,7 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
 import { Project } from '../../card/Project';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 /**
  * Star Chart: When shuffling, you may pick one of the cards to go on top.
@@ -13,9 +12,7 @@ import { SharedGameState } from '../../SharedGameState';
 export class StarChart extends Project {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Star Chart'));
-  }
 
-  public async onBuy(_ie: InstructionExecutor): Promise<void> {
     // stub: shuffle-order intervention not yet implemented
   }
 }

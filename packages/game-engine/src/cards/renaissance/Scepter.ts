@@ -2,13 +2,13 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
+import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 import { both, costsUpTo, isActionCard } from '../../StandardCardEligibilityFunctions';
-import { Cost } from '../../card/Cost';
 
 export class Scepter extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
