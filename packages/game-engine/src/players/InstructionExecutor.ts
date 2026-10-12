@@ -15,6 +15,7 @@ import { EffectChoice } from '@dominion/common';
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardGroup } from '../card/CardGroup';
+import { Event } from '../card/Event';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { CardPlayOptions } from '../CardPlayOptions';
 import { TreasureCoinSortingFunction } from '../CardSortingFunctions';
@@ -1061,6 +1062,10 @@ export class InstructionExecutor {
 
   public async playCardFromSupplyLeavingItThere(card: Card): Promise<void> {
     await this.playCard(this.player, card, CardPlayOptions.LEAVING_IT_THERE);
+  }
+
+  public hasEventBeenBoughtMultipleTimesThisTurn(event: Event): boolean {
+    return this.player.getTurnTracker().hasEventBeenBoughtMultipleTimesThisTurn(event);
   }
 
   public async processEffectsByType(

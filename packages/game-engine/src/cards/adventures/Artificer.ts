@@ -9,7 +9,6 @@ import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { costsExactly } from '../../StandardCardEligibilityFunctions';
-import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Artificer extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -25,22 +24,21 @@ export class Artificer extends KingdomCard {
       .chooseCards('Discard any number of cards')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(upToNChecked(ie.handSize()))
       .choose();
     await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
 
     const numDiscarded = cardsToDiscard.size();
-    if (numDiscarded > 0) {
-      const cardToGain: Card | Choice = await ie
-        .chooseCard('You may gain a card costing exactly $' + numDiscarded)
-        .from(CardSelectionLocation.SUPPLY)
-        .to(CardSelectionPurpose.GAIN)
-        .whereCardIs(costsExactly(Cost.Simple(numDiscarded)))
-        .allowNoneOption()
-        .choose();
-      if (cardToGain instanceof Card) {
-        await ie.gainCardFromPile(cardToGain, CardLocation.DECK);
-      }
+    
+    const cardToGain: Card | Choice = await ie
+      .chooseCard('You may gain a card costing exactly $' + numDiscarded.toFixed())
+      .from(CardSelectionLocation.SUPPLY)
+      .to(CardSelectionPurpose.GAIN)
+      .whereCardIs(costsExactly(Cost.Simple(numDiscarded)))
+      .allowNoneOption()
+      .choose();
+    if (cardToGain instanceof Card) {
+      await ie.gainCardFromPile(cardToGain, CardLocation.DECK);
     }
+    
   }
 }

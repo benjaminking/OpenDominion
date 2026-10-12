@@ -1,5 +1,6 @@
 import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
+import { Event } from '../card/Event';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { isTheSameCardAs, noCard } from '../StandardCardEligibilityFunctions';
 import { Turn } from '../turns/Turn';
@@ -12,6 +13,7 @@ export class TurnTracker {
   private cardsPlayedByUnofficialTurnNumber = new Map<number, CardCollection>();
   private cardsGainedByUnofficialTurnNumber = new Map<number, CardCollection>();
   private cardsBoughtByUnofficialTurnNumber = new Map<number, CardCollection>();
+  private eventsBoughtByUnofficialTurnNumber = new Map<number, Event[]>();
   private cardsGainedByUnofficialTurnNumberAndPhase = new Map<number, Map<TurnPhase, CardCollection>>();
   // Gains made during other players' turns (recorded under this player's latest turn) don't count as
   // "gained on their turn", e.g. for Smugglers
@@ -186,5 +188,11 @@ export class TurnTracker {
 
   public getLastCompletedTurn(): Turn | undefined {
     return this.lastCompletedTurn;
+  }
+
+  public hasEventBeenBoughtMultipleTimesThisTurn(eventAsdf: Event): boolean {
+    return (this.eventsBoughtByUnofficialTurnNumber
+      .get(this.currentTurn.getUnofficialNumber())
+      ?.filter((e) => eventAsdf.getName() === e.getName()).length ?? 0) > 1;
   }
 }

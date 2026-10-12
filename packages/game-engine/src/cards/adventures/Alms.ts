@@ -15,17 +15,16 @@ export class Alms extends Event {
   }
 
   public async onBuy(ie: InstructionExecutor): Promise<void> {
-    // Once per turn: If you have no Treasures in play, gain a card costing up to $4
-    if (ie.oncePerTurn('Alms')) {
+    if (ie.hasEventBeenBoughtMultipleTimesThisTurn(this)) {
       return;
     }
+    
     if (!ie.hasMatchingCardInPlay(isTreasureCard)) {
       const cardToGain: Card | Choice = await ie
         .chooseCard('Gain a card costing up to $4')
         .from(CardSelectionLocation.SUPPLY)
         .to(CardSelectionPurpose.GAIN)
         .whereCardIs(costsUpTo(Cost.Simple(4)))
-        .allowNoneOption()
         .choose();
       if (cardToGain instanceof Card) {
         await ie.gainCardFromPile(cardToGain);

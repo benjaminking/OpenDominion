@@ -30,7 +30,6 @@ export class Amulet extends KingdomCard {
             .chooseCard('Trash a card from your hand')
             .from(CardLocation.HAND)
             .to(CardSelectionPurpose.TRASH)
-            .allowNoneOption()
             .choose();
           if (card instanceof Card) {
             await ie.trashCardFromLocation(card, CardLocation.HAND);
