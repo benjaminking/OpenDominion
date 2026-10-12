@@ -6,9 +6,9 @@ import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
-import { both, isActionCard, costsUpTo } from '../../StandardCardEligibilityFunctions';
+import { both, costsUpTo, isActionCard } from '../../StandardCardEligibilityFunctions';
 import { upToNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Swap extends KingdomCard {

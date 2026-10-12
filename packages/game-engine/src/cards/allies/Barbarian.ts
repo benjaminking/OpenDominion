@@ -2,13 +2,13 @@ import { CardInfoLookup } from '@dominion/card-info';
 import { CardSelectionPurpose, CardType } from '@dominion/common';
 
 import { Card } from '../../card/Card';
-import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
-import { SharedGameState } from '../../SharedGameState';
 import { both, costsUpTo } from '../../StandardCardEligibilityFunctions';
 
 class SharesATypeWith extends CardEligibilityFunction {

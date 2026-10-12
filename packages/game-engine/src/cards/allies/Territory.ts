@@ -3,7 +3,7 @@ import { CardType } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
-import { SharedGameState } from '../../SharedGameState';
+import { SharedGameState } from '../../game-state/SharedGameState';
 
 export class Territory extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {

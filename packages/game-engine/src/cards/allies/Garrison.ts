@@ -1,13 +1,12 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Garrison extends KingdomCard {
   private tokens = 0;
@@ -25,8 +24,10 @@ export class Garrison extends KingdomCard {
         .from(this)
         .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
         .onTurn(ie.createThisTurnEligibilityFunction())
+        .withExpiration(ie.createRestOfTurnEffectExpiration())
+        .makeMandatory()
         .action(
-          new EffectAction((_ie2: InstructionExecutor, _gainedCard: Card) => {
+          new EffectAction(() => {
             this.tokens++;
           }),
         )

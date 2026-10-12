@@ -1,13 +1,12 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { SharedGameState } from '../../SharedGameState';
 
 export class Guildmaster extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -21,9 +20,11 @@ export class Guildmaster extends KingdomCard {
         .from(this)
         .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
         .onTurn(ie.createThisTurnEligibilityFunction())
+        .withExpiration(ie.createRestOfTurnEffectExpiration())
+        .makeMandatory()
         .action(
-          new EffectAction((ie2: InstructionExecutor, _gainedCard: Card) => {
-            ie2.addFavors(1);
+          new EffectAction((effectIe: InstructionExecutor) => {
+            effectIe.addFavors(1);
           }),
         )
         .build(),
