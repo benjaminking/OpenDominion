@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Inn } from '../../../src/cards/hinterlands/Inn';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -58,7 +59,10 @@ describe('Inn', () => {
     const [onGain] = testHarness.getCardEffects(inn, EffectTriggerType.GAIN);
 
     testHarness.pickCards([inn, village]);
-    await onGain.doAction(testHarness.executor, inn);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(inn).withGainLocation(inn.getLocation()).build(),
+    );
 
     expect(testHarness.deck.size()).toBe(3);
     expect(testHarness.deck.contains(inn)).toBe(true);
@@ -71,9 +75,44 @@ describe('Inn', () => {
     const { inn } = setUpGainedInn(testHarness);
     const [onGain] = testHarness.getCardEffects(inn, EffectTriggerType.GAIN);
 
-    await onGain.doAction(testHarness.executor, inn);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(inn).withGainLocation(inn.getLocation()).build(),
+    );
 
     expect(testHarness.deck.size()).toBe(1);
     expect(testHarness.discard.size()).toBe(3);
+  });
+
+  it('when gained, loses track of a chosen Action card that leaves the discard pile while it is revealed', async () => {
+    const testHarness = createCardHarness();
+    const { inn, village, copper } = setUpGainedInn(testHarness);
+    const [onGain] = testHarness.getCardEffects(inn, EffectTriggerType.GAIN);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+    // Something reacting to the reveal moves the Village out of the discard pile and back
+    vi.spyOn(testHarness.executor, 'revealCards').mockImplementation(() => {
+      testHarness.discard.removeCard(village);
+      testHarness.addToHand(village);
+      testHarness.hand.removeCard(village);
+      testHarness.addToDiscard(village);
+      return Promise.resolve();
+    });
+
+    testHarness.pickCards([inn, village]);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(inn).withGainLocation(inn.getLocation()).build(),
+    );
+
+    expect(lostTrack).toHaveBeenCalledTimes(1);
+    expect(lostTrack).toHaveBeenCalledWith(village);
+    expect(testHarness.deck.size()).toBe(2);
+    expect(testHarness.deck.contains(inn)).toBe(true);
+    expect(
+      testHarness.discard
+        .asCardArray()
+        .map((card) => card.getId())
+        .sort(),
+    ).toEqual([copper.getId(), village.getId()].sort());
   });
 });

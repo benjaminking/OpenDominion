@@ -3,36 +3,35 @@ import { CardLocation, CardSelectionPurpose, Choice, MoneyAmount } from '@domini
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { Effect } from '../../effects/Effect';
-import { EffectAction } from '../../effects/EffectAction';
-import { EffectSource } from '../../effects/EffectSource';
-import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { EffectContext } from '../../effects/EffectContext';
+import { addOverpayEffects } from '../../effects/OverpayEffects';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { anyCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { anyCard } from '../../StandardCardEligibilityFunctions';
 
 export class Infirmary extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Infirmary'));
 
-    this.addEffect(
-      new Effect.Builder()
-        .from(this)
-        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-        .whereCardIs(isTheSameCardAs(this))
-        .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
-            if (overpayAmount === undefined) {
-              return;
-            }
-            for (let i = 0; i < overpayAmount.coins; ++i) {
-              // TODO: not sure whether this still gets played if you lose track of it
-              await ie.playCardFromLocation(this, this.getLocation());
-            }
-          }),
-        )
-        .build(),
+    addOverpayEffects(
+      this,
+      async (ie: InstructionExecutor, overpayAmount: MoneyAmount, effectContext: EffectContext) => {
+        // Played from where it was gained, then again from play by each later $1. Once something else has moved it (e.g.
+        // Watchtower trashing it), it has lost track of itself: it is still played, but stays where it is.
+        let expectedLocation = effectContext.getGainLocation()!;
+        let locationExpectation = effectContext.getLocationExpectation()!;
+        for (let i = 0; i < overpayAmount.coins; ++i) {
+          if (locationExpectation.isMet(this)) {
+            const inPlayExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+            await ie.playCardFromLocation(this, expectedLocation);
+            expectedLocation = CardLocation.IN_PLAY;
+            locationExpectation = inPlayExpectation;
+          } else {
+            ie.sendLostTrackMessage(this);
+            await ie.playCardFromSupplyLeavingItThere(this);
+          }
+        }
+      },
     );
   }
 

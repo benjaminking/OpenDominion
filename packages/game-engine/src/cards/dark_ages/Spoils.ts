@@ -12,7 +12,13 @@ export class Spoils extends Card {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     await ie.addCoins(3);
+    // e.g. Counterfeit's second play: it already returned itself to its pile
+    if (!locationExpectation.isMet(this)) {
+      ie.sendLostTrackMessage(this);
+      return;
+    }
     ie.returnCardToPileFromLocation(this, CardLocation.IN_PLAY);
   }
 }

@@ -4,6 +4,7 @@ import { Duchy } from '../../../src/cards/basic_cards/Duchy';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Haggler } from '../../../src/cards/hinterlands/Haggler';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -36,7 +37,10 @@ describe('Haggler', () => {
     const [onGain] = testHarness.getAddedEffects(EffectTriggerType.GAIN);
     expect(onGain.getCardEligibility().matches(boughtGold)).toBe(true);
     testHarness.pickCard(silver);
-    await onGain.doAction(testHarness.executor, boughtGold);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(boughtGold).withGainLocation(boughtGold.getLocation()).build(),
+    );
 
     expect(testHarness.discard.size()).toBe(2);
     expect(testHarness.discard.contains(silver)).toBe(true);
@@ -55,7 +59,10 @@ describe('Haggler', () => {
 
     const [onGain] = testHarness.getAddedEffects(EffectTriggerType.GAIN);
     testHarness.pickCard(duchy);
-    await onGain.doAction(testHarness.executor, boughtGold);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(boughtGold).withGainLocation(boughtGold.getLocation()).build(),
+    );
 
     expect(testHarness.discard.size()).toBe(1);
   });

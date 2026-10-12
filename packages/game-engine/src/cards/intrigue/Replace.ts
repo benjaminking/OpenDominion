@@ -41,9 +41,15 @@ export class Replace extends KingdomCard {
       return;
     }
 
-    await ie.gainCardFromPile(cardToGain);
-    if (isActionCard.matches(cardToGain) || isTreasureCard.matches(cardToGain)) {
-      await ie.topDeckCardFromLocation(cardToGain, CardLocation.DISCARD);
+    // Gain triggers (e.g. Watchtower, Trader, Trail) may move the gained card before it can be put onto the deck
+    const locationExpectation = ie.createLocationExpectation(CardLocation.DISCARD);
+    const gainedCard: Card | undefined = await ie.gainCardFromPile(cardToGain);
+    if (gainedCard !== undefined && (isActionCard.matches(gainedCard) || isTreasureCard.matches(gainedCard))) {
+      if (!locationExpectation.isMet(gainedCard)) {
+        ie.sendLostTrackMessage(gainedCard);
+      } else {
+        await ie.topDeckCardFromLocation(gainedCard, CardLocation.DISCARD);
+      }
     }
     if (isVictoryCard.matches(cardToGain)) {
       await ie.performAttack(this, this.victoryAttack.bind(this));

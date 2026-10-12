@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
@@ -10,7 +11,8 @@ export class DameMolly extends Knights {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    const selfExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     ie.addActions(2);
-    await ie.performAttack(this, this.knightAttack.bind(this));
+    await this.performKnightAttack(ie, selfExpectation);
   }
 }

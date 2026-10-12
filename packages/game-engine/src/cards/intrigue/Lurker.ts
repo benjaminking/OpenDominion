@@ -7,6 +7,7 @@ import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Lurker extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -23,6 +24,7 @@ export class Lurker extends KingdomCard {
             .chooseCard('Choose an Action card from the Supply to trash')
             .from(CardSelectionLocation.SUPPLY)
             .to(CardSelectionPurpose.TRASH)
+            .whereCardIs(isActionCard)
             .choose();
           if (cardToTrash instanceof Card) {
             return ie.trashCardFromLocation(cardToTrash, CardLocation.PILE);
@@ -35,6 +37,7 @@ export class Lurker extends KingdomCard {
             .chooseCard('Choose an Action card to gain from the Trash.')
             .from(CardLocation.TRASH)
             .to(CardSelectionPurpose.GAIN)
+            .whereCardIs(isActionCard)
             .choose();
           if (cardToGain instanceof Card) {
             return ie.gainCardFromTrash(cardToGain);

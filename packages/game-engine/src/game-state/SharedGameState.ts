@@ -20,10 +20,12 @@ import { Card } from '../card/Card';
 import { CardCollection } from '../card/CardCollection';
 import { CardFactory } from '../card/CardFactory';
 import { Cost } from '../card/Cost';
+import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { CardPlayOptions } from '../CardPlayOptions';
 import { CostChangeTrigger } from '../effects/CostChangeTrigger';
 import { CostModifier } from '../effects/CostModifier';
 import { Effect } from '../effects/Effect';
+import { EffectContext, EffectContextBuilder } from '../effects/EffectContext';
 import { EffectSource } from '../effects/EffectSource';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import { TurnEligibility } from '../effects/TurnEligibility';
@@ -36,18 +38,22 @@ import { PlayerNameStatus } from '../messaging/Status';
 import { Piles } from '../piles/Piles';
 import { InstructionExecutor } from '../players/InstructionExecutor';
 import { Player } from '../players/Player';
-import { isActionCard, isSupplyCard, isTreasureCard } from '../StandardCardEligibilityFunctions';
+import { cardNameIs, isActionCard, isSupplyCard, isTreasureCard } from '../StandardCardEligibilityFunctions';
 import { Trash } from '../Trash';
 import { ExtraTurn } from '../turns/ExtraTurn';
 import { Turn } from '../turns/Turn';
 import { TurnPhase } from '../turns/TurnPhase';
 import { TurnType } from '../turns/TurnType';
 import { CardCostCache } from './CardCostCache';
+import { Clock } from './Clock';
+import { LocationExpectation } from './LocationExpectation';
 import { MechanicsInUse } from './MechanicsInUse';
+import { TimeStamp } from './TimeStamp';
 
 export class SharedGameState {
   private readonly messageBroadcaster: GameMessageBroadcaster;
   private readonly logger: Logger;
+  private readonly _clock: Clock = new Clock();
   private _turnPhase: TurnPhase = TurnPhase.ACTION;
   private previousTurns: Turn[] = [];
   private costModifiers: CostModifier[] = [];
@@ -66,6 +72,16 @@ export class SharedGameState {
     this.mechanicsInUse = new MechanicsInUse(this.messageBroadcaster);
   }
 
+  public getCurrentTimeStamp(): TimeStamp {
+    return this._clock.createTimeStamp();
+  }
+
+  // The clock ticks every time something happens (a card moves, or something triggers effects), so a location
+  // expectation created at one moment can tell whether a card has moved since
+  public advanceTime(): void {
+    this._clock.advanceTime();
+  }
+
   public get piles(): Piles {
     return this._piles;
   }
@@ -79,6 +95,10 @@ export class SharedGameState {
   }
 
   public async startGame(): Promise<void> {
+    // Every later turn starts with these values because they are reset at the end of the previous turn
+    for (const player of this.game.getPlayers()) {
+      player.getStatistics().reset();
+    }
     await this.startTurn(TurnType.STANDARD);
   }
 
@@ -118,6 +138,10 @@ export class SharedGameState {
 
   public getPlayerLeftOfCurrent(): Player {
     return this.game.getPlayers().getPlayerToTheLeftByName(this.getCurrentPlayer().getName());
+  }
+
+  public getPlayerRightOfCurrent(): Player {
+    return this.game.getPlayers().getPlayerToTheRightByName(this.getCurrentPlayer().getName());
   }
 
   public getPlayerLeftOfPlayer(player: Player): Player {
@@ -178,36 +202,29 @@ export class SharedGameState {
   }
 
   private async switchToNextTurn(): Promise<void> {
-    if (this.doesAnyPlayerHaveExtraTurnsQueued()) {
-      // TODO: if multiple players have extra turns, go in turn order
-      for (const player of this.getCurrentTurnOrder()) {
-        if (player.getEffects().hasExtraTurnsQueued()) {
-          const extraTurn: ExtraTurn | undefined = await player.getInstructionExecutor().chooseExtraTurn();
-          if (extraTurn === undefined) {
-            player.getEffects().clearExtraTurns();
-          } else {
-            if (player.getName() !== this.getCurrentPlayer().getName()) {
-              this.switchToPlayer(player);
-            }
-            player.getEffects().removeExtraTurnFromQueue(extraTurn);
-            await this.startTurn(TurnType.EXTRA);
-            break;
-          }
-        }
+    for (const player of this.getCurrentTurnOrder()) {
+      // An extra turn that can't happen (e.g. a 3rd turn in a row) fails now, in between turns, so the card
+      // that gave it has nothing left to do and is discarded in the next Clean-up
+      for (const failedExtraTurn of player.getEffects().removeExtraTurnsThatCannotHappen(this.previousTurns)) {
+        failedExtraTurn.getInitiator().markAsFinished();
       }
-    } else {
-      this.switchCurrentPlayer();
-      return this.startTurn(TurnType.STANDARD);
+      if (!player.getEffects().hasExtraTurnsQueued()) {
+        continue;
+      }
+      const extraTurn: ExtraTurn | undefined = await player.getInstructionExecutor().chooseExtraTurn();
+      if (extraTurn === undefined) {
+        player.getEffects().clearExtraTurns();
+        continue;
+      }
+      if (player.getName() !== this.getCurrentPlayer().getName()) {
+        this.switchToPlayer(player);
+      }
+      player.getEffects().removeExtraTurnFromQueue(extraTurn);
+      return this.startTurn(TurnType.EXTRA);
     }
-  }
 
-  private doesAnyPlayerHaveExtraTurnsQueued(): boolean {
-    for (const player of this.game.getPlayers()) {
-      if (player.getEffects().hasExtraTurnsQueued()) {
-        return true;
-      }
-    }
-    return false;
+    this.switchCurrentPlayer();
+    return this.startTurn(TurnType.STANDARD);
   }
 
   public getTurnPhase(): TurnPhase {
@@ -243,6 +260,7 @@ export class SharedGameState {
       player.getEffects().registerStartOfPlayersTurn(this.getCurrentPlayer(), this.getCurrentTurn());
     }
 
+    this.setTurnPhase(TurnPhase.ACTION);
     await this.triggerEffect(EffectTriggerType.TURN_START, this.getCurrentPlayer());
     return this.startActionPhase();
   }
@@ -305,9 +323,11 @@ export class SharedGameState {
     return this.getCurrentPlayer().getStatistics().getBuys() === 0;
   }
 
+  // Once a card has been bought, no more Treasures can be played this turn
   private isTreasurePhase(): boolean {
     return (
       this.getTurnPhase() === TurnPhase.BUY &&
+      !this.getCurrentPlayer().getTurnTracker().hasBoughtCardThisTurn() &&
       this.getCurrentPlayer().getOwnedCards().hasMatchingCardInHand(isTreasureCard)
       // originally both(isTreasureCard, not(hasPlayRestriction))
     );
@@ -418,9 +438,15 @@ export class SharedGameState {
 
     await this.triggerEffect(EffectTriggerType.BUY_END, this.getCurrentPlayer());
     await this.triggerEffect(EffectTriggerType.CLEANUP_START, this.getCurrentPlayer());
-    await this.getCurrentPlayer().getOwnedCards().discardAllFromInPlay();
+
+    // Cards other players played this turn (e.g. Guard Dog) are discarded too, unless they have more to do
+    for (const player of this.getCurrentTurnOrder()) {
+      await player.getOwnedCards().discardAllFromInPlay();
+    }
     await this.getCurrentPlayer().getOwnedCards().discardHand();
-    await this.getCurrentPlayer().getOwnedCards().drawCards(this.numCardsToDrawAtEndOfTurn);
+    await this.getCurrentPlayer()
+      .getOwnedCards()
+      .drawCards(this.getCurrentPlayer().getTurnTracker().getNumCardsToDrawInCleanup(this.numCardsToDrawAtEndOfTurn));
     await this.triggerEffect(EffectTriggerType.TURN_END, this.getCurrentPlayer());
     await this.endTurn();
   }
@@ -465,7 +491,11 @@ export class SharedGameState {
       ServerLogMessage.publicMessage(this.getCurrentPlayer(), 'buys %c', card),
     );
 
-    await this.triggerEffect(EffectTriggerType.BUY, this.getCurrentPlayer(), card);
+    await this.triggerEffect(
+      EffectTriggerType.BUY,
+      this.getCurrentPlayer(),
+      new EffectContextBuilder().withTargetCard(card).build(),
+    );
     return this.getCurrentPlayer().getInstructionExecutor().gainFromPile(pileName);
   }
 
@@ -566,8 +596,13 @@ export class SharedGameState {
     }
   }
 
-  public async triggerEffect(triggerType: EffectTriggerType, triggeringPlayer: Player, cards?: Card | CardCollection) {
-    this.checkCostModifierTriggers(triggerType, cards);
+  public async triggerEffect(
+    triggerType: EffectTriggerType,
+    triggeringPlayer: Player,
+    effectContext: EffectContext = new EffectContextBuilder().build(),
+  ): Promise<void> {
+    this.advanceTime();
+    this.checkCostModifierTriggers(triggerType, effectContext.getTargetCards());
 
     if (!this.usedEffectTypes.has(triggerType)) {
       return;
@@ -577,11 +612,11 @@ export class SharedGameState {
       (this.usedEffectTypes.get(triggerType)!.has(EffectSource.SELF) &&
         this.usedEffectTypes.get(triggerType)!.has(EffectSource.OTHER_PLAYER))
     ) {
-      await this.processEffectsForAllPlayers(triggerType, triggeringPlayer, cards);
+      await this.processEffectsForAllPlayers(triggerType, triggeringPlayer, effectContext);
     } else if (this.usedEffectTypes.get(triggerType)!.has(EffectSource.OTHER_PLAYER)) {
-      await this.processEffectsForOtherPlayers(triggerType, triggeringPlayer, cards);
+      await this.processEffectsForOtherPlayers(triggerType, triggeringPlayer, effectContext);
     } else {
-      await this.processEffectsForCurrentPlayer(triggerType, triggeringPlayer, cards);
+      await this.processEffectsForTriggeringPlayer(triggerType, triggeringPlayer, effectContext);
     }
   }
 
@@ -604,32 +639,33 @@ export class SharedGameState {
   public async processEffectsForAllPlayers(
     triggerType: EffectTriggerType,
     triggeringPlayer: Player,
-    cards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
   ): Promise<void> {
     for (const player of this.getCurrentTurnOrder()) {
-      await player.getEffects().processEffectsByType(triggerType, triggeringPlayer, cards);
+      await player.getEffects().processEffectsByType(triggerType, triggeringPlayer, effectContext);
     }
   }
 
   public async processEffectsForOtherPlayers(
     triggerType: EffectTriggerType,
     triggeringPlayer: Player,
-    cards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
   ): Promise<void> {
     for (const player of this.getCurrentTurnOrder()) {
-      if (player.getName() === this.getCurrentPlayer().getName()) {
+      if (player.getName() === triggeringPlayer.getName()) {
         continue;
       }
-      await player.getEffects().processEffectsByType(triggerType, triggeringPlayer, cards);
+      await player.getEffects().processEffectsByType(triggerType, triggeringPlayer, effectContext);
     }
   }
 
-  public async processEffectsForCurrentPlayer(
+  // The triggering player isn't always the current player, e.g. when an Attack makes another player trash a card
+  public async processEffectsForTriggeringPlayer(
     triggerType: EffectTriggerType,
     triggeringPlayer: Player,
-    cards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
   ): Promise<void> {
-    await this.getCurrentPlayer().getEffects().processEffectsByType(triggerType, triggeringPlayer, cards);
+    await triggeringPlayer.getEffects().processEffectsByType(triggerType, triggeringPlayer, effectContext);
   }
 
   public addCostModifier(costModifier: CostModifier): void {
@@ -705,8 +741,7 @@ export class SharedGameState {
   }
 
   public async eachPlayerPassesACardToTheLeft(): Promise<void> {
-    const playerNamesWithCards = new Set<string>();
-    const chosenCards: Card[] = [];
+    const passes: { passingPlayer: Player; card: Card }[] = [];
     for (const player of this.getCurrentTurnOrder()) {
       const ie = player.getInstructionExecutor();
       const chosenCard: Card | Choice = await ie
@@ -715,19 +750,18 @@ export class SharedGameState {
         .to(CardSelectionPurpose.OTHER)
         .choose();
       if (chosenCard instanceof Card) {
-        playerNamesWithCards.add(player.getName());
-        chosenCards.push(chosenCard);
+        passes.push({ passingPlayer: player, card: chosenCard });
       }
     }
 
-    let index = 0;
-    for (const player of this.getCurrentTurnOrder()) {
-      if (!playerNamesWithCards.has(player.getName())) {
-        continue;
-      }
-      const cardToReceive = chosenCards[index > 0 ? index - 1 : chosenCards.length - 1];
-      player.getInstructionExecutor().receivePassedCard(cardToReceive);
-      index++;
+    // All the cards are passed at once; players with no card in hand are skipped
+    for (const pass of passes) {
+      pass.passingPlayer.getOwnedCards().removeCardFromHand(pass.card);
+      pass.passingPlayer.getBotStatistics().removeCardFromStatistics(pass.card);
+    }
+    for (let index = 0; index < passes.length; index++) {
+      const receivingPlayer = passes[(index + 1) % passes.length].passingPlayer;
+      receivingPlayer.getInstructionExecutor().receivePassedCard(passes[index].card);
     }
   }
 
@@ -738,7 +772,14 @@ export class SharedGameState {
     }
 
     this.logger.gameMessage(player, ServerLogMessage.publicMessage(player, 'trashes %c', cards));
-    await this.triggerEffect(EffectTriggerType.TRASH, player, cards);
+    await this.triggerEffect(
+      EffectTriggerType.TRASH,
+      player,
+      new EffectContextBuilder()
+        .withTargetCards(cards)
+        .withLocationExpectation(new LocationExpectation(CardLocation.TRASH, this.getCurrentTimeStamp()))
+        .build(),
+    );
     return cards;
   }
 
@@ -767,8 +808,39 @@ export class SharedGameState {
     return this.getCurrentPlayer().getOwnedCards().getCardByMetadata(cardMetadata);
   }
 
+  // One example of every card used in this game (in any pile, including empty ones, owned by a player, or in
+  // the trash), e.g. for naming a card. The examples aren't in any zone; they are created once per name.
   public getAllExtraCards(): CardCollection {
-    return this.extraCards;
+    const cardNames = new Set<string>();
+    for (const pile of this.piles.allPiles) {
+      if (pile.size() === 0) {
+        cardNames.add(pile.name);
+      }
+      for (const card of pile) {
+        cardNames.add(card.getName());
+      }
+    }
+    for (const player of this.game.getPlayers()) {
+      for (const card of player.getOwnedCards().getAllCards()) {
+        cardNames.add(card.getName());
+      }
+    }
+    for (const card of this.trash) {
+      cardNames.add(card.getName());
+    }
+
+    const cardFactory = new CardFactory(this);
+    for (const cardName of cardNames) {
+      if (this.extraCards.hasMatchingCard(cardNameIs(cardName))) {
+        continue;
+      }
+      try {
+        this.extraCards.addCard(cardFactory.createCard(cardName, 'example-' + cardName, CardLocation.PILE));
+      } catch {
+        // An empty special pile (e.g. Knights) is named after its randomizer, which isn't a card
+      }
+    }
+    return this.extraCards.getMatchingCards(new CardEligibilityFunction((card: Card) => cardNames.has(card.getName())));
   }
 
   public getHighestScore(): number {

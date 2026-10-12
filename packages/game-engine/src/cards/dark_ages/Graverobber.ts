@@ -50,7 +50,7 @@ export class Graverobber extends KingdomCard {
           }
 
           const cardToGain: Card | Choice = await ie
-            .chooseCard('Gain a card costing up to $' + trashedCard.getCost().plus(3).toString())
+            .chooseCard('Gain a card costing up to ' + trashedCard.getCost().plus(3).toString())
             .from(CardSelectionLocation.SUPPLY)
             .to(CardSelectionPurpose.GAIN)
             .whereCardIs(costsUpToNMoreThanCard(trashedCard, 3))

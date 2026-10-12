@@ -1,6 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
@@ -26,7 +25,7 @@ export class Outpost extends KingdomCard {
         .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction((_ie: InstructionExecutor, _targetCard: Card) => {
+          new EffectAction((_ie: InstructionExecutor) => {
             this.markAsFinished();
           }),
         )

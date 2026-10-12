@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
@@ -21,15 +21,21 @@ export class Rebuild extends KingdomCard {
       return;
     }
 
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     const revealedCard = await ie.revealUntil(both(isVictoryCard, not(isACopyOf(namedCard))), 1);
     if (revealedCard.size() === 0) {
       return;
     }
     const victoryCard = revealedCard.getArbitraryCard();
-    await ie.trashCardFromLocation(victoryCard, victoryCard.getLocation());
+    // The other revealed cards are discarded first, which fires discard triggers
+    if (!locationExpectation.isMet(victoryCard)) {
+      ie.sendLostTrackMessage(victoryCard);
+    } else {
+      await ie.trashCardFromLocation(victoryCard, CardLocation.REVEAL_LIMBO);
+    }
 
     const cardToGain: Card | Choice = await ie
-      .chooseCard('Gain a Victory card costing up to $' + victoryCard.getCost().toString())
+      .chooseCard('Gain a Victory card costing up to ' + victoryCard.getCost().plus(3).toString())
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(both(isVictoryCard, costsUpToNMoreThanCard(victoryCard, 3)))

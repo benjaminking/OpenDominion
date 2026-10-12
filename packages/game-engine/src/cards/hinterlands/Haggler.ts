@@ -6,6 +6,7 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { RestOfTurnEffectExpiration } from '../../effects/StandardEffectExpirations';
@@ -34,7 +35,8 @@ export class Haggler extends KingdomCard {
     );
   }
 
-  private async onBuy(ie: InstructionExecutor, boughtCard: Card): Promise<void> {
+  private async onBuy(ie: InstructionExecutor, effectContext: EffectContext): Promise<void> {
+    const boughtCard = effectContext.getTargetCard()!;
     const cardToGain: Card | Choice = await ie
       .chooseCard('Choose a cheaper non-Victory card to gain')
       .from(CardSelectionLocation.SUPPLY)

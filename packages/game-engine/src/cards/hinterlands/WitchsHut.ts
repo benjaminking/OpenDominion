@@ -16,16 +16,29 @@ export class WitchsHut extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(4);
+    // With no cards in hand, there is nothing to discard, so no Curses either
+    if (ie.handSize() === 0) {
+      return;
+    }
 
     const cardsToDiscard: CardCollection = await ie
       .chooseCards('Choose 2 cards to discard')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(exactlyNChecked(2))
+      .whereNumCardsIs(exactlyNChecked(Math.min(2, ie.handSize())))
       .choose();
+    const locationExpectation = ie.createLocationExpectation(CardLocation.HAND);
 
     await ie.revealCards(cardsToDiscard);
-    await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
+    const cardsStillInHand = new CardCollection();
+    for (const card of cardsToDiscard) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+      } else {
+        cardsStillInHand.addCard(card);
+      }
+    }
+    await ie.discardCardsFromLocation(cardsStillInHand, CardLocation.HAND);
 
     if (cardsToDiscard.size() === 2 && cardsToDiscard.numMatchingCards(isActionCard) === 2) {
       await ie.performAttack(this, this.attack.bind(this));

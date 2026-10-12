@@ -6,6 +6,7 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -31,7 +32,8 @@ export class BorderVillage extends KingdomCard {
     ie.addActions(2);
   }
 
-  private async onGain(ie: InstructionExecutor, gainedCard: Card): Promise<void> {
+  private async onGain(ie: InstructionExecutor, effectContext: EffectContext): Promise<void> {
+    const gainedCard = effectContext.getTargetCard()!;
     const cardToGain: Card | Choice = await ie
       .chooseCard('Choose a cheaper card to gain')
       .from(CardSelectionLocation.SUPPLY)

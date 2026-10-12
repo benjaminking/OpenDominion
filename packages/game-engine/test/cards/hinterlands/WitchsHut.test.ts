@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Smithy } from '../../../src/cards/base_game/Smithy';
 import { Village } from '../../../src/cards/base_game/Village';
@@ -89,6 +89,28 @@ describe('WitchsHut', () => {
     await new WitchsHut(testHarness.sharedGameState).play(testHarness.executor);
 
     expect(testHarness.discard.size()).toBe(1);
+    expect(targetHarness.discard.size()).toBe(0);
+  });
+
+  it('loses track of a chosen card that leaves the hand while it is revealed, and discards the other', async () => {
+    const testHarness = createCardHarness();
+    const { targetHarness } = setUpTargetWithCursePile(testHarness);
+    const { village } = addActionsToHand(testHarness);
+    const deckCoppers = addCoppersToDeck(testHarness, 4);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+    // Something reacting to the reveal moves the Copper out of the hand
+    vi.spyOn(testHarness.executor, 'revealCards').mockImplementation(() => {
+      testHarness.hand.removeCard(deckCoppers[3]);
+      testHarness.addToDeck(deckCoppers[3]);
+      return Promise.resolve();
+    });
+
+    testHarness.pickCards([village, deckCoppers[3]]);
+    await new WitchsHut(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(lostTrack).toHaveBeenCalledWith(deckCoppers[3]);
+    expect(testHarness.discard.asCardArray()).toEqual([village]);
+    expect(testHarness.deck.asCardArray()).toEqual([deckCoppers[3]]);
     expect(targetHarness.discard.size()).toBe(0);
   });
 });

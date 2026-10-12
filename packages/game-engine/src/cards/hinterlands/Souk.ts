@@ -33,6 +33,10 @@ export class Souk extends KingdomCard {
   }
 
   private async onGain(ie: InstructionExecutor): Promise<void> {
+    // With no cards in hand, there is nothing to choose
+    if (ie.handSize() === 0) {
+      return;
+    }
     const cardsToTrash: CardCollection = await ie
       .chooseCards('Choose up to 2 cards from your hand to trash')
       .from(CardLocation.HAND)

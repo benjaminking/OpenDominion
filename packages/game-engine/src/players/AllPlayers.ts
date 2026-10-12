@@ -56,6 +56,11 @@ export class AllPlayers implements Iterable<Player> {
     return this.getPlayerAtIndex((playerIndex + 1) % this.allPlayers.length);
   }
 
+  public getPlayerToTheRightByName(playerName: string): Player {
+    const playerIndex = this.getPlayerIndexByName(playerName);
+    return this.getPlayerAtIndex((playerIndex - 1 + this.allPlayers.length) % this.allPlayers.length);
+  }
+
   public getAllPlayers(): Player[] {
     return this.allPlayers;
   }

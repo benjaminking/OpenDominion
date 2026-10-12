@@ -29,7 +29,7 @@ export class Butcher extends KingdomCard {
     if (!(trashedCard instanceof Card)) {
       return;
     }
-    
+
     const numCoffersSpent = await ie.chooseCoffers();
     ie.removeCoffers(numCoffersSpent);
 
@@ -38,7 +38,6 @@ export class Butcher extends KingdomCard {
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(costsUpToNMoreThanCard(trashedCard, numCoffersSpent))
-      .allowNoneOption()
       .choose();
     if (cardToGain instanceof Card) {
       await ie.gainCardFromPile(cardToGain);

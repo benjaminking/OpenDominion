@@ -9,7 +9,7 @@ import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { either, isActionCard, isTheSameCardAs,isTreasureCard } from '../../StandardCardEligibilityFunctions';
+import { either, isActionCard, isTheSameCardAs, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 // Farmhands: +1 Card, +2 Actions; when you gain this, you may set aside an
 // Action or Treasure from your hand and play it at the start of your next turn.
@@ -33,6 +33,7 @@ export class Farmhands extends KingdomCard {
             if (!(cardToSetAside instanceof Card)) {
               return;
             }
+            const locationExpectation = ie.createLocationExpectation(CardLocation.SET_ASIDE);
             await ie.setCardAsideFromLocation(cardToSetAside, CardLocation.HAND);
             ie.addEffect(
               new Effect.Builder()
@@ -43,6 +44,10 @@ export class Farmhands extends KingdomCard {
                 .makeMandatory()
                 .action(
                   new EffectAction(async (ie: InstructionExecutor) => {
+                    if (!locationExpectation.isMet(cardToSetAside)) {
+                      ie.sendLostTrackMessage(cardToSetAside);
+                      return;
+                    }
                     await ie.playCardFromLocation(cardToSetAside, CardLocation.SET_ASIDE);
                   }),
                 )

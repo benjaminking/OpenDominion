@@ -1,6 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
@@ -25,7 +24,7 @@ export class Astrolabe extends KingdomCard {
         .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor, _targetCard: Card) => {
+          new EffectAction(async (ie: InstructionExecutor) => {
             await ie.addCoins(1);
             ie.addBuys(1);
             this.markAsFinished();

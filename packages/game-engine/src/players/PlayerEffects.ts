@@ -1,8 +1,8 @@
 import { Choice, ChoiceType, EffectChoice } from '@dominion/common';
 
 import { Card } from '../card/Card';
-import { CardCollection } from '../card/CardCollection';
 import { Effect } from '../effects/Effect';
+import { EffectContext } from '../effects/EffectContext';
 import { EffectSource } from '../effects/EffectSource';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import { ExtraTurn } from '../turns/ExtraTurn';
@@ -95,6 +95,15 @@ export class PlayerEffects {
     }
   }
 
+  // Removes the queued extra turns that can't happen now (e.g. a 3rd turn in a row) and returns them
+  public removeExtraTurnsThatCannotHappen(previousTurns: Turn[]): ExtraTurn[] {
+    const failedExtraTurns = this.extraTurns.filter(
+      (extraTurn: ExtraTurn) => !extraTurn.canExtraTurnHappen(previousTurns),
+    );
+    this.extraTurns = this.extraTurns.filter((extraTurn: ExtraTurn) => extraTurn.canExtraTurnHappen(previousTurns));
+    return failedExtraTurns;
+  }
+
   public findValidExtraTurns(previousTurns: Turn[]): ExtraTurn[] {
     return this.extraTurns.filter((extraTurn: ExtraTurn) => extraTurn.canExtraTurnHappen(previousTurns));
   }
@@ -102,11 +111,11 @@ export class PlayerEffects {
   public async processEffectsByType(
     triggerType: EffectTriggerType,
     triggeringPlayer: Player,
-    targetCards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
     extraInformation = '',
     usedEffectIDs: Set<string> = new Set<string>(),
   ): Promise<void> {
-    const allEffects = this.getApplicableEffectsByType(triggerType, triggeringPlayer, targetCards);
+    const allEffects = this.getApplicableEffectsByType(triggerType, triggeringPlayer, effectContext);
     const optionalEffects = allEffects.filter((e: Effect) => !e.isMandatory() && !usedEffectIDs.has(e.getId()));
     const mandatoryEffects = allEffects.filter((e: Effect) => e.isMandatory() && !usedEffectIDs.has(e.getId()));
 
@@ -114,38 +123,20 @@ export class PlayerEffects {
       mandatoryEffects.map((value: Effect) => value.getOwner().getName()),
     );
     if (optionalEffects.length === 0 && uniqueMandatoryEffectCardNames.size === 1) {
-      await mandatoryEffects[0].doAction(this.player.getInstructionExecutor(), targetCards);
+      await mandatoryEffects[0].doAction(this.player.getInstructionExecutor(), effectContext);
       usedEffectIDs.add(mandatoryEffects[0].getId());
-      if (mandatoryEffects.length === 1) {
-        return;
-      } else {
-        return this.processEffectsByType(triggerType, triggeringPlayer, targetCards, extraInformation, usedEffectIDs);
-      }
+      // Check for new effects that may be available
+      return this.processEffectsByType(triggerType, triggeringPlayer, effectContext, extraInformation, usedEffectIDs);
     }
 
     if (mandatoryEffects.length > 0 || optionalEffects.length > 0) {
       let extraMessage = '';
-      if (triggerType === EffectTriggerType.WOULD_GAIN && targetCards !== undefined) {
-        extraMessage =
-          'You would gain ' +
-          (targetCards instanceof CardCollection
-            ? targetCards.print()
-            : CardCollection.fromCards([targetCards]).print()) +
-          '.';
-      } else if (triggerType === EffectTriggerType.GAIN && targetCards !== undefined) {
-        extraMessage =
-          'You gained ' +
-          (targetCards instanceof CardCollection
-            ? targetCards.print()
-            : CardCollection.fromCards([targetCards]).print()) +
-          '.';
-      } else if (triggerType === EffectTriggerType.ATTACK && targetCards !== undefined) {
-        extraMessage =
-          'An opponent played ' +
-          (targetCards instanceof CardCollection
-            ? targetCards.print()
-            : CardCollection.fromCards([targetCards]).print()) +
-          '.';
+      if (triggerType === EffectTriggerType.WOULD_GAIN && effectContext.getTargetCards() !== undefined) {
+        extraMessage = 'You would gain ' + effectContext.getTargetCards()!.print() + '.';
+      } else if (triggerType === EffectTriggerType.GAIN && effectContext.getTargetCards() !== undefined) {
+        extraMessage = 'You gained ' + effectContext.getTargetCards()!.print() + '.';
+      } else if (triggerType === EffectTriggerType.ATTACK && effectContext.getTargetCards() !== undefined) {
+        extraMessage = 'An opponent played ' + effectContext.getTargetCards()!.print() + '.';
       }
       const effectsById: Map<string, Effect> = this.createEffectIdMap(optionalEffects, mandatoryEffects);
 
@@ -161,9 +152,9 @@ export class PlayerEffects {
         usedEffectIDs.add(effect.getId());
 
         this.player.getInstructionExecutor().getSharedGameState().pushActiveEffectOntoStack(effect);
-        await effect.doAction(this.player.getInstructionExecutor(), targetCards);
+        await effect.doAction(this.player.getInstructionExecutor(), effectContext);
         this.player.getInstructionExecutor().getSharedGameState().popActiveEffectOffOfStack();
-        return this.processEffectsByType(triggerType, triggeringPlayer, targetCards, extraInformation, usedEffectIDs);
+        return this.processEffectsByType(triggerType, triggeringPlayer, effectContext, extraInformation, usedEffectIDs);
       }
     }
   }
@@ -194,35 +185,27 @@ export class PlayerEffects {
   private getApplicableEffectsByType(
     trigger: EffectTriggerType,
     triggeringPlayer: Player,
-    targetCards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
   ): Effect[] {
+    const targetCards = effectContext.getTargetCards();
     const allEffects: Effect[] = [];
     allEffects.push(
       ...this.filterEffectsToApplicable(
         this.player.getEffects().getEffectsByType(trigger),
         triggeringPlayer,
-        targetCards,
+        effectContext,
       ),
     );
     allEffects.push(
       ...this.filterEffectsToApplicable(
         this.player.getOwnedCards().getEffectsByType(trigger),
         triggeringPlayer,
-        targetCards,
+        effectContext,
       ),
     );
-    if (targetCards !== undefined && targetCards instanceof CardCollection) {
+    if (targetCards !== undefined) {
       allEffects.push(
-        ...this.filterEffectsToApplicable(targetCards.getEffectsByType(trigger), triggeringPlayer, targetCards, true),
-      );
-    } else if (targetCards !== undefined) {
-      allEffects.push(
-        ...this.filterEffectsToApplicable(
-          CardCollection.fromCards([targetCards]).getEffectsByType(trigger),
-          triggeringPlayer,
-          targetCards,
-          true,
-        ),
+        ...this.filterEffectsToApplicable(targetCards.getEffectsByType(trigger), triggeringPlayer, effectContext, true),
       );
     }
 
@@ -231,35 +214,39 @@ export class PlayerEffects {
         ...this.filterEffectsToApplicable(
           this.player.getOwnedCards().getDeckEffectsByType(trigger),
           triggeringPlayer,
-          targetCards,
+          effectContext,
         ),
       );
     }
 
-    return allEffects;
+    // A card can be both owned (e.g. just gained into hand) and the target, so keep each effect once
+    return allEffects.filter(
+      (effect: Effect, index: number) =>
+        allEffects.findIndex((other: Effect) => other.getId() === effect.getId()) === index,
+    );
   }
 
   private filterEffectsToApplicable(
     effects: Effect[],
     triggeringPlayer: Player,
-    targetCards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
     allowSelf = false,
   ): Effect[] {
+    const targetCards = effectContext.getTargetCards();
     const applicableEffects: Effect[] = [];
     for (const effect of effects) {
       if (
         (!effect.isSelf() || (allowSelf && effect.isSelf())) &&
         this.isTriggeringPlayerCompatibleWithSource(effect, triggeringPlayer) &&
         (targetCards === undefined ||
-          (targetCards instanceof CardCollection && targetCards.size() === 0) ||
-          (targetCards instanceof CardCollection && effect.getCardEligibility().matchesAny(targetCards)) ||
-          (targetCards instanceof Card && effect.getCardEligibility().matches(targetCards))) &&
+          targetCards.size() === 0 ||
+          effect.getCardEligibility().matchesAny(targetCards)) &&
         this.player
           .getInstructionExecutor()
           .getSharedGameState()
           .isTurnEligibilitySatisfied(effect.getTurnEligibility()) &&
         !effect.hasExpired() &&
-        effect.areOtherConditionsSatisfied(this.player.getInstructionExecutor())
+        effect.areOtherConditionsSatisfied(this.player.getInstructionExecutor(), effectContext)
       ) {
         applicableEffects.push(effect);
       }

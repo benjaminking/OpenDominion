@@ -1,7 +1,6 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
@@ -33,7 +32,7 @@ export class GuardDog extends KingdomCard {
     }
   }
 
-  private async reaction(ie: InstructionExecutor, _attackCard: Card): Promise<void> {
+  private async reaction(ie: InstructionExecutor): Promise<void> {
     await ie.playCardFromLocation(this, CardLocation.HAND);
   }
 }

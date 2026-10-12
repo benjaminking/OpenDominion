@@ -5,6 +5,7 @@ import { Curse } from '../../../src/cards/basic_cards/Curse';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Infirmary } from '../../../src/cards/cornucopia_and_guilds/Infirmary';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -69,7 +70,11 @@ describe('Infirmary', () => {
     testHarness.pickCard(estate);
     testHarness.pickCard(curse);
     const [buyEffect] = testHarness.getCardEffects(infirmary, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, infirmary);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(infirmary).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(infirmary, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(infirmary).withGainLocation(infirmary.getLocation()).build());
+    }
 
     expect(testHarness.stats.coins).toBe(0);
     expect(testHarness.hand.asCardArray()).toEqual([copper, silver]);
@@ -82,7 +87,11 @@ describe('Infirmary', () => {
 
     testHarness.pickOption('$1');
     const [buyEffect] = testHarness.getCardEffects(infirmary, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, infirmary);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(infirmary).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(infirmary, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(infirmary).withGainLocation(infirmary.getLocation()).build());
+    }
 
     const ownedCards = [...testHarness.discard.asCardArray(), ...testHarness.inPlay.asCardArray()];
     expect(ownedCards).toContain(infirmary);
@@ -94,7 +103,11 @@ describe('Infirmary', () => {
 
     testHarness.pickOption("Don't overpay");
     const [buyEffect] = testHarness.getCardEffects(infirmary, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, infirmary);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(infirmary).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(infirmary, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(infirmary).withGainLocation(infirmary.getLocation()).build());
+    }
 
     expect(testHarness.stats.coins).toBe(2);
     expect(testHarness.hand.size()).toBe(2);

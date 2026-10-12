@@ -16,24 +16,15 @@ import { both, isAttackCard, isTheSameCardAs, not } from '../../StandardCardElig
 export class Urchin extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Urchin'));
-  }
 
-  public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.drawCards(1);
-    ie.addActions(1);
-    await ie.performAttack(this, this.attack.bind(this));
-
-    // When you play another Attack card with this in play, you may first trash this to gain a Mercenary
-    ie.addEffect(
+    this.addEffect(
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.ABOUT_TO_PLAY_CARD, EffectSource.SELF)
         .whereCardIs(both(isAttackCard, not(isTheSameCardAs(this))))
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY))
-        // TODO: this won't work with Royal Galley - need a while in play expiration
-        .withExpiration(ie.createRestOfTurnEffectExpiration())
         .action(
-          new EffectAction(async (ie: InstructionExecutor, _attackCard: Card) => {
+          new EffectAction(async (ie: InstructionExecutor) => {
             const trashedCard = await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
             if (!(trashedCard instanceof Card)) {
               return;
@@ -43,6 +34,12 @@ export class Urchin extends KingdomCard {
         )
         .build(),
     );
+  }
+
+  public async play(ie: InstructionExecutor): Promise<void> {
+    await ie.drawCards(1);
+    ie.addActions(1);
+    await ie.performAttack(this, this.attack.bind(this));
   }
 
   private async attack(attackedPlayer: Player, _attackingPlayer: Player): Promise<void> {

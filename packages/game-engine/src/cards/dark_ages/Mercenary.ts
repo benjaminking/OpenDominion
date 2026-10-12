@@ -18,7 +18,7 @@ export class Mercenary extends Card {
       .chooseCards('You may trash 2 cards from your hand')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.TRASH)
-      .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(2)))
+      .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(Math.min(2, ie.handSize()))))
       .choose();
 
     const trashedCards = await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);

@@ -168,7 +168,7 @@ export const hinterlands: CardInfo[] = [
     cost: {
       coins: 5,
     },
-    types: [CardType.ACTION, CardType.REACTION],
+    types: [CardType.ACTION, CardType.ATTACK],
     expansion: Expansion.HINTERLANDS,
     has_randomizer: true,
   },

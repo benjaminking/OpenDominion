@@ -46,9 +46,10 @@ export class GameInitializer {
   }
 
   protected initializeGameState(): void {
-    this.generateKingdomCards();
+    // The basic piles come first, so kingdom setup rules can change them (e.g. Charlatan's Curses)
     this.addBasicTreasuresToSupply();
     this.addBasicVictoryCardsToSupply();
+    this.generateKingdomCards();
     for (const player of this.game.getPlayers()) {
       player.calculateScore();
     }

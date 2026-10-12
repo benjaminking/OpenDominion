@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { AbandonedMine } from '../../../src/cards/dark_ages/AbandonedMine';
 import { Cultist } from '../../../src/cards/dark_ages/Cultist';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -112,7 +113,7 @@ describe('Cultist', () => {
 
     await testHarness.executor.trashCardFromLocation(cultist, CardLocation.IN_PLAY);
     const [onTrash] = testHarness.getCardEffects(cultist, EffectTriggerType.TRASH);
-    await onTrash.doAction(testHarness.executor, cultist);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(cultist).build());
 
     expect(testHarness.hand.size()).toBe(3);
     expect(testHarness.deck.size()).toBe(1);

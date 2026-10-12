@@ -30,9 +30,20 @@ export class Blockade extends KingdomCard {
     if (!(cardToGain instanceof Card)) {
       return;
     }
+    // The gained card can be moved on by "when you gain" abilities (e.g. Watchtower or Sailor) before it's set aside
+    const gainExpectation = ie.createLocationExpectation(CardLocation.DISCARD);
     await ie.gainCardFromPile(cardToGain);
 
-    await ie.setCardAsideFromLocation(cardToGain, CardLocation.DISCARD);
+    // If the gained card doesn't end up set aside, nothing further happens
+    if (!gainExpectation.isMet(cardToGain)) {
+      ie.sendLostTrackMessage(cardToGain);
+      return;
+    }
+    const setAsideExpectation = ie.createLocationExpectation(CardLocation.SET_ASIDE);
+    const setAsideCard: Card | undefined = await ie.setCardAsideFromLocation(cardToGain, CardLocation.DISCARD);
+    if (setAsideCard === undefined) {
+      return;
+    }
     ie.addEffect(
       new Effect.Builder()
         .from(this)
@@ -41,34 +52,45 @@ export class Blockade extends KingdomCard {
         .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction((ie: InstructionExecutor, _targetCard: Card) => {
-            ie.putCardIntoHandFromLocation(cardToGain, CardLocation.SET_ASIDE);
+          new EffectAction((ie: InstructionExecutor) => {
+            if (setAsideExpectation.isMet(cardToGain)) {
+              ie.putCardIntoHandFromLocation(cardToGain, CardLocation.SET_ASIDE);
+            } else {
+              ie.sendLostTrackMessage(cardToGain);
+            }
             this.markAsFinished();
           }),
         )
         .build(),
     );
+    this.markAsUnfinished();
 
     await ie.performAttack(this, (attackedPlayer: Player, attackingPlayer: Player) => {
       const ie = attackedPlayer.getInstructionExecutor();
       ie.addEffect(
         new Effect.Builder()
           .from(this)
-          .triggerOn(EffectTriggerType.GAIN, EffectSource.OTHER_PLAYER)
+          .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
           .whereCardIs(isACopyOf(cardToGain))
           .withExpiration(ie.createStartOfPlayersNextTurnEffectExpiration(attackingPlayer))
           .makeMandatory()
           .addCondition(
             new EffectCondition((_ie: InstructionExecutor) => cardToGain.getLocation() === CardLocation.SET_ASIDE),
           )
+          // Only gains on the attacked player's own turn are cursed
+          .addCondition(
+            new EffectCondition(
+              (ie: InstructionExecutor) =>
+                ie.getSharedGameState().getCurrentPlayer().getName() === attackedPlayer.getName(),
+            ),
+          )
           .action(
-            new EffectAction(async (ie: InstructionExecutor, _attackCard: Card) => {
+            new EffectAction(async (ie: InstructionExecutor) => {
               await ie.gainFromPile('Curse');
             }),
           )
           .build(),
       );
-      this.markAsFinished();
 
       return Promise.resolve();
     });

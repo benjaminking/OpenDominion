@@ -6,6 +6,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Catacombs } from '../../../src/cards/dark_ages/Catacombs';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -81,7 +82,7 @@ describe('Catacombs', () => {
 
     const [onTrash] = testHarness.getCardEffects(catacombs, EffectTriggerType.TRASH);
     testHarness.pickCard(silver);
-    await onTrash.doAction(testHarness.executor, catacombs);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(catacombs).build());
 
     expect(testHarness.discard.asCardArray()).toEqual([silver]);
   });
@@ -99,9 +100,49 @@ describe('Catacombs', () => {
 
     const [onTrash] = testHarness.getCardEffects(catacombs, EffectTriggerType.TRASH);
     testHarness.pickCard(duchy);
-    await onTrash.doAction(testHarness.executor, catacombs);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(catacombs).build());
 
     expect(testHarness.discard.size()).toBe(0);
     expect(testHarness.pileCards.get('Duchy')).toEqual([duchy]);
+  });
+
+  it('discarding the only 3 cards reshuffles them back for +3 Cards', async () => {
+    const testHarness = createCardHarness();
+    const deckCards = [
+      new Copper(testHarness.sharedGameState),
+      new Silver(testHarness.sharedGameState),
+      new Gold(testHarness.sharedGameState),
+    ];
+    deckCards.forEach((card, cardIndex) => {
+      card.setId(`deck-${String(cardIndex)}`);
+      testHarness.addToDeck(card);
+    });
+
+    testHarness.pickOption('Discard them and +3 Cards');
+    await new Catacombs(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(testHarness.hand.size()).toBe(3);
+    expect(deckCards.every((card) => testHarness.hand.contains(card))).toBe(true);
+    expect(testHarness.discard.size()).toBe(0);
+    expect(testHarness.deck.size()).toBe(0);
+  });
+
+  it('shuffles the discard pile to look at a third card when the deck has only 2', async () => {
+    const testHarness = createCardHarness();
+    for (let cardIndex = 0; cardIndex < 2; cardIndex++) {
+      const deckCopper = new Copper(testHarness.sharedGameState);
+      deckCopper.setId(`copper-deck-${String(cardIndex)}`);
+      testHarness.addToDeck(deckCopper);
+    }
+    const discardGold = new Gold(testHarness.sharedGameState);
+    discardGold.setId('gold-discard-0');
+    testHarness.addToDiscard(discardGold);
+
+    testHarness.pickOption('Put them into your hand');
+    await new Catacombs(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(testHarness.hand.size()).toBe(3);
+    expect(testHarness.hand.contains(discardGold)).toBe(true);
+    expect(testHarness.discard.size()).toBe(0);
   });
 });

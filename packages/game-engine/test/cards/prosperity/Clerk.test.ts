@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Clerk } from '../../../src/cards/prosperity/Clerk';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -79,7 +80,7 @@ describe('Clerk', () => {
     expect(turnStartEffects).toHaveLength(1);
     expect(turnStartEffects[0].isMandatory()).toBe(false);
     expect(turnStartEffects[0].areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await turnStartEffects[0].doAction(testHarness.executor, undefined);
+    await turnStartEffects[0].doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.stats.coins).toBe(2);
     expect(testHarness.hand.contains(clerk)).toBe(false);
@@ -94,7 +95,9 @@ describe('Clerk', () => {
     clerk.setId('clerk-hand-0');
     testHarness.addToHand(clerk);
 
-    await testHarness.getCardEffects(clerk, EffectTriggerType.TURN_START)[0].doAction(testHarness.executor, undefined);
+    await testHarness
+      .getCardEffects(clerk, EffectTriggerType.TURN_START)[0]
+      .doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.contains(clerk)).toBe(true);
   });

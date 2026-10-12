@@ -4,6 +4,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Footpad } from '../../../src/cards/cornucopia_and_guilds/Footpad';
 import { Effect } from '../../../src/effects/Effect';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { TurnPhase } from '../../../src/turns/TurnPhase';
 import { CardHarness, createCardHarness } from '../testHarness';
@@ -65,7 +66,10 @@ describe('Footpad', () => {
 
     const globalEffect = setUpGlobalEffect(testHarness, TurnPhase.ACTION);
     expect(globalEffect.getTrigger()).toBe(EffectTriggerType.GAIN);
-    await testHarness.executor.processEffectsByType(EffectTriggerType.GAIN, gainedSilver);
+    await testHarness.executor.processEffectsByType(
+      EffectTriggerType.GAIN,
+      new EffectContextBuilder().withTargetCard(gainedSilver).withGainLocation(gainedSilver.getLocation()).build(),
+    );
 
     expect(testHarness.hand.asCardArray()).toEqual([copper]);
   });
@@ -80,7 +84,10 @@ describe('Footpad', () => {
     testHarness.addToDiscard(gainedSilver);
 
     setUpGlobalEffect(testHarness, TurnPhase.BUY);
-    await testHarness.executor.processEffectsByType(EffectTriggerType.GAIN, gainedSilver);
+    await testHarness.executor.processEffectsByType(
+      EffectTriggerType.GAIN,
+      new EffectContextBuilder().withTargetCard(gainedSilver).withGainLocation(gainedSilver.getLocation()).build(),
+    );
 
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.deck.asCardArray()).toEqual([copper]);

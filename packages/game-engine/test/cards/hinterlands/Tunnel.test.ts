@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Tunnel } from '../../../src/cards/hinterlands/Tunnel';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { TurnPhase } from '../../../src/turns/TurnPhase';
 import { CardHarness, createCardHarness } from '../testHarness';
@@ -34,7 +35,7 @@ describe('Tunnel', () => {
     setTurnPhase(testHarness, TurnPhase.ACTION);
 
     expect(onDiscard.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await onDiscard.doAction(testHarness.executor, tunnel);
+    await onDiscard.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(tunnel).build());
 
     expect(testHarness.discard.size()).toBe(2);
     expect(testHarness.discard.contains(gold)).toBe(true);
@@ -53,7 +54,7 @@ describe('Tunnel', () => {
     const { tunnel, onDiscard } = setUpDiscardedTunnel(testHarness);
     testHarness.pileCards.get('Gold')?.splice(0);
 
-    await onDiscard.doAction(testHarness.executor, tunnel);
+    await onDiscard.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(tunnel).build());
 
     expect(testHarness.discard.size()).toBe(1);
   });

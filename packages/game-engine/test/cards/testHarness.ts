@@ -26,6 +26,7 @@ import { Player } from '../../src/players/Player';
 import { PlayerCards } from '../../src/players/PlayerCards';
 import { TurnTracker } from '../../src/players/TurnTracker';
 import { Turn } from '../../src/turns/Turn';
+import { createTestClock } from '../testClock';
 
 // ---------------------------------------------------------------------------
 // Accumulating statistics so tests can inspect stats.coins, stats.actions etc.
@@ -184,6 +185,7 @@ export const createCardHarness = () => {
     trash: sharedTrash,
     triggerEffect: vi.fn(async () => undefined),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
     cost: vi.fn((card: Card) => card.getOriginalCost()),
     addCostModifier: vi.fn(),
     isSharedLocation: vi.fn(
@@ -193,9 +195,11 @@ export const createCardHarness = () => {
     getCardsFromArea: vi.fn((location: CardLocation) => sharedAreas.get(location) ?? new CardCollection()),
     getPreviousTurns: vi.fn(() => []),
     getCurrentTurn: vi.fn(() => ({}) as never),
-    getAllExtraCards: vi.fn(() => sharedExtraCards),
+    // "All cards used in this game": the Supply's cards plus any extra cards a test registers
+    getAllExtraCards: vi.fn(() => CardCollection.fromCards([...topCardsOfSupplyPiles, ...sharedExtraCards])),
     getCurrentPlayer: vi.fn(() => player),
     getPlayerLeftOfCurrent: vi.fn(() => player),
+    getPlayerRightOfCurrent: vi.fn(() => player),
     getPlayerLeftOfPlayer: vi.fn(() => player),
     getCurrentTurnOrder: vi.fn(() => [player]),
     getNumPlayers: vi.fn(() => 2),

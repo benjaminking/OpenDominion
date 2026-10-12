@@ -7,11 +7,13 @@ import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { PileFactory } from '../../src/piles/PileFactory';
 import { SpecialPileLookup, SpecialPileSpecification, SpecialPileType } from '../../src/piles/SpecialPiles';
+import { createTestClock } from '../testClock';
 
 const createSharedGameStateMock = (numPlayers = 2) => {
   return {
     cost: vi.fn((card: Card) => card.getOriginalCost()),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
     getNumPlayers: vi.fn(() => numPlayers),
   } as unknown as SharedGameState;
 };
@@ -233,7 +235,7 @@ describe('PileFactory', () => {
       const pile = pileFactory.createSpecialPile(new SpecialPileLookup().lookUpSpecialPile(SpecialPileType.REWARDS));
 
       expect(pile.name).toBe('Rewards');
-      expect(pile.size()).toBe(12);
+      expect(pile.size()).toBe(6);
       expect(pile.getCategories()).toEqual(new Set([PileCategory.NON_SUPPLY]));
     });
   });

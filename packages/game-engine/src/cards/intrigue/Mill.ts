@@ -20,10 +20,10 @@ export class Mill extends KingdomCard {
       .chooseCards('You may discard 2 cards for +$2')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(either(exactlyNChecked(2), exactlyNChecked(0)))
+      .whereNumCardsIs(either(exactlyNChecked(0), exactlyNChecked(Math.min(2, ie.handSize()))))
       .choose();
+    await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
     if (cardsToDiscard.size() >= 2) {
-      await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
       await ie.addCoins(2);
     }
   }

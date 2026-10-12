@@ -17,6 +17,9 @@ export class Alchemist extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    // Once it has left play (e.g. trashed by Procession, or put onto the deck by its own ability from an earlier
+    // play), its ability is still offered, but it has lost track of itself
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     await ie.drawCards(2);
     ie.addActions(1);
 
@@ -29,9 +32,12 @@ export class Alchemist extends KingdomCard {
         .addCondition(
           new EffectCondition((effectIe: InstructionExecutor) => effectIe.hasMatchingCardInPlay(cardNameIs('Potion'))),
         )
-        .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY))
         .action(
           new EffectAction(async (effectIe: InstructionExecutor) => {
+            if (!locationExpectation.isMet(this)) {
+              effectIe.sendLostTrackMessage(this);
+              return;
+            }
             await effectIe.topDeckCardFromLocation(this, CardLocation.IN_PLAY);
           }),
         )

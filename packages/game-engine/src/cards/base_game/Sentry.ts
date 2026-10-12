@@ -1,8 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { LocationExpectation } from '../../game-state/LocationExpectation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 
@@ -15,7 +16,8 @@ export class Sentry extends KingdomCard {
     await ie.drawCards(1);
     ie.addActions(1);
     const topCards = await ie.takeCardsOffDeck(2);
-    await ie.revealCards(topCards);
+    // Trashing and discarding fire triggers before the rest of the cards are moved
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
 
     if (topCards.size() > 0) {
       const cardsToTrash: CardCollection = await ie
@@ -26,6 +28,7 @@ export class Sentry extends KingdomCard {
       await ie.trashCardsFromSet(cardsToTrash, topCards);
     }
 
+    this.dropLostTrackCards(ie, topCards, locationExpectation);
     if (topCards.size() > 0) {
       const cardsToDiscard: CardCollection = await ie
         .chooseCards('Choose any number of cards to discard')
@@ -33,7 +36,23 @@ export class Sentry extends KingdomCard {
         .to(CardSelectionPurpose.DISCARD)
         .choose();
       await ie.discardCardsFromRevealedSet(cardsToDiscard, topCards);
-      await ie.topDeckCardsFromRevealedSet(topCards);
+      this.dropLostTrackCards(ie, topCards, locationExpectation);
+      if (topCards.size() > 0) {
+        await ie.topDeckCardsFromRevealedSet(topCards);
+      }
+    }
+  }
+
+  private dropLostTrackCards(
+    ie: InstructionExecutor,
+    topCards: CardCollection,
+    locationExpectation: LocationExpectation,
+  ): void {
+    for (const card of CardCollection.fromCards(topCards.asCardArray())) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+        topCards.removeCard(card);
+      }
     }
   }
 }

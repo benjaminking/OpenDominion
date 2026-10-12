@@ -6,6 +6,7 @@ import { Smithy } from '../../../src/cards/base_game/Smithy';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Mercenary } from '../../../src/cards/dark_ages/Mercenary';
 import { Urchin } from '../../../src/cards/dark_ages/Urchin';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -62,10 +63,10 @@ describe('Urchin', () => {
     militia.setId('militia-in-play');
 
     await urchin.play(testHarness.executor);
-    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.ABOUT_TO_PLAY_CARD);
+    const [onAttackPlayed] = testHarness.getCardEffects(urchin, EffectTriggerType.ABOUT_TO_PLAY_CARD);
     expect(onAttackPlayed.isMandatory()).toBe(false);
     expect(onAttackPlayed.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await onAttackPlayed.doAction(testHarness.executor, militia);
+    await onAttackPlayed.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(militia).build());
 
     expect(testHarness.inPlay.size()).toBe(0);
     expect(idsOf(testHarness.sharedTrash)).toEqual(['urchin-in-play']);
@@ -83,7 +84,7 @@ describe('Urchin', () => {
     otherUrchin.setId('urchin-other');
 
     await urchin.play(testHarness.executor);
-    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.ABOUT_TO_PLAY_CARD);
+    const [onAttackPlayed] = testHarness.getCardEffects(urchin, EffectTriggerType.ABOUT_TO_PLAY_CARD);
 
     expect(onAttackPlayed.getCardEligibility().matches(militia)).toBe(true);
     expect(onAttackPlayed.getCardEligibility().matches(otherUrchin)).toBe(true);
@@ -97,24 +98,26 @@ describe('Urchin', () => {
     militia.setId('militia-in-play');
 
     await urchin.play(testHarness.executor);
-    const [onAttackPlayed] = testHarness.getAddedEffects(EffectTriggerType.ABOUT_TO_PLAY_CARD);
+    const [onAttackPlayed] = testHarness.getCardEffects(urchin, EffectTriggerType.ABOUT_TO_PLAY_CARD);
     testHarness.inPlay.removeCard(urchin);
     testHarness.addToDiscard(urchin);
 
     expect(onAttackPlayed.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
-    await onAttackPlayed.doAction(testHarness.executor, militia);
+    await onAttackPlayed.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(militia).build());
 
     expect(testHarness.sharedTrash.size()).toBe(0);
     expect(idsOf(testHarness.discard)).toEqual(['urchin-in-play']);
   });
 
-  it('offers the trash-for-Mercenary before the other Attack card resolves', async () => {
+  it('offers the trash-for-Mercenary before the other Attack card resolves, once however many times it was played', async () => {
     const { testHarness, urchin } = setUp(0);
 
     await urchin.play(testHarness.executor);
-    const addedEffects = testHarness.getAddedEffects();
+    await urchin.play(testHarness.executor);
 
-    expect(addedEffects).toHaveLength(1);
-    expect(addedEffects[0].getTrigger()).toBe(EffectTriggerType.ABOUT_TO_PLAY_CARD);
+    expect(testHarness.getAddedEffects()).toHaveLength(0);
+    const cardEffects = urchin.getEffects();
+    expect(cardEffects).toHaveLength(1);
+    expect(cardEffects[0].getTrigger()).toBe(EffectTriggerType.ABOUT_TO_PLAY_CARD);
   });
 });

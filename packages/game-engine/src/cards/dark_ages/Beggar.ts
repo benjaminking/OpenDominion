@@ -1,7 +1,6 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
@@ -25,11 +24,8 @@ export class Beggar extends KingdomCard {
             if (discarded === undefined) {
               return;
             }
+            await ie.gainFromPile('Silver', CardLocation.DECK);
             await ie.gainFromPile('Silver');
-            const secondSilver = await ie.gainFromPile('Silver');
-            if (secondSilver instanceof Card) {
-              await ie.topDeckCardFromLocation(secondSilver, secondSilver.getLocation());
-            }
           }),
         )
         .build(),

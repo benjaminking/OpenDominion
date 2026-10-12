@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
@@ -15,6 +15,7 @@ export class DameNatalie extends Knights {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    const selfExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     // Gain a card costing up to $3
     const card: Card | Choice = await ie
       .chooseCard('Gain a card costing up to $3')
@@ -27,6 +28,6 @@ export class DameNatalie extends Knights {
       await ie.gainCardFromPile(card);
     }
 
-    await ie.performAttack(this, this.knightAttack.bind(this));
+    await this.performKnightAttack(ie, selfExpectation);
   }
 }

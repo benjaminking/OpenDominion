@@ -20,7 +20,7 @@ export class Smugglers extends KingdomCard {
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(
-        both(costsUpTo(Cost.Simple(6)), ie.createPlayerToTheLeftGainedOnTheirLastTurnCardEligibilityFunction()),
+        both(costsUpTo(Cost.Simple(6)), ie.createPlayerToTheRightGainedOnTheirLastTurnCardEligibilityFunction()),
       )
       .choose();
     if (!(cardChoice instanceof Card)) {

@@ -21,7 +21,7 @@ describe('Sentry', () => {
   it('trashes chosen top-deck cards', async () => {
     const testHarness = createCardHarness();
     // Deck order (LIFO): last added = top of deck
-    // Sentry draws 1 first, then takes 2 off deck to reveal
+    // Sentry draws 1 first, then takes 2 off deck to look at
     const initiallyDrawnCopper = new Copper(testHarness.sharedGameState);
     initiallyDrawnCopper.setId('copper-drawn-first');
     const secondRevealedCopper = new Copper(testHarness.sharedGameState);

@@ -12,6 +12,10 @@ export class ExtraTurn {
     private readonly restrictions: ExtraTurnPrecondition[],
   ) {}
 
+  public getInitiator(): Card {
+    return this.initiator;
+  }
+
   public canExtraTurnHappen(previousTurns: Turn[]): boolean {
     for (const restriction of this.restrictions) {
       if (!restriction.shouldExtraTurnHappen(this.owner, previousTurns)) {

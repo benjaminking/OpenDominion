@@ -6,8 +6,8 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
-import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { SharedGameState } from '../../game-state/SharedGameState';
+import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
 
 export class Battlefield extends Landmark {
@@ -20,6 +20,7 @@ export class Battlefield extends Landmark {
         .from(this)
         .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
         .whereCardIs(isVictoryCard)
+        .makeMandatory()
         .action(
           new EffectAction((ie: InstructionExecutor) => {
             if (this._numVPChips >= 2) {

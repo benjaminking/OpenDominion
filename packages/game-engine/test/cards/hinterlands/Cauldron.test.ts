@@ -4,6 +4,7 @@ import { Village } from '../../../src/cards/base_game/Village';
 import { Curse } from '../../../src/cards/basic_cards/Curse';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Cauldron } from '../../../src/cards/hinterlands/Cauldron';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -69,7 +70,10 @@ describe('Cauldron', () => {
 
     const [onGain] = testHarness.getAddedEffects(EffectTriggerType.GAIN);
     expect(onGain.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await onGain.doAction(testHarness.executor, villages[2]);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(villages[2]).withGainLocation(villages[2].getLocation()).build(),
+    );
 
     expect(targetHarness.discard.size()).toBe(1);
     expect(targetHarness.discard.contains(curse)).toBe(true);

@@ -4,6 +4,7 @@ import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { KingdomCard } from '../../card/KingdomCard';
+import { LocationExpectation } from '../../game-state/LocationExpectation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
@@ -24,6 +25,8 @@ export class Bandit extends KingdomCard {
     const thiefEligibleCards = new CardCollection();
     const thiefNonTreasureCards = new CardCollection();
     const cards = await ie.takeCardsOffDeck(2);
+    // Revealing and trashing fire triggers before the cards are moved
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     await ie.revealCards(cards);
 
     for (const card of cards) {
@@ -32,9 +35,10 @@ export class Bandit extends KingdomCard {
       } else thiefNonTreasureCards.addCard(card);
     }
 
+    // The revealed cards are moved out of the reveal zone, so none of them is left behind there as well
     if (thiefEligibleCards.size() === 1) {
-      await ie.trashCard(thiefEligibleCards.getArbitraryCard());
-      await ie.discardCards(thiefNonTreasureCards, CardLocation.REVEAL_LIMBO);
+      await this.trashIfTracked(ie, thiefEligibleCards.getArbitraryCard(), locationExpectation);
+      await this.discardTrackedCards(ie, thiefNonTreasureCards, locationExpectation);
     } else if (thiefEligibleCards.size() === 2) {
       const cardChoice: Card | Choice = await ie
         .chooseCard('Choose a card to trash')
@@ -42,11 +46,40 @@ export class Bandit extends KingdomCard {
         .to(CardSelectionPurpose.TRASH)
         .choose();
       if (cardChoice instanceof Card) {
-        await ie.trashCardFromSet(cardChoice, thiefEligibleCards);
+        thiefEligibleCards.removeCard(cardChoice);
+        await this.trashIfTracked(ie, cardChoice, locationExpectation);
       }
-      await ie.discardCards(thiefEligibleCards, CardLocation.REVEAL_LIMBO);
+      await this.discardTrackedCards(ie, thiefEligibleCards, locationExpectation);
     } else {
-      await ie.discardCards(thiefNonTreasureCards, CardLocation.REVEAL_LIMBO);
+      await this.discardTrackedCards(ie, thiefNonTreasureCards, locationExpectation);
     }
+  }
+
+  private async trashIfTracked(
+    ie: InstructionExecutor,
+    card: Card,
+    locationExpectation: LocationExpectation,
+  ): Promise<void> {
+    if (!locationExpectation.isMet(card)) {
+      ie.sendLostTrackMessage(card);
+      return;
+    }
+    await ie.trashCardFromLocation(card, CardLocation.REVEAL_LIMBO);
+  }
+
+  private async discardTrackedCards(
+    ie: InstructionExecutor,
+    cards: CardCollection,
+    locationExpectation: LocationExpectation,
+  ): Promise<void> {
+    const cardsToDiscard = new CardCollection();
+    for (const card of cards) {
+      if (locationExpectation.isMet(card)) {
+        cardsToDiscard.addCard(card);
+      } else {
+        ie.sendLostTrackMessage(card);
+      }
+    }
+    await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.REVEAL_LIMBO);
   }
 }

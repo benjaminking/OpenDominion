@@ -6,6 +6,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Stonemason } from '../../../src/cards/cornucopia_and_guilds/Stonemason';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -80,7 +81,14 @@ describe('Stonemason', () => {
     testHarness.pickCard(villageA);
     testHarness.pickCard(villageB);
     const [buyEffect] = testHarness.getCardEffects(stonemason, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, stonemason);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(stonemason).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(stonemason, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(
+        testHarness.executor,
+        new EffectContextBuilder().withTargetCard(stonemason).withGainLocation(stonemason.getLocation()).build(),
+      );
+    }
 
     expect(testHarness.stats.coins).toBe(0);
     expect(testHarness.discard.asCardArray()).toEqual([villageA, villageB]);
@@ -99,7 +107,14 @@ describe('Stonemason', () => {
     testHarness.pickOption('$3');
     testHarness.pickCard(silver);
     const [buyEffect] = testHarness.getCardEffects(stonemason, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, stonemason);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(stonemason).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(stonemason, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(
+        testHarness.executor,
+        new EffectContextBuilder().withTargetCard(stonemason).withGainLocation(stonemason.getLocation()).build(),
+      );
+    }
 
     expect(testHarness.discard.size()).toBe(0);
   });
@@ -115,7 +130,14 @@ describe('Stonemason', () => {
 
     testHarness.pickOption("Don't overpay");
     const [buyEffect] = testHarness.getCardEffects(stonemason, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, stonemason);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(stonemason).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(stonemason, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(
+        testHarness.executor,
+        new EffectContextBuilder().withTargetCard(stonemason).withGainLocation(stonemason.getLocation()).build(),
+      );
+    }
 
     expect(testHarness.stats.coins).toBe(3);
     expect(testHarness.discard.size()).toBe(0);

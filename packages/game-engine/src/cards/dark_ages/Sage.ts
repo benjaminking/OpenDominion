@@ -16,7 +16,15 @@ export class Sage extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     ie.addActions(1);
 
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     const revealedCard: CardCollection = await ie.revealUntil(costsAtLeast(Cost.Simple(3)), 1);
-    ie.putCardsIntoHandFromLocation(revealedCard, CardLocation.REVEAL_LIMBO);
+    // The other revealed cards are discarded first, which fires discard triggers
+    for (const card of revealedCard) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+      } else {
+        ie.putCardIntoHandFromLocation(card, CardLocation.REVEAL_LIMBO);
+      }
+    }
   }
 }

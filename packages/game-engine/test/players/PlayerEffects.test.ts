@@ -1,4 +1,4 @@
-import { CardCategory, CardType, ChoiceType, Expansion } from '@dominion/common';
+import { CardCategory, CardLocation, CardType, ChoiceType, Expansion } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
 import { Card } from '../../src/card/Card';
@@ -8,6 +8,7 @@ import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { Effect } from '../../src/effects/Effect';
 import { EffectAction } from '../../src/effects/EffectAction';
 import { EffectCondition } from '../../src/effects/EffectCondition';
+import { EffectContext, EffectContextBuilder } from '../../src/effects/EffectContext';
 import { EffectSource } from '../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { OneTimeEffectExpirtation } from '../../src/effects/StandardEffectExpirations';
@@ -17,6 +18,7 @@ import { Player } from '../../src/players/Player';
 import { PlayerEffects } from '../../src/players/PlayerEffects';
 import { cardNameIs } from '../../src/StandardCardEligibilityFunctions';
 import { Turn } from '../../src/turns/Turn';
+import { createTestClock } from '../testClock';
 
 interface TestEffect {
   getTrigger: ReturnType<typeof vi.fn>;
@@ -56,6 +58,7 @@ const createCard = (name: string, id: string): Card => {
   const sharedGameState = {
     cost: vi.fn(() => Cost.Simple(0)),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
   const card = new Card(sharedGameState, {
     category: CardCategory.CARD,
@@ -244,8 +247,8 @@ describe('PlayerEffects', () => {
         buildEffect({ owner: createCard('Fools Gold', 'anyone-0'), source: EffectSource.ANYONE }),
       );
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, undefined);
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, bob, undefined);
+      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, new EffectContextBuilder().build());
+      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, bob, new EffectContextBuilder().build());
 
       expect(offeredEffectNames(0).optional).toEqual(['Watchtower', 'Fools Gold']);
       expect(offeredEffectNames(1).optional).toEqual(['Moat', 'Fools Gold']);
@@ -263,10 +266,11 @@ describe('PlayerEffects', () => {
       );
       const silver = createCard('Silver', 'silver-0');
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, silver);
+      const gainedSilver = new EffectContextBuilder().withTargetCard(silver).withGainLocation(CardLocation.DISCARD).build();
+      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, gainedSilver);
 
       expect(firstAction).toHaveBeenCalledTimes(1);
-      expect(firstAction).toHaveBeenCalledWith(instructionExecutor, silver);
+      expect(firstAction).toHaveBeenCalledWith(instructionExecutor, gainedSilver);
       expect(secondAction).toHaveBeenCalledTimes(1);
       expect(decisionService.chooseFromMultipleEvents).not.toHaveBeenCalled();
     });
@@ -301,7 +305,7 @@ describe('PlayerEffects', () => {
         effectId: wharf.getId(),
       });
 
-      await playerEffects.processEffectsByType(EffectTriggerType.TURN_START, player, undefined);
+      await playerEffects.processEffectsByType(EffectTriggerType.TURN_START, player, new EffectContextBuilder().build());
 
       expect(resolved).toEqual(['Wharf', 'Haven']);
       expect(decisionService.chooseFromMultipleEvents).toHaveBeenCalledTimes(1);
@@ -321,7 +325,11 @@ describe('PlayerEffects', () => {
         .mockResolvedValueOnce({ type: ChoiceType.Effect, effectName: 'Watchtower', effectId: watchtower.getId() })
         .mockResolvedValueOnce({ type: ChoiceType.None });
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, createCard('Curse', 'curse-0'));
+      await playerEffects.processEffectsByType(
+        EffectTriggerType.GAIN,
+        player,
+        new EffectContextBuilder().withTargetCard(createCard('Curse', 'curse-0')).withGainLocation(createCard('Curse', 'curse-0').getLocation()).build(),
+      );
 
       expect(watchtowerAction).toHaveBeenCalledTimes(1);
       expect(traderAction).not.toHaveBeenCalled();
@@ -337,13 +345,17 @@ describe('PlayerEffects', () => {
       const silver = createCard('Silver', 'silver-0');
       const militia = createCard('Militia', 'militia-0');
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, silver);
+      await playerEffects.processEffectsByType(
+        EffectTriggerType.GAIN,
+        player,
+        new EffectContextBuilder().withTargetCard(silver).withGainLocation(silver.getLocation()).build(),
+      );
       await playerEffects.processEffectsByType(
         EffectTriggerType.WOULD_GAIN,
         player,
-        CardCollection.fromCards([silver]),
+        new EffectContextBuilder().withTargetCards(CardCollection.fromCards([silver])).build(),
       );
-      await playerEffects.processEffectsByType(EffectTriggerType.ATTACK, player, militia);
+      await playerEffects.processEffectsByType(EffectTriggerType.ATTACK, player, new EffectContextBuilder().withTargetCard(militia).build());
 
       expect(decisionService.chooseFromMultipleEvents.mock.calls.map((call) => call[0])).toEqual([
         'You gained a Silver.',
@@ -394,7 +406,11 @@ describe('PlayerEffects', () => {
         buildEffect({ owner: createCard('Trader', 'eligible'), mandatory: true, action: eligibleAction }),
       );
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, createCard('Silver', 'silver-0'));
+      await playerEffects.processEffectsByType(
+        EffectTriggerType.GAIN,
+        player,
+        new EffectContextBuilder().withTargetCard(createCard('Silver', 'silver-0')).withGainLocation(createCard('Silver', 'silver-0').getLocation()).build(),
+      );
 
       expect(skippedAction).not.toHaveBeenCalled();
       expect(eligibleAction).toHaveBeenCalledTimes(1);
@@ -416,9 +432,10 @@ describe('PlayerEffects', () => {
       const gainedCardAction = vi.fn();
       gainedCard.addEffect(buildEffect({ owner: gainedCard, self: true, mandatory: true, action: gainedCardAction }));
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, gainedCard);
+      const gainedToDiscard = new EffectContextBuilder().withTargetCard(gainedCard).withGainLocation(CardLocation.DISCARD).build();
+      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, gainedToDiscard);
 
-      expect(gainedCardAction).toHaveBeenCalledWith(expect.anything(), gainedCard);
+      expect(gainedCardAction).toHaveBeenCalledWith(expect.anything(), gainedToDiscard);
       expect(handCardAction).not.toHaveBeenCalled();
     });
 
@@ -434,10 +451,10 @@ describe('PlayerEffects', () => {
         }),
       );
 
-      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, undefined);
+      await playerEffects.processEffectsByType(EffectTriggerType.GAIN, player, new EffectContextBuilder().build());
       expect(ownedCards.getDeckEffectsByType).not.toHaveBeenCalled();
 
-      await playerEffects.processEffectsByType(EffectTriggerType.SHUFFLE, player, undefined);
+      await playerEffects.processEffectsByType(EffectTriggerType.SHUFFLE, player, new EffectContextBuilder().build());
       expect(deckAction).toHaveBeenCalledTimes(1);
     });
   });

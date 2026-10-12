@@ -5,17 +5,20 @@ import { Card } from '../../src/card/Card';
 import { Cost } from '../../src/card/Cost';
 import { Effect } from '../../src/effects/Effect';
 import { EffectAction } from '../../src/effects/EffectAction';
+import { EffectContext, EffectContextBuilder } from '../../src/effects/EffectContext';
 import { EffectSource } from '../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { Game } from '../../src/Game';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { Player } from '../../src/players/Player';
 import { PlayerEffects } from '../../src/players/PlayerEffects';
+import { createTestClock } from '../testClock';
 
 const createCard = (name: string, id: string, type: CardType = CardType.VICTORY): Card => {
   const sharedGameState = {
     cost: vi.fn(() => Cost.Simple(0)),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
   const card = new Card(sharedGameState, {
     category: CardCategory.CARD,
@@ -85,9 +88,10 @@ describe('Player', () => {
 
     expect(player.getEffects()).toBeInstanceOf(PlayerEffects);
     player.getEffects().addEffect(effect);
-    await player.getEffects().processEffectsByType(EffectTriggerType.GAIN, player, undefined);
+    const effectContext = new EffectContextBuilder().build();
+    await player.getEffects().processEffectsByType(EffectTriggerType.GAIN, player, effectContext);
 
-    expect(action).toHaveBeenCalledWith(player.getInstructionExecutor());
+    expect(action).toHaveBeenCalledWith(player.getInstructionExecutor(), effectContext);
     expect(player.getInstructionExecutor().getSharedGameState()).toBe(player.getGame().getGameState());
   });
 

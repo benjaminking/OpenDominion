@@ -6,6 +6,7 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
+import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
 export class Steward extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -27,6 +28,7 @@ export class Steward extends KingdomCard {
             .chooseCards('Choose two cards from your hand to trash:')
             .from(CardLocation.HAND)
             .to(CardSelectionPurpose.TRASH)
+            .whereNumCardsIs(exactlyNChecked(Math.min(2, ie.handSize())))
             .choose();
           await ie.trashCardsFromLocation(cards, CardLocation.HAND);
         }),

@@ -8,10 +8,17 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Curse } from '../../../src/cards/basic_cards/Curse';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Province } from '../../../src/cards/basic_cards/Province';
+import { DameJosephine } from '../../../src/cards/dark_ages/DameJosephine';
 import { Battlefield } from '../../../src/cards/empires/Battlefield';
+import { Tunnel } from '../../../src/cards/hinterlands/Tunnel';
+import { Farm } from '../../../src/cards/intrigue/Farm';
+import { Mill } from '../../../src/cards/intrigue/Mill';
+import { Nobles } from '../../../src/cards/intrigue/Nobles';
 import { Effect } from '../../../src/effects/Effect';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectSource } from '../../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
+import { createGame, GameHarness } from '../../integration/gameHarness';
 import { createCardHarness } from '../testHarness';
 
 // Empires is not registered in CardInfoLookup yet, so supply Battlefield's card info directly
@@ -36,6 +43,17 @@ const getGainEffect = (battlefield: Battlefield): Effect => {
   return gainEffects[0];
 };
 
+// The engine doesn't set up Landmarks yet: give every player Battlefield's ability, as a Landmark in the game would
+const addBattlefieldToGame = (game: GameHarness): Battlefield => {
+  const battlefield = new Battlefield(game.state);
+  for (const effect of battlefield.getEffects()) {
+    game.state.addGlobalEffect(effect);
+  }
+  return battlefield;
+};
+
+const copies = (name: string, count: number): string[] => Array<string>(count).fill(name);
+
 describe('Battlefield', () => {
   it('gives 2 VP when you gain a Victory card', async () => {
     const testHarness = createCardHarness();
@@ -46,7 +64,7 @@ describe('Battlefield', () => {
 
     const gainEffect = getGainEffect(battlefield);
     expect(gainEffect.getSource()).toBe(EffectSource.SELF);
-    await gainEffect.doAction(testHarness.executor, estate);
+    await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(estate).withGainLocation(estate.getLocation()).build());
 
     expect(testHarness.stats.vp).toBe(2);
   });
@@ -83,7 +101,7 @@ describe('Battlefield', () => {
     for (let i = 0; i < 7; i++) {
       const estate = new Estate(testHarness.sharedGameState);
       estate.setId(`estate-gained-${String(i)}`);
-      await gainEffect.doAction(testHarness.executor, estate);
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(estate).withGainLocation(estate.getLocation()).build());
     }
 
     expect(testHarness.stats.vp).toBe(12);
@@ -97,7 +115,7 @@ describe('Battlefield', () => {
     for (let i = 0; i < 10; i++) {
       const estate = new Estate(testHarness.sharedGameState);
       estate.setId(`estate-gained-${String(i)}`);
-      await gainEffect.doAction(testHarness.executor, estate);
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(estate).withGainLocation(estate.getLocation()).build());
     }
 
     expect(testHarness.stats.vp).toBe(18);
@@ -111,12 +129,15 @@ describe('Battlefield', () => {
     for (let i = 0; i < 4; i++) {
       const estate = new Estate(testHarness.sharedGameState);
       estate.setId(`estate-gained-${String(i)}`);
-      await gainEffect.doAction(testHarness.executor, estate);
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(estate).withGainLocation(estate.getLocation()).build());
     }
     for (let i = 0; i < 3; i++) {
       const otherEstate = new Estate(otherHarness.sharedGameState);
       otherEstate.setId(`estate-other-gained-${String(i)}`);
-      await gainEffect.doAction(otherHarness.executor, otherEstate);
+      await gainEffect.doAction(
+        otherHarness.executor,
+        new EffectContextBuilder().withTargetCard(otherEstate).withGainLocation(otherEstate.getLocation()).build(),
+      );
     }
 
     expect(testHarness.stats.vp).toBe(8);
@@ -128,5 +149,101 @@ describe('Battlefield', () => {
     const battlefield = new Battlefield(testHarness.sharedGameState);
 
     expect(battlefield.score([])).toBe(0);
+  });
+
+  it('triggers on gaining an Action-Victory card', async () => {
+    const testHarness = createCardHarness();
+    const gainEffect = getGainEffect(new Battlefield(testHarness.sharedGameState));
+    const mill = new Mill(testHarness.sharedGameState);
+    mill.setId('mill-gained');
+    testHarness.addToDiscard(mill);
+
+    expect(gainEffect.getCardEligibility().matches(mill)).toBe(true);
+    await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(mill).withGainLocation(mill.getLocation()).build());
+
+    expect(testHarness.stats.vp).toBe(2);
+  });
+
+  it('takes the VP without giving the player a choice', () => {
+    const testHarness = createCardHarness();
+    const gainEffect = getGainEffect(new Battlefield(testHarness.sharedGameState));
+
+    expect(gainEffect.isMandatory()).toBe(true);
+  });
+
+  it('triggers on Victory cards of every type combination: Farm, Dame Josephine, Tunnel and Nobles', () => {
+    const testHarness = createCardHarness();
+    const gainEffect = getGainEffect(new Battlefield(testHarness.sharedGameState));
+
+    const cards = [
+      new Farm(testHarness.sharedGameState),
+      new DameJosephine(testHarness.sharedGameState),
+      new Tunnel(testHarness.sharedGameState),
+      new Nobles(testHarness.sharedGameState),
+    ];
+    for (const card of cards) {
+      card.setId(`${card.getClassName()}-gained`);
+      expect(gainEffect.getCardEligibility().matches(card)).toBe(true);
+    }
+  });
+
+  describe('in a game', () => {
+    it("gives the VP to the player who gains the Victory card, even on another player's turn", async () => {
+      const game = createGame({ kingdom: ['Swindler'] });
+      addBattlefieldToGame(game);
+      game.alice.setHand(['Swindler', 'Silver', 'Copper', 'Copper', 'Copper']);
+      game.alice.setDeck(copies('Copper', 10));
+      game.bob.setDeck(['Estate', ...copies('Copper', 5)]);
+
+      await game.start();
+      await game.playAction('Swindler');
+      // Bob's Estate is trashed and Alice chooses the $2 card he gains
+      await game.chooseCard('Estate');
+
+      expect(game.bob.discard).toEqual(['Estate']);
+      expect(game.bob.vpTokens).toBe(2);
+      expect(game.alice.vpTokens).toBe(0);
+
+      await game.playAllTreasures();
+      await game.buy('Estate');
+      expect(game.alice.vpTokens).toBe(2);
+      expect(game.bob.vpTokens).toBe(2);
+    });
+
+    it('gives 2 VP for each of 3 Estates gained at once (Hunting Grounds trashed)', async () => {
+      const game = createGame({ kingdom: ['Chapel', 'Hunting Grounds'] });
+      addBattlefieldToGame(game);
+      game.alice.setHand(['Chapel', 'Hunting Grounds', 'Copper', 'Copper', 'Copper']);
+      game.alice.setDeck(copies('Copper', 10));
+
+      await game.start();
+      await game.playAction('Chapel');
+      await game.chooseCards(['Hunting Grounds']);
+      await game.chooseOption('Gain 3 Estates');
+
+      expect(game.alice.discard).toEqual(['Estate', 'Estate', 'Estate']);
+      expect(game.alice.vpTokens).toBe(6);
+    });
+
+    it('still gives the VP when Watchtower trashes the gained Victory card first', async () => {
+      const game = createGame({ kingdom: ['Watchtower'] });
+      addBattlefieldToGame(game);
+      game.alice.setHand(['Watchtower', 'Copper', 'Copper', 'Copper', 'Copper']);
+      game.alice.setDeck(copies('Copper', 10));
+
+      await game.start();
+      await game.endActionPhase();
+      await game.playAllTreasures();
+      await game.buy('Estate');
+
+      const decision = game.expectDecision('chooseFromMultipleEvents', 'Alice');
+      expect(decision.optionalEffects.map((effect) => effect.effectName)).toEqual(['Watchtower']);
+      expect(decision.mandatoryEffects.map((effect) => effect.effectName)).toEqual(['Battlefield']);
+      await game.chooseEffect('Watchtower');
+      await game.chooseOption('Trash it');
+
+      expect(game.trash).toEqual(['Estate']);
+      expect(game.alice.vpTokens).toBe(2);
+    });
   });
 });

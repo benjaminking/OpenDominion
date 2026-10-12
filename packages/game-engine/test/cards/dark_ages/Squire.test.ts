@@ -5,6 +5,7 @@ import { Militia } from '../../../src/cards/base_game/Militia';
 import { Smithy } from '../../../src/cards/base_game/Smithy';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Squire } from '../../../src/cards/dark_ages/Squire';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -76,7 +77,7 @@ describe('Squire', () => {
     expect(onTrash.isMandatory()).toBe(true);
     expect(onTrash.getCardEligibility().matches(squire)).toBe(true);
     testHarness.pickCard(supplyMilitia);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([squire]));
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCards(CardCollection.fromCards([squire])).build());
 
     expect(idsOf(testHarness.discard)).toEqual(['militia-supply-0']);
   });
@@ -91,7 +92,7 @@ describe('Squire', () => {
 
     const [onTrash] = testHarness.getCardEffects(squire, EffectTriggerType.TRASH);
     testHarness.pickCard(supplySmithy);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([squire]));
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCards(CardCollection.fromCards([squire])).build());
 
     expect(testHarness.discard.size()).toBe(0);
     expect(testHarness.decisionService.chooseCard).not.toHaveBeenCalled();

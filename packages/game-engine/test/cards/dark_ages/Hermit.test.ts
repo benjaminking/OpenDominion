@@ -1,5 +1,5 @@
 import { ChoiceType } from '@dominion/common';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Duchy } from '../../../src/cards/basic_cards/Duchy';
@@ -7,6 +7,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Hermit } from '../../../src/cards/dark_ages/Hermit';
 import { Madman } from '../../../src/cards/dark_ages/Madman';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { TurnPhase } from '../../../src/turns/TurnPhase';
 import { createCardHarness } from '../testHarness';
@@ -102,12 +103,38 @@ describe('Hermit', () => {
 
     await hermit.play(testHarness.executor);
     const [buyEnd] = testHarness.getAddedEffects(EffectTriggerType.BUY_END);
-    await buyEnd.doAction(testHarness.executor, undefined);
+    await buyEnd.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.size()).toBe(0);
     expect(testHarness.pileCards.get('Hermit')).toEqual([hermit]);
     expect(testHarness.discard.asCardArray()).toEqual([madman]);
     expect(testHarness.pileCards.get('Madman')).toEqual([]);
+  });
+
+  it('loses track of itself if it has left play since it was played, even if it is back in play', async () => {
+    const testHarness = createCardHarness();
+    const hermit = new Hermit(testHarness.sharedGameState);
+    hermit.setId('hermit-0');
+    testHarness.addToInPlay(hermit);
+    testHarness.pileCards.set('Hermit', []);
+    const madman = new Madman(testHarness.sharedGameState);
+    madman.setId('madman-pile-0');
+    testHarness.pileCards.set('Madman', [madman]);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+
+    await hermit.play(testHarness.executor);
+    testHarness.inPlay.removeCard(hermit);
+    testHarness.addToHand(hermit);
+    testHarness.hand.removeCard(hermit);
+    testHarness.addToInPlay(hermit);
+    const [buyEnd] = testHarness.getAddedEffects(EffectTriggerType.BUY_END);
+    await buyEnd.doAction(testHarness.executor, new EffectContextBuilder().build());
+
+    expect(lostTrack).toHaveBeenCalledWith(hermit);
+    expect(testHarness.inPlay.asCardArray()).toEqual([hermit]);
+    expect(testHarness.pileCards.get('Hermit')).toEqual([]);
+    expect(testHarness.pileCards.get('Madman')).toEqual([madman]);
+    expect(testHarness.discard.size()).toBe(0);
   });
 
   it('stays in play when the Madman pile is empty', async () => {
@@ -120,7 +147,7 @@ describe('Hermit', () => {
 
     await hermit.play(testHarness.executor);
     const [buyEnd] = testHarness.getAddedEffects(EffectTriggerType.BUY_END);
-    await buyEnd.doAction(testHarness.executor, undefined);
+    await buyEnd.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.asCardArray()).toEqual([hermit]);
     expect(testHarness.pileCards.get('Hermit')).toEqual([]);
@@ -144,7 +171,7 @@ describe('Hermit', () => {
     await testHarness.executor.gainFromPile('Silver');
     expect(testHarness.executor.getNumCardsGainedInThisTurnsBuyPhase()).toBe(1);
     const [buyEnd] = testHarness.getAddedEffects(EffectTriggerType.BUY_END);
-    await buyEnd.doAction(testHarness.executor, undefined);
+    await buyEnd.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.asCardArray()).toEqual([hermit]);
     expect(testHarness.pileCards.get('Madman')).toEqual([madman]);

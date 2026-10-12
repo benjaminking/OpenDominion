@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
@@ -8,7 +9,8 @@ import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { isTheSameCardAs, isVictoryCard } from '../../StandardCardEligibilityFunctions';
+import { isVictoryCard } from '../../StandardCardEligibilityFunctions';
+import { TurnPhase } from '../../turns/TurnPhase';
 
 export class Treasury extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -16,17 +18,26 @@ export class Treasury extends KingdomCard {
     this.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.DISCARD, EffectSource.SELF)
-        .whereCardIs(isTheSameCardAs(this))
+        // Put onto the deck at the start of Clean-up, from play, instead of when discarded from play
+        .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.SELF)
+        .addCondition(
+          new EffectCondition(() => this.getLocation() === CardLocation.IN_PLAY && this.canBeDiscardedInCleanup()),
+        )
+        // Only Victory cards gained in the Buy phase count, not e.g. ones gained with Workshop
         .addCondition(
           new EffectCondition((ie: InstructionExecutor) => {
-            return !ie.hasGainedMatchingCardThisTurn(isVictoryCard);
+            return (
+              ie
+                .getSharedGameState()
+                .getCurrentPlayer()
+                .getTurnTracker()
+                .numMatchingCardsGainedThisTurnByPhase(isVictoryCard, TurnPhase.BUY) === 0
+            );
           }),
         )
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {
-            ie.putCardOnDeck(this);
-            return Promise.resolve();
+            await ie.topDeckCardFromLocation(this, CardLocation.IN_PLAY);
           }),
         )
         .build(),

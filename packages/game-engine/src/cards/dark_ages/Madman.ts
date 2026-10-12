@@ -11,7 +11,12 @@ export class Madman extends Card {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     ie.addActions(2);
+    if (!locationExpectation.isMet(this)) {
+      ie.sendLostTrackMessage(this);
+      return;
+    }
     const returnedCard: Card | undefined = ie.returnCardToPileFromLocation(this, CardLocation.IN_PLAY);
     if (!(returnedCard instanceof Card)) {
       return;

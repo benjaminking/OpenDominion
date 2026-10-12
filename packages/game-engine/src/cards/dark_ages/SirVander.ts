@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
@@ -29,6 +30,7 @@ export class SirVander extends Knights {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.performAttack(this, this.knightAttack.bind(this));
+    const selfExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+    await this.performKnightAttack(ie, selfExpectation);
   }
 }

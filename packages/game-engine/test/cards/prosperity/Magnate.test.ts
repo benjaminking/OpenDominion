@@ -48,4 +48,29 @@ describe('Magnate', () => {
     expect(testHarness.hand.size()).toBe(2);
     expect(testHarness.deck.size()).toBe(1);
   });
+
+  it('shuffles the discard pile when the deck runs out, and draws only what is available', async () => {
+    const testHarness = createCardHarness();
+    for (let cardIndex = 0; cardIndex < 2; cardIndex++) {
+      const handCopper = new Copper(testHarness.sharedGameState);
+      handCopper.setId(`copper-hand-${String(cardIndex)}`);
+      testHarness.addToHand(handCopper);
+    }
+    const silver = new Silver(testHarness.sharedGameState);
+    silver.setId('silver-hand-0');
+    testHarness.addToHand(silver);
+    const deckEstate = new Estate(testHarness.sharedGameState);
+    deckEstate.setId('estate-deck-0');
+    testHarness.addToDeck(deckEstate);
+    const discardEstate = new Estate(testHarness.sharedGameState);
+    discardEstate.setId('estate-discard-0');
+    testHarness.addToDiscard(discardEstate);
+
+    await new Magnate(testHarness.sharedGameState).play(testHarness.executor);
+
+    // 3 Treasures, but only 2 cards to draw
+    expect(testHarness.hand.size()).toBe(5);
+    expect(testHarness.deck.size()).toBe(0);
+    expect(testHarness.discard.size()).toBe(0);
+  });
 });

@@ -1,9 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { CardLocation } from '@dominion/common';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Market } from '../../../src/cards/base_game/Market';
 import { Smithy } from '../../../src/cards/base_game/Smithy';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Weaver } from '../../../src/cards/hinterlands/Weaver';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { TurnPhase } from '../../../src/turns/TurnPhase';
 import { CardHarness, createCardHarness } from '../testHarness';
@@ -76,7 +78,7 @@ describe('Weaver', () => {
 
     expect(onDiscard.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
     testHarness.pickOption('Gain two Silvers');
-    await onDiscard.doAction(testHarness.executor, weaver);
+    await onDiscard.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(weaver).build());
 
     expect(testHarness.discard.contains(weaver)).toBe(false);
     expect(testHarness.discard.size()).toBe(2);
@@ -106,12 +108,34 @@ describe('Weaver', () => {
     expect((gainCall as unknown[])[4]).toBeUndefined();
   });
 
+  it('is still offered once it has moved since it was discarded, but loses track of itself', async () => {
+    const testHarness = createCardHarness();
+    const { weaver, onDiscard } = setUpDiscardedWeaver(testHarness);
+    setTurnPhase(testHarness, TurnPhase.ACTION);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+    const discarded = new EffectContextBuilder()
+      .withTargetCard(weaver)
+      .withLocationExpectation(testHarness.executor.createLocationExpectation(CardLocation.DISCARD))
+      .build();
+
+    // e.g. a discarded Trail's +1 Card shuffled it into the deck
+    testHarness.discard.removeCard(weaver);
+    testHarness.addToDeck(weaver);
+    expect(onDiscard.areOtherConditionsSatisfied(testHarness.executor, discarded)).toBe(true);
+    await onDiscard.doAction(testHarness.executor, discarded);
+
+    expect(lostTrack).toHaveBeenCalledWith(weaver);
+    expect(testHarness.deck.contains(weaver)).toBe(true);
+    expect(testHarness.inPlay.size()).toBe(0);
+    expect(testHarness.pileCards.get('Silver')).toHaveLength(2);
+  });
+
   it('is in play after being played when discarded', async () => {
     const testHarness = createCardHarness();
     const { weaver, onDiscard } = setUpDiscardedWeaver(testHarness);
 
     testHarness.pickOption('Gain two Silvers');
-    await onDiscard.doAction(testHarness.executor, weaver);
+    await onDiscard.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(weaver).build());
 
     expect(testHarness.inPlay.contains(weaver)).toBe(true);
   });

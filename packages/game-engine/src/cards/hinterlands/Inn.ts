@@ -30,26 +30,38 @@ export class Inn extends KingdomCard {
     await ie.drawCards(2);
     ie.addActions(2);
 
+    // With no cards in hand, there is nothing to choose
+    if (ie.handSize() === 0) {
+      return;
+    }
     const cardsToDiscard: CardCollection = await ie
       .chooseCards('Choose 2 cards to discard')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(exactlyNChecked(2))
+      .whereNumCardsIs(exactlyNChecked(Math.min(2, ie.handSize())))
       .choose();
     await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
   }
 
   private async onGain(ie: InstructionExecutor): Promise<void> {
-    const toShuffleIntoDeck = await ie
-      .chooseCards('Reveal any number of Action cards from your discard pile to put onto your deck')
-      .from(CardLocation.DISCARD)
-      .whereCardIs(isActionCard)
-      .to(CardSelectionPurpose.OTHER)
-      .choose();
+    // With no Action cards in the discard pile there is nothing to choose, but the deck is still shuffled
+    if (ie.getEligibleCardChoices(new Set([CardLocation.DISCARD]), isActionCard).length > 0) {
+      const toShuffleIntoDeck = await ie
+        .chooseCards('Reveal any number of Action cards from your discard pile to put onto your deck')
+        .from(CardLocation.DISCARD)
+        .whereCardIs(isActionCard)
+        .to(CardSelectionPurpose.OTHER)
+        .choose();
+      const locationExpectation = ie.createLocationExpectation(CardLocation.DISCARD);
 
-    await ie.revealCards(toShuffleIntoDeck);
-    for (const card of toShuffleIntoDeck) {
-      await ie.topDeckCardFromLocation(card, CardLocation.DISCARD, true);
+      await ie.revealCards(toShuffleIntoDeck);
+      for (const card of toShuffleIntoDeck) {
+        if (!locationExpectation.isMet(card)) {
+          ie.sendLostTrackMessage(card);
+        } else {
+          await ie.topDeckCardFromLocation(card, CardLocation.DISCARD, true);
+        }
+      }
     }
     await ie.shuffleDeck();
   }

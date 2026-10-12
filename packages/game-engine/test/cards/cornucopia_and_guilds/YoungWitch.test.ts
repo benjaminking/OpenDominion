@@ -108,4 +108,19 @@ describe('YoungWitch', () => {
 
     expect(targetHarness.discard.asCardArray()).toEqual([curse]);
   });
+
+  it("does not use another game's Bane", async () => {
+    const testHarness = createCardHarness();
+    setUpBane(testHarness, 'Silver');
+    // Another game sets up its Bane afterwards
+    const otherGameHarness = createCardHarness();
+    setUpBane(otherGameHarness, 'Hamlet');
+    const { targetHarness, curse } = setUpTarget(createTargetHamlet);
+    testHarness.routeAttacksTo(targetHarness);
+
+    await new YoungWitch(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(targetHarness.decisionService.chooseOneOption).not.toHaveBeenCalled();
+    expect(targetHarness.discard.asCardArray()).toEqual([curse]);
+  });
 });

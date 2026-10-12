@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -13,13 +14,18 @@ export class SeaChart extends KingdomCard {
   public async play(ie: InstructionExecutor): Promise<void> {
     await ie.drawCards(1);
     ie.addActions(1);
+    // Looking at the top card leaves it on the deck, so it stays there unless a copy is in play
     const topCard = await ie.lookAtTopCardOfDeck();
     if (topCard !== undefined) {
+      // Revealing it fires triggers, so it is only put into hand if it hasn't left the deck since
+      const locationExpectation = ie.createLocationExpectation(CardLocation.DECK);
       await ie.revealCard(topCard);
       if (ie.hasMatchingCardInPlay(isACopyOf(topCard))) {
-        await ie.putTopCardOfDeckIntoHand();
-      } else {
-        ie.putCardOnDeck(topCard);
+        if (!locationExpectation.isMet(topCard)) {
+          ie.sendLostTrackMessage(topCard);
+          return;
+        }
+        ie.putCardIntoHandFromLocation(topCard, CardLocation.DECK);
       }
     }
   }

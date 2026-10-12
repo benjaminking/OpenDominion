@@ -19,7 +19,7 @@ export class Warehouse extends KingdomCard {
       .chooseCards('Choose 3 cards to discard')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(exactlyNChecked(3))
+      .whereNumCardsIs(exactlyNChecked(Math.min(3, ie.handSize())))
       .choose();
     await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
   }

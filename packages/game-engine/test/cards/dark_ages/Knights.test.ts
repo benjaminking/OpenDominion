@@ -1,4 +1,4 @@
-import { CardType } from '@dominion/common';
+import { CardLocation, CardType } from '@dominion/common';
 import { describe, expect, it } from 'vitest';
 
 import { Card } from '../../../src/card/Card';
@@ -20,7 +20,7 @@ import { CardHarness, createCardHarness } from '../testHarness';
 // Minimal Knight whose only effect is the shared Knight attack.
 class TestKnight extends Knights {
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.performAttack(this, this.knightAttack.bind(this));
+    await this.performKnightAttack(ie, ie.createLocationExpectation(CardLocation.IN_PLAY));
   }
 }
 

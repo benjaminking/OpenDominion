@@ -22,7 +22,7 @@ export class ThroneRoom extends KingdomCard {
       .choose();
 
     if (choice instanceof Card) {
-      await ie.playCardFromHandNTimes(choice, 2);
+      await ie.playCardFromHandNTimes(choice, 2, this);
     }
   }
 }

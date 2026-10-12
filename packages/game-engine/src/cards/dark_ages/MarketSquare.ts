@@ -1,7 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
+import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
@@ -17,6 +19,13 @@ export class MarketSquare extends KingdomCard {
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TRASH, EffectSource.SELF)
+        .whereCardIs(
+          // This card's owner can change, so the owner is not hard-coded, but checked each time
+          new CardEligibilityFunction((trashedCard: Card) => {
+            const owner = this.getOwner();
+            return owner !== undefined && trashedCard.hasPreviousOwner(owner);
+          }),
+        )
         .addCondition(new EffectCondition(() => this.getLocation() === CardLocation.HAND))
         .action(
           new EffectAction(async (ie: InstructionExecutor) => {

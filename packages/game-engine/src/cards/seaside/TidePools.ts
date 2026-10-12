@@ -32,7 +32,7 @@ export class TidePools extends KingdomCard {
               .chooseCards('Choose 2 cards to discard')
               .from(CardLocation.HAND)
               .to(CardSelectionPurpose.DISCARD)
-              .whereNumCardsIs(exactlyNChecked(2))
+              .whereNumCardsIs(exactlyNChecked(Math.min(2, ie.handSize())))
               .choose();
             await ie.discardCardsFromLocation(cardsToDiscard, CardLocation.HAND);
             this.markAsFinished();

@@ -1,10 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Curse } from '../../../src/cards/basic_cards/Curse';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Jester } from '../../../src/cards/cornucopia_and_guilds/Jester';
 import { createCardHarness } from '../testHarness';
+
+// The card harness's piles mock has no isSupplyPile; treat every pile it holds as a Supply pile
+const treatPilesAsSupply = (...harnesses: ReturnType<typeof createCardHarness>[]): void => {
+  for (const harness of harnesses) {
+    Object.assign(harness.sharedGameState.piles, { isSupplyPile: vi.fn(() => true) });
+  }
+};
 
 describe('Jester', () => {
   it('gives +$2', async () => {
@@ -43,6 +50,7 @@ describe('Jester', () => {
     supplySilver.setId('silver-supply-0');
     testHarness.addSupplyPile(supplySilver);
     testHarness.routeAttacksTo(targetHarness);
+    treatPilesAsSupply(testHarness, targetHarness);
 
     testHarness.pickOption('You gain a copy');
     await new Jester(testHarness.sharedGameState).play(testHarness.executor);
@@ -61,6 +69,7 @@ describe('Jester', () => {
     supplySilver.setId('silver-supply-0');
     targetHarness.addSupplyPile(supplySilver);
     testHarness.routeAttacksTo(targetHarness);
+    treatPilesAsSupply(testHarness, targetHarness);
 
     testHarness.pickOption(`${targetHarness.player.getName()} gains a copy`);
     await new Jester(testHarness.sharedGameState).play(testHarness.executor);

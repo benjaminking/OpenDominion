@@ -11,6 +11,7 @@ export class NativeVillage extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    ie.addActions(2);
     await ie
       .chooseOneOption('Choose one:')
       .from(

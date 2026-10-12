@@ -4,6 +4,7 @@ import { CardCollection } from '../../../src/card/CardCollection';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Feodum } from '../../../src/cards/dark_ages/Feodum';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -46,7 +47,7 @@ describe('Feodum', () => {
     }
 
     const [onTrash] = testHarness.getCardEffects(feodum, EffectTriggerType.TRASH);
-    await onTrash.doAction(testHarness.executor, feodum);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(feodum).build());
 
     expect(testHarness.discard.size()).toBe(3);
     expect(testHarness.discard.asCardArray().every((card) => card.getName() === 'Silver')).toBe(true);
@@ -62,7 +63,7 @@ describe('Feodum', () => {
     }
 
     const [onTrash] = testHarness.getCardEffects(feodum, EffectTriggerType.TRASH);
-    await onTrash.doAction(testHarness.executor, feodum);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(feodum).build());
 
     expect(testHarness.discard.size()).toBe(2);
     expect(testHarness.pileCards.get('Silver')).toEqual([]);

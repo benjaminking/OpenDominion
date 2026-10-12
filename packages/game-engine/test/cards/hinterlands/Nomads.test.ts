@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { Nomads } from '../../../src/cards/hinterlands/Nomads';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -21,7 +22,10 @@ describe('Nomads', () => {
     testHarness.addToDiscard(nomads);
     const [onGain] = testHarness.getCardEffects(nomads, EffectTriggerType.GAIN);
 
-    await onGain.doAction(testHarness.executor, nomads);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(nomads).withGainLocation(nomads.getLocation()).build(),
+    );
 
     expect(testHarness.stats.coins).toBe(2);
   });
@@ -33,7 +37,7 @@ describe('Nomads', () => {
     await testHarness.executor.trashCard(nomads);
     const [onTrash] = testHarness.getCardEffects(nomads, EffectTriggerType.TRASH);
 
-    await onTrash.doAction(testHarness.executor, nomads);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(nomads).build());
 
     expect(testHarness.stats.coins).toBe(2);
   });

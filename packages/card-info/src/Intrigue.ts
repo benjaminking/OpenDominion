@@ -96,7 +96,7 @@ export const intrigue: CardInfo[] = [
     production: {
       coins: 2,
     },
-    types: [CardType.ACTION, CardType.VICTORY],
+    types: [CardType.TREASURE, CardType.VICTORY],
     expansion: Expansion.INTRIGUE,
     has_randomizer: true,
   },

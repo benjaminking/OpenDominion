@@ -17,7 +17,7 @@ export class TradingPost extends KingdomCard {
       .chooseCards('Choose 2 cards to trash')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.TRASH)
-      .whereNumCardsIs(exactlyNChecked(2))
+      .whereNumCardsIs(exactlyNChecked(Math.min(2, ie.handSize())))
       .choose();
 
     const trashedCards: CardCollection = await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);

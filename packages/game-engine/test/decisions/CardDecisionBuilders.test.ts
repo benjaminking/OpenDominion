@@ -22,6 +22,7 @@ import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcast
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
 import { Player } from '../../src/players/Player';
 import { exactlyNChecked } from '../../src/StandardNumberEligibilityFunctions';
+import { createTestClock } from '../testClock';
 
 class TestCard extends Card {}
 
@@ -29,6 +30,7 @@ const createSharedGameStateMock = () => {
   return {
     cost: vi.fn((card) => card.getOriginalCost()),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
 };
 

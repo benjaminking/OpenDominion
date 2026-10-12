@@ -4,6 +4,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Duchy } from '../../../src/cards/basic_cards/Duchy';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { BorderVillage } from '../../../src/cards/hinterlands/BorderVillage';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -34,7 +35,10 @@ describe('BorderVillage', () => {
     const [onGain] = testHarness.getCardEffects(borderVillage, EffectTriggerType.GAIN);
 
     testHarness.pickCard(duchy);
-    await onGain.doAction(testHarness.executor, borderVillage);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(borderVillage).withGainLocation(borderVillage.getLocation()).build(),
+    );
 
     expect(testHarness.discard.size()).toBe(2);
     expect(testHarness.discard.contains(duchy)).toBe(true);
@@ -54,7 +58,10 @@ describe('BorderVillage', () => {
     const [onGain] = testHarness.getCardEffects(borderVillage, EffectTriggerType.GAIN);
 
     testHarness.pickCard(gold);
-    await onGain.doAction(testHarness.executor, borderVillage);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(borderVillage).withGainLocation(borderVillage.getLocation()).build(),
+    );
 
     expect(testHarness.discard.size()).toBe(1);
   });

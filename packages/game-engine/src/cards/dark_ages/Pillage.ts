@@ -15,6 +15,12 @@ export class Pillage extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    // e.g. a Throne Room's second play: it already trashed itself, so it has lost track of itself
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+    if (!locationExpectation.isMet(this)) {
+      ie.sendLostTrackMessage(this);
+      return;
+    }
     const trashed = await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
     if (trashed !== undefined) {
       await ie.gainFromPile('Spoils');

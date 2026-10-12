@@ -249,7 +249,6 @@ export const prosperity: CardInfo[] = [
     font_size: 'medium',
     cost: {
       coins: 6,
-      has_asterisk: true,
     },
     types: [CardType.TREASURE],
     expansion: Expansion.PROSPERITY,

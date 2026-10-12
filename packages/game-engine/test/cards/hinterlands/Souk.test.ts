@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Souk } from '../../../src/cards/hinterlands/Souk';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -45,7 +46,10 @@ describe('Souk', () => {
     const [onGain] = testHarness.getCardEffects(souk, EffectTriggerType.GAIN);
 
     testHarness.pickCards([handCoppers[0], handCoppers[1]]);
-    await onGain.doAction(testHarness.executor, souk);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(souk).withGainLocation(souk.getLocation()).build(),
+    );
 
     expect(testHarness.hand.size()).toBe(1);
     expect(testHarness.sharedTrash.size()).toBe(2);
@@ -61,7 +65,10 @@ describe('Souk', () => {
     testHarness.addToDiscard(souk);
     const [onGain] = testHarness.getCardEffects(souk, EffectTriggerType.GAIN);
 
-    await onGain.doAction(testHarness.executor, souk);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(souk).withGainLocation(souk.getLocation()).build(),
+    );
 
     expect(testHarness.hand.size()).toBe(3);
     expect(testHarness.sharedTrash.size()).toBe(0);

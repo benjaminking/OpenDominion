@@ -21,8 +21,7 @@ export class CrystalBall extends KingdomCard {
       return;
     }
 
-    await ie.revealCard(topCard);
-
+    // "Look at", not reveal: other players only see the card if it is trashed, discarded or played
     const choiceBuilder = ie
       .chooseOneOption('What do you want to do with ' + topCard.getName() + '?')
       .from(

@@ -89,4 +89,51 @@ describe('Bonfire', () => {
     expect(testHarness.sharedTrash.size()).toBe(0);
     expect(cardIds(testHarness.inPlay)).toEqual([inPlayCopper.getId()]);
   });
+
+  it('trashes nothing and offers nothing when there are no Coppers in play', async () => {
+    const testHarness = createCardHarness();
+    const inPlaySilver = new Silver(testHarness.sharedGameState);
+    inPlaySilver.setId('silver-in-play');
+    testHarness.addToInPlay(inPlaySilver);
+
+    await new Bonfire(testHarness.sharedGameState).onBuy(testHarness.executor);
+
+    const offeredChoices = (
+      testHarness.decisionService.chooseCards.mock.calls[0] as unknown as unknown[]
+    )[4] as CardChoice[];
+    expect(offeredChoices).toEqual([]);
+    expect(testHarness.sharedTrash.size()).toBe(0);
+    expect(cardIds(testHarness.inPlay)).toEqual([inPlaySilver.getId()]);
+  });
+
+  it('trashes the only Copper in play when that is all there is', async () => {
+    const testHarness = createCardHarness();
+    const inPlayCopper = new Copper(testHarness.sharedGameState);
+    inPlayCopper.setId('copper-in-play');
+    testHarness.addToInPlay(inPlayCopper);
+
+    testHarness.pickCards([inPlayCopper]);
+    await new Bonfire(testHarness.sharedGameState).onBuy(testHarness.executor);
+
+    expect(cardIds(testHarness.sharedTrash)).toEqual([inPlayCopper.getId()]);
+    expect(testHarness.inPlay.size()).toBe(0);
+  });
+
+  it('leaves the $ the trashed Coppers already produced', async () => {
+    const testHarness = createCardHarness();
+    const inPlayCoppers: Copper[] = [];
+    for (let i = 0; i < 2; i++) {
+      const copper = new Copper(testHarness.sharedGameState);
+      copper.setId(`copper-in-play-${String(i)}`);
+      inPlayCoppers.push(copper);
+      testHarness.addToInPlay(copper);
+    }
+    await testHarness.stats.addCoins(2);
+
+    testHarness.pickCards(inPlayCoppers);
+    await new Bonfire(testHarness.sharedGameState).onBuy(testHarness.executor);
+
+    expect(testHarness.sharedTrash.size()).toBe(2);
+    expect(testHarness.stats.coins).toBe(2);
+  });
 });

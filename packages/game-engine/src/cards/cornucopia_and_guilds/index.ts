@@ -8,6 +8,7 @@ export * from './Courser';
 export * from './Demesne';
 export * from './Fairgrounds';
 export * from './Farmhands';
+export * from './Farrier';
 export * from './Ferryman';
 export * from './Footpad';
 export * from './Hamlet';

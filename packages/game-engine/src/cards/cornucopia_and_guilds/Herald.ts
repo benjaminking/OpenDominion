@@ -3,43 +3,27 @@ import { CardLocation, CardSelectionPurpose, MoneyAmount } from '@dominion/commo
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
-import { Effect } from '../../effects/Effect';
-import { EffectAction } from '../../effects/EffectAction';
-import { EffectSource } from '../../effects/EffectSource';
-import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { addOverpayEffects } from '../../effects/OverpayEffects';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { isActionCard, isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
+import { isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Herald extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Herald'));
-    this.addEffect(
-      new Effect.Builder()
-        .from(this)
-        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-        .whereCardIs(isTheSameCardAs(this))
-        .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
-            if (overpayAmount === undefined) {
-              return;
-            }
-            for (let i = 0; i < overpayAmount.coins; ++i) {
-              const cardToTopDeck = await ie
-                .chooseCard('Choose a card to put on your deck')
-                .from(CardLocation.DISCARD)
-                .to(CardSelectionPurpose.TOPDECK)
-                .choose();
+    addOverpayEffects(this, async (ie: InstructionExecutor, overpayAmount: MoneyAmount) => {
+      for (let i = 0; i < overpayAmount.coins; ++i) {
+        const cardToTopDeck = await ie
+          .chooseCard('Choose a card to put on your deck')
+          .from(CardLocation.DISCARD)
+          .to(CardSelectionPurpose.TOPDECK)
+          .choose();
 
-              if (cardToTopDeck instanceof Card) {
-                await ie.topDeckCardFromLocation(cardToTopDeck, CardLocation.DISCARD);
-              }
-            }
-          }),
-        )
-        .build(),
-    );
+        if (cardToTopDeck instanceof Card) {
+          await ie.topDeckCardFromLocation(cardToTopDeck, CardLocation.DISCARD);
+        }
+      }
+    });
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
@@ -50,9 +34,14 @@ export class Herald extends KingdomCard {
     if (topCard === undefined) {
       return;
     }
+    const locationExpectation = ie.createLocationExpectation(CardLocation.DECK);
     await ie.revealCard(topCard);
 
     if (isActionCard.matches(topCard)) {
+      if (!locationExpectation.isMet(topCard)) {
+        ie.sendLostTrackMessage(topCard);
+        return;
+      }
       await ie.playCardFromLocation(topCard, CardLocation.DECK);
     }
   }

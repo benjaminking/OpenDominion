@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
@@ -19,10 +20,15 @@ export class Vagrant extends KingdomCard {
       return;
     }
 
+    const locationExpectation = ie.createLocationExpectation(CardLocation.DECK);
     await ie.revealCard(topCard);
     const isEligible = either(either(either(isCurseCard, isVictoryCard), isRuinsCard), isShelterCard);
     if (isEligible.matches(topCard)) {
-      await ie.putTopCardOfDeckIntoHand();
+      if (!locationExpectation.isMet(topCard)) {
+        ie.sendLostTrackMessage(topCard);
+      } else {
+        ie.putCardIntoHandFromLocation(topCard, CardLocation.DECK);
+      }
     }
   }
 }

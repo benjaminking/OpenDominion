@@ -26,7 +26,14 @@ export class Journeyman extends KingdomCard {
       cardEligiblityFunction = not(isACopyOf(namedCard));
     }
 
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     const revealedCards = await ie.revealUntil(cardEligiblityFunction, 3);
-    ie.putCardsIntoHandFromLocation(revealedCards, CardLocation.REVEAL_LIMBO);
+    for (const card of revealedCards) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+      } else {
+        ie.putCardIntoHandFromLocation(card, CardLocation.REVEAL_LIMBO);
+      }
+    }
   }
 }

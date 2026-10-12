@@ -8,6 +8,8 @@ import { InstructionExecutor } from '../../players/InstructionExecutor';
 export class Farm extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Farm'));
+    this.markAsSimpleTreasure();
+    this.setCoins(2);
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {

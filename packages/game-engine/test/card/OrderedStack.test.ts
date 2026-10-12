@@ -18,6 +18,7 @@ import { Discard } from '../../src/players/Discard';
 import { Hand } from '../../src/players/Hand';
 import { InPlay } from '../../src/players/InPlay';
 import { Trash } from '../../src/Trash';
+import { createTestClock } from '../testClock';
 
 class TestCard extends Card {}
 
@@ -50,6 +51,7 @@ const createSharedGameStateMock = (cost?: Cost) => {
   return {
     cost: vi.fn(() => resolvedCost),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
 };
 

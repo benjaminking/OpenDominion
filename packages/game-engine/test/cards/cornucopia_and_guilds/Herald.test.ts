@@ -6,6 +6,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Herald } from '../../../src/cards/cornucopia_and_guilds/Herald';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -76,7 +77,11 @@ describe('Herald', () => {
     testHarness.pickOption('$1');
     testHarness.pickCard(gold);
     const [buyEffect] = testHarness.getCardEffects(herald, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, herald);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(herald).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(herald, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(herald).withGainLocation(herald.getLocation()).build());
+    }
 
     expect(testHarness.stats.coins).toBe(1);
     expect(testHarness.deck.asCardArray()).toEqual([gold]);

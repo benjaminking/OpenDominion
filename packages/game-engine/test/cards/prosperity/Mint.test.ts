@@ -6,6 +6,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Mint } from '../../../src/cards/prosperity/Mint';
 import { Astrolabe } from '../../../src/cards/seaside/Astrolabe';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -77,7 +78,7 @@ describe('Mint', () => {
     expect(gainEffects).toHaveLength(1);
     expect(gainEffects[0].isMandatory()).toBe(true);
     expect(gainEffects[0].areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await gainEffects[0].doAction(testHarness.executor, mint);
+    await gainEffects[0].doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(mint).withGainLocation(mint.getLocation()).build());
 
     expect(testHarness.inPlay.asCardArray().map((card) => card.getId())).toEqual([
       'astrolabe-in-play-0',
@@ -92,7 +93,7 @@ describe('Mint', () => {
     expect(testHarness.discard.contains(mint)).toBe(true);
   });
 
-  it('only triggers on gaining this Mint, not other cards or Mints still in the Supply', () => {
+  it('only triggers on gaining this Mint, not other cards or other Mints', () => {
     const testHarness = createCardHarness();
     const mint = new Mint(testHarness.sharedGameState);
     mint.setId('mint-supply-0');
@@ -104,6 +105,19 @@ describe('Mint', () => {
 
     expect(gainEffect.getCardEligibility().matches(mint)).toBe(true);
     expect(gainEffect.getCardEligibility().matches(otherMint)).toBe(false);
-    expect(gainEffect.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
+  });
+
+  it('gains nothing when the Supply pile of the revealed Treasure is empty', async () => {
+    const testHarness = createCardHarness();
+    const handSilver = new Silver(testHarness.sharedGameState);
+    handSilver.setId('silver-hand-0');
+    testHarness.addToHand(handSilver);
+
+    testHarness.pickCard(handSilver);
+    await new Mint(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(testHarness.decisionService.chooseCard).toHaveBeenCalledTimes(1);
+    expect(testHarness.hand.asCardArray().map((card) => card.getId())).toEqual(['silver-hand-0']);
+    expect(testHarness.discard.size()).toBe(0);
   });
 });

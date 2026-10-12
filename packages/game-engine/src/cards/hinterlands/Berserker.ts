@@ -7,6 +7,7 @@ import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -25,8 +26,13 @@ export class Berserker extends KingdomCard {
         .addCondition(new EffectCondition((ie: InstructionExecutor) => ie.hasMatchingCardInPlay(isActionCard)))
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            await ie.playCardFromLocation(this, this.getLocation());
+          new EffectAction(async (ie: InstructionExecutor, effectContext: EffectContext) => {
+            // Once something else has moved it (e.g. Trader or Watchtower), it has lost track of itself
+            if (!effectContext.getLocationExpectation()!.isMet(this)) {
+              ie.sendLostTrackMessage(this);
+              return;
+            }
+            await ie.playCardFromLocation(this, effectContext.getGainLocation()!);
           }),
         )
         .build(),

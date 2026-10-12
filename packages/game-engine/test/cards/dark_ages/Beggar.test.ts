@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Beggar } from '../../../src/cards/dark_ages/Beggar';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectSource } from '../../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
@@ -65,7 +66,7 @@ describe('Beggar', () => {
     }
 
     const [reaction] = testHarness.getCardEffects(beggar, EffectTriggerType.ATTACK);
-    await reaction.doAction(testHarness.executor, undefined);
+    await reaction.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.discard.size()).toBe(2);
@@ -87,7 +88,7 @@ describe('Beggar', () => {
     testHarness.addSupplyPile(supplySilver);
 
     const [reaction] = testHarness.getCardEffects(beggar, EffectTriggerType.ATTACK);
-    await reaction.doAction(testHarness.executor, undefined);
+    await reaction.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.asCardArray()).toEqual([beggar]);
     expect(testHarness.discard.size()).toBe(0);

@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { CardCollection } from '../../../src/card/CardCollection';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { OvergrownEstate } from '../../../src/cards/dark_ages/OvergrownEstate';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -27,7 +28,10 @@ describe('OvergrownEstate', () => {
 
     const [onTrash] = testHarness.getCardEffects(overgrownEstate, EffectTriggerType.TRASH);
     expect(onTrash.isMandatory()).toBe(true);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([overgrownEstate]));
+    await onTrash.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCards(CardCollection.fromCards([overgrownEstate])).build(),
+    );
 
     expect(testHarness.hand.asCardArray().map((card) => card.getId())).toEqual(['copper-deck-0']);
   });

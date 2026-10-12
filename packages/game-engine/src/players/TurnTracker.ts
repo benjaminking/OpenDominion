@@ -13,6 +13,9 @@ export class TurnTracker {
   private cardsGainedByUnofficialTurnNumber = new Map<number, CardCollection>();
   private cardsBoughtByUnofficialTurnNumber = new Map<number, CardCollection>();
   private cardsGainedByUnofficialTurnNumberAndPhase = new Map<number, Map<TurnPhase, CardCollection>>();
+  // Gains made during other players' turns (recorded under this player's latest turn) don't count as
+  // "gained on their turn", e.g. for Smugglers
+  private idsOfCardsGainedOnOtherPlayersTurnsByUnofficialTurnNumber = new Map<number, Set<string>>();
   private cleanupCardDrawOverride: number | undefined = undefined;
   private cleanupExtraCardsToDraw = 0;
 
@@ -59,8 +62,14 @@ export class TurnTracker {
     this.cardsPlayedByUnofficialTurnNumber.get(unofficialTurnNumber)!.addCard(card);
   }
 
-  public addGainedCard(card: Card): void {
+  public addGainedCard(card: Card, isOwnTurn = true): void {
     const unofficialTurnNumber = this.currentTurn.getUnofficialNumber();
+    if (!isOwnTurn) {
+      if (!this.idsOfCardsGainedOnOtherPlayersTurnsByUnofficialTurnNumber.has(unofficialTurnNumber)) {
+        this.idsOfCardsGainedOnOtherPlayersTurnsByUnofficialTurnNumber.set(unofficialTurnNumber, new Set<string>());
+      }
+      this.idsOfCardsGainedOnOtherPlayersTurnsByUnofficialTurnNumber.get(unofficialTurnNumber)!.add(card.getId());
+    }
     if (!this.cardsGainedByUnofficialTurnNumber.has(unofficialTurnNumber)) {
       this.cardsGainedByUnofficialTurnNumber.set(unofficialTurnNumber, new CardCollection());
       this.cardsGainedByUnofficialTurnNumberAndPhase.set(unofficialTurnNumber, new Map<TurnPhase, CardCollection>());
@@ -96,6 +105,10 @@ export class TurnTracker {
       .get(this.currentTurn.getUnofficialNumber())
       ?.asCardArray()
       .find((card: Card) => cardEligibilityFunction.matches(card));
+  }
+
+  public hasBoughtCardThisTurn(): boolean {
+    return (this.cardsBoughtByUnofficialTurnNumber.get(this.currentTurn.getUnofficialNumber())?.size() ?? 0) > 0;
   }
 
   public hasGainedMatchingCardThisTurn(cardEligibilityFunction: CardEligibilityFunction): boolean {
@@ -135,8 +148,14 @@ export class TurnTracker {
   }
 
   public getCardsGainedOnTurnEligibilityFunction(turn: Turn): CardEligibilityFunction {
+    const offTurnGainIds =
+      this.idsOfCardsGainedOnOtherPlayersTurnsByUnofficialTurnNumber.get(turn.getUnofficialNumber()) ??
+      new Set<string>();
     return (
-      this.cardsGainedByUnofficialTurnNumber.get(turn.getUnofficialNumber())?.toCardNameEligibilityFunction() ?? noCard
+      this.cardsGainedByUnofficialTurnNumber
+        .get(turn.getUnofficialNumber())
+        ?.getMatchingCards(new CardEligibilityFunction((card: Card) => !offTurnGainIds.has(card.getId())))
+        .toCardNameEligibilityFunction() ?? noCard
     );
   }
 

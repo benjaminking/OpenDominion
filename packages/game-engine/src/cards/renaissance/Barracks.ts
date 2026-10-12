@@ -16,6 +16,7 @@ export class Barracks extends Project {
       new Effect.Builder()
         .from(this)
         .triggerOn(EffectTriggerType.TURN_START, EffectSource.SELF)
+        .makeMandatory()
         .action(
           new EffectAction((ie: InstructionExecutor) => {
             ie.addActions(1);

@@ -37,9 +37,10 @@ describe('SecretPassage', () => {
 
     // Started: 1 in hand, 4 in deck
     // Drew 2: hand = 1 + 2 = 3, deck = 4 - 2 = 2
-    // putCardIntoDeck inserts into deck without removing from hand
-    // hand = 3, deck = 2 + 1 = 3
-    expect(testHarness.hand.size()).toBe(3);
+    // The chosen card moves from hand to the top of the deck: hand = 2, deck = 3
+    expect(testHarness.hand.size()).toBe(2);
+    expect(testHarness.hand.contains(handCardToInsert)).toBe(false);
     expect(testHarness.deck.size()).toBe(3);
+    expect(testHarness.deck.getTopCard()).toBe(handCardToInsert);
   });
 });

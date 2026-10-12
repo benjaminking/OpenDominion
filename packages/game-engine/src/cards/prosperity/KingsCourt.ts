@@ -22,7 +22,7 @@ export class KingsCourt extends KingdomCard {
       .choose();
 
     if (choice instanceof Card) {
-      await ie.playCardFromHandNTimes(choice, 3);
+      await ie.playCardFromHandNTimes(choice, 3, this);
     }
   }
 }

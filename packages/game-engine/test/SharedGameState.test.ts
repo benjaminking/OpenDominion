@@ -6,6 +6,7 @@ import { CardCollection } from '../src/card/CardCollection';
 import { Cost } from '../src/card/Cost';
 import { CostModifier } from '../src/effects/CostModifier';
 import { Effect } from '../src/effects/Effect';
+import { EffectContext, EffectContextBuilder } from '../src/effects/EffectContext';
 import { EffectSource } from '../src/effects/EffectSource';
 import { EffectTriggerType } from '../src/effects/EffectTriggerType';
 import { Game } from '../src/Game';
@@ -18,6 +19,8 @@ import { TurnTracker } from '../src/players/TurnTracker';
 import { anyCard } from '../src/StandardCardEligibilityFunctions';
 import { Turn } from '../src/turns/Turn';
 import { TurnPhase } from '../src/turns/TurnPhase';
+import { createTestClock } from './testClock';
+import { effectContextFor } from './effectContextMatchers';
 
 const createPlayerStub = (
   name: string,
@@ -29,7 +32,7 @@ const createPlayerStub = (
   };
   const effects = {
     processEffectsByType: vi.fn(
-      async (_trigger: EffectTriggerType, _triggeringPlayer: Player, _cards?: Card | CardCollection) => undefined,
+      async (_trigger: EffectTriggerType, _triggeringPlayer: Player, _effectContext: EffectContext) => undefined,
     ),
     clearBlocksForAttackCard: vi.fn(),
     isAttackBlocked: vi.fn(() => false),
@@ -103,7 +106,7 @@ const createCard = (name: string, id: string, types: CardType[] = [CardType.ACTI
     mechanics: [],
   };
   const card = new Card(
-    { cost: vi.fn(() => cost), registerEffectTrigger: vi.fn() } as unknown as SharedGameState,
+    { cost: vi.fn(() => cost), registerEffectTrigger: vi.fn(), ...createTestClock() } as unknown as SharedGameState,
     cardInfo,
   );
   card.setId(id);
@@ -139,11 +142,13 @@ describe('SharedGameState', () => {
 
     expect(state.getCurrentPlayer()).toBe(alice.player);
     expect(state.getPlayerLeftOfCurrent()).toBe(bob.player);
+    expect(state.getPlayerRightOfCurrent()).toBe(cara.player);
 
     state.switchCurrentPlayer();
 
     expect(state.getCurrentPlayer()).toBe(bob.player);
     expect(state.getPlayerLeftOfCurrent()).toBe(cara.player);
+    expect(state.getPlayerRightOfCurrent()).toBe(alice.player);
     expect(state.getCurrentTurnOrder()).toEqual([bob.player, cara.player, alice.player]);
 
     state.switchToPlayer(cara.player);
@@ -207,17 +212,29 @@ describe('SharedGameState', () => {
     const state = createSharedGameState([alice, bob, cara]);
     const cards = new CardCollection();
 
-    await state.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
+    await state.triggerEffect(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
 
     expect(alice.effects.processEffectsByType).not.toHaveBeenCalled();
     expect(bob.effects.processEffectsByType).not.toHaveBeenCalled();
     expect(cara.effects.processEffectsByType).not.toHaveBeenCalled();
 
     state.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.SELF);
-    await state.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
+    await state.triggerEffect(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
 
     expect(alice.effects.processEffectsByType).toHaveBeenCalledTimes(1);
-    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
     expect(bob.effects.processEffectsByType).not.toHaveBeenCalled();
     expect(cara.effects.processEffectsByType).not.toHaveBeenCalled();
 
@@ -225,22 +242,97 @@ describe('SharedGameState', () => {
 
     const otherPlayersOnlyState = createSharedGameState([alice, bob, cara]);
     otherPlayersOnlyState.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.OTHER_PLAYER);
-    await otherPlayersOnlyState.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
+    await otherPlayersOnlyState.triggerEffect(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
 
     expect(alice.effects.processEffectsByType).not.toHaveBeenCalled();
-    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
-    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
 
     vi.clearAllMocks();
 
     const allPlayersState = createSharedGameState([alice, bob, cara]);
     allPlayersState.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.SELF);
     allPlayersState.registerEffectTrigger(EffectTriggerType.BUY, EffectSource.OTHER_PLAYER);
-    await allPlayersState.triggerEffect(EffectTriggerType.BUY, alice.player, cards);
+    await allPlayersState.triggerEffect(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
 
-    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
-    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
-    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.BUY, alice.player, cards);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.BUY,
+      alice.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+  });
+
+  it('routes effects relative to the triggering player when it is not the current player', async () => {
+    // e.g. an Attack played on Alice's turn makes Bob trash one of his cards
+    const alice = createPlayerStub('Alice');
+    const bob = createPlayerStub('Bob');
+    const cara = createPlayerStub('Cara');
+    const cards = new CardCollection();
+
+    const selfOnlyState = createSharedGameState([alice, bob, cara]);
+    selfOnlyState.registerEffectTrigger(EffectTriggerType.TRASH, EffectSource.SELF);
+    await selfOnlyState.triggerEffect(
+      EffectTriggerType.TRASH,
+      bob.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+
+    expect(selfOnlyState.getCurrentPlayer()).toBe(alice.player);
+    expect(alice.effects.processEffectsByType).not.toHaveBeenCalled();
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.TRASH,
+      bob.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+    expect(cara.effects.processEffectsByType).not.toHaveBeenCalled();
+
+    vi.clearAllMocks();
+
+    const otherPlayersOnlyState = createSharedGameState([alice, bob, cara]);
+    otherPlayersOnlyState.registerEffectTrigger(EffectTriggerType.TRASH, EffectSource.OTHER_PLAYER);
+    await otherPlayersOnlyState.triggerEffect(
+      EffectTriggerType.TRASH,
+      bob.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.TRASH,
+      bob.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
+    expect(bob.effects.processEffectsByType).not.toHaveBeenCalled();
+    expect(cara.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.TRASH,
+      bob.player,
+      new EffectContextBuilder().withTargetCards(cards).build(),
+    );
   });
 
   it('applies added cost modifiers in order using the current turn', () => {
@@ -479,8 +571,16 @@ describe('SharedGameState', () => {
 
     expect(alice.effects.addEffect).toHaveBeenCalledWith(effect);
     expect(bob.effects.addEffect).toHaveBeenCalledWith(effect);
-    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.GAIN, bob.player, undefined);
-    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.GAIN, bob.player, undefined);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.GAIN,
+      bob.player,
+      new EffectContextBuilder().build(),
+    );
+    expect(bob.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.GAIN,
+      bob.player,
+      new EffectContextBuilder().build(),
+    );
   });
 
   it('trashes cards, updates their location, and passes the trashing player to trash effects', async () => {
@@ -495,7 +595,11 @@ describe('SharedGameState', () => {
 
     expect(state.trash.contains(estate)).toBe(true);
     expect(estate.getLocation()).toBe(CardLocation.TRASH);
-    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(EffectTriggerType.TRASH, bob.player, cards);
+    expect(alice.effects.processEffectsByType).toHaveBeenCalledWith(
+      EffectTriggerType.TRASH,
+      bob.player,
+      effectContextFor([estate], { expectationMet: true }),
+    );
   });
 
   describe('buyFromPile', () => {
@@ -540,7 +644,7 @@ describe('SharedGameState', () => {
 
       const buyTargets = alice.effects.processEffectsByType.mock.calls
         .filter(([trigger]) => trigger === EffectTriggerType.BUY)
-        .map(([, , cards]) => (cards instanceof CardCollection ? cards.asCardArray() : [cards]));
+        .map(([, , effectContext]) => effectContext.getTargetCards()?.asCardArray());
       expect(buyTargets).toEqual([[card]]);
       expect(addBoughtCardSpy).toHaveBeenCalledWith(card);
     });

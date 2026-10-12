@@ -32,4 +32,13 @@ describe('NativeVillage', () => {
 
     expect(testHarness.hand.size()).toBe(1);
   });
+
+  it('gives +2 Actions', async () => {
+    const testHarness = createCardHarness();
+
+    testHarness.pickOption('Put all the cards from your Native Village mat into your hand');
+    await new NativeVillage(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(testHarness.stats.actions).toBe(2);
+  });
 });

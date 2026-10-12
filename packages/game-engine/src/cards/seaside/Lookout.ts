@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
@@ -13,7 +13,10 @@ export class Lookout extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    ie.addActions(1);
     const topCards = await ie.takeCardsOffDeck(3);
+    // Trashing and discarding fire triggers, so the other cards are only moved if they haven't moved since
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
 
     const cardToTrash: Card | Choice = await ie
       .chooseCard('Choose a card to trash')
@@ -30,9 +33,20 @@ export class Lookout extends KingdomCard {
       .to(CardSelectionPurpose.DISCARD)
       .choose();
     if (cardToDiscard instanceof Card) {
-      await ie.discardCardsFromRevealedSet(CardCollection.fromCards([cardToDiscard]), topCards);
+      if (locationExpectation.isMet(cardToDiscard)) {
+        await ie.discardCardsFromRevealedSet(CardCollection.fromCards([cardToDiscard]), topCards);
+      } else {
+        topCards.removeCard(cardToDiscard);
+        ie.sendLostTrackMessage(cardToDiscard);
+      }
     }
 
+    for (const card of topCards.asCardArray()) {
+      if (!locationExpectation.isMet(card)) {
+        topCards.removeCard(card);
+        ie.sendLostTrackMessage(card);
+      }
+    }
     await ie.topDeckCardsFromRevealedSet(topCards);
   }
 }

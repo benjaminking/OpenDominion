@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
@@ -17,6 +17,7 @@ export class Advisor extends KingdomCard {
     ie.addActions(1);
 
     const topCards: CardCollection = await ie.takeCardsOffDeck(3);
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     await ie.revealCards(topCards);
 
     const leftPlayer: Player = ie.getSharedGameState().getPlayerLeftOfCurrent();
@@ -32,9 +33,19 @@ export class Advisor extends KingdomCard {
 
     if (cardToDiscard instanceof Card) {
       topCards.removeCard(cardToDiscard);
-      await ie.discardCard(cardToDiscard);
+      if (locationExpectation.isMet(cardToDiscard)) {
+        await ie.discardCardFromLocation(cardToDiscard, CardLocation.REVEAL_LIMBO);
+      } else {
+        ie.sendLostTrackMessage(cardToDiscard);
+      }
     }
 
+    for (const card of topCards.asCardArray()) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+        topCards.removeCard(card);
+      }
+    }
     ie.putCardsIntoHandFromSet(topCards, topCards);
   }
 }

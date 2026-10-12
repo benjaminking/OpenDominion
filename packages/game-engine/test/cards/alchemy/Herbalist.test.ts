@@ -5,6 +5,7 @@ import { Herbalist } from '../../../src/cards/alchemy/Herbalist';
 import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -34,7 +35,7 @@ describe('Herbalist', () => {
     expect(cleanupEffects).toHaveLength(1);
 
     testHarness.pickCard(gold);
-    await cleanupEffects[0].doAction(testHarness.executor, undefined);
+    await cleanupEffects[0].doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(cardIds(testHarness.deck)).toEqual([gold.getId()]);
     expect(cardIds(testHarness.inPlay)).toEqual([copper.getId()]);
@@ -54,7 +55,7 @@ describe('Herbalist', () => {
     await new Herbalist(testHarness.sharedGameState).play(testHarness.executor);
     const [cleanupEffect] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
     // default: choice returns none
-    await cleanupEffect.doAction(testHarness.executor, undefined);
+    await cleanupEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.deck.size()).toBe(0);
     expect(testHarness.inPlay.size()).toBe(2);
@@ -69,9 +70,28 @@ describe('Herbalist', () => {
     await new Herbalist(testHarness.sharedGameState).play(testHarness.executor);
     const [cleanupEffect] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
     testHarness.pickCard(village);
-    await cleanupEffect.doAction(testHarness.executor, undefined);
+    await cleanupEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.deck.size()).toBe(0);
     expect(cardIds(testHarness.inPlay)).toEqual([village.getId()]);
+  });
+
+  it('is only offered while a Treasure that will be discarded is in play', async () => {
+    const testHarness = createCardHarness();
+    const village = new Village(testHarness.sharedGameState);
+    village.setId('village-in-play');
+    testHarness.addToInPlay(village);
+    const goldInHand = new Gold(testHarness.sharedGameState);
+    goldInHand.setId('gold-in-hand');
+    testHarness.addToHand(goldInHand);
+
+    await new Herbalist(testHarness.sharedGameState).play(testHarness.executor);
+    const [cleanupEffect] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
+    expect(cleanupEffect.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
+
+    const copper = new Copper(testHarness.sharedGameState);
+    copper.setId('copper-in-play');
+    testHarness.addToInPlay(copper);
+    expect(cleanupEffect.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
   });
 });

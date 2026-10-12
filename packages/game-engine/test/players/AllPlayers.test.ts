@@ -39,6 +39,9 @@ describe('AllPlayers', () => {
     expect(allPlayers.getPlayerIndexByName('Alice')).toBe(0);
     expect(allPlayers.getPlayerIndexByName('Dana')).toBe(-1);
     expect(allPlayers.getOpponentsOfPlayerByName('Bob')).toEqual([alice, cara]);
+    expect(allPlayers.getPlayerToTheLeftByName('Cara')).toBe(alice);
+    expect(allPlayers.getPlayerToTheRightByName('Alice')).toBe(cara);
+    expect(allPlayers.getPlayerToTheRightByName('Bob')).toBe(alice);
     expect(Array.from(allPlayers)).toEqual([alice, bob, cara]);
     expect(allPlayers.getClients()).toEqual([alice.getClient(), bob.getClient(), cara.getClient()]);
 

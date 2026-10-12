@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -15,7 +16,15 @@ export class Apothecary extends KingdomCard {
     ie.addActions(1);
 
     const topCards = await ie.takeCardsOffDeck(4);
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     await ie.revealCards(topCards);
+    // "When you reveal" abilities have resolved in between
+    for (const card of topCards.asCardArray()) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+        topCards.removeCard(card);
+      }
+    }
 
     const cardsToHand = topCards.getMatchingCards(either(cardNameIs('Copper'), cardNameIs('Potion')));
     ie.putCardsIntoHandFromSet(cardsToHand, topCards);

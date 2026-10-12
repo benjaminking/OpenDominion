@@ -63,7 +63,7 @@ export class CardChoiceBuilder {
     if (location === CardSelectionLocation.SUPPLY) {
       this.isFromSupply = true;
     } else if (location === CardSelectionLocation.ALL_CARDS) {
-      this.isFromSupply = true;
+      this.isFromSet = true;
       this.set = this.ie.getAllExtraCards();
     } else if (location instanceof CardCollection) {
       this.isFromSet = true;

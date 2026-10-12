@@ -28,7 +28,13 @@ export class Bureaucrat extends KingdomCard {
         .whereCardIs(isVictoryCard)
         .choose();
       if (cardChoice instanceof Card) {
+        // Revealing it fires triggers before it is put onto the deck
+        const locationExpectation = ie.createLocationExpectation(CardLocation.HAND);
         await ie.revealCard(cardChoice);
+        if (!locationExpectation.isMet(cardChoice)) {
+          ie.sendLostTrackMessage(cardChoice);
+          return;
+        }
         await ie.topDeckCardFromLocation(cardChoice, CardLocation.HAND);
       }
     } else {

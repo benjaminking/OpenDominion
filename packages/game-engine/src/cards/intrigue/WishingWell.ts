@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
@@ -20,9 +20,15 @@ export class WishingWell extends KingdomCard {
     const topCard = await ie.lookAtTopCardOfDeck();
 
     if (topCard instanceof Card) {
+      // Reveal triggers may move the revealed card before it is put into hand
+      const locationExpectation = ie.createLocationExpectation(CardLocation.DECK);
       await ie.revealCard(topCard);
       if (cardGuess instanceof Card && isACopyOf(cardGuess).matches(topCard)) {
-        await ie.putTopCardOfDeckIntoHand();
+        if (!locationExpectation.isMet(topCard)) {
+          ie.sendLostTrackMessage(topCard);
+        } else {
+          ie.putCardIntoHandFromLocation(topCard, CardLocation.DECK);
+        }
       }
     }
   }

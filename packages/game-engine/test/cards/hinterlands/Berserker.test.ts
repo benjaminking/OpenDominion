@@ -1,10 +1,12 @@
-import { describe, expect, it } from 'vitest';
+import { CardLocation } from '@dominion/common';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Berserker } from '../../../src/cards/hinterlands/Berserker';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -83,9 +85,17 @@ describe('Berserker', () => {
     const { berserker, silver } = setUpGainedBerserkerWithActionInPlay(testHarness);
     const [onGain] = testHarness.getCardEffects(berserker, EffectTriggerType.GAIN);
 
-    expect(onGain.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
+    expect(
+      onGain.areOtherConditionsSatisfied(
+        testHarness.executor,
+        new EffectContextBuilder().withTargetCard(berserker).withGainLocation(CardLocation.DISCARD).build(),
+      ),
+    ).toBe(true);
     testHarness.pickCard(silver);
-    await onGain.doAction(testHarness.executor, berserker);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(berserker).withGainLocation(berserker.getLocation()).build(),
+    );
 
     expect(testHarness.discard.contains(berserker)).toBe(false);
     expect(testHarness.discard.contains(silver)).toBe(true);
@@ -102,7 +112,34 @@ describe('Berserker', () => {
 
     const [onGain] = testHarness.getCardEffects(berserker, EffectTriggerType.GAIN);
 
-    expect(onGain.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
+    expect(
+      onGain.areOtherConditionsSatisfied(
+        testHarness.executor,
+        new EffectContextBuilder().withTargetCard(berserker).withGainLocation(CardLocation.DISCARD).build(),
+      ),
+    ).toBe(false);
+  });
+
+  it('loses track of itself, without playing, once it has moved since it was gained', async () => {
+    const testHarness = createCardHarness();
+    const { berserker } = setUpGainedBerserkerWithActionInPlay(testHarness);
+    const [onGain] = testHarness.getCardEffects(berserker, EffectTriggerType.GAIN);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+
+    const gainedToDiscard = new EffectContextBuilder()
+      .withTargetCard(berserker)
+      .withGainLocation(CardLocation.DISCARD)
+      .withLocationExpectation(testHarness.executor.createLocationExpectation(CardLocation.DISCARD))
+      .build();
+    // e.g. Trader returned it to its pile
+    berserker.setLocation(CardLocation.PILE);
+    expect(onGain.areOtherConditionsSatisfied(testHarness.executor, gainedToDiscard)).toBe(true);
+
+    await onGain.doAction(testHarness.executor, gainedToDiscard);
+
+    expect(lostTrack).toHaveBeenCalledWith(berserker);
+    expect(berserker.getLocation()).toBe(CardLocation.PILE);
+    expect(testHarness.inPlay.contains(berserker)).toBe(false);
   });
 
   it('is in play after playing itself on gain', async () => {
@@ -111,7 +148,10 @@ describe('Berserker', () => {
     const [onGain] = testHarness.getCardEffects(berserker, EffectTriggerType.GAIN);
 
     testHarness.pickCard(silver);
-    await onGain.doAction(testHarness.executor, berserker);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(berserker).withGainLocation(berserker.getLocation()).build(),
+    );
 
     expect(testHarness.inPlay.contains(berserker)).toBe(true);
   });

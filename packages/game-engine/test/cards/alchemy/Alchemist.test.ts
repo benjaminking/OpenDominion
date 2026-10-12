@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Alchemist } from '../../../src/cards/alchemy/Alchemist';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Potion } from '../../../src/cards/basic_cards/Potion';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -38,7 +39,7 @@ describe('Alchemist', () => {
     expect(cleanupEffects[0].isMandatory()).toBe(false);
     expect(cleanupEffects[0].areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
 
-    await cleanupEffects[0].doAction(testHarness.executor, undefined);
+    await cleanupEffects[0].doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.contains(alchemist)).toBe(false);
     expect(testHarness.inPlay.contains(potion)).toBe(true);
@@ -60,7 +61,7 @@ describe('Alchemist', () => {
     expect(cleanupEffect.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
   });
 
-  it('does not offer to topdeck itself once it has left play', async () => {
+  it('is still offered once it has left play, but has lost track of itself and stays where it is', async () => {
     const testHarness = createCardHarness();
     const alchemist = new Alchemist(testHarness.sharedGameState);
     alchemist.setId('alchemist-in-play');
@@ -73,7 +74,13 @@ describe('Alchemist', () => {
     testHarness.inPlay.removeCard(alchemist);
     testHarness.addToDiscard(alchemist);
     const [cleanupEffect] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
 
-    expect(cleanupEffect.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
+    expect(cleanupEffect.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
+    await cleanupEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
+
+    expect(lostTrack).toHaveBeenCalledWith(alchemist);
+    expect(testHarness.discard.contains(alchemist)).toBe(true);
+    expect(testHarness.deck.contains(alchemist)).toBe(false);
   });
 });

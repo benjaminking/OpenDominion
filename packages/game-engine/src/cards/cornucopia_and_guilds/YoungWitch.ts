@@ -15,18 +15,13 @@ import { PileAddingSetupRule } from '../../setup/PileAddingSetupRule';
 import { PileSpecification } from '../../setup/PileSpecification';
 import { exactlyNChecked } from '../../StandardNumberEligibilityFunctions';
 
-let banePileName = '';
+const banePileNames = new WeakMap<SharedGameState, string>();
 class IsBaneCard extends CardEligibilityFunction {
-  public constructor() {
-    super((c: Card) => c.getPileName() === banePileName);
+  public constructor(sharedGameState: SharedGameState) {
+    super((c: Card) => c.getPileName() === banePileNames.get(sharedGameState));
   }
 }
-const isBaneCard = new IsBaneCard();
 
-// Young Witch: +2 Cards, discard 2 cards. Each other player gains a Curse
-// unless they reveal a Bane card from their hand.
-// Setup: Add an extra Kingdom card pile costing $2 or $3 — its cards are Banes.
-// Note: Bane card identification is a stub (no Bane tracking in engine yet).
 export class YoungWitch extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Young Witch'));
@@ -34,7 +29,7 @@ export class YoungWitch extends KingdomCard {
       new PileAddingSetupRule(
         new PileSpecification({ requiredCoinCosts: [2, 3] }, true, true),
         new AddedPilePostAction((pile: Pile) => {
-          banePileName = pile.name;
+          banePileNames.set(sharedGameState, pile.name);
         }),
       ),
     );
@@ -47,7 +42,7 @@ export class YoungWitch extends KingdomCard {
       .chooseCards('Discard 2 cards')
       .from(CardLocation.HAND)
       .to(CardSelectionPurpose.DISCARD)
-      .whereNumCardsIs(exactlyNChecked(2))
+      .whereNumCardsIs(exactlyNChecked(Math.min(2, ie.handSize())))
       .choose();
     await ie.discardCardsFromLocation(toDiscard, CardLocation.HAND);
 
@@ -56,6 +51,7 @@ export class YoungWitch extends KingdomCard {
 
   private async attack(attackedPlayer: Player, _attackingPlayer: Player): Promise<void> {
     const attackedIe: InstructionExecutor = attackedPlayer.getInstructionExecutor();
+    const isBaneCard = new IsBaneCard(this.sharedGameState);
     let revealedBane = false;
     if (attackedIe.hasMatchingCardInHand(isBaneCard)) {
       await attackedIe

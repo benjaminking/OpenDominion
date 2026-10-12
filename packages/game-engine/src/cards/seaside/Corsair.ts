@@ -1,10 +1,10 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -50,8 +50,15 @@ export class Corsair extends KingdomCard {
         .withExpiration(ie.createStartOfPlayersNextTurnEffectExpiration(attackingPlayer))
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor, card: Card) => {
-            await ie.trashCardFromLocation(card, CardLocation.IN_PLAY);
+          new EffectAction(async (ie: InstructionExecutor, effectContext: EffectContext) => {
+            // Under several Corsair attacks, the card is only trashed once
+            const playedCard = effectContext.getTargetCard()!;
+            if (effectContext.getLocationExpectation()?.isMet(playedCard)) {
+              await ie.trashCardFromLocation(playedCard, CardLocation.IN_PLAY);
+            }
+            else {
+              ie.sendLostTrackMessage(playedCard);
+            }
           }),
         )
         .build(),

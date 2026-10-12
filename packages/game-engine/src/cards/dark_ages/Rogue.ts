@@ -5,6 +5,7 @@ import { Card } from '../../card/Card';
 import { CardCollection } from '../../card/CardCollection';
 import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
+import { CardEligibilityFunction } from '../../CardEligibilityFunction';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { Player } from '../../players/Player';
@@ -40,6 +41,7 @@ export class Rogue extends KingdomCard {
     const attackedIe = attackedPlayer.getInstructionExecutor();
 
     const topCards: CardCollection = await attackedIe.takeCardsOffDeck(2);
+    const revealedExpectation = attackedIe.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     await attackedIe.revealCards(topCards);
 
     const eligibleCards: CardCollection = topCards.getMatchingCards(costsBetween(Cost.Simple(3), Cost.Simple(6)));
@@ -51,10 +53,23 @@ export class Rogue extends KingdomCard {
         .to(CardSelectionPurpose.TRASH)
         .choose();
       if (cardToTrash instanceof Card) {
-        await attackedIe.trashCardFromSet(cardToTrash, topCards);
+        if (!revealedExpectation.isMet(cardToTrash)) {
+          topCards.removeCard(cardToTrash);
+          attackedIe.sendLostTrackMessage(cardToTrash);
+        } else {
+          await attackedIe.trashCardFromSet(cardToTrash, topCards);
+        }
       }
     }
 
+    // Trash triggers may have happened since the cards were revealed
+    const lostCards = topCards.getMatchingCards(
+      new CardEligibilityFunction((card: Card) => !revealedExpectation.isMet(card)),
+    );
+    for (const lostCard of lostCards) {
+      attackedIe.sendLostTrackMessage(lostCard);
+    }
+    topCards.removeCards(lostCards);
     await attackedIe.discardCardsFromRevealedSet(topCards);
   }
 }

@@ -16,6 +16,7 @@ import { Cost } from '../../src/card/Cost';
 import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
 import { CardPlayOptions } from '../../src/CardPlayOptions';
 import { Effect } from '../../src/effects/Effect';
+import { EffectContext, EffectContextBuilder } from '../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import {
   EndOfPlayersNextTurnEffectExpiration,
@@ -45,6 +46,8 @@ import {
 } from '../../src/StandardCardEligibilityFunctions';
 import { Turn } from '../../src/turns/Turn';
 import { TurnPhase } from '../../src/turns/TurnPhase';
+import { createTestClock } from '../testClock';
+import { effectContextFor } from '../effectContextMatchers';
 
 class TestCard extends Card {
   public override async play(_instructionExecutor: InstructionExecutor): Promise<void> {
@@ -76,6 +79,7 @@ const createCard = (
   const sharedGameState = {
     cost: vi.fn(() => cost),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   };
 
   const cardInfo: CardInfo = {
@@ -209,9 +213,10 @@ const createHarness = (options: { piles?: Piles } = {}) => {
     piles: currentPiles,
     trash: sharedTrash,
     triggerEffect: vi.fn(
-      async (_trigger: EffectTriggerType, _player: unknown, _cards?: Card | CardCollection): Promise<void> => undefined,
+      async (_trigger: EffectTriggerType, _player: unknown, _effectContext?: EffectContext): Promise<void> => undefined,
     ),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
     // Matches SharedGameState: only the piles and the trash are shared locations.
     isSharedLocation: vi.fn(
       (location: CardLocation) => location === CardLocation.PILE || location === CardLocation.TRASH,
@@ -224,6 +229,7 @@ const createHarness = (options: { piles?: Piles } = {}) => {
     getAllExtraCards: vi.fn(() => sharedExtraCards),
     getCurrentPlayer: vi.fn(() => player),
     getPlayerLeftOfCurrent: vi.fn((): Player => player),
+    getPlayerRightOfCurrent: vi.fn((): Player => player),
     isTurnEligibilitySatisfied: vi.fn(() => true),
     blockCardFromMoving: vi.fn((card: Card) => {
       numBlocksById.set(card.getId(), (numBlocksById.get(card.getId()) ?? 0) + 1);
@@ -414,12 +420,12 @@ describe('InstructionExecutor', () => {
     expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.ABOUT_TO_PLAY_CARD,
       player,
-      expect.any(CardCollection),
+      expect.any(EffectContext),
     );
     expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.PLAYED_CARD,
       player,
-      expect.any(CardCollection),
+      expect.any(EffectContext),
     );
     expect(playSpy).toHaveBeenCalledTimes(1);
 
@@ -558,22 +564,27 @@ describe('InstructionExecutor', () => {
     await executor.eachPlayer(vi.fn(async () => undefined));
     await executor.eachOtherPlayer(vi.fn(async () => undefined));
     await executor.eachPlayerPassesACardToTheLeft();
-    await executor.processEffectsByType(EffectTriggerType.GAIN, attackCard);
+    const gainedAttackCard = new EffectContextBuilder()
+      .withTargetCard(attackCard)
+      .withGainLocation(CardLocation.DISCARD)
+      .build();
+    await executor.processEffectsByType(EffectTriggerType.GAIN, gainedAttackCard);
 
     expect(effects.addEffect).toHaveBeenCalledWith(matchingEffect);
     expect(effects.addExtraTurn).toHaveBeenCalled();
     expect(effects.blockAttack).toHaveBeenCalledWith(attackCard);
     expect(sharedGameState.clearBlocksForAttackCard).toHaveBeenCalledWith(attackCard);
+    // The Attack card itself is passed, so reactions such as Moat can block it
     expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.ATTACK,
       player,
-      expect.any(CardCollection),
+      new EffectContextBuilder().withTargetCard(attackCard).build(),
     );
     expect(sharedGameState.performAttack).toHaveBeenCalledWith(expect.anything(), attackCard, expect.any(Function));
     expect(sharedGameState.executeForEachPlayer).toHaveBeenCalled();
     expect(sharedGameState.executeForEachOtherPlayer).toHaveBeenCalled();
     expect(sharedGameState.eachPlayerPassesACardToTheLeft).toHaveBeenCalled();
-    expect(effectAction).toHaveBeenCalledWith(executor, attackCard);
+    expect(effectAction).toHaveBeenCalledWith(executor, gainedAttackCard);
   });
 
   it('builds eligible choice lists and deck-depth prompts', async () => {
@@ -704,12 +715,12 @@ describe('InstructionExecutor', () => {
       expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
         EffectTriggerType.ABOUT_TO_PLAY_CARD,
         player,
-        CardCollection.fromCards([card]),
+        effectContextFor([card], { expectationMet: true }),
       );
       expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
         EffectTriggerType.PLAYED_CARD,
         player,
-        CardCollection.fromCards([card]),
+        effectContextFor([card], { expectationMet: true }),
       );
     });
 
@@ -769,7 +780,7 @@ describe('InstructionExecutor', () => {
       expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
         EffectTriggerType.PLAYED_CARD,
         player,
-        CardCollection.fromCards([pileCard]),
+        effectContextFor([pileCard]),
       );
     });
 
@@ -912,7 +923,11 @@ describe('InstructionExecutor', () => {
       expect(ownedCards.getDiscard().asCardArray()).toEqual([topSilver, bottomSilver]);
       expect(topSilver.getLocation()).toBe(CardLocation.DISCARD);
       expect(turnTracker.numMatchingCardsGainedThisTurn(cardNameIs('Silver'))).toBe(2);
-      expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.GAIN, player, topSilver);
+      expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
+        EffectTriggerType.GAIN,
+        player,
+        effectContextFor([topSilver], { gainLocation: CardLocation.DISCARD, expectationMet: true }),
+      );
       expect(player.calculateScore).toHaveBeenCalledTimes(2);
     });
 
@@ -987,7 +1002,11 @@ describe('InstructionExecutor', () => {
       expect(ownedCards.getHand().contains(card)).toBe(true);
       expect(card.getLocation()).toBe(CardLocation.HAND);
       expect(turnTracker.hasGainedMatchingCardThisTurn(isTheSameCardAs(card))).toBe(true);
-      expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(EffectTriggerType.GAIN, player, card);
+      expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
+        EffectTriggerType.GAIN,
+        player,
+        effectContextFor([card], { gainLocation: CardLocation.HAND, expectationMet: true }),
+      );
     });
 
     it('does not gain a card that is no longer in the trash', async () => {
@@ -1061,11 +1080,14 @@ describe('InstructionExecutor', () => {
       expect(statistics.getBuys()).toBe(0);
       expect(ownedCards.getDiscard().contains(alchemist)).toBe(true);
       expect(executor.createBoughtCardEligibilityFunction().matches(alchemist)).toBe(true);
+      // "When you buy" abilities happen before the card is gained
       expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
         EffectTriggerType.BUY,
         player,
-        CardCollection.fromCards([alchemist]),
+        new EffectContextBuilder().withTargetCard(alchemist).build(),
       );
+      const triggers = sharedGameState.triggerEffect.mock.calls.map(([trigger]) => trigger);
+      expect(triggers.indexOf(EffectTriggerType.BUY)).toBeLessThan(triggers.indexOf(EffectTriggerType.GAIN));
     });
   });
 
@@ -1120,7 +1142,8 @@ describe('InstructionExecutor', () => {
 
       expect(await executor.chooseOverpayAmount()).toEqual({ coins: 2, potions: 0 });
 
-      expect(offered).toEqual(['$0', '$1', '$2', '$3', "Don't overpay"]);
+      // "$0" isn't an overpay; declining is "Don't overpay"
+      expect(offered).toEqual(['$1', '$2', '$3', "Don't overpay"]);
       expect(statistics.getCoins()).toBe(1);
     });
 
@@ -1133,7 +1156,7 @@ describe('InstructionExecutor', () => {
 
       expect(await executor.chooseOverpayAmount()).toEqual({ coins: 1, potions: 1 });
 
-      expect(offered).toEqual(['$0', '$0P', '$1', '$1P', "Don't overpay"]);
+      expect(offered).toEqual(['$0P', '$1', '$1P', "Don't overpay"]);
       expect(statistics.getCoins()).toBe(0);
       expect(statistics.getPotions()).toBe(0);
     });
@@ -1171,7 +1194,7 @@ describe('InstructionExecutor', () => {
       expect(sharedGameState.triggerEffect).toHaveBeenCalledWith(
         EffectTriggerType.REVEAL,
         player,
-        CardCollection.fromCards([estate]),
+        new EffectContextBuilder().withTargetCard(estate).build(),
       );
     });
 
@@ -1365,10 +1388,15 @@ describe('InstructionExecutor', () => {
       const firstChoice = { type: ChoiceType.Effect, effectName: 'Watchtower', effectId: 'first' };
       const secondChoice = { type: ChoiceType.Effect, effectName: 'Trader', effectId: 'second' };
 
-      await executor.processEffectsByType(EffectTriggerType.GAIN, silver);
+      const gainedSilver = new EffectContextBuilder()
+        .withTargetCard(silver)
+        .withGainLocation(CardLocation.DISCARD)
+        .build();
+
+      await executor.processEffectsByType(EffectTriggerType.GAIN, gainedSilver);
 
       expect(firstEffect.doAction).toHaveBeenCalledTimes(1);
-      expect(firstEffect.doAction).toHaveBeenCalledWith(executor, silver);
+      expect(firstEffect.doAction).toHaveBeenCalledWith(executor, gainedSilver);
       expect(secondEffect.doAction).not.toHaveBeenCalled();
       expect(decisionService.chooseFromMultipleEvents).toHaveBeenNthCalledWith(
         1,
@@ -1396,7 +1424,10 @@ describe('InstructionExecutor', () => {
       });
       effects.getEffectsByType.mockReturnValue([goldOnlyEffect]);
 
-      await executor.processEffectsByType(EffectTriggerType.GAIN, CardCollection.fromCards([silver]));
+      await executor.processEffectsByType(
+        EffectTriggerType.GAIN,
+        new EffectContextBuilder().withTargetCards(CardCollection.fromCards([silver])).build(),
+      );
 
       expect(goldOnlyEffect.doAction).not.toHaveBeenCalled();
       expect(decisionService.chooseFromMultipleEvents).not.toHaveBeenCalled();
@@ -1438,9 +1469,10 @@ describe('InstructionExecutor', () => {
       ownedCards.addCardToHand(secondSilver);
       const firstSilverPlayed = executor.createFirstMatchingCardPlayedThisTurnEligibilityFunction(cardNameIs('Silver'));
       const matchedWhenPlayed: boolean[] = [];
-      sharedGameState.triggerEffect.mockImplementation(async (trigger, _player, cards) => {
-        if (trigger === EffectTriggerType.PLAYED_CARD && cards instanceof CardCollection) {
-          matchedWhenPlayed.push(firstSilverPlayed.matches(cards.getArbitraryCard()));
+      sharedGameState.triggerEffect.mockImplementation(async (trigger, _player, effectContext) => {
+        const playedCard = effectContext?.getTargetCard();
+        if (trigger === EffectTriggerType.PLAYED_CARD && playedCard !== undefined) {
+          matchedWhenPlayed.push(firstSilverPlayed.matches(playedCard));
         }
       });
 
@@ -1450,33 +1482,33 @@ describe('InstructionExecutor', () => {
       expect(matchedWhenPlayed).toEqual([true, false]);
     });
 
-    it('matches cards the player to the left gained on their last completed turn', () => {
+    it('matches cards the player to the right gained on their last completed turn', () => {
       const { executor, sharedGameState } = createHarness();
-      const leftPlayer = { getName: () => 'Bob' } as unknown as Player;
-      const leftTracker = new TurnTracker(new Turn(leftPlayer, 0, 0));
-      leftPlayer.getTurnTracker = () => leftTracker;
-      sharedGameState.getPlayerLeftOfCurrent.mockReturnValue(leftPlayer);
+      const rightPlayer = { getName: () => 'Bob' } as unknown as Player;
+      const rightTracker = new TurnTracker(new Turn(rightPlayer, 0, 0));
+      rightPlayer.getTurnTracker = () => rightTracker;
+      sharedGameState.getPlayerRightOfCurrent.mockReturnValue(rightPlayer);
 
-      leftTracker.startNewStandardTurn();
-      leftTracker.addGainedCard(createCard('Silver', 'silver-gained', CardType.TREASURE));
-      leftTracker.endTurn();
-      leftTracker.startNewStandardTurn();
-      leftTracker.addGainedCard(createCard('Gold', 'gold-gained', CardType.TREASURE));
+      rightTracker.startNewStandardTurn();
+      rightTracker.addGainedCard(createCard('Silver', 'silver-gained', CardType.TREASURE));
+      rightTracker.endTurn();
+      rightTracker.startNewStandardTurn();
+      rightTracker.addGainedCard(createCard('Gold', 'gold-gained', CardType.TREASURE));
 
-      const gainedLastTurn = executor.createPlayerToTheLeftGainedOnTheirLastTurnCardEligibilityFunction();
+      const gainedLastTurn = executor.createPlayerToTheRightGainedOnTheirLastTurnCardEligibilityFunction();
 
       expect(gainedLastTurn.matches(createCard('Silver', 'silver-supply', CardType.TREASURE))).toBe(true);
       expect(gainedLastTurn.matches(createCard('Gold', 'gold-supply', CardType.TREASURE))).toBe(false);
     });
 
-    it('returns noCard when the player to the left has not completed a turn', () => {
+    it('returns noCard when the player to the right has not completed a turn', () => {
       const { executor, sharedGameState } = createHarness();
-      const leftPlayer = { getName: () => 'Bob' } as unknown as Player;
-      const leftTracker = new TurnTracker(new Turn(leftPlayer, 0, 0));
-      leftPlayer.getTurnTracker = () => leftTracker;
-      sharedGameState.getPlayerLeftOfCurrent.mockReturnValue(leftPlayer);
+      const rightPlayer = { getName: () => 'Bob' } as unknown as Player;
+      const rightTracker = new TurnTracker(new Turn(rightPlayer, 0, 0));
+      rightPlayer.getTurnTracker = () => rightTracker;
+      sharedGameState.getPlayerRightOfCurrent.mockReturnValue(rightPlayer);
 
-      expect(executor.createPlayerToTheLeftGainedOnTheirLastTurnCardEligibilityFunction()).toBe(noCard);
+      expect(executor.createPlayerToTheRightGainedOnTheirLastTurnCardEligibilityFunction()).toBe(noCard);
     });
 
     it('matches only cards that have no copy in hand or in play', () => {

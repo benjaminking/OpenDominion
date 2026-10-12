@@ -5,6 +5,7 @@ import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Tiara } from '../../../src/cards/prosperity/Tiara';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -58,7 +59,10 @@ describe('Tiara', () => {
     const gainEffects = testHarness.getAddedEffects(EffectTriggerType.GAIN);
     expect(gainEffects).toHaveLength(1);
     expect(gainEffects[0].isMandatory()).toBe(false);
-    await gainEffects[0].doAction(testHarness.executor, supplySilver);
+    await gainEffects[0].doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(supplySilver).withGainLocation(supplySilver.getLocation()).build(),
+    );
 
     expect(testHarness.discard.size()).toBe(0);
     expect(testHarness.deck.asCardArray().map((card) => card.getId())).toEqual(['copper-deck-0', 'silver-supply-0']);

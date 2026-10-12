@@ -1,5 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
-import { CardSelectionPurpose, Choice } from '@dominion/common';
+import { CardLocation, CardSelectionPurpose, Choice } from '@dominion/common';
 
 import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
@@ -8,6 +8,7 @@ import { ActionChoice } from '../../decisions/ActionChoice';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { isNotCleanup } from '../../effects/StandardEffectConditions';
@@ -55,7 +56,13 @@ export class Weaver extends KingdomCard {
       .choose();
   }
 
-  private async reaction(ie: InstructionExecutor, _target: Card): Promise<void> {
-    await ie.playCardFromLocation(this, this.getLocation());
+  // Once something else has moved it since it was discarded (e.g. a discarded Trail's +1 Card shuffling it into the
+  // deck and drawing it), it has lost track of itself
+  private async reaction(ie: InstructionExecutor, effectContext: EffectContext): Promise<void> {
+    if (!effectContext.getLocationExpectation()!.isMet(this)) {
+      ie.sendLostTrackMessage(this);
+      return;
+    }
+    await ie.playCardFromLocation(this, CardLocation.DISCARD);
   }
 }

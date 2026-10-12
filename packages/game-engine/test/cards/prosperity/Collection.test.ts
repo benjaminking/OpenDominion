@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Village } from '../../../src/cards/base_game/Village';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Collection } from '../../../src/cards/prosperity/Collection';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -30,7 +31,7 @@ describe('Collection', () => {
     expect(gainEffects).toHaveLength(1);
     expect(gainEffects[0].isMandatory()).toBe(true);
     expect(gainEffects[0].getCardEligibility().matches(village)).toBe(true);
-    await gainEffects[0].doAction(testHarness.executor, village);
+    await gainEffects[0].doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(village).withGainLocation(village.getLocation()).build());
 
     expect(testHarness.stats.vp).toBe(1);
   });

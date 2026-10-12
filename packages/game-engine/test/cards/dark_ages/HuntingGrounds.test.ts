@@ -4,6 +4,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Duchy } from '../../../src/cards/basic_cards/Duchy';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { HuntingGrounds } from '../../../src/cards/dark_ages/HuntingGrounds';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -41,7 +42,7 @@ describe('HuntingGrounds', () => {
 
     const [onTrash] = testHarness.getCardEffects(huntingGrounds, EffectTriggerType.TRASH);
     testHarness.pickOption('Gain a Duchy');
-    await onTrash.doAction(testHarness.executor, huntingGrounds);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(huntingGrounds).build());
 
     expect(testHarness.discard.asCardArray()).toEqual([duchy]);
     expect(testHarness.pileCards.get('Estate')).toHaveLength(3);
@@ -58,7 +59,7 @@ describe('HuntingGrounds', () => {
 
     const [onTrash] = testHarness.getCardEffects(huntingGrounds, EffectTriggerType.TRASH);
     testHarness.pickOption('Gain 3 Estates');
-    await onTrash.doAction(testHarness.executor, huntingGrounds);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(huntingGrounds).build());
 
     expect(testHarness.discard.size()).toBe(3);
     expect(testHarness.discard.asCardArray().every((card) => card.getName() === 'Estate')).toBe(true);
@@ -74,7 +75,7 @@ describe('HuntingGrounds', () => {
 
     const [onTrash] = testHarness.getCardEffects(huntingGrounds, EffectTriggerType.TRASH);
     testHarness.pickOption('Gain 3 Estates');
-    await onTrash.doAction(testHarness.executor, huntingGrounds);
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(huntingGrounds).build());
 
     expect(testHarness.discard.size()).toBe(2);
     expect(testHarness.pileCards.get('Estate')).toEqual([]);

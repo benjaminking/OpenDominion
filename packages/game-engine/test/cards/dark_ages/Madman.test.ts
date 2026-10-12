@@ -1,5 +1,5 @@
 import { CardLocation } from '@dominion/common';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Madman } from '../../../src/cards/dark_ages/Madman';
@@ -63,10 +63,13 @@ describe('Madman', () => {
 
   it('gives +2 Actions but draws nothing when played again after it was already returned (e.g. Throne Room)', async () => {
     const { testHarness, madman } = setUp(2, 10);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
 
     await madman.play(testHarness.executor);
+    expect(lostTrack).not.toHaveBeenCalled();
     await madman.play(testHarness.executor);
 
+    expect(lostTrack).toHaveBeenCalledExactlyOnceWith(madman);
     expect(testHarness.stats.actions).toBe(4);
     expect(testHarness.hand.size()).toBe(4);
     expect(testHarness.pileCards.get('Madman')?.map((card) => card.getId())).toEqual(['madman-in-play']);

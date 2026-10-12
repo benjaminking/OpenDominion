@@ -323,7 +323,8 @@ describe('GameInitializer', () => {
     createInitializer([createRandomizer('Joust', { mechanics: [Mechanic.REWARDS] })]);
 
     const rewardsPile = pileNamed(gameState.piles.addNonSupplyPile, 'Rewards');
-    expect(rewardsPile?.size()).toBe(12);
+    // One of each Reward in a 2-player game
+    expect(rewardsPile?.size()).toBe(6);
     expect(rewardsPile?.getCategories()).toEqual(new Set([PileCategory.NON_SUPPLY]));
     expect(pileNamed(gameState.piles.addKingdomPile, 'Rewards')).toBeUndefined();
     expect(pileNamed(gameState.piles.addNonKingdomSupplyPile, 'Rewards')).toBeUndefined();

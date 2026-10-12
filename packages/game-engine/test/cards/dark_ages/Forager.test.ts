@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
+import { Curse } from '../../../src/cards/basic_cards/Curse';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
+import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
+import { Counterfeit } from '../../../src/cards/dark_ages/Counterfeit';
 import { Forager } from '../../../src/cards/dark_ages/Forager';
+import { Spoils } from '../../../src/cards/dark_ages/Spoils';
 import { createCardHarness } from '../testHarness';
 
 describe('Forager', () => {
@@ -55,5 +59,32 @@ describe('Forager', () => {
     expect(testHarness.stats.actions).toBe(1);
     expect(testHarness.stats.buys).toBe(1);
     expect(testHarness.stats.coins).toBe(0);
+  });
+
+  it('counts each differently named Treasure once, including non-Supply Treasures and the one it trashes', async () => {
+    const testHarness = createCardHarness();
+    const trashedCards = [
+      new Copper(testHarness.sharedGameState),
+      new Copper(testHarness.sharedGameState),
+      new Silver(testHarness.sharedGameState),
+      new Silver(testHarness.sharedGameState),
+      new Spoils(testHarness.sharedGameState),
+      new Counterfeit(testHarness.sharedGameState),
+      new Estate(testHarness.sharedGameState),
+      new Curse(testHarness.sharedGameState),
+    ];
+    trashedCards.forEach((card, cardIndex) => {
+      card.setId(`trash-${String(cardIndex)}`);
+    });
+    testHarness.sharedTrash.addCards(trashedCards);
+    const handGold = new Gold(testHarness.sharedGameState);
+    handGold.setId('gold-hand-0');
+    testHarness.addToHand(handGold);
+
+    testHarness.pickCard(handGold);
+    await new Forager(testHarness.sharedGameState).play(testHarness.executor);
+
+    // Copper, Silver, Spoils, Counterfeit and Gold
+    expect(testHarness.stats.coins).toBe(5);
   });
 });

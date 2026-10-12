@@ -6,42 +6,30 @@ import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { addOverpayEffects } from '../../effects/OverpayEffects';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { isTheSameCardAs } from '../../StandardCardEligibilityFunctions';
 
 export class Farrier extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Farrier'));
-    this.addEffect(
-      new Effect.Builder()
-        .from(this)
-        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-        .whereCardIs(isTheSameCardAs(this))
-        .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
-            if (overpayAmount === undefined) {
-              return;
-            }
-            ie.addEffect(
-              new Effect.Builder()
-                .from(this)
-                .triggerOn(EffectTriggerType.TURN_END, EffectSource.SELF)
-                .onTurn(ie.createThisTurnEligibilityFunction())
-                .withExpiration(ie.createOnceThisTurnEffectExpiration())
-                .makeMandatory()
-                .action(
-                  new EffectAction(async (nestedIe: InstructionExecutor) => {
-                    await nestedIe.drawCards(overpayAmount.coins);
-                  }),
-                )
-                .build(),
-            );
-          }),
-        )
-        .build(),
-    );
+    addOverpayEffects(this, async (ie: InstructionExecutor, overpayAmount: MoneyAmount) => {
+      ie.addEffect(
+        new Effect.Builder()
+          .from(this)
+          .triggerOn(EffectTriggerType.TURN_END, EffectSource.SELF)
+          .onTurn(ie.createThisTurnEligibilityFunction())
+          .withExpiration(ie.createOnceThisTurnEffectExpiration())
+          .makeMandatory()
+          .action(
+            new EffectAction(async (nestedIe: InstructionExecutor) => {
+              await nestedIe.drawCards(overpayAmount.coins);
+            }),
+          )
+          .build(),
+      );
+      return Promise.resolve();
+    });
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {

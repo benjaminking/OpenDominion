@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
@@ -19,6 +20,8 @@ export class Ironmonger extends KingdomCard {
     if (topCard === undefined) {
       return;
     }
+    // Revealing fires triggers, so the revealed card might not be on the deck any more when it is discarded
+    const locationExpectation = ie.createLocationExpectation(CardLocation.DECK);
 
     await ie.revealCard(topCard);
 
@@ -26,7 +29,11 @@ export class Ironmonger extends KingdomCard {
       .chooseOneOption('Do you want to discard ' + topCard.getName() + '?')
       .from(
         new ActionChoice('Yes, discard it', async () => {
-          await ie.discardTopCardOfDeck();
+          if (!locationExpectation.isMet(topCard)) {
+            ie.sendLostTrackMessage(topCard);
+            return;
+          }
+          await ie.discardCardFromLocation(topCard, CardLocation.DECK);
         }),
       )
       // eslint-disable-next-line @typescript-eslint/no-empty-function

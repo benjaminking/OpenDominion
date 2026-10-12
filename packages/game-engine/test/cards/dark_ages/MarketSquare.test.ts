@@ -4,6 +4,7 @@ import { CardCollection } from '../../../src/card/CardCollection';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { MarketSquare } from '../../../src/cards/dark_ages/MarketSquare';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -42,7 +43,10 @@ describe('MarketSquare', () => {
 
     expect(onTrash.isMandatory()).toBe(false);
     expect(onTrash.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([trashedCopper]));
+    await onTrash.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCards(CardCollection.fromCards([trashedCopper])).build(),
+    );
 
     expect(testHarness.hand.size()).toBe(0);
     expect(idsOf(testHarness.discard)).toEqual(['market-square-0', 'gold-supply-0']);
@@ -54,7 +58,10 @@ describe('MarketSquare', () => {
     testHarness.addSupplyPile(gold);
 
     expect(onTrash.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([trashedCopper]));
+    await onTrash.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCards(CardCollection.fromCards([trashedCopper])).build(),
+    );
 
     expect(idsOf(testHarness.inPlay)).toEqual(['market-square-0']);
     expect(testHarness.discard.size()).toBe(0);
@@ -66,7 +73,10 @@ describe('MarketSquare', () => {
     // Register the pile only under its real name, as Piles does in a real game.
     testHarness.pileCards.set('Gold', [gold]);
 
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([trashedCopper]));
+    await onTrash.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCards(CardCollection.fromCards([trashedCopper])).build(),
+    );
 
     expect(idsOf(testHarness.discard)).toEqual(['market-square-0', 'gold-supply-0']);
   });

@@ -5,6 +5,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Farmhands } from '../../../src/cards/cornucopia_and_guilds/Farmhands';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { NextTurnEligibility } from '../../../src/effects/StandardTurnEligibilityFunctions';
 import { createCardHarness } from '../testHarness';
@@ -32,7 +33,7 @@ describe('Farmhands', () => {
 
     testHarness.pickCard(silver);
     const [gainEffect] = testHarness.getCardEffects(farmhands, EffectTriggerType.GAIN);
-    await gainEffect.doAction(testHarness.executor, farmhands);
+    await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farmhands).withGainLocation(farmhands.getLocation()).build());
 
     expect(testHarness.hand.size()).toBe(0);
     expect(silver.getLocation()).toBe(CardLocation.SET_ASIDE);
@@ -40,7 +41,7 @@ describe('Farmhands', () => {
     expect(turnStartEffect.getTurnEligibility()).toBeInstanceOf(NextTurnEligibility);
     expect(turnStartEffect.isMandatory()).toBe(true);
 
-    await turnStartEffect.doAction(testHarness.executor, undefined);
+    await turnStartEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.stats.coins).toBe(2);
   });
@@ -55,9 +56,9 @@ describe('Farmhands', () => {
 
     testHarness.pickCard(silver);
     const [gainEffect] = testHarness.getCardEffects(farmhands, EffectTriggerType.GAIN);
-    await gainEffect.doAction(testHarness.executor, farmhands);
+    await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farmhands).withGainLocation(farmhands.getLocation()).build());
     const [turnStartEffect] = testHarness.getAddedEffects(EffectTriggerType.TURN_START);
-    await turnStartEffect.doAction(testHarness.executor, undefined);
+    await turnStartEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.asCardArray()).toEqual([silver]);
   });
@@ -71,7 +72,7 @@ describe('Farmhands', () => {
     testHarness.addToHand(silver);
 
     const [gainEffect] = testHarness.getCardEffects(farmhands, EffectTriggerType.GAIN);
-    await gainEffect.doAction(testHarness.executor, farmhands);
+    await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farmhands).withGainLocation(farmhands.getLocation()).build());
 
     expect(testHarness.hand.asCardArray()).toEqual([silver]);
     expect(testHarness.getAddedEffects()).toHaveLength(0);
@@ -87,7 +88,7 @@ describe('Farmhands', () => {
 
     testHarness.pickCard(estate);
     const [gainEffect] = testHarness.getCardEffects(farmhands, EffectTriggerType.GAIN);
-    await gainEffect.doAction(testHarness.executor, farmhands);
+    await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farmhands).withGainLocation(farmhands.getLocation()).build());
 
     expect(testHarness.hand.asCardArray()).toEqual([estate]);
     expect(testHarness.getAddedEffects()).toHaveLength(0);

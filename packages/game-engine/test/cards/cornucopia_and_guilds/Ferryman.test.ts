@@ -6,6 +6,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Ferryman } from '../../../src/cards/cornucopia_and_guilds/Ferryman';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { Pile } from '../../../src/piles/Pile';
 import { GameInitializer } from '../../../src/setup/GameInitializer';
@@ -19,7 +20,10 @@ const createGameInitializer = (addedPileName: string) => {
 
 // Fires the GAIN effects for the gained card, as the engine does after a gain.
 const fireGainTrigger = async (testHarness: CardHarness, gainedCard: Card): Promise<void> => {
-  await testHarness.executor.processEffectsByType(EffectTriggerType.GAIN, gainedCard);
+  await testHarness.executor.processEffectsByType(
+    EffectTriggerType.GAIN,
+    new EffectContextBuilder().withTargetCard(gainedCard).withGainLocation(gainedCard.getLocation()).build(),
+  );
 };
 
 describe('Ferryman', () => {

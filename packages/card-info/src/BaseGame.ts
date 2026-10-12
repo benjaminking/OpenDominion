@@ -45,7 +45,7 @@ export const base_game: CardInfo[] = [
     cost: {
       coins: 2,
     },
-    types: [CardType.ACTION, CardType.ATTACK],
+    types: [CardType.ACTION],
     expansion: Expansion.BASE,
     has_randomizer: true,
   },

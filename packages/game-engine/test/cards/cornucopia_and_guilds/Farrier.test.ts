@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Farrier } from '../../../src/cards/cornucopia_and_guilds/Farrier';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -32,14 +33,18 @@ describe('Farrier', () => {
 
     testHarness.pickOption('$2');
     const [buyEffect] = testHarness.getCardEffects(farrier, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, farrier);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farrier).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(farrier, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farrier).withGainLocation(farrier.getLocation()).build());
+    }
 
     expect(testHarness.stats.coins).toBe(1);
     expect(testHarness.hand.size()).toBe(0);
 
     const [turnEndEffect] = testHarness.getAddedEffects(EffectTriggerType.TURN_END);
     expect(turnEndEffect.isMandatory()).toBe(true);
-    await turnEndEffect.doAction(testHarness.executor, undefined);
+    await turnEndEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.hand.size()).toBe(2);
     expect(testHarness.deck.size()).toBe(1);
@@ -53,7 +58,11 @@ describe('Farrier', () => {
 
     testHarness.pickOption("Don't overpay");
     const [buyEffect] = testHarness.getCardEffects(farrier, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, farrier);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farrier).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(farrier, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farrier).withGainLocation(farrier.getLocation()).build());
+    }
 
     expect(testHarness.stats.coins).toBe(3);
     expect(testHarness.getAddedEffects()).toHaveLength(0);
@@ -74,9 +83,13 @@ describe('Farrier', () => {
 
     testHarness.pickOption('$1');
     const [buyEffect] = testHarness.getCardEffects(farrier, EffectTriggerType.BUY);
-    await buyEffect.doAction(testHarness.executor, farrier);
+    await buyEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farrier).build());
+    // The overpay ability resolves when the card is gained
+    for (const gainEffect of testHarness.getCardEffects(farrier, EffectTriggerType.GAIN)) {
+      await gainEffect.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(farrier).withGainLocation(farrier.getLocation()).build());
+    }
     const [turnEndEffect] = testHarness.getAddedEffects(EffectTriggerType.TURN_END);
-    await turnEndEffect.doAction(testHarness.executor, undefined);
+    await turnEndEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
     turnEndEffect.registerEndOfPlayersTurn(testHarness.player, currentTurn);
 
     const appliesOnNextTurn =

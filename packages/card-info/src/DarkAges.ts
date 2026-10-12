@@ -695,7 +695,7 @@ export const darkAges: CardInfo[] = [
   {
     name: 'Knights',
     category: CardCategory.RANDOMIZER_ONLY,
-    text: 'Shuffle the Knights pile\nbefore each game with the\nKnights. Keep it face down\nexcept for the tope card, which\nis the only one that can be\nbought or gained',
+    text: 'Shuffle the Knights pile\nbefore each game with the\nKnights. Keep it face down\nexcept for the top card, which\nis the only one that can be\nbought or gained',
     font_size: 'medium',
     cost: {
       coins: 5,

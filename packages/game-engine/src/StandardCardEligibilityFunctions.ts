@@ -5,6 +5,7 @@ import { CardCollection } from './card/CardCollection';
 import { Cost } from './card/Cost';
 import { KingdomCard } from './card/KingdomCard';
 import { CardEligibilityFunction } from './CardEligibilityFunction';
+import { Player } from './players/Player';
 
 class AnyCard extends CardEligibilityFunction {
   public constructor() {
@@ -270,6 +271,26 @@ const isInLocation = function (location: CardLocation) {
   return new IsInLocation(location);
 };
 
+class HasOwner extends CardEligibilityFunction {
+  public constructor(owner: Player) {
+    super((c: Card) => c.hasOwner(owner));
+  }
+}
+
+const hasOwner = function (owner: Player) {
+  return new HasOwner(owner);
+};
+
+class HasPreviousOwner extends CardEligibilityFunction {
+  public constructor(previousOwner: Player) {
+    super((c: Card) => c.hasPreviousOwner(previousOwner));
+  }
+}
+
+const hasPreviousOwner = function (previousOwner: Player) {
+  return new HasPreviousOwner(previousOwner);
+};
+
 class CanBeDiscardedInCleanup extends CardEligibilityFunction {
   public constructor() {
     super((c: Card) => c.canBeDiscardedInCleanup());
@@ -295,6 +316,8 @@ export {
   costsUpTo,
   costsUpToNMoreThanCard,
   either,
+  hasOwner,
+  hasPreviousOwner,
   isACopyOf,
   isActionCard,
   isAttackCard,

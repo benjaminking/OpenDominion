@@ -3,11 +3,13 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { CardFactory } from '../../src/card/CardFactory';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
+import { createTestClock } from '../testClock';
 
 const createSharedGameStateMock = () => {
   return {
     cost: vi.fn((card) => card.getOriginalCost()),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
 };
 

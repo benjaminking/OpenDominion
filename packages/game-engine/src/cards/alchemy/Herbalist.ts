@@ -5,11 +5,12 @@ import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectCondition } from '../../effects/EffectCondition';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import { isTreasureCard } from '../../StandardCardEligibilityFunctions';
+import { both, canBeDiscardedInCleanup, isTreasureCard } from '../../StandardCardEligibilityFunctions';
 
 export class Herbalist extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
@@ -26,13 +27,19 @@ export class Herbalist extends KingdomCard {
         .triggerOn(EffectTriggerType.CLEANUP_START, EffectSource.SELF)
         .onTurn(ie.createThisTurnEligibilityFunction())
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
+        // Only offered when there's a Treasure in play that it could put onto the deck
+        .addCondition(
+          new EffectCondition((effectIe: InstructionExecutor) =>
+            effectIe.hasMatchingCardInPlay(both(isTreasureCard, canBeDiscardedInCleanup)),
+          ),
+        )
         .action(
           new EffectAction(async (effectIe: InstructionExecutor) => {
             const treasureToTopDeck: Card | Choice = await effectIe
               .chooseCard('You may put a Treasure from play onto your deck')
               .from(CardLocation.IN_PLAY)
               .to(CardSelectionPurpose.TOPDECK)
-              .whereCardIs(isTreasureCard)
+              .whereCardIs(both(isTreasureCard, canBeDiscardedInCleanup))
               .allowNoneOption()
               .choose();
 

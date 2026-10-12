@@ -6,6 +6,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Farmland } from '../../../src/cards/hinterlands/Farmland';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -39,7 +40,10 @@ describe('Farmland', () => {
 
     testHarness.pickCard(estate);
     testHarness.pickCard(smithy);
-    await onGain.doAction(testHarness.executor, farmland);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(farmland).withGainLocation(farmland.getLocation()).build(),
+    );
 
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.sharedTrash.contains(estate)).toBe(true);
@@ -60,7 +64,10 @@ describe('Farmland', () => {
 
     testHarness.pickCard(smithy);
     testHarness.pickCard(gold);
-    await onGain.doAction(testHarness.executor, farmland);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(farmland).withGainLocation(farmland.getLocation()).build(),
+    );
 
     expect(testHarness.discard.contains(gold)).toBe(true);
   });
@@ -81,7 +88,10 @@ describe('Farmland', () => {
 
     testHarness.pickCard(smithy);
     testHarness.pickCard(supplyFarmland);
-    await onGain.doAction(testHarness.executor, farmland);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(farmland).withGainLocation(farmland.getLocation()).build(),
+    );
 
     expect(testHarness.sharedTrash.contains(smithy)).toBe(true);
     expect(testHarness.discard.size()).toBe(1);
@@ -92,7 +102,10 @@ describe('Farmland', () => {
     const farmland = addGainedFarmland(testHarness);
     const [onGain] = testHarness.getCardEffects(farmland, EffectTriggerType.GAIN);
 
-    await onGain.doAction(testHarness.executor, farmland);
+    await onGain.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(farmland).withGainLocation(farmland.getLocation()).build(),
+    );
 
     expect(testHarness.sharedTrash.size()).toBe(0);
     expect(testHarness.discard.size()).toBe(1);

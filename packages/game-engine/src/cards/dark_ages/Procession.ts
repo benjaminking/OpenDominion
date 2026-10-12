@@ -32,11 +32,16 @@ export class Procession extends KingdomCard {
       return;
     }
 
-    await ie.playCardFromHandNTimes(cardToPlay, 2);
-    await ie.trashCardFromLocation(cardToPlay, CardLocation.IN_PLAY);
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+    await ie.playCardFromHandNTimes(cardToPlay, 2, this);
+    if (locationExpectation.isMet(cardToPlay)) {
+      await ie.trashCardFromLocation(cardToPlay, CardLocation.IN_PLAY);
+    } else {
+      ie.sendLostTrackMessage(cardToPlay);
+    }
 
     const cardToGain: Card | Choice = await ie
-      .chooseCard('Gain an Action card costing exactly $' + cardToPlay.getCost().toString())
+      .chooseCard('Gain an Action card costing exactly ' + cardToPlay.getCost().plus(1).toString())
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(both(isActionCard, costsExactlyNMoreThanCard(cardToPlay, 1)))

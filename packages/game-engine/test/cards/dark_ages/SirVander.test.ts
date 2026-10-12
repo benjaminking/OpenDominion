@@ -5,6 +5,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { SirVander } from '../../../src/cards/dark_ages/SirVander';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -42,7 +43,7 @@ describe('SirVander', () => {
 
     const [onTrash] = testHarness.getCardEffects(sirVander, EffectTriggerType.TRASH);
     expect(onTrash.isMandatory()).toBe(true);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([sirVander]));
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCards(CardCollection.fromCards([sirVander])).build());
 
     expect(testHarness.discard.asCardArray().map((card) => card.getId())).toEqual(['gold-supply-0']);
   });
@@ -71,7 +72,7 @@ describe('SirVander', () => {
     testHarness.pileCards.set('Gold', [gold]);
 
     const [onTrash] = testHarness.getCardEffects(sirVander, EffectTriggerType.TRASH);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([sirVander]));
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCards(CardCollection.fromCards([sirVander])).build());
 
     expect(testHarness.discard.asCardArray().map((card) => card.getId())).toEqual(['gold-supply-0']);
   });

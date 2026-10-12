@@ -1,9 +1,9 @@
 import { CardInfoLookup } from '@dominion/card-info';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -25,7 +25,7 @@ export class Lighthouse extends KingdomCard {
         .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction(async (ie: InstructionExecutor, _targetCard: Card) => {
+          new EffectAction(async (ie: InstructionExecutor) => {
             await ie.addCoins(1);
             this.markAsFinished();
           }),
@@ -39,8 +39,8 @@ export class Lighthouse extends KingdomCard {
         .withExpiration(ie.createStartOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction((ie: InstructionExecutor, attackCard: Card) => {
-            ie.blockAttack(attackCard);
+          new EffectAction((ie: InstructionExecutor, effectContext: EffectContext) => {
+            ie.blockAttack(effectContext.getTargetCard()!);
           }),
         )
         .build(),

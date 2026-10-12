@@ -5,40 +5,19 @@ import { Card } from '../../card/Card';
 import { Cost } from '../../card/Cost';
 import { KingdomCard } from '../../card/KingdomCard';
 import { CardSelectionLocation } from '../../decisions/CardSelectionLocation';
-import { Effect } from '../../effects/Effect';
-import { EffectAction } from '../../effects/EffectAction';
-import { EffectSource } from '../../effects/EffectSource';
-import { EffectTriggerType } from '../../effects/EffectTriggerType';
+import { addOverpayEffects } from '../../effects/OverpayEffects';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
-import {
-  both,
-  costsExactly,
-  costsLessThanCard,
-  isActionCard,
-  isTheSameCardAs,
-} from '../../StandardCardEligibilityFunctions';
+import { both, costsExactly, costsLessThanCard, isActionCard } from '../../StandardCardEligibilityFunctions';
 
 export class Stonemason extends KingdomCard {
   constructor(sharedGameState: SharedGameState) {
     super(sharedGameState, CardInfoLookup.lookUpCardInfo('Stonemason'));
 
-    this.addEffect(
-      new Effect.Builder()
-        .from(this)
-        .triggerOn(EffectTriggerType.BUY, EffectSource.SELF)
-        .whereCardIs(isTheSameCardAs(this))
-        .action(
-          new EffectAction(async (ie: InstructionExecutor) => {
-            const overpayAmount: MoneyAmount | undefined = await ie.chooseOverpayAmount();
-            if (overpayAmount !== undefined) {
-              await this.gainActionFromOverpay(ie, overpayAmount);
-              await this.gainActionFromOverpay(ie, overpayAmount);
-            }
-          }),
-        )
-        .build(),
-    );
+    addOverpayEffects(this, async (ie: InstructionExecutor, overpayAmount: MoneyAmount) => {
+      await this.gainActionFromOverpay(ie, overpayAmount);
+      await this.gainActionFromOverpay(ie, overpayAmount);
+    });
   }
 
   private async gainActionFromOverpay(ie: InstructionExecutor, overpayAmount: MoneyAmount): Promise<void> {
@@ -77,7 +56,7 @@ export class Stonemason extends KingdomCard {
 
   private async gainCheaperCard(ie: InstructionExecutor, trashedCard: Card): Promise<void> {
     const card: Card | Choice = await ie
-      .chooseCard('Gain a card costing less than $' + trashedCard.getCost().toString())
+      .chooseCard('Gain a card costing less than ' + trashedCard.getCost().toString())
       .from(CardSelectionLocation.SUPPLY)
       .to(CardSelectionPurpose.GAIN)
       .whereCardIs(costsLessThanCard(trashedCard))

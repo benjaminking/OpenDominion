@@ -42,7 +42,6 @@ export class Catacombs extends KingdomCard {
 
   public async play(ie: InstructionExecutor): Promise<void> {
     const topCards: CardCollection = await ie.takeCardsOffDeck(3);
-    await ie.revealCards(topCards);
 
     await ie
       .chooseOneOption('Choose one:')

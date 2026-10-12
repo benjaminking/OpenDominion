@@ -4,6 +4,7 @@ import { CardLocation } from '@dominion/common';
 import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { ActionChoice } from '../../decisions/ActionChoice';
+import { LocationExpectation } from '../../game-state/LocationExpectation';
 import { SharedGameState } from '../../game-state/SharedGameState';
 import { InstructionExecutor } from '../../players/InstructionExecutor';
 import { isActionCard } from '../../StandardCardEligibilityFunctions';
@@ -19,23 +20,29 @@ export class Vassal extends KingdomCard {
     if (card === undefined) {
       return;
     }
-    await ie.discardCard(card);
+    // Created after taking the card (taking it can shuffle the discard pile) and before discarding it, so a
+    // "when discarded" ability moving it away from the discard pile (e.g. Weaver or Trail playing itself) breaks it
+    const locationExpectation = ie.createLocationExpectation(CardLocation.DISCARD);
+    await ie.discardCardFromLocation(card, CardLocation.REVEAL_LIMBO);
 
     if (isActionCard.matches(card)) {
       await ie
         .chooseOneOption('Do you want to play ' + card.getName() + '?')
-        .from(new ActionChoice('Yes', () => this.playDiscardedCard(ie, card)))
+        .from(new ActionChoice('Yes', () => this.playDiscardedCard(ie, card, locationExpectation)))
         .from(new ActionChoice('No'))
         .choose();
     }
   }
 
-  private playDiscardedCard(ie: InstructionExecutor, card: Card): Promise<void> {
-    if (card.getLocation() === CardLocation.DISCARD) {
-      return ie.playCardFromLocation(card, CardLocation.DISCARD);
-    } else {
-      // lost track
-      return Promise.resolve();
+  private async playDiscardedCard(
+    ie: InstructionExecutor,
+    card: Card,
+    locationExpectation: LocationExpectation,
+  ): Promise<void> {
+    if (!locationExpectation.isMet(card)) {
+      ie.sendLostTrackMessage(card);
+      return;
     }
+    await ie.playCardFromLocation(card, CardLocation.DISCARD);
   }
 }

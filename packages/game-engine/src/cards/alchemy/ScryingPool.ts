@@ -22,6 +22,7 @@ export class ScryingPool extends KingdomCard {
     await ie.performAttack(this, this.attack.bind(this));
 
     // Reveal until a non-Action, then put all revealed cards (including the non-Action) into hand
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     const revealedCards: CardCollection = new CardCollection();
     let revealedCard: Card | undefined;
     do {
@@ -32,7 +33,13 @@ export class ScryingPool extends KingdomCard {
       await ie.revealCard(revealedCard);
       revealedCards.addCard(revealedCard);
     } while (isActionCard.matches(revealedCard));
-    ie.putCardsIntoHandFromLocation(revealedCards, CardLocation.REVEAL_LIMBO);
+    for (const card of revealedCards) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+      } else {
+        ie.putCardIntoHandFromLocation(card, CardLocation.REVEAL_LIMBO);
+      }
+    }
   }
 
   public async attack(attackedPlayer: Player, attackingPlayer: Player): Promise<void> {
@@ -45,12 +52,18 @@ export class ScryingPool extends KingdomCard {
     if (topCard === undefined) {
       return;
     }
+    const locationExpectation = targetIe.createLocationExpectation(CardLocation.DECK);
 
     await targetIe.revealCard(topCard);
     await chooserIe
       .chooseOneOption('Choose what happens to ' + targetPlayer.getName() + "'s " + topCard.getName())
       .from(
         new ActionChoice('Discard it', async () => {
+          // "When you reveal" abilities have resolved in between
+          if (!locationExpectation.isMet(topCard)) {
+            targetIe.sendLostTrackMessage(topCard);
+            return;
+          }
           await targetIe.discardCardFromLocation(topCard, CardLocation.DECK);
         }),
       )

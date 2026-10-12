@@ -24,6 +24,10 @@ export class Vault extends KingdomCard {
     await ie.addCoins(discardedCards.size());
 
     await ie.eachOtherPlayer(async (otherIe: InstructionExecutor) => {
+      // A player with no cards in hand has nothing to decide
+      if (otherIe.handSize() === 0) {
+        return;
+      }
       // A player with only 1 card in hand may discard it, but doesn't draw
       const numToDiscard = Math.min(2, otherIe.handSize());
       const otherDiscards: CardCollection = await otherIe

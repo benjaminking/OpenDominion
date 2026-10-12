@@ -7,6 +7,7 @@ import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { PileFactory } from '../../src/piles/PileFactory';
 import { SpecialPileLookup, SpecialPileType } from '../../src/piles/SpecialPiles';
+import { createTestClock } from '../testClock';
 
 const rewardNames = ['Coronet', 'Courser', 'Demesne', 'Housecarl', 'Huge Turnip', 'Renown'];
 const knightNames = [
@@ -38,6 +39,7 @@ const createPileFactory = (numPlayers: number) =>
     {
       cost: vi.fn((card: Card) => card.getOriginalCost()),
       registerEffectTrigger: vi.fn(),
+      ...createTestClock(),
       getNumPlayers: () => numPlayers,
     } as unknown as SharedGameState,
     { sendPileMetadata: vi.fn(), updateSharedCards: vi.fn() } as unknown as GameMessageBroadcaster,
@@ -125,13 +127,18 @@ describe('SpecialPileLookup', () => {
 describe('special piles created by PileFactory', () => {
   const lookup = new SpecialPileLookup();
 
-  it('creates a 12-card Rewards pile whose cards all belong to the Rewards pile', () => {
-    for (const numPlayers of [2, 4]) {
+  it('creates a Rewards pile with one of each Reward for 2 players and two of each for more', () => {
+    for (const [numPlayers, copies] of [
+      [2, 1],
+      [4, 2],
+    ]) {
       const pile = createPileFactory(numPlayers).createSpecialPile(lookup.lookUpSpecialPile(SpecialPileType.REWARDS));
 
       expect(pile.name).toBe('Rewards');
-      expect(pile.size()).toBe(12);
-      expect(countByName(pile.toCardNameArray())).toEqual(Object.fromEntries(rewardNames.map((name) => [name, 2])));
+      expect(pile.size()).toBe(6 * copies);
+      expect(countByName(pile.toCardNameArray())).toEqual(
+        Object.fromEntries(rewardNames.map((name) => [name, copies])),
+      );
       expect(pile.asCardArray().every((card) => card.getPileName() === 'Rewards')).toBe(true);
       expect(pile.getCategories()).toEqual(new Set([PileCategory.NON_SUPPLY]));
     }

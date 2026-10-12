@@ -33,6 +33,7 @@ export class Joust extends KingdomCard {
       .choose();
 
     if (province instanceof Card) {
+      const locationExpectation = ie.createLocationExpectation(CardLocation.SET_ASIDE);
       await ie.setCardAsideFromLocation(province, CardLocation.HAND);
       await ie.chooseRewardToGain(CardLocation.HAND);
       ie.addEffect(
@@ -42,9 +43,13 @@ export class Joust extends KingdomCard {
           .withExpiration(new OneTimeEffectExpirtation())
           .makeMandatory()
           .action(
-            new EffectAction(async (ie: InstructionExecutor) =>
-              ie.discardCardFromLocation(province, CardLocation.SET_ASIDE),
-            ),
+            new EffectAction(async (ie: InstructionExecutor) => {
+              if (!locationExpectation.isMet(province)) {
+                ie.sendLostTrackMessage(province);
+                return;
+              }
+              await ie.discardCardFromLocation(province, CardLocation.SET_ASIDE);
+            }),
           )
           .build(),
       );

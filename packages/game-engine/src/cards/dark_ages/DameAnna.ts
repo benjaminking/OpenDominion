@@ -14,6 +14,7 @@ export class DameAnna extends Knights {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    const selfExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     // Trash up to 2 cards from your hand
     const cardsToTrash: CardCollection = await ie
       .chooseCards('Trash up to 2 cards from your hand')
@@ -24,6 +25,6 @@ export class DameAnna extends Knights {
       .choose();
     await ie.trashCardsFromLocation(cardsToTrash, CardLocation.HAND);
 
-    await ie.performAttack(this, this.knightAttack.bind(this));
+    await this.performKnightAttack(ie, selfExpectation);
   }
 }

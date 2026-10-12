@@ -18,9 +18,13 @@ import { CardCollection } from '../../src/card/CardCollection';
 import { Cost } from '../../src/card/Cost';
 import { PrivacyType } from '../../src/card/PrivacyType';
 import { CardEligibilityFunction } from '../../src/CardEligibilityFunction';
+import { LocationExpectation } from '../../src/game-state/LocationExpectation';
+import { EffectContext, EffectContextBuilder } from '../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { PlayerCards } from '../../src/players/PlayerCards';
+import { createTestClock } from '../testClock';
+import { effectContextFor } from '../effectContextMatchers';
 
 class TestCard extends Card {
   public setCoinsForTest(value: number): void {
@@ -36,6 +40,7 @@ const createCard = (name: string, id: string, type: CardType = CardType.ACTION):
   const state = {
     cost: vi.fn(() => Cost.Simple(0)),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
 
   const cardInfo: CardInfo = {
@@ -76,10 +81,15 @@ const createPlayerCards = () => {
     getLogger: () => logger,
     getGameState: () => gameState,
   };
+  const clock = createTestClock();
   const player = {
     getGame: () => game,
     getBotStatistics: () => botStatistics,
     getStatistics: () => statistics,
+    getInstructionExecutor: () => ({
+      createLocationExpectation: (location: CardLocation) =>
+        new LocationExpectation(location, clock.getCurrentTimeStamp()),
+    }),
   };
 
   const cards = new PlayerCards(player as never);
@@ -213,7 +223,7 @@ describe('PlayerCards', () => {
     expect(gameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.DISCARD,
       expect.anything(),
-      expect.any(CardCollection),
+      effectContextFor([handCard], { expectationMet: true }),
     );
     expect(logger.gameMessage).toHaveBeenCalledTimes(2);
   });
@@ -363,7 +373,7 @@ describe('PlayerCards', () => {
     expect(gameState.triggerEffect).toHaveBeenCalledWith(
       EffectTriggerType.DISCARD,
       player,
-      CardCollection.fromCards([top]),
+      effectContextFor([top], { expectationMet: true }),
     );
   });
 
@@ -430,5 +440,89 @@ describe('PlayerCards', () => {
 
     expect(cards.calculateSimpleTreasurePotionsInHand()).toBe(2);
     expect(cards.calculateSimpleTreasureCoinsInHand()).toBe(1);
+  });
+
+  it('makes its player the owner of a card that moves into any of their locations', () => {
+    const { cards, player } = createPlayerCards();
+    const moves: [string, (card: Card) => void][] = [
+      [
+        'hand',
+        (card) => {
+          cards.addCardToHand(card);
+        },
+      ],
+      [
+        'deck',
+        (card) => {
+          cards.addCardToDeck(card);
+        },
+      ],
+      [
+        'discard',
+        (card) => {
+          cards.addCardToDiscard(card);
+        },
+      ],
+      [
+        'in play',
+        (card) => {
+          cards.addCardToInPlay(card);
+        },
+      ],
+      [
+        'set aside',
+        (card) => {
+          cards.addCardToSetAside(card);
+        },
+      ],
+      [
+        'island mat',
+        (card) => {
+          cards.addCardToIslandMat(card);
+        },
+      ],
+      [
+        'native village mat',
+        (card) => {
+          cards.addCardToNativeVillageMat(card);
+        },
+      ],
+      [
+        'deck at a depth',
+        (card) => {
+          cards.putCardIntoDeck(card, 0);
+        },
+      ],
+    ];
+
+    for (const [where, move] of moves) {
+      const card = createCard('Village', `village-${where}`);
+      move(card);
+      expect(card.getOwner(), where).toBe(player);
+      expect(card.hasPreviousOwner(player as never), where).toBe(false);
+    }
+  });
+
+  it('takes a card over from the player who owned it before', () => {
+    const { cards, player } = createPlayerCards();
+    const otherPlayer = { getName: () => 'Bob' } as never;
+    const card = createCard('Village', 'village-0');
+    card.changeOwner(otherPlayer);
+
+    cards.addCardToHand(card);
+
+    expect(card.getOwner()).toBe(player);
+    expect(card.hasPreviousOwner(otherPlayer)).toBe(true);
+  });
+
+  it('keeps its player as the owner of revealed cards taken off the deck', async () => {
+    const { cards, player } = createPlayerCards();
+    const card = createCard('Village', 'village-0');
+    cards.addCardToDeck(card);
+
+    expect(await cards.takeCardOffDeck()).toBe(card);
+
+    expect(card.getLocation()).toBe(CardLocation.REVEAL_LIMBO);
+    expect(card.getOwner()).toBe(player);
   });
 });

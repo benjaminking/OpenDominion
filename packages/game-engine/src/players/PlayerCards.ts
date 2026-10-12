@@ -6,6 +6,7 @@ import { CardFactory } from '../card/CardFactory';
 import { PrivacyType } from '../card/PrivacyType';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { Effect } from '../effects/Effect';
+import { EffectContextBuilder } from '../effects/EffectContext';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import { CardCostCache } from '../game-state/CardCostCache';
 import { Logger } from '../logging/Logger';
@@ -105,6 +106,7 @@ export class PlayerCards {
         return this.setAside;
       }
       case CardLocation.REVEAL_LIMBO: {
+        this.pruneLimbo();
         return this.limbo;
       }
       default: {
@@ -145,13 +147,23 @@ export class PlayerCards {
     await this.checkIfShuffleRequired(); // TODO: add await and async to this
     if (this.deck.size() > 0) {
       const card: Card = this.deck.removeTopCard();
-      card.setLocation(CardLocation.REVEAL_LIMBO);
+      this.moveCardTo(card, CardLocation.REVEAL_LIMBO);
       return card;
     }
   }
 
+  // Cards that have moved on from being revealed are removed from limbo; cards still revealed stay there
+  // (e.g. Golem's first revealed Action while it keeps revealing)
+  private pruneLimbo(): void {
+    this.limbo.removeCards(
+      this.limbo.getMatchingCards(
+        new CardEligibilityFunction((card: Card) => card.getLocation() !== CardLocation.REVEAL_LIMBO),
+      ),
+    );
+  }
+
   public async takeCardOffDeck(): Promise<Card | undefined> {
-    this.limbo.clear();
+    this.pruneLimbo();
     const card = await this.takeCardOffDeckHelper();
     if (card !== undefined) {
       this.limbo.addCard(card);
@@ -172,7 +184,6 @@ export class PlayerCards {
     const topCard: Card | undefined = await this.takeCardOffDeckHelper();
 
     if (topCard !== undefined) {
-      topCard.setLocation(CardLocation.REVEAL_LIMBO);
       cardsSoFar.addCard(topCard);
       return this.takeCardsOffDeckHelper(numCards, cardsSoFar);
     } else {
@@ -218,7 +229,16 @@ export class PlayerCards {
         await this.player
           .getGame()
           .getGameState()
-          .triggerEffect(EffectTriggerType.REVEALED_ACTION_DURING_DTX, this.player, card);
+          .triggerEffect(
+            EffectTriggerType.REVEALED_ACTION_DURING_DTX,
+            this.player,
+            new EffectContextBuilder()
+              .withTargetCard(card)
+              .withLocationExpectation(
+                this.player.getInstructionExecutor().createLocationExpectation(CardLocation.DECK),
+              )
+              .build(),
+          );
         // If no effect (e.g. Library) dealt with the Action, it is drawn like any other card
         if ((await this.lookAtTopCardOfDeck())?.equals(card)) {
           await this.drawCards(1);
@@ -250,6 +270,7 @@ export class PlayerCards {
 
   public putCardIntoDeck(card: Card, depth: number): void {
     this.deck.insertCardAtPosition(card, this.deck.size() - depth);
+    this.moveCardTo(card, CardLocation.DECK);
   }
 
   public async discardCard(card: Card): Promise<Card> {
@@ -259,7 +280,14 @@ export class PlayerCards {
     await this.player
       .getGame()
       .getGameState()
-      .triggerEffect(EffectTriggerType.DISCARD, this.player, CardCollection.fromCards([card]));
+      .triggerEffect(
+        EffectTriggerType.DISCARD,
+        this.player,
+        new EffectContextBuilder()
+          .withTargetCard(card)
+          .withLocationExpectation(this.player.getInstructionExecutor().createLocationExpectation(CardLocation.DISCARD))
+          .build(),
+      );
     return card;
   }
 
@@ -277,16 +305,34 @@ export class PlayerCards {
       this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'discards %c', cards));
     }
 
-    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.DISCARD, this.player, cards);
+    // The cards are in the discard pile when "when you discard" abilities resolve (e.g. a Trail's +1 Card can
+    // shuffle in the cards discarded with it)
+    const discardedCards = new CardCollection();
     for (const card of cards) {
       if (card.getLocation() === expectedLocation) {
         this.addCardToDiscard(card);
+        discardedCards.addCard(card);
       } else {
         this.logger.gameMessage(
           this.player,
           ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't discard it", card),
         );
       }
+    }
+    if (discardedCards.size() > 0) {
+      await this.player
+        .getGame()
+        .getGameState()
+        .triggerEffect(
+          EffectTriggerType.DISCARD,
+          this.player,
+          new EffectContextBuilder()
+            .withTargetCards(discardedCards)
+            .withLocationExpectation(
+              this.player.getInstructionExecutor().createLocationExpectation(CardLocation.DISCARD),
+            )
+            .build(),
+        );
     }
     return cards;
   }
@@ -300,6 +346,9 @@ export class PlayerCards {
   public async discardAllFromInPlay(): Promise<void> {
     const cardsToDiscard = this.inPlay.getMatchingCards(canBeDiscardedInCleanup).clone();
     this.inPlay.removeCards(cardsToDiscard);
+    for (const card of cardsToDiscard) {
+      card.stopTrackingDurations();
+    }
     await this.discardCards(cardsToDiscard, CardLocation.IN_PLAY);
   }
 
@@ -360,8 +409,23 @@ export class PlayerCards {
     this.player.getStatistics().setScore(playerPoints);
   }
 
+  public getAllCards(): Card[] {
+    return this.getCardGroupsForScoring().flatMap((cardGroup: CardCollection) => cardGroup.asCardArray());
+  }
+
+  // Every card the player owns counts, including cards set aside or on mats
   private getCardGroupsForScoring(): CardCollection[] {
-    return [this.discard, this.inPlay, this.deck, this.hand];
+    this.pruneLimbo();
+    return [
+      this.discard,
+      this.inPlay,
+      this.deck,
+      this.hand,
+      this.setAside,
+      this.limbo,
+      this.islandMat,
+      this.nativeVillageMat,
+    ];
   }
 
   public removeCardFromHand(card: Card): void {
@@ -374,53 +438,59 @@ export class PlayerCards {
     return nativeVillageCards;
   }
 
+  // Every location here belongs to this player, so a card that moves to one becomes this player's
+  private moveCardTo(card: Card, location: CardLocation): void {
+    card.setLocation(location);
+    card.changeOwner(this.player);
+  }
+
   public addCardToInPlay(card: Card): void {
-    card.setLocation(CardLocation.IN_PLAY);
+    this.moveCardTo(card, CardLocation.IN_PLAY);
     this.inPlay.addCard(card);
   }
 
   public addCardToDeck(card: Card): void {
-    card.setLocation(CardLocation.DECK);
+    this.moveCardTo(card, CardLocation.DECK);
     this.deck.addCard(card);
   }
 
   public addCardToDiscard(card: Card): void {
-    card.setLocation(CardLocation.DISCARD);
+    this.moveCardTo(card, CardLocation.DISCARD);
     this.discard.addCard(card);
   }
 
   public addCardToSetAside(card: Card): void {
-    card.setLocation(CardLocation.SET_ASIDE);
+    this.moveCardTo(card, CardLocation.SET_ASIDE);
     this.setAside.addCard(card);
   }
 
   public addCardsToSetAside(cards: CardCollection): void {
     for (const card of cards) {
-      card.setLocation(CardLocation.SET_ASIDE);
+      this.moveCardTo(card, CardLocation.SET_ASIDE);
     }
     this.setAside.addCards(cards);
   }
 
   public addCardToHand(card: Card): void {
-    card.setLocation(CardLocation.HAND);
+    this.moveCardTo(card, CardLocation.HAND);
     this.hand.addCard(card);
   }
 
   public addCardsToHand(cards: CardCollection): void {
     for (const card of cards) {
-      card.setLocation(CardLocation.HAND);
+      this.moveCardTo(card, CardLocation.HAND);
     }
     this.hand.addCards(cards);
   }
 
   public addCardToIslandMat(card: Card): void {
-    card.setLocation(CardLocation.ISLAND_MAT);
+    this.moveCardTo(card, CardLocation.ISLAND_MAT);
     this.islandMat.addCard(card);
   }
 
   public addCardToNativeVillageMat(card: Card): void {
     this.nativeVillageMat.addCard(card);
-    card.setLocation(CardLocation.NATIVE_VILLAGE_MAT);
+    this.moveCardTo(card, CardLocation.NATIVE_VILLAGE_MAT);
   }
 
   public putDeckInDiscard(): void {

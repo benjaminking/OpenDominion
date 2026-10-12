@@ -6,6 +6,7 @@ import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
 import { EffectCondition } from '../../effects/EffectCondition';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -43,8 +44,15 @@ export class Trader extends KingdomCard {
     await ie.gainCardFromPileNTimes('Silver', trashedCard.getCost().coins);
   }
 
-  private async reaction(ie: InstructionExecutor, gainedCard: Card): Promise<void> {
+  private async reaction(ie: InstructionExecutor, effectContext: EffectContext): Promise<void> {
+    const gainedCard = effectContext.getTargetCard()!;
     await ie.revealCard(this);
-    ie.exchangeCardFromLocation(gainedCard, gainedCard.getLocation(), 'Silver');
+    // Once something else has moved the gained card (e.g. Trail playing itself, Inn shuffling itself into the deck,
+    // or Watchtower trashing it), Trader has lost track of it and can't exchange it
+    if (!effectContext.getLocationExpectation()!.isMet(gainedCard)) {
+      ie.sendLostTrackMessage(gainedCard);
+      return;
+    }
+    ie.exchangeCardFromLocation(gainedCard, effectContext.getGainLocation()!, 'Silver');
   }
 }

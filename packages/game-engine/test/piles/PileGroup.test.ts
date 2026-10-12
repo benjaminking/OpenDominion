@@ -8,6 +8,7 @@ import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { GameMessageBroadcaster } from '../../src/messaging/GameMessageBroadcaster';
 import { Pile } from '../../src/piles/Pile';
 import { PileGroup } from '../../src/piles/PileGroup';
+import { createTestClock } from '../testClock';
 
 class TestCard extends Card {}
 
@@ -16,6 +17,7 @@ const createSharedGameStateMock = (cost?: Cost) => {
   return {
     cost: vi.fn(() => resolvedCost),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
 };
 

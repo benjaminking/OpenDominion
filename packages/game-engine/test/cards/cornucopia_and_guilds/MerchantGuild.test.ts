@@ -4,6 +4,7 @@ import { Village } from '../../../src/cards/base_game/Village';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { MerchantGuild } from '../../../src/cards/cornucopia_and_guilds/MerchantGuild';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { ThisTurnEligibility } from '../../../src/effects/StandardTurnEligibilityFunctions';
 import { TurnPhase } from '../../../src/turns/TurnPhase';
@@ -40,7 +41,7 @@ describe('MerchantGuild', () => {
 
     const [buyEndEffect] = testHarness.getAddedEffects(EffectTriggerType.BUY_END);
     expect(buyEndEffect.getTurnEligibility()).toBeInstanceOf(ThisTurnEligibility);
-    await buyEndEffect.doAction(testHarness.executor, undefined);
+    await buyEndEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.stats.coffers).toBe(2);
   });
@@ -51,7 +52,7 @@ describe('MerchantGuild', () => {
     await new MerchantGuild(testHarness.sharedGameState).play(testHarness.executor);
     testHarness.turnTracker.updateTurnPhase(TurnPhase.BUY);
     const [buyEndEffect] = testHarness.getAddedEffects(EffectTriggerType.BUY_END);
-    await buyEndEffect.doAction(testHarness.executor, undefined);
+    await buyEndEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.stats.coffers).toBe(0);
   });

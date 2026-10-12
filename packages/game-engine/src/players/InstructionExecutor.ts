@@ -25,6 +25,7 @@ import { CardSelectionLocation } from '../decisions/CardSelectionLocation';
 import { ChooseMultipleOptionsBuilder } from '../decisions/ChooseMultipleOptionsBuilder';
 import { ChooseOneOptionBuilder } from '../decisions/ChooseOneOptionBuilder';
 import { Effect } from '../effects/Effect';
+import { EffectContext, EffectContextBuilder } from '../effects/EffectContext';
 import { EffectExpiration } from '../effects/EffectExpiration';
 import { EffectTriggerType } from '../effects/EffectTriggerType';
 import {
@@ -35,6 +36,7 @@ import {
 } from '../effects/StandardEffectExpirations';
 import { NextTurnEligibility, ThisTurnEligibility } from '../effects/StandardTurnEligibilityFunctions';
 import { TurnEligibility } from '../effects/TurnEligibility';
+import { LocationExpectation } from '../game-state/LocationExpectation';
 import { SharedGameState } from '../game-state/SharedGameState';
 import { Logger } from '../logging/Logger';
 import { ServerLogMessage } from '../logging/ServerLogMessage';
@@ -142,7 +144,8 @@ export class InstructionExecutor {
   // TODO: these implementations are hacky - do them in the style of overpay with a local function
   public async chooseDeckDepth(): Promise<number> {
     let choiceBuilder: ChooseOneOptionBuilder = this.chooseOneOption('How many cards down?');
-    for (let depth = 0; depth <= this.handSize(); ++depth) {
+    // Anywhere from the top (0) to the bottom of the deck
+    for (let depth = 0; depth <= this.player.getOwnedCards().getDeck().size(); ++depth) {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       choiceBuilder = choiceBuilder.from(new ActionChoice(depth.toFixed(), () => {}));
     }
@@ -169,11 +172,14 @@ export class InstructionExecutor {
     }
 
     for (let numCoins = 0; numCoins <= this.player.getStatistics().getCoins(); ++numCoins) {
-      choiceBuilder = choiceBuilder.from(
-        new ActionChoice('$' + numCoins.toFixed(), () => {
-          selectOverpay({ coins: numCoins, potions: 0 });
-        }),
-      );
+      // Overpaying means paying more, so "$0" isn't an overpay (that's "Don't overpay"); "$0P" is
+      if (numCoins > 0) {
+        choiceBuilder = choiceBuilder.from(
+          new ActionChoice('$' + numCoins.toFixed(), () => {
+            selectOverpay({ coins: numCoins, potions: 0 });
+          }),
+        );
+      }
       if (this.player.getStatistics().getPotions() > 0) {
         choiceBuilder = choiceBuilder.from(
           new ActionChoice('$' + numCoins.toFixed() + 'P', () => {
@@ -304,10 +310,6 @@ export class InstructionExecutor {
     }
     this.player.getOwnedCards().addCardToInPlay(card);
 
-    if (card.hasType(CardType.ATTACK)) {
-      await this.announceAttackCard(card);
-    }
-
     await this.playCard(this.player, card, options);
   }
 
@@ -323,7 +325,9 @@ export class InstructionExecutor {
     if (!this.sharedGameState.isCardAbleToMove(card)) {
       return;
     }
-    if (this.sharedGameState.isSharedLocation(location)) {
+    if (location === CardLocation.PILE) {
+      this.sharedGameState.piles.removeCardFromPile(card);
+    } else if (this.sharedGameState.isSharedLocation(location)) {
       this.sharedGameState.getCardsFromArea(location).removeCard(card);
     } else {
       this.player.getOwnedCards().removeCardFromLocation(card, location);
@@ -349,8 +353,15 @@ export class InstructionExecutor {
     await this.sharedGameState.triggerEffect(
       EffectTriggerType.ABOUT_TO_PLAY_CARD,
       this.player,
-      CardCollection.fromCards([card]),
+      new EffectContextBuilder()
+        .withTargetCard(card)
+        .withLocationExpectation(this.createLocationExpectation(CardLocation.IN_PLAY))
+        .build(),
     );
+    // However the Attack is played (from hand, by Throne Room, from the Supply...), other players may react to it
+    if (card.hasType(CardType.ATTACK)) {
+      await this.announceAttackCard(card);
+    }
     this.registerPlayedCard(card);
     if (options.leaveInPlace) {
       await this.playCardWithoutMoving(card);
@@ -360,7 +371,10 @@ export class InstructionExecutor {
     await this.sharedGameState.triggerEffect(
       EffectTriggerType.PLAYED_CARD,
       this.player,
-      CardCollection.fromCards([card]),
+      new EffectContextBuilder()
+        .withTargetCard(card)
+        .withLocationExpectation(this.createLocationExpectation(CardLocation.IN_PLAY))
+        .build(),
     );
   }
 
@@ -427,11 +441,15 @@ export class InstructionExecutor {
     }
   }
 
-  public async playCardFromHandNTimes(card: Card, n: number): Promise<void> {
+  // playingCard is the card doing the playing (e.g. Throne Room); it stays in play with a Duration it plays repeatedly
+  public async playCardFromHandNTimes(card: Card, n: number, playingCard?: Card): Promise<void> {
     this.player.getOwnedCards().removeCardFromHand(card);
     this.player.getOwnedCards().addCardToInPlay(card);
 
     await this.playCardNTimesHelper(card, n);
+    if (playingCard !== undefined && n > 1) {
+      playingCard.stayInPlayWhileTracking(card);
+    }
   }
 
   private async playCardNTimesHelper(card: Card, n: number): Promise<void> {
@@ -475,15 +493,19 @@ export class InstructionExecutor {
 
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'buys %c', card));
 
-    const gainedCard = await this.gainFromPile(pileName);
-    if (gainedCard !== undefined) {
-      await this.sharedGameState.triggerEffect(
-        EffectTriggerType.BUY,
-        this.player,
-        CardCollection.fromCards([gainedCard]),
-      );
+    // "When you buy" abilities happen before the card is gained (see OverpayEffects)
+    await this.sharedGameState.triggerEffect(
+      EffectTriggerType.BUY,
+      this.player,
+      new EffectContextBuilder().withTargetCard(card).build(),
+    );
+    return this.gainFromPile(pileName);
+  }
+
+  public async gainCopyOfCard(card: Card): Promise<void> {
+    if (this.sharedGameState.piles.isSupplyPile(card.getPileName())) {
+      await this.gainCardFromPile(card);
     }
-    return gainedCard;
   }
 
   public async gainCardFromPile(
@@ -544,20 +566,35 @@ export class InstructionExecutor {
   }
 
   private async gain(card: Card, gainLocation: CardLocation = CardLocation.DISCARD): Promise<void> {
-    card.setLocation(gainLocation);
+    // Moved once, so the move into the discard pile, deck or hand isn't also recorded as leaving it
     if (gainLocation === CardLocation.DISCARD) {
       this.player.getOwnedCards().addCardToDiscard(card);
     } else if (gainLocation === CardLocation.DECK) {
       this.player.getOwnedCards().addCardToDeck(card);
     } else if (gainLocation === CardLocation.HAND) {
       this.player.getOwnedCards().addCardToHand(card);
+    } else {
+      card.setLocation(gainLocation);
     }
 
-    this.player.getTurnTracker().addGainedCard(card);
+    this.player
+      .getTurnTracker()
+      .addGainedCard(card, this.sharedGameState.getCurrentPlayer().getName() === this.player.getName());
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'gains %c', card));
     this.player.calculateScore();
 
-    await this.player.getGame().getGameState().triggerEffect(EffectTriggerType.GAIN, this.player, card);
+    await this.player
+      .getGame()
+      .getGameState()
+      .triggerEffect(
+        EffectTriggerType.GAIN,
+        this.player,
+        new EffectContextBuilder()
+          .withTargetCard(card)
+          .withGainLocation(gainLocation)
+          .withLocationExpectation(this.createLocationExpectation(gainLocation))
+          .build(),
+      );
   }
 
   public async gainCardFromPileNTimes(cardChoice: Card | string, n: number): Promise<void> {
@@ -586,7 +623,8 @@ export class InstructionExecutor {
     if (!this.sharedGameState.piles.isPile(cardToReturn.getPileName())) {
       return;
     }
-    if (!this.sharedGameState.isCardAbleToMove(cardToReturn)) {
+    // Exchanging must happen both ways: the returned card has to be where it is expected and able to move
+    if (cardToReturn.getLocation() !== location || !this.sharedGameState.isCardAbleToMove(cardToReturn)) {
       return;
     }
     const cardToReceive: Card | undefined = this.removeTopCardFromPile(pileName);
@@ -627,6 +665,7 @@ export class InstructionExecutor {
 
   public receivePassedCard(card: Card): void {
     this.player.getOwnedCards().addCardToHand(card);
+    this.player.getBotStatistics().addCardToStatistics(card);
   }
 
   public async takeCardOffDeck(): Promise<Card | undefined> {
@@ -687,6 +726,7 @@ export class InstructionExecutor {
     if (!this.sharedGameState.isCardAbleToMove(card)) {
       return;
     }
+    this.removeCardFromLocation(card, card.getLocation());
     this.player.getOwnedCards().putCardIntoDeck(card, depth);
   }
 
@@ -753,16 +793,28 @@ export class InstructionExecutor {
       this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'discards %c', cards));
     }
 
-    await this.sharedGameState.triggerEffect(EffectTriggerType.DISCARD, this.player, cards);
+    // The cards are in the discard pile when "when you discard" abilities resolve
+    const discardedCards = new CardCollection();
     for (const card of cards) {
       if (card.getLocation() === expectedLocation) {
         this.player.getOwnedCards().addCardToDiscard(card);
+        discardedCards.addCard(card);
       } else {
         this.logger.gameMessage(
           this.player,
           ServerLogMessage.publicMessage(this.player, "has lost track of %c and can't discard it", card),
         );
       }
+    }
+    if (discardedCards.size() > 0) {
+      await this.sharedGameState.triggerEffect(
+        EffectTriggerType.DISCARD,
+        this.player,
+        new EffectContextBuilder()
+          .withTargetCards(discardedCards)
+          .withLocationExpectation(this.createLocationExpectation(CardLocation.DISCARD))
+          .build(),
+      );
     }
     return cards;
   }
@@ -926,13 +978,21 @@ export class InstructionExecutor {
   public async revealCards(cards: CardCollection): Promise<void> {
     if (cards.size() > 0) {
       this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'reveals %c', cards));
-      await this.sharedGameState.triggerEffect(EffectTriggerType.REVEAL, this.player, cards);
+      await this.sharedGameState.triggerEffect(
+        EffectTriggerType.REVEAL,
+        this.player,
+        new EffectContextBuilder().withTargetCards(cards).build(),
+      );
     }
   }
 
   public async revealCard(card: Card): Promise<void> {
     this.logger.gameMessage(this.player, ServerLogMessage.publicMessage(this.player, 'reveals %c', card));
-    await this.sharedGameState.triggerEffect(EffectTriggerType.REVEAL, this.player, CardCollection.fromCards([card]));
+    await this.sharedGameState.triggerEffect(
+      EffectTriggerType.REVEAL,
+      this.player,
+      new EffectContextBuilder().withTargetCard(card).build(),
+    );
   }
 
   public async revealHand() {
@@ -965,7 +1025,11 @@ export class InstructionExecutor {
 
   public async announceAttackCard(attackCard: Card): Promise<void> {
     this.sharedGameState.clearBlocksForAttackCard(attackCard);
-    await this.sharedGameState.triggerEffect(EffectTriggerType.ATTACK, this.player, new CardCollection(attackCard));
+    await this.sharedGameState.triggerEffect(
+      EffectTriggerType.ATTACK,
+      this.player,
+      new EffectContextBuilder().withTargetCard(attackCard).build(),
+    );
   }
 
   public blockAttack(attackCard: Card): void {
@@ -1001,11 +1065,11 @@ export class InstructionExecutor {
 
   public async processEffectsByType(
     triggerType: EffectTriggerType,
-    targetCards: Card | CardCollection | undefined,
+    effectContext: EffectContext,
     extraInformation = '',
     usedEffectIDs: Set<string> = new Set<string>(),
   ): Promise<void> {
-    const allEffects = this.getApplicableEffectsByType(triggerType, targetCards);
+    const allEffects = this.getApplicableEffectsByType(triggerType, effectContext);
     const optionalEffects = allEffects.filter((e: Effect) => !e.isMandatory() && !usedEffectIDs.has(e.getId()));
     const mandatoryEffects = allEffects.filter((e: Effect) => e.isMandatory() && !usedEffectIDs.has(e.getId()));
 
@@ -1013,38 +1077,20 @@ export class InstructionExecutor {
       mandatoryEffects.map((value: Effect) => value.getOwner().getName()),
     );
     if (optionalEffects.length === 0 && uniqueMandatoryEffectCardNames.size === 1) {
-      await mandatoryEffects[0].doAction(this, targetCards);
+      await mandatoryEffects[0].doAction(this, effectContext);
       usedEffectIDs.add(mandatoryEffects[0].getId());
-      if (mandatoryEffects.length === 1) {
-        return;
-      } else {
-        return this.processEffectsByType(triggerType, targetCards, extraInformation, usedEffectIDs);
-      }
+      // check for new available effects
+      return this.processEffectsByType(triggerType, effectContext, extraInformation, usedEffectIDs);
     }
 
     if (allEffects.length > 0) {
       let extraMessage = '';
-      if (triggerType === EffectTriggerType.WOULD_GAIN && targetCards !== undefined) {
-        extraMessage =
-          'You would gain ' +
-          (targetCards instanceof CardCollection
-            ? targetCards.print()
-            : CardCollection.fromCards([targetCards]).print()) +
-          '.';
-      } else if (triggerType === EffectTriggerType.GAIN && targetCards !== undefined) {
-        extraMessage =
-          'You gained ' +
-          (targetCards instanceof CardCollection
-            ? targetCards.print()
-            : CardCollection.fromCards([targetCards]).print()) +
-          '.';
-      } else if (triggerType === EffectTriggerType.ATTACK && targetCards !== undefined) {
-        extraMessage =
-          'An opponent played ' +
-          (targetCards instanceof CardCollection
-            ? targetCards.print()
-            : CardCollection.fromCards([targetCards]).print()) +
-          '.';
+      if (triggerType === EffectTriggerType.WOULD_GAIN && effectContext.getTargetCards() !== undefined) {
+        extraMessage = 'You would gain ' + effectContext.getTargetCards()!.print() + '.';
+      } else if (triggerType === EffectTriggerType.GAIN && effectContext.getTargetCards() !== undefined) {
+        extraMessage = 'You gained ' + effectContext.getTargetCards()!.print() + '.';
+      } else if (triggerType === EffectTriggerType.ATTACK && effectContext.getTargetCards() !== undefined) {
+        extraMessage = 'An opponent played ' + effectContext.getTargetCards()!.print() + '.';
       }
       const effectsById: Map<string, Effect> = this.createEffectIdMap(optionalEffects, mandatoryEffects);
 
@@ -1060,9 +1106,9 @@ export class InstructionExecutor {
         usedEffectIDs.add(effect.getId());
 
         this.sharedGameState.pushActiveEffectOntoStack(effect);
-        await effect.doAction(this, targetCards);
+        await effect.doAction(this, effectContext);
         this.sharedGameState.popActiveEffectOffOfStack();
-        return this.processEffectsByType(triggerType, targetCards, extraInformation, usedEffectIDs);
+        return this.processEffectsByType(triggerType, effectContext, extraInformation, usedEffectIDs);
       }
     }
   }
@@ -1090,52 +1136,44 @@ export class InstructionExecutor {
     return effectIdMap;
   }
 
-  private getApplicableEffectsByType(
-    trigger: EffectTriggerType,
-    targetCards: Card | CardCollection | undefined,
-  ): Effect[] {
+  private getApplicableEffectsByType(trigger: EffectTriggerType, effectContext: EffectContext): Effect[] {
+    const targetCards = effectContext.getTargetCards();
     const allEffects: Effect[] = [];
-    allEffects.push(...this.filterEffectsToApplicable(this.player.getEffects().getEffectsByType(trigger), targetCards));
     allEffects.push(
-      ...this.filterEffectsToApplicable(this.player.getOwnedCards().getEffectsByType(trigger), targetCards),
+      ...this.filterEffectsToApplicable(this.player.getEffects().getEffectsByType(trigger), effectContext),
     );
-    if (targetCards !== undefined && targetCards instanceof CardCollection) {
-      allEffects.push(...this.filterEffectsToApplicable(targetCards.getEffectsByType(trigger), targetCards, true));
-    } else if (targetCards !== undefined) {
-      allEffects.push(
-        ...this.filterEffectsToApplicable(
-          CardCollection.fromCards([targetCards]).getEffectsByType(trigger),
-          targetCards,
-          true,
-        ),
-      );
+    allEffects.push(
+      ...this.filterEffectsToApplicable(this.player.getOwnedCards().getEffectsByType(trigger), effectContext),
+    );
+    if (targetCards !== undefined) {
+      allEffects.push(...this.filterEffectsToApplicable(targetCards.getEffectsByType(trigger), effectContext, true));
     }
 
     if (trigger === EffectTriggerType.SHUFFLE) {
       allEffects.push(
-        ...this.filterEffectsToApplicable(this.player.getOwnedCards().getDeckEffectsByType(trigger), targetCards),
+        ...this.filterEffectsToApplicable(this.player.getOwnedCards().getDeckEffectsByType(trigger), effectContext),
       );
     }
 
-    return allEffects;
+    // A card can be both owned (e.g. just gained into hand) and the target, so keep each effect once
+    return allEffects.filter(
+      (effect: Effect, index: number) =>
+        allEffects.findIndex((other: Effect) => other.getId() === effect.getId()) === index,
+    );
   }
 
-  private filterEffectsToApplicable(
-    effects: Effect[],
-    targetCards: Card | CardCollection | undefined,
-    allowSelf = false,
-  ): Effect[] {
+  private filterEffectsToApplicable(effects: Effect[], effectContext: EffectContext, allowSelf = false): Effect[] {
+    const targetCards = effectContext.getTargetCards();
     const applicableEffects: Effect[] = [];
     for (const effect of effects) {
       if (
         (!effect.isSelf() || (allowSelf && effect.isSelf())) &&
         (targetCards === undefined ||
-          (targetCards instanceof CardCollection && targetCards.size() === 0) ||
-          (targetCards instanceof CardCollection && effect.getCardEligibility().matchesAny(targetCards)) ||
-          (targetCards instanceof Card && effect.getCardEligibility().matches(targetCards))) &&
+          targetCards.size() === 0 ||
+          effect.getCardEligibility().matchesAny(targetCards)) &&
         this.sharedGameState.isTurnEligibilitySatisfied(effect.getTurnEligibility()) &&
         !effect.hasExpired() &&
-        effect.areOtherConditionsSatisfied(this)
+        effect.areOtherConditionsSatisfied(this, effectContext)
       ) {
         applicableEffects.push(effect);
       }
@@ -1149,7 +1187,7 @@ export class InstructionExecutor {
   }
 
   public createNextTurnEligibilityFunction(): TurnEligibility {
-    return new NextTurnEligibility(this.sharedGameState);
+    return new NextTurnEligibility(this.sharedGameState, this.player);
   }
 
   public createFirstMatchingCardPlayedThisTurnEligibilityFunction(
@@ -1176,15 +1214,15 @@ export class InstructionExecutor {
     return eligiblityFunction;
   }
 
-  public createPlayerToTheLeftGainedOnTheirLastTurnCardEligibilityFunction(): CardEligibilityFunction {
-    const playerToTheLeft = this.sharedGameState.getPlayerLeftOfCurrent();
-    const lastTurn = playerToTheLeft.getTurnTracker().getLastCompletedTurn();
+  public createPlayerToTheRightGainedOnTheirLastTurnCardEligibilityFunction(): CardEligibilityFunction {
+    const playerToTheRight = this.sharedGameState.getPlayerRightOfCurrent();
+    const lastTurn = playerToTheRight.getTurnTracker().getLastCompletedTurn();
 
     if (lastTurn === undefined) {
       return noCard;
     }
 
-    return playerToTheLeft.getTurnTracker().getCardsGainedOnTurnEligibilityFunction(lastTurn);
+    return playerToTheRight.getTurnTracker().getCardsGainedOnTurnEligibilityFunction(lastTurn);
   }
 
   public createBoughtCardEligibilityFunction(): CardEligibilityFunction {
@@ -1207,16 +1245,17 @@ export class InstructionExecutor {
     return new RestOfTurnEffectExpiration(this.sharedGameState.getCurrentTurn());
   }
 
+  // "Next turn" is relative to that player's own latest turn, which isn't the current turn if it is someone else's
   public createStartOfMyNextTurnEffectExpiration(): EffectExpiration {
-    return new StartOfPlayersNextTurnEffectExpiration(this.player, this.sharedGameState.getCurrentTurn());
+    return this.createStartOfPlayersNextTurnEffectExpiration(this.player);
   }
 
   public createStartOfPlayersNextTurnEffectExpiration(player: Player): EffectExpiration {
-    return new StartOfPlayersNextTurnEffectExpiration(player, this.sharedGameState.getCurrentTurn());
+    return new StartOfPlayersNextTurnEffectExpiration(player, player.getTurnTracker().getCurrentTurn());
   }
 
   public createEndOfMyNextTurnEffectExpiration(): EffectExpiration {
-    return new EndOfPlayersNextTurnEffectExpiration(this.player, this.sharedGameState.getCurrentTurn());
+    return new EndOfPlayersNextTurnEffectExpiration(this.player, this.player.getTurnTracker().getCurrentTurn());
   }
 
   public getEligibleSupplyChoices(cardEligibilityFunction: CardEligibilityFunction): CardChoice[] {
@@ -1294,6 +1333,17 @@ export class InstructionExecutor {
 
   public setNumCardsToDrawInCleanup(numCardsToDrawInCleanup: number): void {
     this.player.getTurnTracker().setNumCardsToDrawInCleanup(numCardsToDrawInCleanup);
+  }
+
+  public createLocationExpectation(location: CardLocation): LocationExpectation {
+    return new LocationExpectation(location, this.sharedGameState.getCurrentTimeStamp());
+  }
+
+  public sendLostTrackMessage(trackedCard: Card): void {
+    this.logger.gameMessage(
+      this.player,
+      ServerLogMessage.publicMessage(this.player, 'has lost track of %c', trackedCard),
+    );
   }
 
   public forceFullBroadcastOfDiscard(): void {

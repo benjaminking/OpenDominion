@@ -111,4 +111,33 @@ describe('Ironmonger', () => {
     expect(testHarness.stats.coins).toBe(0);
     expect(testHarness.decisionService.chooseOneOption).not.toHaveBeenCalled();
   });
+
+  it('shuffles the discard pile to reveal a card when the draw empties the deck', async () => {
+    const testHarness = createCardHarness();
+    testHarness.addToDeck(withId(new Copper(testHarness.sharedGameState), 'copper-deck-0'));
+    testHarness.addToDiscard(withId(new Estate(testHarness.sharedGameState), 'estate-discard-0'));
+
+    testHarness.pickOption('No, keep it on top');
+    await new Ironmonger(testHarness.sharedGameState).play(testHarness.executor);
+
+    // The revealed Estate is a Victory card: +1 Card draws it
+    expect(idsOf(testHarness.hand)).toEqual(['copper-deck-0', 'estate-discard-0']);
+    expect(testHarness.deck.size()).toBe(0);
+    expect(testHarness.discard.size()).toBe(0);
+    expect(testHarness.stats.actions).toBe(1);
+  });
+
+  it('draws a discarded Victory card back after reshuffling when no other card is left', async () => {
+    const testHarness = createCardHarness();
+    const drawnCopper = withId(new Copper(testHarness.sharedGameState), 'copper-deck-0');
+    const topEstate = withId(new Estate(testHarness.sharedGameState), 'estate-deck-1');
+    stackDeck(testHarness, [drawnCopper, topEstate]);
+
+    testHarness.pickOption('Yes, discard it');
+    await new Ironmonger(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(idsOf(testHarness.hand)).toEqual(['copper-deck-0', 'estate-deck-1']);
+    expect(testHarness.discard.size()).toBe(0);
+    expect(testHarness.deck.size()).toBe(0);
+  });
 });

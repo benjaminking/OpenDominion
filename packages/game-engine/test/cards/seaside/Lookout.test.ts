@@ -24,4 +24,12 @@ describe('Lookout', () => {
     expect(testHarness.discard.size()).toBe(1);
     expect(testHarness.deck.size()).toBe(1);
   });
+
+  it('gives +1 Action', async () => {
+    const testHarness = createCardHarness();
+
+    await new Lookout(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(testHarness.stats.actions).toBe(1);
+  });
 });

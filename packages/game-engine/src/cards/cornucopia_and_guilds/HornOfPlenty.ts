@@ -15,6 +15,7 @@ export class HornOfPlenty extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
     const gainLimit = ie.numUniqueMatchingCardsInPlay(anyCard);
 
     const cardToGain: Card | Choice = await ie
@@ -26,6 +27,10 @@ export class HornOfPlenty extends KingdomCard {
     if (cardToGain instanceof Card) {
       const gainedCard = await ie.gainCardFromPile(cardToGain);
       if (gainedCard !== undefined && isVictoryCard.matches(gainedCard)) {
+        if (!locationExpectation.isMet(this)) {
+          ie.sendLostTrackMessage(this);
+          return;
+        }
         await ie.trashCardFromLocation(this, CardLocation.IN_PLAY);
       }
     }

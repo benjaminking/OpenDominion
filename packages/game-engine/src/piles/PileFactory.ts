@@ -40,7 +40,15 @@ export class PileFactory {
   createSpecialPile(specialPileSpecification: SpecialPileSpecification): Pile {
     let cards: Card[] = [];
     const cardCountsByName = new Map<string, number>();
-    for (const cardInfo of specialPileSpecification.cardInfos) {
+    const pileSize = this.pileSizeLogic.getPileSize(specialPileSpecification.randomizerCardInfo);
+    let cardInfos = specialPileSpecification.cardInfos;
+    if (specialPileSpecification.pileName === 'Rewards' && pileSize < cardInfos.length) {
+      // A smaller Rewards pile still has every Reward: one of each instead of two
+      cardInfos = cardInfos.filter(
+        (cardInfo, index) => cardInfos.findIndex((other) => other.name === cardInfo.name) === index,
+      );
+    }
+    for (const cardInfo of cardInfos) {
       if (!cardCountsByName.has(cardInfo.name)) {
         cardCountsByName.set(cardInfo.name, 0);
       }
@@ -63,7 +71,6 @@ export class PileFactory {
       cards = this.shuffleCards(cards);
     }
 
-    const pileSize = this.pileSizeLogic.getPileSize(specialPileSpecification.randomizerCardInfo);
     cards = cards.slice(0, pileSize);
 
     // the top of a pile is the end of its card array, so the first-listed cards must go last

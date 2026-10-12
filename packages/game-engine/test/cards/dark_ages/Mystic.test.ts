@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Mystic } from '../../../src/cards/dark_ages/Mystic';
+import { SirDestry } from '../../../src/cards/dark_ages/SirDestry';
+import { SirMartin } from '../../../src/cards/dark_ages/SirMartin';
 import { createCardHarness } from '../testHarness';
 
 const setUp = () => {
@@ -50,5 +52,21 @@ describe('Mystic', () => {
     expect(testHarness.deck.asCardArray().map((card) => card.getId())).toEqual(['silver-deck-0']);
     expect(testHarness.stats.actions).toBe(1);
     expect(testHarness.stats.coins).toBe(2);
+  });
+
+  it('only takes the revealed card when the exact name was named (Sir Martin does not match Sir Destry)', async () => {
+    const testHarness = createCardHarness();
+    const supplySirMartin = new SirMartin(testHarness.sharedGameState);
+    supplySirMartin.setId('sir-martin-supply-0');
+    testHarness.addSupplyPile(supplySirMartin);
+    const deckSirDestry = new SirDestry(testHarness.sharedGameState);
+    deckSirDestry.setId('sir-destry-deck-0');
+    testHarness.addToDeck(deckSirDestry);
+
+    testHarness.pickCard(supplySirMartin);
+    await new Mystic(testHarness.sharedGameState).play(testHarness.executor);
+
+    expect(testHarness.hand.size()).toBe(0);
+    expect(testHarness.deck.asCardArray().map((card) => card.getId())).toEqual(['sir-destry-deck-0']);
   });
 });

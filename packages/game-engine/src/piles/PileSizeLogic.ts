@@ -17,7 +17,6 @@ nonStandardPileSizes.set('Platinum', 12);
 nonStandardPileSizes.set('Port', 12);
 nonStandardPileSizes.set('Potion', 16);
 nonStandardPileSizes.set('Rats', 20);
-nonStandardPileSizes.set('Rewards', 12);
 nonStandardPileSizes.set('Silver', 40);
 nonStandardPileSizes.set('Spoils', 15);
 nonStandardPileSizes.set('Townsfolk', ALLIES_SPLIT_PILE_SIZE);
@@ -27,6 +26,7 @@ const formulaicPileSizeNames = new Set<string>();
 formulaicPileSizeNames.add('Copper');
 formulaicPileSizeNames.add('Curse');
 formulaicPileSizeNames.add('Ruins');
+formulaicPileSizeNames.add('Rewards');
 
 export class PileSizeLogic {
   public constructor(private readonly numPlayers: number) {}
@@ -57,6 +57,10 @@ export class PileSizeLogic {
     }
     if (cardName === 'Curse' || cardName === 'Ruins') {
       return 10 * (this.numPlayers - 1);
+    }
+    if (cardName === 'Rewards') {
+      // One of each of the 6 Rewards with 2 players, two of each with more
+      return this.numPlayers === 2 ? 6 : 12;
     }
     return DEFAULT_PILE_SIZE;
   }

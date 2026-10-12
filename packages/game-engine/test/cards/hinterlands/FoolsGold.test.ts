@@ -1,10 +1,11 @@
 import { CardLocation } from '@dominion/common';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { Duchy } from '../../../src/cards/basic_cards/Duchy';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Province } from '../../../src/cards/basic_cards/Province';
 import { FoolsGold } from '../../../src/cards/hinterlands/FoolsGold';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectSource } from '../../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
@@ -70,11 +71,39 @@ describe('FoolsGold', () => {
     province.setId('province-gained-by-opponent');
     const [reaction] = testHarness.getCardEffects(foolsGold, EffectTriggerType.GAIN);
 
-    await reaction.doAction(testHarness.executor, province);
+    await reaction.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(province).build());
 
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.sharedTrash.contains(foolsGold)).toBe(true);
     expect(testHarness.deck.asCardArray().map((card) => card.getId())).toEqual(['gold-supply-0']);
     expect(testHarness.discard.size()).toBe(0);
+  });
+
+  it('loses track of itself, gaining no Gold, if it leaves the hand while it is revealed', async () => {
+    const testHarness = createCardHarness();
+    const foolsGold = new FoolsGold(testHarness.sharedGameState);
+    foolsGold.setId('fools-gold-0');
+    testHarness.addToHand(foolsGold);
+    const gold = new Gold(testHarness.sharedGameState);
+    gold.setId('gold-supply-0');
+    testHarness.addSupplyPile(gold);
+    const province = new Province(testHarness.sharedGameState);
+    province.setId('province-gained-by-opponent');
+    const [reaction] = testHarness.getCardEffects(foolsGold, EffectTriggerType.GAIN);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+    // Something reacting to the reveal moves it out of the hand
+    vi.spyOn(testHarness.executor, 'revealCard').mockImplementation(() => {
+      testHarness.hand.removeCard(foolsGold);
+      testHarness.addToDiscard(foolsGold);
+      return Promise.resolve();
+    });
+
+    await reaction.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(province).build());
+
+    expect(lostTrack).toHaveBeenCalledWith(foolsGold);
+    expect(testHarness.discard.asCardArray()).toEqual([foolsGold]);
+    expect(testHarness.sharedTrash.size()).toBe(0);
+    expect(testHarness.deck.size()).toBe(0);
+    expect(testHarness.pileCards.get('Gold')).toContain(gold);
   });
 });

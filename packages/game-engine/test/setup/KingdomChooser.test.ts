@@ -10,6 +10,7 @@ import { KingdomChooser } from '../../src/setup/KingdomChooser';
 import { PileSpecification } from '../../src/setup/PileSpecification';
 import { GameStateSetupRule, SetupRuleType } from '../../src/setup/SetupRule';
 import { SetupRules } from '../../src/setup/SetupRules';
+import { createTestClock } from '../testClock';
 
 const createFakeCardFactory = (setupRulesByName: Record<string, SetupRules> = {}) => {
   const createCard = vi.fn((name: string, id: string, _location: CardLocation) => {
@@ -143,7 +144,7 @@ describe('KingdomChooser', () => {
   });
 
   it('computes the proportion of kingdom randomizers from an expansion', () => {
-    const cardFactory = new CardFactory({ registerEffectTrigger: vi.fn() } as unknown as SharedGameState);
+    const cardFactory = new CardFactory({ registerEffectTrigger: vi.fn(), ...createTestClock() } as unknown as SharedGameState);
     const chooser = new KingdomChooser(cardFactory, ['Village', 'Hermit', 'Urchin', 'Smithy']);
 
     for (let index = 0; index < 4; index++) {

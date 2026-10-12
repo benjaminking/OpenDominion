@@ -6,6 +6,7 @@ import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { AbandonedMine } from '../../../src/cards/dark_ages/AbandonedMine';
 import { DeathCart } from '../../../src/cards/dark_ages/DeathCart';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -107,7 +108,7 @@ describe('DeathCart', () => {
     }
 
     const [onGain] = testHarness.getCardEffects(deathCart, EffectTriggerType.GAIN);
-    await onGain.doAction(testHarness.executor, deathCart);
+    await onGain.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(deathCart).withGainLocation(deathCart.getLocation()).build());
 
     expect(testHarness.discard.size()).toBe(3);
     expect(testHarness.discard.asCardArray().filter((card) => card.getPileName() === 'Ruins')).toHaveLength(2);
@@ -123,7 +124,7 @@ describe('DeathCart', () => {
     testHarness.addSupplyPile(ruins);
 
     const [onGain] = testHarness.getCardEffects(deathCart, EffectTriggerType.GAIN);
-    await onGain.doAction(testHarness.executor, deathCart);
+    await onGain.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(deathCart).withGainLocation(deathCart.getLocation()).build());
 
     expect(testHarness.discard.asCardArray()).toEqual([ruins]);
     expect(testHarness.pileCards.get('Ruins')).toEqual([]);

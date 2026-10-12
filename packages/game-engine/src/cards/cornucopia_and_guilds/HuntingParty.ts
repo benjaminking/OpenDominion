@@ -18,7 +18,14 @@ export class HuntingParty extends KingdomCard {
     ie.addActions(1);
     await ie.revealHand();
 
+    const locationExpectation = ie.createLocationExpectation(CardLocation.REVEAL_LIMBO);
     const nonDuplicateCard = await ie.revealUntil(ie.createIsNotDuplicateWithHandCardEligibilityFunction(), 1);
-    ie.putCardsIntoHandFromLocation(nonDuplicateCard, CardLocation.REVEAL_LIMBO);
+    for (const card of nonDuplicateCard) {
+      if (!locationExpectation.isMet(card)) {
+        ie.sendLostTrackMessage(card);
+      } else {
+        ie.putCardIntoHandFromLocation(card, CardLocation.REVEAL_LIMBO);
+      }
+    }
   }
 }

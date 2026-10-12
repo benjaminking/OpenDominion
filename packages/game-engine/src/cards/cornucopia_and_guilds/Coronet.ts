@@ -20,7 +20,7 @@ export class Coronet extends Card {
       .allowNoneOption()
       .choose();
     if (actionCard instanceof Card) {
-      await ie.playCardFromHandNTimes(actionCard, 2);
+      await ie.playCardFromHandNTimes(actionCard, 2, this);
     }
     const treasureCard: Card | Choice = await ie
       .chooseCard('Choose a non-Reward Treasure to play twice')
@@ -30,7 +30,7 @@ export class Coronet extends Card {
       .allowNoneOption()
       .choose();
     if (treasureCard instanceof Card) {
-      await ie.playCardFromHandNTimes(treasureCard, 2);
+      await ie.playCardFromHandNTimes(treasureCard, 2, this);
     }
   }
 }

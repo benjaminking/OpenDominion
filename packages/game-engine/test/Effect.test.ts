@@ -5,6 +5,7 @@ import { CardEligibilityFunction } from '../src/CardEligibilityFunction';
 import { Effect } from '../src/effects/Effect';
 import { EffectAction } from '../src/effects/EffectAction';
 import { EffectCondition } from '../src/effects/EffectCondition';
+import { EffectContext, EffectContextBuilder } from '../src/effects/EffectContext';
 import { EffectExpiration } from '../src/effects/EffectExpiration';
 import { EffectSource } from '../src/effects/EffectSource';
 import { EffectTriggerType } from '../src/effects/EffectTriggerType';
@@ -72,7 +73,7 @@ describe('Effect', () => {
     effect.registerStartOfPlayersTurn(player, turn);
     effect.registerEndOfPlayersTurn(player, turn);
 
-    expect(effect.getId()).toBe('source-card_buy');
+    expect(effect.getId()).toMatch(/^source-card_buy_\d+$/);
     expect(effect.getOwner()).toBe(owner);
     expect(effect.getTrigger()).toBe(EffectTriggerType.BUY);
     expect(effect.getSource()).toBe(EffectSource.ANYONE);
@@ -109,10 +110,12 @@ describe('Effect', () => {
     const effect = new Effect.Builder().from(owner).withExpiration(expiration).action(new EffectAction(action)).build();
     const instructionExecutor = {} as InstructionExecutor;
 
-    await effect.doAction(instructionExecutor, undefined);
+    const effectContext = new EffectContextBuilder().build();
+
+    await effect.doAction(instructionExecutor, effectContext);
 
     expect(effect.getNumTimesUsed()).toBe(1);
-    expect(action).toHaveBeenCalledWith(instructionExecutor);
+    expect(action).toHaveBeenCalledWith(instructionExecutor, effectContext);
     expect(expiration.numUses).toBe(1);
   });
 });

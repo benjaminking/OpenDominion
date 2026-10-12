@@ -9,7 +9,9 @@ import { EffectSource } from '../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
 import { InstructionExecutor } from '../../src/players/InstructionExecutor';
+import { Player } from '../../src/players/Player';
 import { SetupRule, SetupRuleType } from '../../src/setup/SetupRule';
+import { createTestClock } from '../testClock';
 
 interface SharedGameStateMock {
   cost: ReturnType<typeof vi.fn>;
@@ -47,6 +49,7 @@ const createSharedGameStateMock = (costToReturn?: Cost): SharedGameStateMock => 
   return {
     cost: vi.fn(() => resolvedCost),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   };
 };
 
@@ -295,12 +298,6 @@ describe('Card', () => {
     expect(card.getPileName()).toBe('Rewards');
   });
 
-  it('falls back to its own name for the pile name when the override is empty', () => {
-    const card = createCard({ name: 'Village', pileNameOverride: '' });
-
-    expect(card.getPileName()).toBe('Village');
-  });
-
   it('leaves a cost unchanged by default when asked to adjust it', () => {
     const card = createCard();
     const cost = Cost.Potion(3);
@@ -337,5 +334,73 @@ describe('Card', () => {
     cardWithRule.addSetupRule({ setupRuleType: SetupRuleType.GAME_STATE, applySetupRule: vi.fn() });
 
     expect(otherCard.getSetupRules().hasAnyGameStateSetupRules()).toBe(false);
+  });
+
+  describe('owner', () => {
+    const alice = { getName: () => 'Alice' } as unknown as Player;
+    const bob = { getName: () => 'Bob' } as unknown as Player;
+
+    it('has no owner or previous owner to begin with', () => {
+      const card = createCard();
+
+      expect(card.getOwner()).toBeUndefined();
+      expect(card.hasOwner(alice)).toBe(false);
+      expect(card.hasPreviousOwner(alice)).toBe(false);
+    });
+
+    it('remembers who owned it before its owner changed', () => {
+      const card = createCard();
+
+      card.changeOwner(alice);
+      card.changeOwner(bob);
+
+      expect(card.getOwner()).toBe(bob);
+      expect(card.hasOwner(bob)).toBe(true);
+      expect(card.hasPreviousOwner(alice)).toBe(true);
+    });
+
+    it('keeps its previous owner when given the owner it already has', () => {
+      const card = createCard();
+      card.changeOwner(alice);
+      card.changeOwner(bob);
+
+      card.changeOwner(bob);
+
+      expect(card.hasPreviousOwner(alice)).toBe(true);
+    });
+
+    it.each([CardLocation.TRASH, CardLocation.PILE])(
+      'loses its owner when it moves to a shared location (%s), which becomes its previous owner',
+      (sharedLocation: CardLocation) => {
+        const card = createCard();
+        card.changeOwner(alice);
+
+        card.setLocation(sharedLocation);
+
+        expect(card.getOwner()).toBeUndefined();
+        expect(card.hasPreviousOwner(alice)).toBe(true);
+      },
+    );
+
+    it("keeps its owner and previous owner when it moves between a player's own locations", () => {
+      const card = createCard();
+      card.changeOwner(alice);
+      card.changeOwner(bob);
+
+      for (const location of [
+        CardLocation.HAND,
+        CardLocation.IN_PLAY,
+        CardLocation.DISCARD,
+        CardLocation.DECK,
+        CardLocation.REVEAL_LIMBO,
+        CardLocation.SET_ASIDE,
+        CardLocation.ISLAND_MAT,
+        CardLocation.NATIVE_VILLAGE_MAT,
+      ]) {
+        card.setLocation(location);
+        expect(card.getOwner()).toBe(bob);
+        expect(card.hasPreviousOwner(alice)).toBe(true);
+      }
+    });
   });
 });

@@ -1,12 +1,12 @@
 import { CardLocation } from '@dominion/common';
 import { describe, expect, it, vi } from 'vitest';
 
-import { CardCollection } from '../../../src/card/CardCollection';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Trader } from '../../../src/cards/hinterlands/Trader';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -78,10 +78,64 @@ describe('Trader', () => {
     const { trader, gainedGold } = setUpTraderInHandWithGainedGold(testHarness);
     const [reaction] = testHarness.getCardEffects(trader, EffectTriggerType.GAIN);
 
+    const gainedToDiscard = new EffectContextBuilder()
+      .withTargetCard(gainedGold)
+      .withGainLocation(CardLocation.DISCARD)
+      .build();
     expect(reaction.getCardEligibility().matches(gainedGold)).toBe(true);
-    expect(reaction.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
+    expect(reaction.areOtherConditionsSatisfied(testHarness.executor, gainedToDiscard)).toBe(true);
     trader.setLocation(CardLocation.IN_PLAY);
-    expect(reaction.areOtherConditionsSatisfied(testHarness.executor)).toBe(false);
+    expect(reaction.areOtherConditionsSatisfied(testHarness.executor, gainedToDiscard)).toBe(false);
+  });
+
+  it('can still react to a gained card that has moved since it was gained, but loses track of it', async () => {
+    const testHarness = createCardHarness();
+    const { trader, gainedGold } = setUpTraderInHandWithGainedGold(testHarness);
+    const [reaction] = testHarness.getCardEffects(trader, EffectTriggerType.GAIN);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+
+    const gainedToDiscard = new EffectContextBuilder()
+      .withTargetCard(gainedGold)
+      .withGainLocation(CardLocation.DISCARD)
+      .withLocationExpectation(testHarness.executor.createLocationExpectation(CardLocation.DISCARD))
+      .build();
+
+    // e.g. Watchtower put it onto the deck
+    testHarness.discard.removeCard(gainedGold);
+    testHarness.addToDeck(gainedGold);
+    expect(reaction.areOtherConditionsSatisfied(testHarness.executor, gainedToDiscard)).toBe(true);
+
+    await reaction.doAction(testHarness.executor, gainedToDiscard);
+
+    expect(lostTrack).toHaveBeenCalledWith(gainedGold);
+    expect(testHarness.deck.contains(gainedGold)).toBe(true);
+    expect(testHarness.pileCards.get('Gold')).not.toContain(gainedGold);
+    expect(testHarness.pileCards.get('Silver')).toHaveLength(1);
+    expect(testHarness.discard.size()).toBe(0);
+  });
+
+  it('loses track of a gained card that has left the discard pile and come back', async () => {
+    const testHarness = createCardHarness();
+    const { trader, gainedGold } = setUpTraderInHandWithGainedGold(testHarness);
+    const [reaction] = testHarness.getCardEffects(trader, EffectTriggerType.GAIN);
+    const lostTrack = vi.spyOn(testHarness.executor, 'sendLostTrackMessage');
+
+    const gainedToDiscard = new EffectContextBuilder()
+      .withTargetCard(gainedGold)
+      .withGainLocation(CardLocation.DISCARD)
+      .withLocationExpectation(testHarness.executor.createLocationExpectation(CardLocation.DISCARD))
+      .build();
+    // e.g. it played itself (Trail), then was discarded again
+    testHarness.discard.removeCard(gainedGold);
+    testHarness.addToInPlay(gainedGold);
+    testHarness.inPlay.removeCard(gainedGold);
+    testHarness.addToDiscard(gainedGold);
+
+    await reaction.doAction(testHarness.executor, gainedToDiscard);
+
+    expect(lostTrack).toHaveBeenCalledWith(gainedGold);
+    expect(testHarness.discard.asCardArray()).toEqual([gainedGold]);
+    expect(testHarness.pileCards.get('Silver')).toHaveLength(1);
   });
 
   it('exchanges a gained card for a Silver when reacting', async () => {
@@ -89,7 +143,10 @@ describe('Trader', () => {
     const { trader, gainedGold } = setUpTraderInHandWithGainedGold(testHarness);
     const [reaction] = testHarness.getCardEffects(trader, EffectTriggerType.GAIN);
 
-    await reaction.doAction(testHarness.executor, gainedGold);
+    await reaction.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(gainedGold).withGainLocation(CardLocation.DISCARD).build(),
+    );
 
     expect(testHarness.discard.contains(gainedGold)).toBe(false);
     expect(testHarness.discard.size()).toBe(1);
@@ -105,7 +162,10 @@ describe('Trader', () => {
     testHarness.pileCards.get('Silver')?.splice(0);
     const [reaction] = testHarness.getCardEffects(trader, EffectTriggerType.GAIN);
 
-    await reaction.doAction(testHarness.executor, gainedGold);
+    await reaction.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(gainedGold).withGainLocation(CardLocation.DISCARD).build(),
+    );
 
     expect(testHarness.discard.asCardArray().map((card) => card.getId())).toEqual(['gold-gained']);
   });
@@ -115,13 +175,16 @@ describe('Trader', () => {
     const { trader, gainedGold } = setUpTraderInHandWithGainedGold(testHarness);
     const [reaction] = testHarness.getCardEffects(trader, EffectTriggerType.GAIN);
 
-    await reaction.doAction(testHarness.executor, gainedGold);
+    await reaction.doAction(
+      testHarness.executor,
+      new EffectContextBuilder().withTargetCard(gainedGold).withGainLocation(CardLocation.DISCARD).build(),
+    );
 
     const revealedTrader = vi
       .mocked(testHarness.sharedGameState.triggerEffect)
       .mock.calls.some(
-        ([trigger, , cards]) =>
-          trigger === EffectTriggerType.REVEAL && cards instanceof CardCollection && cards.contains(trader),
+        ([trigger, , effectContext]) =>
+          trigger === EffectTriggerType.REVEAL && effectContext?.getTargetCards()?.contains(trader) === true,
       );
     expect(revealedTrader).toBe(true);
   });

@@ -5,6 +5,7 @@ import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Gold } from '../../../src/cards/basic_cards/Gold';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Hoard } from '../../../src/cards/prosperity/Hoard';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -38,7 +39,7 @@ describe('Hoard', () => {
     expect(gainEffects).toHaveLength(1);
     expect(gainEffects[0].isMandatory()).toBe(true);
     expect(gainEffects[0].getCardEligibility().matches(duchy)).toBe(true);
-    await gainEffects[0].doAction(testHarness.executor, boughtDuchy);
+    await gainEffects[0].doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(boughtDuchy!).build());
 
     expect(testHarness.discard.asCardArray().map((card) => card.getId())).toEqual(['duchy-supply-0', 'gold-supply-0']);
   });

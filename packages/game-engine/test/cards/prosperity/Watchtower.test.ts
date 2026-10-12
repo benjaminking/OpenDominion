@@ -5,6 +5,7 @@ import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Silver } from '../../../src/cards/basic_cards/Silver';
 import { Watchtower } from '../../../src/cards/prosperity/Watchtower';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -105,9 +106,14 @@ describe('Watchtower', () => {
     const gainEffects = testHarness.getCardEffects(watchtower, EffectTriggerType.GAIN);
     expect(gainEffects).toHaveLength(1);
     expect(gainEffects[0].isMandatory()).toBe(false);
-    expect(gainEffects[0].areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
+    expect(
+      gainEffects[0].areOtherConditionsSatisfied(
+        testHarness.executor,
+        new EffectContextBuilder().withTargetCard(silver).withGainLocation(silver.getLocation()).build(),
+      ),
+    ).toBe(true);
     testHarness.pickOption('Trash it');
-    await gainEffects[0].doAction(testHarness.executor, silver);
+    await gainEffects[0].doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(silver).withGainLocation(silver.getLocation()).build());
 
     expect(testHarness.sharedTrash.contains(silver)).toBe(true);
     expect(testHarness.discard.size()).toBe(0);
@@ -120,7 +126,9 @@ describe('Watchtower', () => {
     const { watchtower, silver } = await setUpGainedSilver(testHarness);
 
     testHarness.pickOption('Put it onto your deck');
-    await testHarness.getCardEffects(watchtower, EffectTriggerType.GAIN)[0].doAction(testHarness.executor, silver);
+    await testHarness
+      .getCardEffects(watchtower, EffectTriggerType.GAIN)[0]
+      .doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(silver).withGainLocation(silver.getLocation()).build());
 
     expect(testHarness.discard.size()).toBe(0);
     expect(testHarness.deck.getTopCard()?.getId()).toBe('silver-supply-0');

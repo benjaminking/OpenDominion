@@ -25,7 +25,13 @@ export class Counterfeit extends KingdomCard {
       .choose();
 
     if (choice instanceof Card) {
-      await ie.playCardFromHandNTimes(choice, 2);
+      const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+      await ie.playCardFromHandNTimes(choice, 2, this);
+
+      if (!locationExpectation.isMet(choice)) {
+        ie.sendLostTrackMessage(choice);
+        return;
+      }
       await ie.trashCardFromLocation(choice, CardLocation.IN_PLAY);
     }
   }

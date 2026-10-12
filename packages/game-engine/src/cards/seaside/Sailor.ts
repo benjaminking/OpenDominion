@@ -5,6 +5,7 @@ import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
+import { EffectContext } from '../../effects/EffectContext';
 import { EffectSource } from '../../effects/EffectSource';
 import { EffectTriggerType } from '../../effects/EffectTriggerType';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -23,12 +24,18 @@ export class Sailor extends KingdomCard {
         .from(this)
         .onTurn(ie.createThisTurnEligibilityFunction())
         .triggerOn(EffectTriggerType.GAIN, EffectSource.SELF)
+        // A gained card that has already moved on (e.g. topdecked by Watchtower or played by another Sailor) can't be
+        // played
         .whereCardIs(isDurationCard)
         .withExpiration(ie.createOnceThisTurnEffectExpiration())
         .action(
-          // TODO: need to have the gain location to make sure the card is there
-          new EffectAction(async (ie: InstructionExecutor, card: Card) => {
-            await ie.playCardFromLocation(card, card.getLocation());
+          new EffectAction(async (ie: InstructionExecutor, effectContext: EffectContext) => {
+            const gainedCard = effectContext.getTargetCard()!;
+            if (!effectContext.getLocationExpectation()!.isMet(gainedCard)) {
+              ie.sendLostTrackMessage(gainedCard);
+              return;
+            }
+            await ie.playCardFromLocation(gainedCard, effectContext.getGainLocation()!);
           }),
         )
         .build(),

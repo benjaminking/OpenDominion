@@ -169,7 +169,10 @@ export class Piles {
   }
 
   public getGainsNeededToEnd(): number {
-    const numProvincesToEnd = this.supplyPiles.getPileByName('Province')!.size();
+    const numProvincesToEnd = Math.min(
+      this.supplyPiles.getPileByName('Province')!.size(),
+      this.supplyPiles.getPileByName('Colony')?.size() ?? Infinity,
+    );
 
     let pileLengths: number[] = [];
     for (const pileName of this.supplyPiles.pileNames) {
@@ -182,7 +185,11 @@ export class Piles {
   }
 
   public areGameEndingConditionsMet(): boolean {
-    return this.supplyPiles.getPileByName('Province')!.isEmpty() || this.numEmptySupplyPiles >= 3;
+    return (
+      this.supplyPiles.getPileByName('Province')!.isEmpty() ||
+      (this.supplyPiles.getPileByName('Colony')?.isEmpty() ?? false) ||
+      this.numEmptySupplyPiles >= 3
+    );
     //return (this.supplyPiles.getPileByName('Province')?.size() ?? 0) < 8 || this.numEmptySupplyPiles >= 3;
   }
 

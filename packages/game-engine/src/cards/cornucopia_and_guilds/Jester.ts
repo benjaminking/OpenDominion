@@ -30,17 +30,15 @@ export class Jester extends KingdomCard {
       await attackedIe.gainFromPile('Curse');
     } else {
       await attackingIe
-        .chooseOneOption(
-          'Jester: who should gain a copy of ' + discardedCard.getName() + '?',
-        )
+        .chooseOneOption('Who should gain a copy of ' + discardedCard.getName() + '?')
         .from(
           new ActionChoice('You gain a copy', async () => {
-            await attackingIe.gainFromPile(discardedCard.getName());
+            await attackingIe.gainCopyOfCard(discardedCard);
           }),
         )
         .from(
           new ActionChoice(attackedPlayer.getName() + ' gains a copy', async () => {
-            await attackedIe.gainFromPile(discardedCard.getName());
+            await attackedIe.gainCopyOfCard(discardedCard);
           }),
         )
         .choose();

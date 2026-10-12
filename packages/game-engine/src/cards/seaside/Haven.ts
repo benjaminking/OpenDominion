@@ -16,6 +16,8 @@ export class Haven extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    await ie.drawCards(1);
+    ie.addActions(1);
     const cardToSetAside: Card | Choice = await ie
       .chooseCard('Choose a card to set aside')
       .from(CardLocation.HAND)
@@ -24,6 +26,8 @@ export class Haven extends KingdomCard {
     if (!(cardToSetAside instanceof Card)) {
       return;
     }
+    // Haven returns the card only if it hasn't moved since it was set aside
+    const locationExpectation = ie.createLocationExpectation(CardLocation.SET_ASIDE);
     await ie.setCardAsideFromLocation(cardToSetAside, CardLocation.HAND);
 
     ie.addEffect(
@@ -34,8 +38,12 @@ export class Haven extends KingdomCard {
         .withExpiration(ie.createEndOfMyNextTurnEffectExpiration())
         .makeMandatory()
         .action(
-          new EffectAction((ie: InstructionExecutor, _targetCard: Card) => {
-            ie.putCardIntoHandFromLocation(cardToSetAside, CardLocation.SET_ASIDE);
+          new EffectAction((ie: InstructionExecutor) => {
+            if (locationExpectation.isMet(cardToSetAside)) {
+              ie.putCardIntoHandFromLocation(cardToSetAside, CardLocation.SET_ASIDE);
+            } else {
+              ie.sendLostTrackMessage(cardToSetAside);
+            }
             this.markAsFinished();
           }),
         )

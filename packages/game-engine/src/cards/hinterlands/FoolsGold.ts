@@ -1,7 +1,6 @@
 import { CardInfoLookup } from '@dominion/card-info';
 import { CardLocation } from '@dominion/common';
 
-import { Card } from '../../card/Card';
 import { KingdomCard } from '../../card/KingdomCard';
 import { Effect } from '../../effects/Effect';
 import { EffectAction } from '../../effects/EffectAction';
@@ -34,8 +33,14 @@ export class FoolsGold extends KingdomCard {
     }
   }
 
-  private async reaction(ie: InstructionExecutor, _gainedCard: Card): Promise<void> {
+  private async reaction(ie: InstructionExecutor): Promise<void> {
+    const locationExpectation = ie.createLocationExpectation(CardLocation.HAND);
     await ie.revealCard(this);
+    // It trashes itself to gain the Gold, so once it has lost track of itself there is no Gold either
+    if (!locationExpectation.isMet(this)) {
+      ie.sendLostTrackMessage(this);
+      return;
+    }
     await ie.trashCardFromLocation(this, CardLocation.HAND);
     await ie.gainCardFromPile('Gold', CardLocation.DECK);
   }

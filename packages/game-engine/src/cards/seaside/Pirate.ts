@@ -20,7 +20,8 @@ export class Pirate extends KingdomCard {
     this.addEffect(
       new Effect.Builder()
         .from(this)
-        .triggerOn(EffectTriggerType.GAIN, EffectSource.OTHER_PLAYER)
+        // Any player's Treasure gain counts, including its owner's
+        .triggerOn(EffectTriggerType.GAIN, EffectSource.ANYONE)
         .whereCardIs(isTreasureCard)
         .addCondition(
           new EffectCondition((_ie: InstructionExecutor) => {

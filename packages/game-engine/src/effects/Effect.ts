@@ -1,5 +1,3 @@
-import { Card } from '../card/Card';
-import { CardCollection } from '../card/CardCollection';
 import { CardShapedObject } from '../card/CardShapedObject';
 import { CardEligibilityFunction } from '../CardEligibilityFunction';
 import { InstructionExecutor } from '../players/InstructionExecutor';
@@ -8,12 +6,17 @@ import { anyCard } from '../StandardCardEligibilityFunctions';
 import { Turn } from '../turns/Turn';
 import { EffectAction } from './EffectAction';
 import { EffectCondition } from './EffectCondition';
+import { EffectContext, EffectContextBuilder } from './EffectContext';
 import { EffectExpiration } from './EffectExpiration';
 import { EffectSource } from './EffectSource';
 import { EffectTriggerType } from './EffectTriggerType';
 import { NoEffectExpiration } from './StandardEffectExpirations';
 import { AnyTurnEligibility } from './StandardTurnEligibilityFunctions';
 import { TurnEligibility } from './TurnEligibility';
+
+// Makes every effect's id unique. Ids can't come from the owner alone: effects built in a card's
+// constructor are built before the card gets its id, and a card played twice adds two effects.
+let nextEffectNumber = 0;
 
 export class Effect {
   private _id = '';
@@ -86,13 +89,16 @@ export class Effect {
     return this._numTimesUsed;
   }
 
-  public areOtherConditionsSatisfied(ie: InstructionExecutor): boolean {
-    return this.conditions.every((v) => v.isSatisfied(ie));
+  public areOtherConditionsSatisfied(
+    ie: InstructionExecutor,
+    effectContext: EffectContext = new EffectContextBuilder().build(),
+  ): boolean {
+    return this.conditions.every((v) => v.isSatisfied(ie, effectContext));
   }
 
-  public async doAction(ie: InstructionExecutor, targetCards: Card | CardCollection | undefined): Promise<void> {
+  public async doAction(ie: InstructionExecutor, effectContext: EffectContext): Promise<void> {
     this._numTimesUsed++;
-    await this.action.performAction(ie, targetCards);
+    await this.action.performAction(ie, effectContext);
     this.expiration.registerUse();
   }
 
@@ -154,7 +160,8 @@ export class Effect {
       if (this.effect.owner === undefined) {
         throw new Error('Effect must have a source');
       }
-      this.effect._id = this.effect.owner.getId() + '_' + this.effect.type;
+      nextEffectNumber++;
+      this.effect._id = this.effect.owner.getId() + '_' + this.effect.type + '_' + String(nextEffectNumber);
       return this.effect;
     }
   };

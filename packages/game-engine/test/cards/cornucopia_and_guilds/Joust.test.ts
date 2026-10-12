@@ -7,6 +7,7 @@ import { Province } from '../../../src/cards/basic_cards/Province';
 import { Coronet } from '../../../src/cards/cornucopia_and_guilds/Coronet';
 import { Courser } from '../../../src/cards/cornucopia_and_guilds/Courser';
 import { Joust } from '../../../src/cards/cornucopia_and_guilds/Joust';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
 
@@ -65,7 +66,7 @@ describe('Joust', () => {
     expect(testHarness.discard.size()).toBe(0);
 
     const [cleanupEffect] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
-    await cleanupEffect.doAction(testHarness.executor, undefined);
+    await cleanupEffect.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.discard.asCardArray()).toEqual([province]);
     expect(cleanupEffect.hasExpired()).toBe(true);

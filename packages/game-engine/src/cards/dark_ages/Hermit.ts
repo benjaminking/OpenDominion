@@ -19,6 +19,9 @@ export class Hermit extends KingdomCard {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
+    // Hermit exchanges itself at the end of the Buy phase, so it must not have left play since it was played
+    const locationExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+
     const cardToTrash = await ie
       .chooseCard('You may trash a non-Treasure card from your discard pile')
       .from(CardLocation.HAND)
@@ -51,9 +54,14 @@ export class Hermit extends KingdomCard {
         .makeMandatory()
         .action(
           new EffectAction((ie: InstructionExecutor) => {
-            if (ie.getNumCardsGainedInThisTurnsBuyPhase() === 0) {
-              ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Madman');
+            if (ie.getNumCardsGainedInThisTurnsBuyPhase() !== 0) {
+              return;
             }
+            if (!locationExpectation.isMet(this)) {
+              ie.sendLostTrackMessage(this);
+              return;
+            }
+            ie.exchangeCardFromLocation(this, CardLocation.IN_PLAY, 'Madman');
           }),
         )
         .build(),

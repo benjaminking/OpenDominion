@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Hovel } from '../../../src/cards/dark_ages/Hovel';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -21,7 +22,7 @@ describe('Hovel', () => {
     expect(onGain.isMandatory()).toBe(false);
     expect(onGain.getCardEligibility().matches(gainedEstate)).toBe(true);
     expect(onGain.areOtherConditionsSatisfied(testHarness.executor)).toBe(true);
-    await onGain.doAction(testHarness.executor, gainedEstate);
+    await onGain.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(gainedEstate).withGainLocation(gainedEstate.getLocation()).build());
 
     expect(testHarness.hand.size()).toBe(0);
     expect(testHarness.sharedTrash.asCardArray()).toEqual([hovel]);

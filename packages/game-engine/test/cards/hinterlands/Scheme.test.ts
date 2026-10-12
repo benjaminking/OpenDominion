@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Scheme } from '../../../src/cards/hinterlands/Scheme';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -31,7 +32,7 @@ describe('Scheme', () => {
 
     const [atCleanup] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
     testHarness.pickCard(village);
-    await atCleanup.doAction(testHarness.executor, undefined);
+    await atCleanup.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.deck.asCardArray().map((card) => card.getId())).toEqual(['village-in-play']);
     expect(testHarness.inPlay.contains(village)).toBe(false);
@@ -47,7 +48,7 @@ describe('Scheme', () => {
     await new Scheme(testHarness.sharedGameState).play(testHarness.executor);
 
     const [atCleanup] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
-    await atCleanup.doAction(testHarness.executor, undefined);
+    await atCleanup.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.contains(village)).toBe(true);
     expect(testHarness.deck.size()).toBe(0);
@@ -62,7 +63,7 @@ describe('Scheme', () => {
 
     const [atCleanup] = testHarness.getAddedEffects(EffectTriggerType.CLEANUP_START);
     testHarness.pickCard(copper);
-    await atCleanup.doAction(testHarness.executor, undefined);
+    await atCleanup.doAction(testHarness.executor, new EffectContextBuilder().build());
 
     expect(testHarness.inPlay.contains(copper)).toBe(true);
     expect(testHarness.deck.size()).toBe(0);

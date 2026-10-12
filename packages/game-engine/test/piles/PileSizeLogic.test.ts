@@ -72,8 +72,13 @@ describe('PileSizeLogic', () => {
       expect(sizeOf('Rats')).toBe(20);
       expect(sizeOf('Spoils')).toBe(15);
       expect(pileSizeLogic.getPileSize(cardInfo('Port', [CardType.ACTION]))).toBe(12);
-      expect(pileSizeLogic.getPileSize(cardInfo('Rewards', [CardType.ACTION]))).toBe(12);
     }
+  });
+
+  it('uses one of each of the 6 Rewards with 2 players and two of each with more', () => {
+    expect(new PileSizeLogic(2).getPileSize(cardInfo('Rewards', [CardType.ACTION]))).toBe(6);
+    expect(new PileSizeLogic(3).getPileSize(cardInfo('Rewards', [CardType.ACTION]))).toBe(12);
+    expect(new PileSizeLogic(4).getPileSize(cardInfo('Rewards', [CardType.ACTION]))).toBe(12);
   });
 
   it('puts the Coppers left after dealing starting decks in the Copper pile', () => {

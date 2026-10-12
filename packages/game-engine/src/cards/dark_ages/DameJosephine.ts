@@ -1,4 +1,5 @@
 import { CardInfoLookup } from '@dominion/card-info';
+import { CardLocation } from '@dominion/common';
 
 import { CardCollection } from '../../card/CardCollection';
 import { SharedGameState } from '../../game-state/SharedGameState';
@@ -11,7 +12,8 @@ export class DameJosephine extends Knights {
   }
 
   public async play(ie: InstructionExecutor): Promise<void> {
-    await ie.performAttack(this, this.knightAttack.bind(this));
+    const selfExpectation = ie.createLocationExpectation(CardLocation.IN_PLAY);
+    await this.performKnightAttack(ie, selfExpectation);
   }
 
   public score(_allCardGroups: CardCollection[]): number {

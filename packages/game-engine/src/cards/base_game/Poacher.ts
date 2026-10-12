@@ -16,7 +16,7 @@ export class Poacher extends KingdomCard {
     await ie.drawCards(1);
     ie.addActions(1);
     await ie.addCoins(1);
-    const numToDiscard = ie.getSharedGameState().piles.numEmptySupplyPiles;
+    const numToDiscard = Math.min(ie.getSharedGameState().piles.numEmptySupplyPiles, ie.handSize());
     if (numToDiscard > 0) {
       const cards: CardCollection = await ie
         .chooseCards('Choose ' + numToDiscard.toFixed() + ' cards to discard')

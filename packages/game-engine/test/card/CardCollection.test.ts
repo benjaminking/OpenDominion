@@ -11,6 +11,7 @@ import { ChangeListener } from '../../src/ChangeListener';
 import { Effect } from '../../src/effects/Effect';
 import { EffectTriggerType } from '../../src/effects/EffectTriggerType';
 import { SharedGameState } from '../../src/game-state/SharedGameState';
+import { createTestClock } from '../testClock';
 
 class TestCard extends Card {}
 
@@ -19,6 +20,7 @@ const createSharedGameStateMock = (cost?: Cost) => {
   return {
     cost: vi.fn(() => resolvedCost),
     registerEffectTrigger: vi.fn(),
+    ...createTestClock(),
   } as unknown as SharedGameState;
 };
 

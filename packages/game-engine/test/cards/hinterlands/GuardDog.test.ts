@@ -5,6 +5,7 @@ import { Militia } from '../../../src/cards/base_game/Militia';
 import { Village } from '../../../src/cards/base_game/Village';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { GuardDog } from '../../../src/cards/hinterlands/GuardDog';
+import { EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectSource } from '../../../src/effects/EffectSource';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { CardHarness, createCardHarness } from '../testHarness';
@@ -75,7 +76,7 @@ describe('GuardDog', () => {
     addCoppers(testHarness, 'deck', 5);
     const [reaction] = guardDog.getEffects();
 
-    await reaction.doAction(testHarness.executor, militia);
+    await reaction.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(militia).build());
 
     expect(testHarness.hand.contains(guardDog)).toBe(false);
     expect(testHarness.hand.size()).toBe(4);
@@ -95,7 +96,7 @@ describe('GuardDog', () => {
     addCoppers(testHarness, 'deck', 5);
     const [reaction] = guardDog.getEffects();
 
-    await reaction.doAction(testHarness.executor, militia);
+    await reaction.doAction(testHarness.executor, new EffectContextBuilder().withTargetCard(militia).build());
 
     expect(testHarness.inPlay.contains(guardDog)).toBe(true);
   });

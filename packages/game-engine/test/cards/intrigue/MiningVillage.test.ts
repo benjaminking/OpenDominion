@@ -34,4 +34,23 @@ describe('MiningVillage', () => {
     expect(testHarness.sharedTrash.size()).toBe(1);
     expect(testHarness.stats.coins).toBe(2);
   });
+
+  it('has lost track of itself when it is not in play, so "Yes" trashes nothing and gives no coins', async () => {
+    const testHarness = createCardHarness();
+    const drawCard = new Copper(testHarness.sharedGameState);
+    drawCard.setId('draw-copper');
+    testHarness.addToDeck(drawCard);
+
+    // e.g. played from the Supply by Band of Misfits
+    const miningVillage = new MiningVillage(testHarness.sharedGameState);
+    miningVillage.setId('mining-village-not-in-play');
+
+    testHarness.pickOption('Yes');
+    await miningVillage.play(testHarness.executor);
+
+    expect(testHarness.sharedTrash.size()).toBe(0);
+    expect(testHarness.stats.coins).toBe(0);
+    expect(testHarness.stats.actions).toBe(2);
+    expect(testHarness.hand.size()).toBe(1);
+  });
 });

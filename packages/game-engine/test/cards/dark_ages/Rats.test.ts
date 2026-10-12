@@ -4,6 +4,7 @@ import { CardCollection } from '../../../src/card/CardCollection';
 import { Copper } from '../../../src/cards/basic_cards/Copper';
 import { Estate } from '../../../src/cards/basic_cards/Estate';
 import { Rats } from '../../../src/cards/dark_ages/Rats';
+import { EffectContext, EffectContextBuilder } from '../../../src/effects/EffectContext';
 import { EffectTriggerType } from '../../../src/effects/EffectTriggerType';
 import { createCardHarness } from '../testHarness';
 
@@ -79,7 +80,7 @@ describe('Rats', () => {
     const [onTrash] = testHarness.getCardEffects(rats, EffectTriggerType.TRASH);
     expect(onTrash.isMandatory()).toBe(true);
     expect(onTrash.getCardEligibility().matches(rats)).toBe(true);
-    await onTrash.doAction(testHarness.executor, CardCollection.fromCards([rats]));
+    await onTrash.doAction(testHarness.executor, new EffectContextBuilder().withTargetCards(CardCollection.fromCards([rats])).build());
 
     expect(idsOf(testHarness.hand)).toEqual(['copper-deck-0']);
   });
